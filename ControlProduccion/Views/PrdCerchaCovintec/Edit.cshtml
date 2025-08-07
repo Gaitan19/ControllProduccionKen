@@ -1,0 +1,687 @@
+﻿@using ControlProduccion.ViewModel;
+@model PrdCerchaCovintecViewModel;
+@{
+    ViewData["Title"] = "Produccion Cercha Covintec";
+}
+
+<div class="col-md-8 offset-md-2">
+    <div class="ibox ">
+        <div class="ibox-title">
+            <h5>@ViewData["Title"]</h5>
+
+        </div>
+        <div class="ibox-content">
+            <form id="frmProduccion" method="post" asp-action="Edit" autocomplete="off">
+                @Html.AntiForgeryToken()
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+                <input type="hidden" asp-for="Id"/>
+                <div class="form-group">
+                    <label asp-for="IdUsuarios"></label>
+                    <select  id="IdUsuarios" multiple name="IdUsuarios" asp-for="IdUsuarios" class="form-control select2" asp-items="Model.Operarios">
+                    </select>
+                    <span asp-validation-for="IdUsuarios" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="IdMaquina"></label>
+                    <select  id="IdMaquina" name="IdMaquina" asp-for="IdMaquina" class="form-control" asp-items="Model.Maquinas">
+                        @*  <option>- Seleccione una maquina -</option> *@
+                    </select>
+                    <span asp-validation-for="IdMaquina" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Fecha"></label>
+                    <input asp-for="Fecha"  class="form-control" />
+                    <span asp-validation-for="Fecha" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="ConteoInicial"></label>
+                    <input  asp-for="ConteoInicial" class="form-control" />
+                    <span asp-validation-for="ConteoInicial" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="ConteoFinal"></label>
+                    <input  asp-for="ConteoFinal" class="form-control" />
+                    <span asp-validation-for="ConteoFinal" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="TiempoParo"></label>
+                    <input asp-for="TiempoParo" class="form-control" />
+                    <span asp-validation-for="TiempoParo" class="text-danger"></span>
+                </div>
+
+                <div class="hr-line-dashed"></div>
+                <div class="form-group row">
+
+                    @*         <a data-toggle='modal' href='#modal-Detalle' id="btnAgregarDetalle" class="btn btn-info btn-outline">
+                        <i class="fa fa-plus"></i> Agregar Nuevo Detalle
+                    </a> *@
+
+                
+                    <div class="col-sm-12" style="max-height: 300px; overflow: scroll">
+                        <h4 id="hdrVV" runat="server">Detalle Produccion</h4>
+
+                        <table id="tblProduccion" class="table table-bordered table-hover">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Id</th>
+                                    <th>Articulo</th>
+                                    <th>Cantidad Producida</th>
+                                    <th>Cantidad No Conforme</th>
+                                    <th>Tipo Fabricación</th>
+                                    <th>Número Pedido</th>
+                                    <th>Produccion del dia</th>
+                                  
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @*       <tr>
+
+                                    <td>Panel Térmico 1.5</td>
+                                    <td>120</td>
+                                    <td>5</td>
+                                    <td>Manual</td>
+                                    <td>4521</td>
+
+
+                                </tr> *@
+                                @foreach (var detalle in Model.DetPrdCerchaCovintec)
+                                {
+                                        <tr>
+
+                                        @if (Model.AprobadoGerencia != true)
+                                        {
+                                            <td> <a href="#" class="open-modal">@detalle.Id</a></td>
+                                        }
+                                        else
+                                        {
+                                            <td> @detalle.Id</td>
+                                        }
+                                       
+
+                                            <td>@detalle.Articulo</td>
+                                            <td>@detalle.CantidadProducida</td>
+                                            <td>@detalle.CantidadNoConforme</td>
+                                            <td>@detalle.TipoFabricacion</td>
+                                            <td>@detalle.NumeroPedido</td>
+                                            <td>@detalle.ProduccionDia</td>
+                                           
+                                            <td style='display:none;'> @detalle.IdArticulo</td>
+                                            <td style='display:none;'> @detalle.IdTipoFabricacion </td>
+
+                                        </tr>
+                                }
+
+                            </tbody>
+                        </table>
+
+                    </div>
+                </div>
+                <div class="hr-line-dashed"></div>
+                <div class="form-group row">
+                    @*      <a data-toggle='modal' href='#modal-DetalleAlambre' id="btnAgregarDetalleAlambre" class="btn btn-info btn-outline">
+                        <i class="fa fa-plus"></i> Agregar Alambre
+                    </a> *@
+               
+
+                    <div class="col-sm-12" style="max-height: 300px; overflow: scroll">
+                        <h4 id="hdrVV" runat="server">Detalle Alambres</h4>
+
+                        <table id="tblAlambreProduccion" class="table table-bordered table-hover">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Id</th>
+                                    <th>Numero Alambre</th>
+                                    <th>Peso Alambre</th>
+
+                                   
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @*       <tr>
+                                    <td>1</td>
+                                    <td>2</td>
+                                    <td>3</td>
+
+
+                                </tr> *@
+                                @foreach (var alambre in Model.DetAlambrePrdCerchaCovintec)
+                                {
+                                        <tr>
+
+
+                                        @if (Model.AprobadoGerencia != true)
+                                        {
+                                            <td><a href="#" class="open-modalAlambre">@alambre.Id</a></td>
+                                        }
+                                        else
+                                        {
+                                            <td> @alambre.Id</td>
+                                        }
+                                    
+                                            <td>@alambre.NumeroAlambre</td>
+                                            <td>@alambre.PesoAlambre</td>
+
+                                           
+                                        </tr>
+                                }
+
+
+                            </tbody>
+                        </table>
+
+                    </div>
+                </div>
+                <div class="hr-line-dashed"></div>
+                <div class="form-group">
+                    <label asp-for="MermaAlambre"></label>
+                    <input  asp-for="MermaAlambre" class="form-control" />
+                    <span asp-validation-for="MermaAlambre" class="text-danger"></span>
+                </div>
+        
+                <div class="form-group">
+                    <label asp-for="Observaciones"></label>
+                    <textarea  asp-for="Observaciones" class="form-control"></textarea>
+                    <span asp-validation-for="Observaciones" class="text-danger"></span>
+                </div>
+
+                
+
+                <button type="button" class="btn btn-dark" onclick="location.href='@Url.Action("Index", "PrdCerchaCovintec")'">Regresar</button>
+                @if (Model.AprobadoGerencia != true)
+                {
+                    <button type="submit" class="btn btn-primary">Actualizar</button>
+                }
+
+                @if (User.IsInRole("JefeProduccion") && Model.AprobadoGerencia != true)
+                {
+                    <button id="btnAprobarProd" type="button" class="btn btn-danger" onclick="validar(@Model.Id)">Aprobar</button>
+                }
+                else
+                {
+                    <button type="button" class="btn btn-success">Aprobado</button>
+                }
+            </form>
+
+            @*     -----modal para agregar detalle prd------ *@
+            <div id="modal-Detalle" class="modal fade" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-body">
+                            <form id="frmDetPrd">
+                                <input type="hidden" id="detrpdId" name="detrpdId" />
+                                <h3>Editar Detalle</h3>
+                                <hr />
+
+                                <div class="mb-3">
+                                    <label class="form-label">Artículo</label>
+                                    <select id="IdArticulo" name="IdArticulo" class="form-control" asp-items="Model.CatalogoCercha">
+                                        <option value="">-- Selecione un articulo --</option>
+                                    </select>
+                                    <span class="text-danger"></span>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="CantidadProducida" class="form-label">Cantidad Producida</label>
+                                    <input oninput="this.value = this.value.replace(/[^0-9\-]/g, '');" step="1" min="0" type="number" id="CantidadProducida" name="CantidadProducida" class="form-control" value="" />
+                                    <span class="text-danger"></span>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="CantidadNoConforme" class="form-label">Cantidad No Conforme</label>
+                                    <input oninput="this.value = this.value.replace(/[^0-9\-]/g, '');" step="1" min="0" type="number" id="CantidadNoConforme" name="CantidadNoConforme" class="form-control" value="" />
+                                    <span class="text-danger"></span>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label">Tipo Fabricación</label>
+                                    <select id="IdTipoFabricacion" name="IdTipoFabricacion" class="form-control" asp-items="Model.TiposFabricacion">
+                                        <option value="">-- Selecione un Tipo Fabricacion --</option>
+                                    </select>
+                                    <span class="text-danger"></span>
+                                </div>
+
+                                <div class="mb-3" id="divNumeroPedido" style="display:none">
+                                    <label for="NumeroPedido" class="form-label">Número Pedido</label>
+                                    <input oninput="this.value = this.value.replace(/[^0-9\-]/g, '');" step="1" min="0" type="number" id="NumeroPedido" name="NumeroPedido" class="form-control" value="" />
+                                    <span class="text-danger"></span>
+                                </div>
+                            </form>
+
+                            <button id="btnGuardarDetPrd" type="button" class="btn btn-primary">Actualizar</button>
+                            <button type="button" class="btn  btn-dark" data-dismiss="modal">Cancelar</button>
+                            <br />
+                            <p id="spnbtnGuardarDetPrd" class="text-sm text-danger"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            @*     -----modal para agregar detalle alambre prd------ *@
+
+            <div id="modal-DetalleAlambre" class="modal fade" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-body">
+                            <form id="frmDetAlambre">
+                                <input type="hidden" name="detAlambreId" id="detAlambreId" />
+                                <h3>Editar Alambre Detalle</h3>
+                                <hr />
+
+                                <div class="form-group">
+                                    <label for="NumeroAlambre">Número de Alambre</label>
+                                    <input oninput="this.value = this.value.replace(/[^0-9\-]/g, '');" step="1" min="0" id="NumeroAlambre" name="NumeroAlambre" class="form-control" value="" />
+                                    <span class="text-danger"></span>
+                                </div>
+                                <div class="form-group">
+                                    <label for="PesoAlambre">Peso del Alambre</label>
+                                    <input oninput="validarUnDecimal(this)" type="text" step="0.1" min="0" id="PesoAlambre" name="PesoAlambre" class="form-control" value="" />
+                                    <span class="text-danger"></span>
+                                </div>
+
+
+                            </form>
+
+                            <button id="btnGuardarDetAlalmbre" type="button" class="btn btn-primary">Actualizar</button>
+                            <button type="button" class="btn  btn-dark" data-dismiss="modal">Cancelar</button>
+                            <br />
+                            <p id="spnBtnDetAlalmbre" class="text-sm text-danger"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+        <script>
+
+                     function validarUnDecimal(input) {
+              // Elimina caracteres no válidos (solo dígitos y punto)
+              let valor = input.value.replace(/[^0-9.]/g, '');
+
+              // Si hay más de un punto, conserva solo el primero
+              let partes = valor.split('.');
+              if (partes.length > 2) {
+                valor = partes[0] + '.' + partes[1];
+              }
+
+              // Si existe el punto, limita la parte decimal a 1 dígito
+              if (valor.includes('.')) {
+                let [entero, decimal] = valor.split('.');
+                decimal = decimal.substring(0, 1); // conserva solo el primer dígito
+                valor = entero + '.' + decimal;
+              }
+
+              input.value = valor;
+            }
+
+
+
+
+
+
+
+                               $("#IdUsuarios").select2({
+                placeholder: "- Selecciona los operarios -",
+                allowClear:true
+            });
+
+                              $("#IdMaquina").select2({
+                placeholder: "- Seleccione una maquina -",
+                allowClear:true
+            });
+
+
+
+
+
+
+
+
+
+
+                     $(document).on('click', '#btnValidarAlambrePrdJefePrd', function(e) {
+                e.preventDefault(); // Evita el comportamiento por defecto del enlace
+
+                // Guarda la referencia del botón clickeado
+                var $btn = $(this);
+                // Obtiene la fila correspondiente
+                var $row = $btn.closest('tr');
+                // Obtiene el valor del ID (la primera celda oculta)
+                var id = $row.find('td:first').text().trim();
+
+                // Ejecuta la petición AJAX
+                $.ajax({
+                        url: '/PrdCerchaCovintec/ValidarPrdAlambreJefePrd', // Reemplaza con la URL de tu endpoint
+                    type: 'POST',       // O 'GET', según lo requiera tu backend
+                    data: { id: id },
+                    success: function(validado) {
+                        // Suponiendo que 'validado' es un booleano retornado por el backend
+                        if (validado === true || validado === "true") {
+                            // Actualiza el ícono para indicar validado
+                            $btn.find('i')
+                                .removeClass('fa-times text-danger')
+                                .addClass('fa-check text-success');
+                        } else {
+                            // Actualiza el ícono para indicar no validado
+                            $btn.find('i')
+                                .removeClass('fa-check text-success')
+                                .addClass('fa-times text-danger');
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Error al actualizar la validación:', error);
+                    }
+                });
+            });
+
+                // Delegación de eventos para manejar clicks en btnValidarPrd, incluso si se agregan dinámicamente
+            $(document).on('click', '#btnValidarPrdJefePrd', function(e) {
+                e.preventDefault(); // Evita el comportamiento por defecto del enlace
+
+                // Guarda la referencia del botón clickeado
+                var $btn = $(this);
+                // Obtiene la fila correspondiente
+                var $row = $btn.closest('tr');
+                // Obtiene el valor del ID (la primera celda oculta)
+                var id = $row.find('td:first').text().trim();
+
+                // Ejecuta la petición AJAX
+                $.ajax({
+                    url: '/PrdCerchaCovintec/ValidarPrdJefePrd', // Reemplaza con la URL de tu endpoint para producción
+                    type: 'POST',                // O 'GET', según lo requiera tu backend
+                    data: { id: id },
+                    success: function(validado) {
+                        // Suponiendo que 'validado' es un booleano retornado por el backend
+                        if (validado === true || validado === "true") {
+                            // Actualiza el ícono para indicar validado
+                            $btn.find('i')
+                                .removeClass('fa-times text-danger')
+                                .addClass('fa-check text-success');
+                        } else {
+                            // Actualiza el ícono para indicar no validado
+                            $btn.find('i')
+                                .removeClass('fa-check text-success')
+                                .addClass('fa-times text-danger');
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Error al actualizar la validación:', error);
+                    }
+                });
+            });
+
+                    // Evento para el botón "Aprobar Todos"
+            $(document).on('click', '#btnAprobarPrdTodo', function(e) {
+                e.preventDefault();
+
+                // Array para almacenar los objetos deferred de cada petición AJAX
+                var deferreds = [];
+
+                // Itera sobre cada fila de la tabla
+                $("#tblProduccion tbody tr").each(function(){
+                    var $row = $(this);
+                    var id = $row.find('td:first').text().trim();
+
+                    // Ejecuta la petición AJAX para cada registro
+                    var deferred = $.ajax({
+                    url: '/PrdCerchaCovintec/ValidarPrdJefePrd', // URL de tu endpoint
+                        type: 'POST',
+                        data: { id: id }
+                    }).done(function(validado) {
+                        // Actualiza el ícono en función del resultado
+                        if (validado === true || validado === "true") {
+                            $row.find('a#btnValidarPrdJefePrd i')
+                                .removeClass('fa-times text-danger')
+                                .addClass('fa-check text-success');
+                        } else {
+                            $row.find('a#btnValidarPrdJefePrd i')
+                                .removeClass('fa-check text-success')
+                                .addClass('fa-times text-danger');
+                        }
+                    }).fail(function(xhr, status, error) {
+                        console.error('Error al aprobar el registro con ID ' + id + ':', error);
+                    });
+
+                    // Agrega el deferred al array
+                    deferreds.push(deferred);
+                });
+
+                // Cuando todas las peticiones hayan finalizado, muestra el mensaje final
+                $.when.apply($, deferreds).always(function() {
+                    alert("Aprobación masiva terminada");
+                });
+            });
+
+
+                    // Evento para el botón "Aprobar Todos" de la tabla de alambre
+            $(document).on('click', '#btnAprobarTodoAlambre', function(e) {
+                e.preventDefault();
+                  if (confirm("¿Está seguro de que desea realizar esta acción?")) {
+
+                   // Array para almacenar los objetos deferred de cada petición AJAX
+            var deferreds = [];
+
+            // Itera sobre cada fila de la tabla de alambre
+            $("#tblAlambreProduccion tbody tr").each(function() {
+                var $row = $(this);
+                var id = $row.find('td:first').text().trim();
+
+                // Ejecuta la petición AJAX para cada registro
+                var deferred = $.ajax({
+                url: '/PrdCerchaCovintec/ValidarPrdAlambreJefePrd', // URL de tu endpoint para alambre
+                    type: 'POST', // O 'GET', según lo requiera tu backend
+                    data: { id: id }
+                }).done(function(validado) {
+                    // Actualiza el ícono según el resultado retornado por el backend
+                    if (validado === true || validado === "true") {
+                        $row.find('a#btnValidarAlambrePrdJefePrd i')
+                            .removeClass('fa-times text-danger')
+                            .addClass('fa-check text-success');
+                    } else {
+                        $row.find('a#btnValidarAlambrePrdJefePrd i')
+                            .removeClass('fa-check text-success')
+                            .addClass('fa-times text-danger');
+                    }
+                }).fail(function(xhr, status, error) {
+                    console.error('Error al aprobar el registro de alambre con ID ' + id + ':', error);
+                });
+
+                // Agrega la petición al array
+                deferreds.push(deferred);
+            });
+
+            // Cuando todas las peticiones hayan finalizado, muestra el mensaje final
+            $.when.apply($, deferreds).always(function() {
+                alert("Aprobación masiva de alambre terminada");
+            });
+                  
+                  }
+           
+            });
+
+
+
+
+                    $("#tblProduccion").on("click", ".open-modal", function(e) {
+            e.preventDefault();
+            var $row = $(this).closest("tr");
+
+            // Índices de <td> en la fila:
+            // 0: Id
+            // 1: Artículo
+            // 2: Cantidad Producida
+            // 3: Cantidad No Conforme
+            // 4: Tipo Fabricación
+            // 5: Número Pedido
+            // 6: Producción del día
+            // 7: IdArticulo (oculto)
+            // 8: IdTipoFabricacion (oculto)
+
+            var id                  = $row.find("td").eq(0).text().trim();
+            var cantidadProducida   = $row.find("td").eq(2).text().trim();
+            var cantidadNoConforme  = $row.find("td").eq(3).text().trim();
+            var numeroPedido        = $row.find("td").eq(5).text().trim();
+            var idArticulo          = $row.find("td").eq(7).text().trim();
+            var idTipoFabricacion   = $row.find("td").eq(8).text().trim();
+
+            // Rellenar el modal
+            $("#detrpdId").val(id);
+            $("#CantidadProducida").val(cantidadProducida);
+            $("#CantidadNoConforme").val(cantidadNoConforme);
+            $("#IdArticulo").val(idArticulo);
+            $("#IdTipoFabricacion").val(idTipoFabricacion);
+
+            // Mostrar u ocultar el campo Número de pedido según el tipo de fabricación
+            if (parseInt(idTipoFabricacion, 10) === 2) {
+                $("#divNumeroPedido").show();
+                $("#NumeroPedido").val(numeroPedido);
+            } else {
+                $("#divNumeroPedido").hide();
+                $("#NumeroPedido").val("");
+            }
+
+            $("#modal-Detalle").modal("show");
+        });
+
+
+
+                        $("#btnGuardarDetPrd").click(function(e){
+              e.preventDefault();
+
+              // Serializa los datos del formulario
+              var formData = $("#frmDetPrd").serialize();
+
+              $.ajax({
+            url: '@Url.Action("EditDetPrd", "PrdCerchaCovintec")', // Reemplaza "NombreDelControlador" con el nombre real de tu controlador
+                type: 'POST',
+                data: formData,
+                success: function(response) {
+                  if(response.success){
+                    // Obtiene el Id actual a actualizar del campo oculto
+                    var updatedId = $("#detrpdId").val().trim();
+
+                    // Busca la fila en la tabla cuyo primer TD (Id) coincida con el valor actualizado
+                    var $row = $("#tblProduccion tbody tr").filter(function(){
+                      return $(this).find("td:eq(0)").text().trim() === updatedId;
+                    });
+
+
+
+                    // Muestra el mensaje de éxito, cierra el modal y puedes agregar lógica adicional si es necesario
+                    alert(response.message);
+                    $("#modal-Detalle").modal("hide");
+                     location.reload();
+                  } else {
+                    alert("Error: " + response.message);
+                  }
+                },
+                error: function(xhr, status, error) {
+                  alert("Ocurrió un error en la solicitud: " + error);
+                }
+              });
+            });
+
+
+
+             $("#IdTipoFabricacion").change(function () {
+                var selectedValue = $(this).val();
+                if (selectedValue == 2) {
+                    $("#divNumeroPedido").show();
+                } else {
+                    $("#divNumeroPedido").hide();
+                }
+            });
+
+
+                    $("#tblAlambreProduccion").on("click", ".open-modalAlambre", function(e){
+                  e.preventDefault();
+
+              // Obtiene la fila donde se hizo click
+              var $row = $(this).closest("tr");
+
+              // Extrae los valores de cada columna (asumiendo el siguiente orden):
+              // 0: Id (que se asigna al input hidden)
+              // 1: Número Alambre
+              // 2: Peso Alambre
+              // 3: Merma Alambre
+              var alambreId     = $row.find("td:eq(0)").text().trim();
+              var numeroAlambre = $row.find("td:eq(1)").text().trim();
+              var pesoAlambre   = $row.find("td:eq(2)").text().trim();
+
+
+              // Asigna los valores a los campos del modal
+              $("#detAlambreId").val(alambreId);
+              $("#NumeroAlambre").val(numeroAlambre);
+              $("#PesoAlambre").val(pesoAlambre);
+
+
+              // Muestra el modal
+              $("#modal-DetalleAlambre").modal("show");
+            });
+
+
+                    $("#btnGuardarDetAlalmbre").click(function(e){
+              e.preventDefault();
+
+              // Serializa los datos del formulario
+              var formData = $("#frmDetAlambre").serialize();
+
+              $.ajax({
+            url: '@Url.Action("EditDetAlambrePrd", "PrdCerchaCovintec")', // Reemplaza "NombreDelControlador" por el nombre real de tu controlador
+                type: 'POST',
+                data: formData,
+                success: function(response) {
+                  if(response.success){
+                    alert(response.message);
+                    // Oculta el modal
+                    $("#modal-DetalleAlambre").modal("hide");
+                    // Recarga la página
+                    location.reload();
+                  } else {
+                    alert("Error: " + response.message);
+                  }
+                },
+                error: function(xhr, status, error) {
+                  alert("Ocurrió un error en la solicitud: " + error);
+                }
+              });
+            });
+
+
+                                  function validar(id) {
+            if (confirm("¿Está seguro de que desea Aprobar esta producción?")) {
+                $.ajax({
+                    url: '@Url.Action("AprobarPrd", "PrdCerchaCovintec")',
+                    type: 'POST',
+                    data: { id: id },
+                    success: function(response) {
+                        if (response) {
+                            alert("Producción Aprobada exitosamente.");
+                            location.reload();
+                        } else {
+                            alert("Error al Aprobar la producción, contacte a soporte.");
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        alert("Error al procesar la solicitud: " + error);
+                    }
+                });
+            }
+        }
+
+        </script>
+}
+

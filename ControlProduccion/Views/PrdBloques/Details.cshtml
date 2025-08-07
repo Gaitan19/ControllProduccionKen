@@ -1,0 +1,151 @@
+@using ControlProduccion.ViewModel;
+@model PrdBloqueViewModel
+@{
+    ViewData["Title"] = "Detalle Producción Bloques";
+}
+<div class="col-md-8 offset-md-2">
+    <div class="ibox">
+        <div class="ibox-title">
+            <h5>@ViewData["Title"]</h5>
+        </div>
+        <div class="ibox-content">
+            <form autocomplete="off">
+                @Html.AntiForgeryToken()
+                <div class="form-group">
+                    <label asp-for="IdUsuarios"></label>
+                    <select disabled="disabled" id="IdUsuarios" multiple asp-for="IdUsuarios" class="form-control select2" asp-items="Model.Operarios"></select>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Fecha"></label>
+                    <input asp-for="Fecha" readonly="readonly" class="form-control" />
+                </div>
+                <div class="hr-line-dashed"></div>
+                <div class="form-group row">
+                    <div class="col-sm-12" style="max-height:300px;overflow:scroll">
+                        <h4>Detalle Producción</h4>
+                        <table class="table table-bordered table-hover">
+                  @*           <thead class="table-light">
+                                <tr>
+                                    <th>Posición</th>
+                                    <th>Máquina</th>
+                                    <th>Bloque</th>
+                                    <th>Producción Día</th>
+                                </tr>
+                            </thead> *@
+                            <tbody>
+                                @for (int i = 0; i < (Model.DetPrdBloques?.Count ?? 0); i++)
+                                {
+                                    var det = Model.DetPrdBloques[i];
+                                  
+        <tr class="table-secondary">
+          <th>Posición</th>
+          <th>Máquina</th>
+          <th>Bloque</th>
+          <th>Producción Día</th>
+        </tr>
+                                    <tr>
+                                        <td>@(i + 1)</td>
+                                        <td>@det.Maquina</td>
+                                        <td>@det.CatBloque</td>
+                                        <td>@det.ProduccionDia</td>
+                                    </tr>
+                                    if (det.SubDetPrdBloques != null && det.SubDetPrdBloques.Any())
+                                    {
+                                        <tr>
+                                            <td colspan="4">
+                                                <table class="table table-sm table-bordered">
+                                                    <thead class="table-light">
+                                                        <tr>
+                                                            <th>Artículo</th>
+                                                            <th>No.</th>
+                                                            <th>Hora</th>
+                                                            <th>Silo</th>
+                                                            <th>Densidad</th>
+                                                            <th>Tipo Bloque</th>
+                                                            <th>Peso</th>
+                                                            <th>Tipo Fab.</th>
+                                                            <th>No. Pedido</th>
+                                                            <th>Código Bloque</th>
+                                                            <th>Observaciones</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        @foreach (var sub in det.SubDetPrdBloques)
+                                                        {
+                                                            <tr>
+                                                                <td>@sub.Articulo</td>
+                                                                <td>@sub.No</td>
+                                                                <td>@To12HourFormat(sub.Hora)</td>
+                                                                <td>@sub.Silo</td>
+                                                                <td>@sub.Densidad</td>
+                                                                <td>@sub.TipoBloque</td>
+                                                                <td>@sub.Peso</td>
+                                                                <td>@sub.TipoFabricacion</td>
+                                                                <td>@sub.NumeroPedido</td>
+                                                                <td>@sub.CodigoBloque</td>
+                                                                <td>@sub.Observaciones</td>
+                                                            </tr>
+                                                        }
+                                                    </tbody>
+                                                </table>
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <button type="button" class="btn btn-dark" onclick="location.href='@Url.Action("Index","PrdBloques")'">Regresar</button>
+                @if (User.IsInRole("Supervisor") && Model.AprobadoSupervisor != true)
+                {
+                    <button id="btnValidarProd" type="button" class="btn btn-danger" onclick="validar(@Model.Id)">Validar</button>
+                }
+                else
+                {
+                    <button type="button" class="btn btn-success">Validado</button>
+                }
+            </form>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+    <script>
+        $("#IdUsuarios").select2({ allowClear: true });
+        function validar(id) {
+            if (!confirm("¿Está seguro de que desea validar esta producción?")) return;
+
+            // 1) Leemos el token del campo oculto generado por @Html.AntiForgeryToken()
+            var token = $('input[name="__RequestVerificationToken"]').val();
+
+            $.ajax({
+                url: '@Url.Action("ValidarPrd", "PrdBloques")',
+                type: 'POST',
+                data: {
+                    __RequestVerificationToken: token,  // <-- aquí
+                    id: id
+                },
+                success: function(res) {
+                    if (res) {
+                        alert('Producción validada.');
+                        location.reload();
+                    } else {
+                        alert('Error al validar.');
+                    }
+                },
+                error: function() {
+                    alert('Error al procesar la solicitud');
+                }
+            });
+        }
+
+    </script>
+}
+@functions {
+    public static string To12HourFormat(TimeSpan hora)
+    {
+        var dateTime = DateTime.Today.Add(hora);
+        return dateTime.ToString("hh:mm tt");
+    }
+}

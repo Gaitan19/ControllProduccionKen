@@ -1,0 +1,235 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>@ViewData["Title"] - ControlProduccion</title>
+
+    <link href="~/css/bootstrap.min.css" rel="stylesheet">
+    <link href="~/font-awesome/css/font-awesome.css" rel="stylesheet">
+    <link href="~/css/animate.css" rel="stylesheet">
+    <link href="~/css/style.css" rel="stylesheet">
+
+    <link href="~/css/plugins/dataTables/datatables.min.css" rel="stylesheet">
+    <link href="~/css/plugins/select2/select2-bootstrap4.min.css" rel="stylesheet" />
+    <link href="~/css/plugins/select2/select2.min.css" rel="stylesheet" />
+    <link href="~/css/daterangepicker.css" rel="stylesheet" />
+    <link rel="icon" type="image/png" href="~/Favicon Ecotec.png" />
+</head>
+
+<body class="top-navigation">
+    <style>
+        .select2-container {
+            width: 100% !important;
+        }
+
+        .select2-dropdown {
+            z-index: 9999;
+        }
+    </style>
+    <div id="wrapper">
+        <div id="page-wrapper" class="gray-bg">
+            <div class="row border-bottom white-bg">
+                <nav class="navbar navbar-expand-lg navbar-static-top" role="navigation">
+
+                  @*   <a href="#" class="navbar-brand">Ecotec</a> *@
+                    <a href="#" class="navbar-brand">
+                        <img src="~/logoEcotec.png" alt="Logo Ecotec" width="110" height="110" class="img-fluid d-inline-block align-top">
+                    </a>
+                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-label="Toggle navigation">
+                        <i class="fa fa-reorder"></i>
+                    </button>
+
+                    <div class="navbar-collapse collapse" id="navbar">
+                        @if ( User.IsInRole("Supervisor"))
+                        {
+                            <ul id="JpMenu" class="nav navbar-nav mr-auto">
+
+                              
+                                <li class="dropdown">
+                                    <a aria-expanded="false" role="button" href="#" class="dropdown-toggle" data-toggle="dropdown">Produccion</a>
+                                    <ul role="menu" class="dropdown-menu">
+                                        <li><a asp-controller="PrdPanelesCovintec" asp-action="Index">Paneles Covintec</a></li>
+                                        <li><a asp-controller="PrdCerchaCovintec" asp-action="Index">Cercha Covintec</a></li>
+                                        <li><a asp-controller="PrdMallasCovintec" asp-action="Index">Malla Covintec</a></li>
+                                        <li><a asp-controller="PrdIlKwang" asp-action="Index">Ilkwang</a></li>
+                                        <li><a asp-controller="PrdNevera" asp-action="Index">Neveras</a></li>
+                                        <li><a asp-controller="PrdBloques" asp-action="Index">Bloques</a></li>
+                                        <li><a asp-controller="PrdCorteT" asp-action="Index">Corte T</a></li>
+                                    </ul>
+                                </li>
+
+                            </ul>
+                        
+                        }
+
+                        @if (User.IsInRole("JefeProduccion") )
+                        {
+                            <ul id="JpMenu" class="nav navbar-nav mr-auto">
+
+                                <li class="dropdown">
+                                    <a aria-expanded="false" role="button" href="#" class="dropdown-toggle" data-toggle="dropdown"> Gestion Usuarios</a>
+                                    <ul role="menu" class="dropdown-menu">
+
+                                        <li><a asp-controller="UserManagement" asp-action="Index">Usuarios</a></li>
+
+
+                                    </ul>
+                                </li>
+                                <li class="dropdown">
+                                    <a aria-expanded="false" role="button" href="#" class="dropdown-toggle" data-toggle="dropdown"> Gestion Catalogos</a>
+                                    <ul role="menu" class="dropdown-menu">
+
+                                        <li><a asp-controller="GestionCatalogos" asp-action="IndexColorBobina">Colores Bobina</a></li>
+                                        <li><a asp-controller="GestionCatalogos" asp-action="IndexAnchoBobina">Ancho Bobina</a></li>
+                                        <li><a asp-controller="GestionCatalogos" asp-action="IndexCatalogoCercha">Catalogo Cercha</a></li>
+                                        <li><a asp-controller="GestionCatalogos" asp-action="IndexCatalogoMallasCovintec">Catalogo Mallas Convitec</a></li>
+                                        <li><a asp-controller="GestionCatalogos" asp-action="IndexCatalogoPanelesCovintec">Catalogo Paneles Convitec</a></li>
+                                        <li><a asp-controller="GestionCatalogos" asp-action="IndexCatalogoStatus">Catalogo Status</a></li>
+                                        <li><a asp-controller="GestionCatalogos" asp-action="IndexCatalogoTipo">Catalogo Tipo</a></li>
+                                      @*   <li><a asp-controller="GestionCatalogos" asp-action="IndexLineaProduccion">Linea Produccion</a></li> *@
+                                        <li><a asp-controller="GestionCatalogos" asp-action="IndexMaquina">Maquinas</a></li>
+                                        <li><a asp-controller="GestionCatalogos" asp-action="IndexTipoFabricacion">Tipo Fabricacion</a></li>
+                                        <li><a asp-controller="GestionCatalogos" asp-action="IndexUbicacionBobina">Ubicacion Bobina</a></li>
+
+
+                                    </ul>
+                                </li>
+                                <li class="dropdown">
+                                    <a aria-expanded="false" role="button" href="#" class="dropdown-toggle" data-toggle="dropdown">Produccion</a>
+                                    <ul role="menu" class="dropdown-menu">
+                                        <li><a asp-controller="PrdPanelesCovintec" asp-action="Index">Paneles Covintec</a></li>
+                                        <li><a asp-controller="PrdCerchaCovintec" asp-action="Index">Cercha Covintec</a></li>
+                                        <li><a asp-controller="PrdMallasCovintec" asp-action="Index">Malla Covintec</a></li>
+                                        <li><a asp-controller="PrdIlKwang" asp-action="Index">Ilkwang</a></li>
+                                        <li><a asp-controller="PrdNevera" asp-action="Index">Neveras</a></li>
+                                        <li><a asp-controller="PrdBloques" asp-action="Index">Bloques</a></li>
+                                        <li><a asp-controller="PrdCorteT" asp-action="Index">Corte T</a></li>
+                                    </ul>
+                                </li>
+
+                            </ul>
+
+                        }
+
+                    
+
+                        @if (User.IsInRole("Operario"))
+                        {
+                            <ul id="JpMenu" class="nav navbar-nav mr-auto">
+
+                                <li class="dropdown">
+                                    <a aria-expanded="false" role="button" href="#" class="dropdown-toggle" data-toggle="dropdown"> Ingresar Produccion</a>
+                                    <ul role="menu" class="dropdown-menu">
+
+                                        <li><a asp-controller="PrdPanelesCovintec" asp-action="Create">Paneles Covintec</a></li>
+                                        <li><a asp-controller="PrdCerchaCovintec" asp-action="Create">Cercha Covintec</a></li>
+                                        <li><a asp-controller="PrdMallasCovintec" asp-action="Create">Malla Covintec</a></li>
+                                        <li><a asp-controller="PrdIlKwang" asp-action="Create">IlKwang</a></li>
+                                        <li><a asp-controller="PrdNevera" asp-action="Create">Nevera</a></li>
+                                        @*  <li><a asp-controller="UserManagement" asp-action="Create">Crear Nuevo Usuario</a></li> *@
+                                        <li><a asp-controller="PrdBloques" asp-action="Create">Bloques</a></li>
+                                        <li><a asp-controller="PrdCorteT" asp-action="Create">Corte T</a></li>
+                                    </ul>
+                                </li>
+                       @*          <li class="dropdown">
+                                    <a aria-expanded="false" role="button" href="#" class="dropdown-toggle" data-toggle="dropdown"> Reportes</a>
+                                    <ul role="menu" class="dropdown-menu">
+                                        <li><a href="">Menu item</a></li>
+                                        <li><a href="">Menu item</a></li>
+                                        <li><a href="">Menu item</a></li>
+                                        <li><a href="">Menu item</a></li>
+                                    </ul>
+                                </li> *@
+
+                            </ul>
+
+                        }
+
+
+
+
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                        <ul class="nav navbar-top-links navbar-right">
+                            <li>
+                                <form asp-area="Identity" asp-page="/Account/Logout" method="post">
+                                    <button type="submit" class="btn btn-link">
+                                        <i class="fa fa-sign-out"></i> Salir
+                                    </button>
+                                </form>
+                            </li>
+                        </ul>
+                        }
+                    </div>
+                </nav>
+            </div>
+            <div class="wrapper wrapper-content">
+                <div class="container">
+            @RenderBody()
+                </div>
+
+            </div>
+            <div class="footer">
+
+                <div>
+                    <strong>Copyright</strong>  &copy; 2025 - ControlProduccion
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+
+    <!-- Mainly scripts -->
+    <script src="~/js/jquery-3.1.1.min.js"></script>
+    <script src="~/js/popper.min.js"></script>
+    <script src="~/js/bootstrap.js"></script>
+    <script src="~/js/plugins/metisMenu/jquery.metisMenu.js"></script>
+    <script src="~/js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
+
+    <!-- Custom and plugin javascript -->
+    <script src="~/js/inspinia.js"></script>
+@*     <script src="~/js/plugins/pace/pace.min.js"></script> *@
+
+    <!-- Flot -->
+    <script src="~/js/plugins/flot/jquery.flot.js"></script>
+    <script src="~/js/plugins/flot/jquery.flot.tooltip.min.js"></script>
+    <script src="~/js/plugins/flot/jquery.flot.resize.js"></script>
+
+    <!-- ChartJS-->
+    <script src="~/js/plugins/chartJs/Chart.min.js"></script>
+
+    <!-- Peity -->
+    <script src="~/js/plugins/peity/jquery.peity.min.js"></script>
+    <!-- Peity demo -->
+    <script src="~/js/demo/peity-demo.js"></script>
+    <script src="~/js/plugins/dataTables/datatables.min.js"></script>
+    <script src="~/js/plugins/datatables/datatables.bootstrap4.min.js"></script>
+    <script src="~/js/plugins/select2/select2.full.min.js"></script>
+    <script src="~/js/moment.min.js"></script>
+    <script src="~/js/daterangepicker.min.js"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+
+    <script>
+        $('.tdatatable').DataTable({
+                       pageLength: 25,
+                       responsive: true,
+                       info : false,
+                       language: {
+                           search: '',
+                           searchPlaceholder: "Buscar...",
+                           emptyTable: "Sin Datos"
+                       },
+                   });
+
+      
+
+               </script>
+</body>
+
+</html>

@@ -1,0 +1,59 @@
+﻿@using ControlProduccion.ViewModel;
+@model IEnumerable<MaquinaViewModel>;
+@{
+    ViewData["Title"] = "Catalogo Maquinas";
+}
+
+<div class="col-md-11 offset-md-1">
+    <h2 class="text-center">Catalogo Maquinas</h2>
+    <div class="ibox">
+        <div class="ibox-title">
+            <div class="col-sm-8">
+                <a asp-controller="GestionCatalogos" asp-action="CreateMaquina" id="btnAdd" class="btn btn-info btn-outline">
+                    <i class="fa fa-plus"></i> Agregar
+                </a>
+            </div>
+        </div>
+        <div class="ibox-content">
+            <table id="tblMaquinas" class="table tdatatable table-bordered">
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Activo</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var maquina in Model)
+                    {
+                        <tr>
+                            <td>
+                                <a asp-action="EditMaquina" asp-route-id="@maquina.Id">
+                                    @maquina.Nombre
+                                </a>
+                            </td>
+                            <td>
+                                @if (maquina.Activo)
+                                {
+                                    <span class="badge badge-success">Activo</span>
+                                }
+                                else
+                                {
+                                    <span class="badge badge-danger">Inactivo</span>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        // Aquí puedes agregar scripts adicionales según sea necesario
+    </script>
+}

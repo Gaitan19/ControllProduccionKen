@@ -1,0 +1,76 @@
+﻿@using ControlProduccion.ViewModel;
+@model IEnumerable<ColoresBobinaViewModel>;
+@{
+    ViewData["Title"] = "Catalogo Colores Bobina";
+}
+
+
+
+<div class="col-md-11 offset-md-1">
+
+    <h2 class="text-center"> Catalogo Colores Bobina</h2>
+    <div class="ibox">
+        <div class="ibox-title">
+            <div class="col-sm-8">
+                <a asp-controller="GestionCatalogos" asp-action="CreateColorBobina" id="btnAdd" class="btn btn-info btn-outline">
+                    <i class="fa fa-plus"></i> Agregar
+                </a>
+
+            </div>
+        </div>
+        <div class="ibox-content">
+
+            <table id="tblColoresBobina" class="table tdatatable table-bordered">
+                <thead>
+                    <tr>
+                        <th>Color</th>
+                        <th>Ral</th>
+                        <th>Activo</th>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var cb in Model)
+                    {
+                        <tr>
+                            <td>
+                                <a asp-action="EditColoresBobina" asp-route-id="@cb.Id">
+                                    @cb.Color
+                                </a>
+                            </td>
+                            <td>
+                              
+                                    @cb.Ral
+                             
+                            </td>
+                            <td>
+                                @if ((bool)cb.Activo)
+                                {
+                                    <span class="badge badge-success">Activo</span>
+                                }
+                                else
+                                {
+                                    <span class="badge badge-danger">Inactivo</span>
+                                }
+                            </td>
+                        </tr>
+                    }
+
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+
+
+    </script>
+
+                }

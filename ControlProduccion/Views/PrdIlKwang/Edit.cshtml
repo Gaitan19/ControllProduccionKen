@@ -1,0 +1,534 @@
+@using ControlProduccion.ViewModel;
+@model PrdIlKwangViewModel
+@{
+    ViewData["Title"] = "Editar Produccion IlKwang";
+}
+
+<div class="col-md-8 offset-md-2">
+    <div class="ibox ">
+        <div class="ibox-title">
+            <h5>@ViewData["Title"]</h5>
+        </div>
+        <div class="ibox-content">
+            <form id="frmProduccion" method="post" asp-action="Edit" autocomplete="off">
+                @Html.AntiForgeryToken()
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                <input type="hidden" asp-for="Id" />
+                <div class="form-group">
+                    <label asp-for="IdUsuarios"></label>
+                    <select id="IdUsuarios" multiple name="IdUsuarios" asp-for="IdUsuarios" class="form-control select2" asp-items="Model.Operarios"></select>
+                    <span asp-validation-for="IdUsuarios" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="IdMaquina"></label>
+                    <select id="IdMaquina" name="IdMaquina" asp-for="IdMaquina" class="form-control" asp-items="Model.Maquinas"></select>
+                    <span asp-validation-for="IdMaquina" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="HoraInicio"></label>
+                    <input asp-for="HoraInicio" class="form-control" />
+                    <span asp-validation-for="HoraInicio" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="HoraFin"></label>
+                    <input asp-for="HoraFin" class="form-control" />
+                    <span asp-validation-for="HoraFin" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Fecha"></label>
+                    <input asp-for="Fecha" class="form-control" />
+                    <span asp-validation-for="Fecha" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="TiempoParo"></label>
+                    <input asp-for="TiempoParo" class="form-control" />
+                    <span asp-validation-for="TiempoParo" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="IdArticulo"></label>
+                    <select id="IdArticulo" multiple name="IdArticulo" asp-for="IdArticulo" class="form-control select2" asp-items="Model.CatalogoArticulos"></select>
+                    <span asp-validation-for="IdArticulo" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="IdTipoFabricacion"></label>
+                    <select id="IdTipoFabricacion" name="IdTipoFabricacion" asp-for="IdTipoFabricacion" class="form-control" asp-items="Model.TiposFabricacion"></select>
+                    <span asp-validation-for="IdTipoFabricacion" class="text-danger"></span>
+                </div>
+                <div class="form-group" id="divNumeroPedido" style="display:none">
+                    <label asp-for="NumeroPedido"></label>
+                    <input asp-for="NumeroPedido" class="form-control" />
+                    <span asp-validation-for="NumeroPedido" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Cliente"></label>
+                    <input asp-for="Cliente" class="form-control" />
+                    <span asp-validation-for="Cliente" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="VelocidadMaquina"></label>
+                    <input asp-for="VelocidadMaquina" class="form-control" />
+                    <span asp-validation-for="VelocidadMaquina" class="text-danger"></span>
+                </div>
+                <div class="hr-line-dashed"></div>
+                <h4>Datos Bobina A</h4>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label asp-for="IdUbicacionBobinaA"></label>
+                            <select asp-for="IdUbicacionBobinaA" class="form-control" asp-items="Model.UbicacionesBobinaA"></select>
+                            <span asp-validation-for="IdUbicacionBobinaA" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="IdAnchoBobinaA"></label>
+                            <select asp-for="IdAnchoBobinaA" class="form-control" asp-items="Model.AnchosBobinaA"></select>
+                            <span asp-validation-for="IdAnchoBobinaA" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="IdColorBobinaA"></label>
+                            <select asp-for="IdColorBobinaA" class="form-control" asp-items="Model.ColoresBobinaA"></select>
+                            <span asp-validation-for="IdColorBobinaA" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="FabricanteBobinaA"></label>
+                            <input asp-for="FabricanteBobinaA" class="form-control" />
+                            <span asp-validation-for="FabricanteBobinaA" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="CodigoBobinaA"></label>
+                            <input asp-for="CodigoBobinaA" class="form-control" />
+                            <span asp-validation-for="CodigoBobinaA" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="CalibreMmA"></label>
+                            <input asp-for="CalibreMmA" class="form-control" />
+                            <span asp-validation-for="CalibreMmA" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="AnchoMmA"></label>
+                            <input asp-for="AnchoMmA" class="form-control" />
+                            <span asp-validation-for="AnchoMmA" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label asp-for="PesoInicialKgA"></label>
+                            <input asp-for="PesoInicialKgA" class="form-control" />
+                            <span asp-validation-for="PesoInicialKgA" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="PesoFinalKgA"></label>
+                            <input asp-for="PesoFinalKgA" class="form-control" />
+                            <span asp-validation-for="PesoFinalKgA" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="MetrosInicialA"></label>
+                            <input asp-for="MetrosInicialA" class="form-control" />
+                            <span asp-validation-for="MetrosInicialA" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="MetrosFinalA"></label>
+                            <input asp-for="MetrosFinalA" class="form-control" />
+                            <span asp-validation-for="MetrosFinalA" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="EspesorInicialCmA"></label>
+                            <input asp-for="EspesorInicialCmA" class="form-control" />
+                            <span asp-validation-for="EspesorInicialCmA" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="EspesorFinalCmA"></label>
+                            <input asp-for="EspesorFinalCmA" class="form-control" />
+                            <span asp-validation-for="EspesorFinalCmA" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="hr-line-dashed"></div>
+                <h4>Datos Bobina B</h4>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label asp-for="IdUbicacionBobinaB"></label>
+                            <select asp-for="IdUbicacionBobinaB" class="form-control" asp-items="Model.UbicacionesBobinaB"></select>
+                            <span asp-validation-for="IdUbicacionBobinaB" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="IdAnchoBobinaB"></label>
+                            <select asp-for="IdAnchoBobinaB" class="form-control" asp-items="Model.AnchosBobinaB"></select>
+                            <span asp-validation-for="IdAnchoBobinaB" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="IdColorBobinaB"></label>
+                            <select asp-for="IdColorBobinaB" class="form-control" asp-items="Model.ColoresBobinaB"></select>
+                            <span asp-validation-for="IdColorBobinaB" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="FabricanteBobinaB"></label>
+                            <input asp-for="FabricanteBobinaB" class="form-control" />
+                            <span asp-validation-for="FabricanteBobinaB" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="CodigoBobinaB"></label>
+                            <input asp-for="CodigoBobinaB" class="form-control" />
+                            <span asp-validation-for="CodigoBobinaB" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="CalibreMmB"></label>
+                            <input asp-for="CalibreMmB" class="form-control" />
+                            <span asp-validation-for="CalibreMmB" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="AnchoMmB"></label>
+                            <input asp-for="AnchoMmB" class="form-control" />
+                            <span asp-validation-for="AnchoMmB" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label asp-for="PesoInicialKgB"></label>
+                            <input asp-for="PesoInicialKgB" class="form-control" />
+                            <span asp-validation-for="PesoInicialKgB" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="PesoFinalKgB"></label>
+                            <input asp-for="PesoFinalKgB" class="form-control" />
+                            <span asp-validation-for="PesoFinalKgB" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="MetrosInicialB"></label>
+                            <input asp-for="MetrosInicialB" class="form-control" />
+                            <span asp-validation-for="MetrosInicialB" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="MetrosFinalB"></label>
+                            <input asp-for="MetrosFinalB" class="form-control" />
+                            <span asp-validation-for="MetrosFinalB" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="EspesorInicialCmB"></label>
+                            <input asp-for="EspesorInicialCmB" class="form-control" />
+                            <span asp-validation-for="EspesorInicialCmB" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="EspesorFinalCmB"></label>
+                            <input asp-for="EspesorFinalCmB" class="form-control" />
+                            <span asp-validation-for="EspesorFinalCmB" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="hr-line-dashed"></div>
+                <h4>Poliol / Isocianato</h4>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label asp-for="CantidadUtilizadaA"></label>
+                            <input asp-for="CantidadUtilizadaA" class="form-control" />
+                            <span asp-validation-for="CantidadUtilizadaA" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="PesoInicialA"></label>
+                            <input asp-for="PesoInicialA" class="form-control" />
+                            <span asp-validation-for="PesoInicialA" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="PesoFinalA"></label>
+                            <input asp-for="PesoFinalA" class="form-control" />
+                            <span asp-validation-for="PesoFinalA" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="VelocidadSuperiorA"></label>
+                            <input asp-for="VelocidadSuperiorA" class="form-control" />
+                            <span asp-validation-for="VelocidadSuperiorA" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="VelocidadInferiorA"></label>
+                            <input asp-for="VelocidadInferiorA" class="form-control" />
+                            <span asp-validation-for="VelocidadInferiorA" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="LoteA"></label>
+                            <input asp-for="LoteA" class="form-control" />
+                            <span asp-validation-for="LoteA" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="VencimientoA"></label>
+                            <input asp-for="VencimientoA" class="form-control" />
+                            <span asp-validation-for="VencimientoA" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label asp-for="CantidadUtilizadaB"></label>
+                            <input asp-for="CantidadUtilizadaB" class="form-control" />
+                            <span asp-validation-for="CantidadUtilizadaB" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="PesoInicialB"></label>
+                            <input asp-for="PesoInicialB" class="form-control" />
+                            <span asp-validation-for="PesoInicialB" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="PesoFinalB"></label>
+                            <input asp-for="PesoFinalB" class="form-control" />
+                            <span asp-validation-for="PesoFinalB" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="VelocidadSuperiorB"></label>
+                            <input asp-for="VelocidadSuperiorB" class="form-control" />
+                            <span asp-validation-for="VelocidadSuperiorB" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="VelocidadInferiorB"></label>
+                            <input asp-for="VelocidadInferiorB" class="form-control" />
+                            <span asp-validation-for="VelocidadInferiorB" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="LoteB"></label>
+                            <input asp-for="LoteB" class="form-control" />
+                            <span asp-validation-for="LoteB" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="VencimientoB"></label>
+                            <input asp-for="VencimientoB" class="form-control" />
+                            <span asp-validation-for="VencimientoB" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="hr-line-dashed"></div>
+                <div class="form-group row">
+                    <div class="col-sm-12" style="max-height: 300px; overflow: scroll">
+                        <h4>Detalle Producción</h4>
+                        <table id="tblProduccion" class="table table-bordered table-hover">
+                            <thead class="table-light">
+                                <tr>
+                                    <th style="display:none">Id</th>
+                                    <th>Posición</th>
+                                    <th>Espesor</th>
+                                    <th>Cantidad</th>
+                                    <th>Medida</th>
+                                    <th>Metros Cuadrados</th>
+                                    <th>Status</th>
+                                    <th>Tipo</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var detalle in Model.DetPrdIlKwangs)
+                                {
+                                    <tr>
+                                        <td style="display:none">@detalle.Id</td>
+                                        <td><a href="#" class="open-modal">@detalle.Posicion</a></td>
+                                        <td>@(Model.CatEspesor.FirstOrDefault(e => e.Value == detalle.IdEspesor.ToString())?.Text ?? string.Empty)</td>
+                                        <td>@detalle.Cantidad</td>
+                                        <td>@detalle.Medida</td>
+                                        <td>@detalle.MetrosCuadrados</td>
+                                        <td>@(Model.CatStatus.FirstOrDefault(s => s.Value == detalle.IdStatus.ToString())?.Text ?? string.Empty)</td>
+                                        <td>@(Model.CatTipo.FirstOrDefault(t => t.Value == detalle.IdTipo.ToString())?.Text ?? string.Empty)</td>
+                                        <td style="display:none">@detalle.IdEspesor</td>
+                                        <td style="display:none">@detalle.IdStatus</td>
+                                        <td style="display:none">@detalle.IdTipo</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="hr-line-dashed"></div>
+                <div class="form-group">
+                    <label asp-for="Observaciones"></label>
+                    <textarea asp-for="Observaciones" class="form-control"></textarea>
+                    <span asp-validation-for="Observaciones" class="text-danger"></span>
+                </div>
+                @if (Model.AprobadoGerencia != true )
+                {
+                    <button type="submit" class="btn btn-primary">Actualizar</button>
+                }
+                
+                @if (User.IsInRole("JefeProduccion") &&   Model.AprobadoGerencia != true)
+                {
+                    <button id="btnAprobarProd" type="button" class="btn btn-danger" onclick="validar(@Model.Id)">Aprobar</button>
+                }
+                else
+                {
+                    <button type="button" class="btn btn-success">Aprobado</button>
+                }
+                <button type="button" class="btn btn-dark" onclick="location.href='@Url.Action("Index", "PrdIlKwang")'">Regresar</button>
+            </form>
+
+            <div id="modal-Detalle" class="modal fade" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-body">
+                            <form id="frmDetPrd">
+                                <input type="hidden" id="detrpdId" name="detrpdId" />
+                                <h3>Editar Detalle</h3>
+                                <hr />
+                                <div class="mb-3">
+                                    <label class="form-label">Espesor</label>
+                                    <select id="IdEspesor" name="IdEspesor" class="form-control" asp-items="Model.CatEspesor">
+                                        <option value="">-- Seleccione Espesor --</option>
+                                    </select>
+                                    <span class="text-danger"></span>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Cantidad</label>
+                                    <input type="number" id="Cantidad" name="Cantidad" class="form-control" />
+                                    <span class="text-danger"></span>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Medida</label>
+                                    <input type="text" id="Medida" name="Medida" class="form-control" />
+                                    <span class="text-danger"></span>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Status</label>
+                                    <select id="IdStatus" name="IdStatus" class="form-control" asp-items="Model.CatStatus">
+                                        <option value="">-- Seleccione Status --</option>
+                                    </select>
+                                    <span class="text-danger"></span>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Tipo</label>
+                                    <select id="IdTipo" name="IdTipo" class="form-control" asp-items="Model.CatTipo">
+                                        <option value="">-- Seleccione Tipo --</option>
+                                    </select>
+                                    <span class="text-danger"></span>
+                                </div>
+                            </form>
+                            <button id="btnGuardarDetPrd" type="button" class="btn btn-primary">Actualizar</button>
+                            <button type="button" class="btn  btn-dark" data-dismiss="modal">Cancelar</button>
+                            <br />
+                            <p id="spnbtnGuardarDetPrd" class="text-sm text-danger"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+    <script>
+        $("#IdUsuarios").select2({ placeholder: "- Selecciona los operarios -", allowClear: true });
+        $("#IdMaquina").select2({ placeholder: "- Seleccione una maquina -", allowClear: true });
+        $("#IdArticulo").select2({ placeholder: "- Seleccione un articulo -", allowClear: true });
+        $("#IdTipoFabricacion").select2({ placeholder: "- Seleccione un Tipo Fabricacion -", allowClear: true });
+        $("#IdUbicacionBobinaA,#IdUbicacionBobinaB,#IdAnchoBobinaA,#IdAnchoBobinaB,#IdColorBobinaA,#IdColorBobinaB").select2({ allowClear: true });
+
+        $("#tblProduccion").on("click", ".open-modal", function(e){
+            e.preventDefault();
+            var $row = $(this).closest("tr");
+            var id = $row.find("td:eq(0)").text().trim();
+            var idEspesor = $row.find("td:eq(8)").text().trim();
+            var cantidad = $row.find("td:eq(3)").text().trim();
+            var medida = $row.find("td:eq(4)").text().trim();
+            var idStatus = $row.find("td:eq(9)").text().trim();
+            var idTipo = $row.find("td:eq(10)").text().trim();
+            $("#detrpdId").val(id);
+            $("#IdEspesor").val(idEspesor);
+            $("#Cantidad").val(cantidad);
+            $("#Medida").val(medida);
+            $("#IdStatus").val(idStatus);
+            $("#IdTipo").val(idTipo);
+            $("#modal-Detalle").modal("show");
+        });
+
+        $("#btnGuardarDetPrd").click(function(e){
+            e.preventDefault();
+            var formData = $("#frmDetPrd").serialize();
+            $.ajax({
+                url: '@Url.Action("EditDetPrd", "PrdIlKwang")',
+                type: 'POST',
+                data: formData,
+                success: function(response){
+                    if(response.success){
+                        alert(response.message);
+                        $("#modal-Detalle").modal("hide");
+                        location.reload();
+                    } else {
+                        alert("Error: " + response.message);
+                    }
+                },
+                error: function(){ alert("Ocurrió un error"); }
+            });
+        });
+
+        $("#IdTipoFabricacion").change(function(){
+            var v = $(this).val();
+            if(v == 2){ $("#divNumeroPedido").show(); } else { $("#divNumeroPedido").hide(); }
+        }).trigger('change');
+
+
+
+                        $(function() {
+            // Genérico para pares de hora (en formato 24h: "HH:mm")
+            function validarHoras(inicialSelector, finalSelector, mensaje) {
+                $(finalSelector).on('blur', function() {
+                    var hIni = $(inicialSelector).val();
+                    var hFin = $(finalSelector).val();
+                    if (hIni && hFin) {
+                        // Convertir a minutos para comparar
+                        var minutosIni = parseInt(hIni.split(':')[0]) * 60 + parseInt(hIni.split(':')[1]);
+                        var minutosFin = parseInt(hFin.split(':')[0]) * 60 + parseInt(hFin.split(':')[1]);
+                        if (minutosFin < minutosIni) {
+                            alert(mensaje || "La hora final no puede ser menor que la hora inicial.");
+                            $(finalSelector).val('');
+                            $(finalSelector).focus();
+                        }
+                    }
+                });
+            }
+
+            // Asume que tus ids son así (ajusta si tienes nombres distintos)
+            validarHoras("#HoraInicio", "#HoraFin", "La Hora de Fin no puede ser menor que la Hora de Inicio.");
+        });
+
+
+                $(function() {
+                    // Genérico para pares numéricos
+                    function validarNumeros(inicialSelector, finalSelector, mensaje) {
+                        $(finalSelector).on('blur', function() {
+                            var ini = parseFloat($(inicialSelector).val());
+                            var fin = parseFloat($(finalSelector).val());
+                            if (!isNaN(ini) && !isNaN(fin) && fin > ini) {
+                                alert(mensaje || "El valor final no puede ser mayor que el inicial.");
+                                $(finalSelector).val('');
+                                $(finalSelector).focus();
+                            }
+                        });
+                    }
+
+                    // Ejemplo para todos los pares que mencionaste
+                            validarNumeros("#PesoInicialKgA", "#PesoFinalKgA", "El Peso Final (Kg) A no puede ser mayor que el Peso Inicial (Kg) A.");
+                            validarNumeros("#MetrosInicialA", "#MetrosFinalA", "Los Metros Finales A no pueden ser mayores que los Metros Iniciales A.");
+                            validarNumeros("#EspesorInicialCmA", "#EspesorFinalCmA", "El Espesor Final (cm) A no puede ser mayor que el Inicial.");
+                            validarNumeros("#PesoInicialKgB", "#PesoFinalKgB", "El Peso Final (Kg) B no puede ser mayor que el Peso Inicial (Kg) B.");
+                    validarNumeros("#MetrosInicialB", "#MetrosFinalB", "Los Metros Finales B no pueden ser mayores que los Metros Iniciales B.");
+                            validarNumeros("#EspesorInicialCmB", "#EspesorFinalCmB", "El Espesor Final (cm) B no puede ser mayor que el Inicial.");
+                            validarNumeros("#PesoInicialA", "#PesoFinalA", "El Peso Final A no puede ser mayor que el Peso Inicial A.");
+                            validarNumeros("#PesoInicialB", "#PesoFinalB", "El Peso Final B no puede ser mayor que el Peso Inicial B.");
+                });
+
+
+                        function validar(id) {
+            if (confirm("¿Está seguro de que desea Aprobar esta producción?")) {
+                $.ajax({
+                    url: '@Url.Action("AprobarPrd", "PrdIlKwang")',
+                    type: 'POST',
+                    data: { id: id },
+                    success: function(response) {
+                        if (response) {
+                            alert("Producción Aprobada exitosamente.");
+                            location.reload();
+                        } else {
+                            alert("Error al Aprobar la producción, contacte a soporte.");
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        alert("Error al procesar la solicitud: " + error);
+                    }
+                });
+            }
+        }
+
+    </script>
+}

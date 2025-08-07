@@ -1,0 +1,413 @@
+﻿@using ControlProduccion.ViewModel;
+@model PrdIlKwangViewModel;
+@{
+    ViewData["Title"] = "Detalle Produccion IlKwang";
+}
+
+<div class="col-md-8 offset-md-2">
+    <div class="ibox">
+        <div class="ibox-title">
+            <h5>@ViewData["Title"]</h5>
+        </div>
+        <div class="ibox-content">
+            <form id="frmProduccion" autocomplete="off">
+                @Html.AntiForgeryToken()
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+                <div class="form-group">
+                    <label asp-for="IdUsuarios"></label>
+                    <select disabled="disabled" id="IdUsuarios" multiple name="IdUsuarios" asp-for="IdUsuarios" class="form-control select2" asp-items="Model.Operarios">
+                    </select>
+                    <span asp-validation-for="IdUsuarios" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="IdMaquina"></label>
+                    <select disabled="disabled" id="IdMaquina" name="IdMaquina" asp-for="IdMaquina" class="form-control" asp-items="Model.Maquinas">
+                    </select>
+                    <span asp-validation-for="IdMaquina" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="HoraInicio"></label>
+                    <input readonly="readonly" asp-for="HoraInicio" class="form-control" />
+                    <span asp-validation-for="HoraInicio" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="HoraFin"></label>
+                    <input readonly="readonly" asp-for="HoraFin" class="form-control" />
+                    <span asp-validation-for="HoraFin" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Fecha"></label>
+                    <input readonly="readonly" asp-for="Fecha" class="form-control" />
+                    <span asp-validation-for="Fecha" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="TiempoParo"></label>
+                    <input readonly="readonly" asp-for="TiempoParo" class="form-control" />
+                    <span asp-validation-for="TiempoParo" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="IdArticulo"></label>
+                    <select disabled="disabled" id="IdArticulo" multiple name="IdArticulo" asp-for="IdArticulo" class="form-control select2" asp-items="Model.CatalogoArticulos"></select>
+                    <span asp-validation-for="IdArticulo" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="IdTipoFabricacion"></label>
+                    <select disabled="disabled" id="IdTipoFabricacion" name="IdTipoFabricacion" asp-for="IdTipoFabricacion" class="form-control" asp-items="Model.TiposFabricacion"></select>
+                    <span asp-validation-for="IdTipoFabricacion" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Cliente"></label>
+                    <input readonly="readonly" asp-for="Cliente" class="form-control" />
+                    <span asp-validation-for="Cliente" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="NumeroPedido"></label>
+                    <input readonly="readonly" asp-for="NumeroPedido" class="form-control" />
+                    <span asp-validation-for="NumeroPedido" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="VelocidadMaquina"></label>
+                    <input readonly="readonly" asp-for="VelocidadMaquina" class="form-control" />
+                    <span asp-validation-for="VelocidadMaquina" class="text-danger"></span>
+                </div>
+
+                <div class="hr-line-dashed"></div>
+                <h4>Datos Bobina A</h4>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label asp-for="IdUbicacionBobinaA"></label>
+                            <select disabled="disabled" id="IdUbicacionBobinaA" name="IdUbicacionBobinaA" asp-for="IdUbicacionBobinaA" class="form-control" asp-items="Model.UbicacionesBobinaA"></select>
+                            <span asp-validation-for="IdUbicacionBobinaA" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="IdAnchoBobinaA"></label>
+                            <select disabled="disabled" id="IdAnchoBobinaA" name="IdAnchoBobinaA" asp-for="IdAnchoBobinaA" class="form-control" asp-items="Model.AnchosBobinaA"></select>
+                            <span asp-validation-for="IdAnchoBobinaA" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="IdColorBobinaA"></label>
+                            <select disabled="disabled" id="IdColorBobinaA" name="IdColorBobinaA" asp-for="IdColorBobinaA" class="form-control" asp-items="Model.ColoresBobinaA"></select>
+                            <span asp-validation-for="IdColorBobinaA" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="FabricanteBobinaA"></label>
+                            <input readonly="readonly" asp-for="FabricanteBobinaA" class="form-control" />
+                            <span asp-validation-for="FabricanteBobinaA" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="CodigoBobinaA"></label>
+                            <input readonly="readonly" asp-for="CodigoBobinaA" class="form-control" />
+                            <span asp-validation-for="CodigoBobinaA" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="CalibreMmA"></label>
+                            <input readonly="readonly" asp-for="CalibreMmA" class="form-control" />
+                            <span asp-validation-for="CalibreMmA" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="AnchoMmA"></label>
+                            <input readonly="readonly" asp-for="AnchoMmA" class="form-control" />
+                            <span asp-validation-for="AnchoMmA" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                 
+                        <div class="form-group">
+                            <label asp-for="PesoInicialKgA"></label>
+                            <input readonly="readonly" asp-for="PesoInicialKgA" class="form-control" />
+                            <span asp-validation-for="PesoInicialKgA" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="PesoFinalKgA"></label>
+                            <input readonly="readonly" asp-for="PesoFinalKgA" class="form-control" />
+                            <span asp-validation-for="PesoFinalKgA" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="MetrosInicialA"></label>
+                            <input readonly="readonly" asp-for="MetrosInicialA" class="form-control" />
+                            <span asp-validation-for="MetrosInicialA" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="MetrosFinalA"></label>
+                            <input readonly="readonly" asp-for="MetrosFinalA" class="form-control" />
+                            <span asp-validation-for="MetrosFinalA" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="EspesorInicialCmA"></label>
+                            <input readonly="readonly" asp-for="EspesorInicialCmA" class="form-control" />
+                            <span asp-validation-for="EspesorInicialCmA" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="EspesorFinalCmA"></label>
+                            <input readonly="readonly" asp-for="EspesorFinalCmA" class="form-control" />
+                            <span asp-validation-for="EspesorFinalCmA" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="hr-line-dashed"></div>
+                <h4>Datos Bobina B</h4>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label asp-for="IdUbicacionBobinaB"></label>
+                            <select disabled="disabled" id="IdUbicacionBobinaB" name="IdUbicacionBobinaB" asp-for="IdUbicacionBobinaB" class="form-control" asp-items="Model.UbicacionesBobinaB"></select>
+                            <span asp-validation-for="IdUbicacionBobinaB" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="IdAnchoBobinaB"></label>
+                            <select disabled="disabled" id="IdAnchoBobinaB" name="IdAnchoBobinaB" asp-for="IdAnchoBobinaB" class="form-control" asp-items="Model.AnchosBobinaB"></select>
+                            <span asp-validation-for="IdAnchoBobinaB" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="IdColorBobinaB"></label>
+                            <select disabled="disabled" id="IdColorBobinaB" name="IdColorBobinaB" asp-for="IdColorBobinaB" class="form-control" asp-items="Model.ColoresBobinaB"></select>
+                            <span asp-validation-for="IdColorBobinaB" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="FabricanteBobinaB"></label>
+                            <input readonly="readonly" asp-for="FabricanteBobinaB" class="form-control" />
+                            <span asp-validation-for="FabricanteBobinaB" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="CodigoBobinaB"></label>
+                            <input readonly="readonly" asp-for="CodigoBobinaB" class="form-control" />
+                            <span asp-validation-for="CodigoBobinaB" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="CalibreMmB"></label>
+                            <input readonly="readonly" asp-for="CalibreMmB" class="form-control" />
+                            <span asp-validation-for="CalibreMmB" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="AnchoMmB"></label>
+                            <input readonly="readonly" asp-for="AnchoMmB" class="form-control" />
+                            <span asp-validation-for="AnchoMmB" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                 
+                        <div class="form-group">
+                            <label asp-for="PesoInicialKgB"></label>
+                            <input readonly="readonly" asp-for="PesoInicialKgB" class="form-control" />
+                            <span asp-validation-for="PesoInicialKgB" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="PesoFinalKgB"></label>
+                            <input readonly="readonly" asp-for="PesoFinalKgB" class="form-control" />
+                            <span asp-validation-for="PesoFinalKgB" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="MetrosInicialB"></label>
+                            <input readonly="readonly" asp-for="MetrosInicialB" class="form-control" />
+                            <span asp-validation-for="MetrosInicialB" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="MetrosFinalB"></label>
+                            <input readonly="readonly" asp-for="MetrosFinalB" class="form-control" />
+                            <span asp-validation-for="MetrosFinalB" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="EspesorInicialCmB"></label>
+                            <input readonly="readonly" asp-for="EspesorInicialCmB" class="form-control" />
+                            <span asp-validation-for="EspesorInicialCmB" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="EspesorFinalCmB"></label>
+                            <input readonly="readonly" asp-for="EspesorFinalCmB" class="form-control" />
+                            <span asp-validation-for="EspesorFinalCmB" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="hr-line-dashed"></div>
+                <h4>Poliol / Isocianato</h4>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label asp-for="PesoInicialA"></label>
+                            <input readonly="readonly" asp-for="PesoInicialA" class="form-control" />
+                            <span asp-validation-for="PesoInicialA" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="CantidadUtilizadaA"></label>
+                            <input readonly="readonly" asp-for="CantidadUtilizadaA" class="form-control" />
+                            <span asp-validation-for="CantidadUtilizadaA" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="PesoFinalA"></label>
+                            <input readonly="readonly" asp-for="PesoFinalA" class="form-control" />
+                            <span asp-validation-for="PesoFinalA" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="VelocidadSuperiorA"></label>
+                            <input readonly="readonly" asp-for="VelocidadSuperiorA" class="form-control" />
+                            <span asp-validation-for="VelocidadSuperiorA" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="VelocidadInferiorA"></label>
+                            <input readonly="readonly" asp-for="VelocidadInferiorA" class="form-control" />
+                            <span asp-validation-for="VelocidadInferiorA" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="LoteA"></label>
+                            <input readonly="readonly" asp-for="LoteA" class="form-control" />
+                            <span asp-validation-for="LoteA" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="VencimientoA"></label>
+                            <input readonly="readonly" asp-for="VencimientoA" class="form-control" />
+                            <span asp-validation-for="VencimientoA" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label asp-for="PesoInicialB"></label>
+                            <input readonly="readonly" asp-for="PesoInicialB" class="form-control" />
+                            <span asp-validation-for="PesoInicialB" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="CantidadUtilizadaB"></label>
+                            <input readonly="readonly" asp-for="CantidadUtilizadaB" class="form-control" />
+                            <span asp-validation-for="CantidadUtilizadaB" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="PesoFinalB"></label>
+                            <input readonly="readonly" asp-for="PesoFinalB" class="form-control" />
+                            <span asp-validation-for="PesoFinalB" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="VelocidadSuperiorB"></label>
+                            <input readonly="readonly" asp-for="VelocidadSuperiorB" class="form-control" />
+                            <span asp-validation-for="VelocidadSuperiorB" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="VelocidadInferiorB"></label>
+                            <input readonly="readonly" asp-for="VelocidadInferiorB" class="form-control" />
+                            <span asp-validation-for="VelocidadInferiorB" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="LoteB"></label>
+                            <input readonly="readonly" asp-for="LoteB" class="form-control" />
+                            <span asp-validation-for="LoteB" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="VencimientoB"></label>
+                            <input readonly="readonly" asp-for="VencimientoB" class="form-control" />
+                            <span asp-validation-for="VencimientoB" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label asp-for="CantidadArranques"></label>
+                    <input readonly="readonly" asp-for="CantidadArranques" class="form-control" />
+                    <span asp-validation-for="CantidadArranques" class="text-danger"></span>
+                </div>
+
+                <div class="hr-line-dashed"></div>
+                <div class="form-group row">
+                    <div class="col-sm-12" style="max-height: 300px; overflow: scroll">
+                        <h4>Detalle Producción</h4>
+
+                        <table id="tblProduccion" class="table table-bordered table-hover">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Posición</th>
+                                    <th>Espesor</th>
+                                    <th>Cantidad</th>
+                                    <th>Medida</th>
+                                    <th>Metros Cuadrados</th>
+                                    <th>Status</th>
+                                    <th>Tipo</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var detalle in Model.DetPrdIlKwangs)
+                                {
+                                    <tr>
+                                        <td style='display:none;'>@detalle.Id</td>
+                                        <td>@detalle.Posicion</td>
+                                        <td>@(Model.CatEspesor.FirstOrDefault(e => e.Value == detalle.IdEspesor.ToString())?.Text ?? string.Empty)</td>
+                                        <td>@detalle.Cantidad</td>
+                                        <td>@detalle.Medida</td>
+                                        <td>@detalle.MetrosCuadrados</td>
+                                        <td>@(Model.CatStatus.FirstOrDefault(s => s.Value == detalle.IdStatus.ToString())?.Text ?? string.Empty)</td>
+                                        <td>@(Model.CatTipo.FirstOrDefault(t => t.Value == detalle.IdTipo.ToString())?.Text ?? string.Empty)</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <div class="hr-line-dashed"></div>
+                <div class="form-group">
+                    <label asp-for="Observaciones"></label>
+                    <textarea readonly="readonly" asp-for="Observaciones" class="form-control"></textarea>
+                    <span asp-validation-for="Observaciones" class="text-danger"></span>
+                </div>
+
+                <button type="button" class="btn btn-dark" onclick="location.href='@Url.Action("Index", "PrdIlKwang")'">Regresar</button>
+                @if (User.IsInRole("Supervisor") && Model.AprobadoSupervisor != true )
+                {
+                    <button id="btnValidarProd" type="button" class="btn btn-danger" onclick="validar(@Model.Id)">Validar</button>
+                }
+                else
+                {
+                    <button type="button" class="btn btn-success" >Validado</button>
+                }
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        $(document).ready(function() {
+            $("#IdUsuarios").select2({
+                placeholder: "- Selecciona los operarios -",
+                allowClear: true
+            });
+
+            $("#IdMaquina").select2({
+                placeholder: "- Seleccione una maquina -",
+                allowClear: true
+            });
+            
+            $("#IdArticulo").select2({
+                placeholder: "- Seleccione artículos -",
+                allowClear: true
+            });
+        });
+
+        function validar(id) {
+            if (confirm("¿Está seguro de que desea validar esta producción?")) {
+                $.ajax({
+                    url: '@Url.Action("ValidarPrd", "PrdIlKwang")',
+                    type: 'POST',
+                    data: { id: id },
+                    success: function(response) {
+                        if (response) {
+                            alert("Producción validada exitosamente.");
+                            location.reload();
+                        } else {
+                            alert("Error al validar la producción, contacte a soporte.");
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        alert("Error al procesar la solicitud: " + error);
+                    }
+                });
+            }
+        }
+
+    </script>
+}

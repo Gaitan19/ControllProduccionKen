@@ -1,0 +1,905 @@
+@using ControlProduccion.ViewModel;
+@model PrdIlKwangViewModel
+@{
+    ViewData["Title"] = "Ingresar Produccion IlKwang";
+}
+
+<div class="col-md-8 offset-md-2">
+    <div class="ibox ">
+        <div class="ibox-title">
+            <h5>@ViewData["Title"]</h5>
+        </div>
+        <div class="ibox-content">
+            <form id="frmProduccion" method="post" autocomplete="off">
+                @Html.AntiForgeryToken()
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+                <div class="form-group">
+                    <label asp-for="IdUsuarios"></label>
+                    <select id="IdUsuarios" multiple name="IdUsuarios" asp-for="IdUsuarios" class="form-control select2" asp-items="Model.Operarios"></select>
+                    <span asp-validation-for="IdUsuarios" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="IdMaquina"></label>
+                    <select id="IdMaquina" name="IdMaquina" asp-for="IdMaquina" class="form-control" asp-items="Model.Maquinas">
+                        <option value=""></option>
+                    </select>
+                    <span asp-validation-for="IdMaquina" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="HoraInicio"></label>
+                    <input step="1" asp-for="HoraInicio" class="form-control" />
+                    <span asp-validation-for="HoraInicio" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="HoraFin"></label>
+                    <input step="1" asp-for="HoraFin" class="form-control" />
+                    <span asp-validation-for="HoraFin" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Fecha"></label>
+                    <input asp-for="Fecha" class="form-control" />
+                    <span asp-validation-for="Fecha" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="TiempoParo"></label>
+                    <input asp-for="TiempoParo" class="form-control" />
+                    <span asp-validation-for="TiempoParo" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="IdArticulo"></label>
+                    <select id="IdArticulo" multiple name="IdArticulo" asp-for="IdArticulo" class="form-control select2" asp-items="Model.CatalogoArticulos"></select>
+                    <span asp-validation-for="IdArticulo" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="IdTipoFabricacion"></label>
+                    <select id="IdTipoFabricacion" name="IdTipoFabricacion" asp-for="IdTipoFabricacion" class="form-control" asp-items="Model.TiposFabricacion">
+                        <option value="">- Seleccione un Tipo Fabricacion -</option>
+                    </select>
+                    <span asp-validation-for="IdTipoFabricacion" class="text-danger"></span>
+                </div>
+                <div class="form-group" id="divNumeroPedido" style="display:none">
+                    <label asp-for="NumeroPedido"></label>
+                    <input oninput="this.value = this.value.replace(/[^0-9\-]/g, '');" step="1" min="0" type="number" asp-for="NumeroPedido" class="form-control" />
+                    <span asp-validation-for="NumeroPedido" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Cliente"></label>
+                    <input asp-for="Cliente" class="form-control" />
+                    <span asp-validation-for="Cliente" class="text-danger"></span>
+                </div>
+            
+                <div class="form-group">
+                    <label asp-for="VelocidadMaquina"></label>
+                    <input asp-for="VelocidadMaquina" class="form-control" />
+                    <span asp-validation-for="VelocidadMaquina" class="text-danger"></span>
+                </div>
+
+                <h4>Bobina A</h4>
+                <div class="form-group">
+                    <label asp-for="IdUbicacionBobinaA"></label>
+                    <select asp-for="IdUbicacionBobinaA" class="form-control" asp-items="Model.UbicacionesBobinaA">
+                        <option value=""></option>
+                    </select>
+                    <span asp-validation-for="IdUbicacionBobinaA" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="IdAnchoBobinaA"></label>
+                    <select asp-for="IdAnchoBobinaA" class="form-control" asp-items="Model.AnchosBobinaA">
+                        <option value=""></option>
+                    </select>
+                    <span asp-validation-for="IdAnchoBobinaA" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="FabricanteBobinaA"></label>
+                    <input asp-for="FabricanteBobinaA" class="form-control" />
+                    <span asp-validation-for="FabricanteBobinaA" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="CodigoBobinaA"></label>
+                    <input asp-for="CodigoBobinaA" class="form-control" />
+                    <span asp-validation-for="CodigoBobinaA" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="CalibreMmA"></label>
+                    <input asp-for="CalibreMmA" class="form-control" />
+                    <span asp-validation-for="CalibreMmA" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="IdColorBobinaA"></label>
+                    <select asp-for="IdColorBobinaA" class="form-control" asp-items="Model.ColoresBobinaA">
+                        <option value=""></option>
+                    </select>
+                    <span asp-validation-for="IdColorBobinaA" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="AnchoMmA"></label>
+                    <input asp-for="AnchoMmA" class="form-control" />
+                    <span asp-validation-for="AnchoMmA" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="PesoInicialKgA"></label>
+                    <input asp-for="PesoInicialKgA" class="form-control" />
+                    <span asp-validation-for="PesoInicialKgA" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="PesoFinalKgA"></label>
+                    <input asp-for="PesoFinalKgA" class="form-control" />
+                    <span asp-validation-for="PesoFinalKgA" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="MetrosInicialA"></label>
+                    <input asp-for="MetrosInicialA" class="form-control" />
+                    <span asp-validation-for="MetrosInicialA" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="MetrosFinalA"></label>
+                    <input asp-for="MetrosFinalA" class="form-control" />
+                    <span asp-validation-for="MetrosFinalA" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="EspesorInicialCmA"></label>
+                    <input asp-for="EspesorInicialCmA" class="form-control" />
+                    <span asp-validation-for="EspesorInicialCmA" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="EspesorFinalCmA"></label>
+                    <input asp-for="EspesorFinalCmA" class="form-control" />
+                    <span asp-validation-for="EspesorFinalCmA" class="text-danger"></span>
+                </div>
+
+                <h4>Bobina B</h4>
+                <div class="form-group">
+                    <label asp-for="IdUbicacionBobinaB"></label>
+                    <select asp-for="IdUbicacionBobinaB" class="form-control" asp-items="Model.UbicacionesBobinaB">
+                        <option value=""></option>
+                    </select>
+                    <span asp-validation-for="IdUbicacionBobinaB" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="IdAnchoBobinaB"></label>
+                    <select asp-for="IdAnchoBobinaB" class="form-control" asp-items="Model.AnchosBobinaB">
+                        <option value=""></option>
+                    </select>
+                    <span asp-validation-for="IdAnchoBobinaB" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="FabricanteBobinaB"></label>
+                    <input asp-for="FabricanteBobinaB" class="form-control" />
+                    <span asp-validation-for="FabricanteBobinaB" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="CodigoBobinaB"></label>
+                    <input asp-for="CodigoBobinaB" class="form-control" />
+                    <span asp-validation-for="CodigoBobinaB" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="CalibreMmB"></label>
+                    <input asp-for="CalibreMmB" class="form-control" />
+                    <span asp-validation-for="CalibreMmB" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="IdColorBobinaB"></label>
+                    <select asp-for="IdColorBobinaB" class="form-control" asp-items="Model.ColoresBobinaB">
+                        <option value=""></option>
+                    </select>
+                    <span asp-validation-for="IdColorBobinaB" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="AnchoMmB"></label>
+                    <input asp-for="AnchoMmB" class="form-control" />
+                    <span asp-validation-for="AnchoMmB" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="PesoInicialKgB"></label>
+                    <input asp-for="PesoInicialKgB" class="form-control" />
+                    <span asp-validation-for="PesoInicialKgB" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="PesoFinalKgB"></label>
+                    <input asp-for="PesoFinalKgB" class="form-control" />
+                    <span asp-validation-for="PesoFinalKgB" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="MetrosInicialB"></label>
+                    <input asp-for="MetrosInicialB" class="form-control" />
+                    <span asp-validation-for="MetrosInicialB" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="MetrosFinalB"></label>
+                    <input asp-for="MetrosFinalB" class="form-control" />
+                    <span asp-validation-for="MetrosFinalB" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="EspesorInicialCmB"></label>
+                    <input asp-for="EspesorInicialCmB" class="form-control" />
+                    <span asp-validation-for="EspesorInicialCmB" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="EspesorFinalCmB"></label>
+                    <input asp-for="EspesorFinalCmB" class="form-control" />
+                    <span asp-validation-for="EspesorFinalCmB" class="text-danger"></span>
+                </div>
+
+                <h4>Poliol / Isocianato</h4>
+                <div class="form-group">
+                    <label asp-for="CantidadUtilizadaA"></label>
+                    <input asp-for="CantidadUtilizadaA" class="form-control" />
+                    <span asp-validation-for="CantidadUtilizadaA" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="PesoInicialA"></label>
+                    <input asp-for="PesoInicialA" class="form-control" />
+                    <span asp-validation-for="PesoInicialA" class="text-danger"></span>
+                </div>
+           
+                <div class="form-group">
+                    <label asp-for="PesoFinalA"></label>
+                    <input asp-for="PesoFinalA" class="form-control" />
+                    <span asp-validation-for="PesoFinalA" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="VelocidadSuperiorA"></label>
+                    <input asp-for="VelocidadSuperiorA" class="form-control" />
+                    <span asp-validation-for="VelocidadSuperiorA" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="VelocidadInferiorA"></label>
+                    <input asp-for="VelocidadInferiorA" class="form-control" />
+                    <span asp-validation-for="VelocidadInferiorA" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="LoteA"></label>
+                    <input asp-for="LoteA" class="form-control" />
+                    <span asp-validation-for="LoteA" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="VencimientoA"></label>
+                    <input asp-for="VencimientoA" class="form-control" />
+                    <span asp-validation-for="VencimientoA" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="CantidadUtilizadaB"></label>
+                    <input asp-for="CantidadUtilizadaB" class="form-control" />
+                    <span asp-validation-for="CantidadUtilizadaB" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="PesoInicialB"></label>
+                    <input asp-for="PesoInicialB" class="form-control" />
+                    <span asp-validation-for="PesoInicialB" class="text-danger"></span>
+                </div>
+          
+                <div class="form-group">
+                    <label asp-for="PesoFinalB"></label>
+                    <input asp-for="PesoFinalB" class="form-control" />
+                    <span asp-validation-for="PesoFinalB" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="VelocidadSuperiorB"></label>
+                    <input asp-for="VelocidadSuperiorB" class="form-control" />
+                    <span asp-validation-for="VelocidadSuperiorB" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="VelocidadInferiorB"></label>
+                    <input asp-for="VelocidadInferiorB" class="form-control" />
+                    <span asp-validation-for="VelocidadInferiorB" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="LoteB"></label>
+                    <input asp-for="LoteB" class="form-control" />
+                    <span asp-validation-for="LoteB" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="VencimientoB"></label>
+                    <input asp-for="VencimientoB" class="form-control" />
+                    <span asp-validation-for="VencimientoB" class="text-danger"></span>
+                </div>
+
+                <div class="hr-line-dashed"></div>
+                <div class="form-group row">
+                    <a data-toggle='modal' href='#modal-Detalle' id="btnAgregarDetalle" class="btn btn-info btn-outline">
+                        <i class="fa fa-plus"></i> Agregar Nuevo Detalle
+                    </a>
+                    <div class="col-sm-12" style="max-height: 300px; overflow: scroll">
+                        <h4 id="hdrVV" runat="server">Detalle </h4>
+                        <table id="tblProduccion" class="table table-bordered table-hover">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Item</th>
+                                    <th>Espesor</th>
+                                    <th>Cantidad</th>
+                                    <th>Largo(M)</th>
+                                    <th>Metros²</th>
+                                    <th>Status</th>
+                                    <th>Tipo</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="hr-line-dashed"></div>
+                <div class="form-group">
+                    <label asp-for="Observaciones"></label>
+                    <textarea asp-for="Observaciones" class="form-control"></textarea>
+                    <span asp-validation-for="Observaciones" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="CantidadArranques"></label>
+                    <input asp-for="CantidadArranques" class="form-control" />
+                    <span asp-validation-for="CantidadArranques" class="text-danger"></span>
+                </div>
+
+                <span class="text-danger" id="spnErrorProduccion"></span>
+                <button type="submit" class="btn btn-primary">Guardar</button>
+                <button type="button"
+                        id="btnRegresar"
+                        class="btn btn-dark"
+                        data-url="@Url.Action("Index", "Home")">
+                    Regresar
+                </button>
+            </form>
+
+            <div id="modal-Detalle" class="modal fade" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-body">
+                            <form id="frmDetPrd">
+                                <h3>Nuevo Detalle</h3>
+                                <hr />
+                                <div class="mb-3">
+                                    <label class="form-label">Espesor</label>
+                                    <select id="IdEspesor" name="IdEspesor" class="form-control" asp-items="Model.CatEspesor">
+                                        <option value="">-- Seleccione Espesor --</option>
+                                    </select>
+                                    <span class="text-danger"></span>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Cantidad</label>
+                                    <input oninput="this.value = this.value.replace(/[^0-9\-]/g, '');" step="1" min="0" type="number" id="Cantidad" name="Cantidad" class="form-control" />
+                                    <span class="text-danger"></span>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Medida</label>
+                                    <input oninput="validarUnDecimal(this)" type="text" step="0.1" min="0" id="Medida" name="Medida" class="form-control" />
+                                    <span class="text-danger"></span>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Status</label>
+                                    <select id="IdStatus" name="IdStatus" class="form-control" asp-items="Model.CatStatus">
+                                        <option value="">-- Seleccione Status --</option>
+                                    </select>
+                                    <span class="text-danger"></span>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Tipo</label>
+                                    <select id="IdTipo" name="IdTipo" class="form-control" asp-items="Model.CatTipo">
+                                        <option value="">-- Seleccione Tipo --</option>
+                                    </select>
+                                    <span class="text-danger"></span>
+                                </div>
+                            </form>
+                            <button id="btnGuardarDetPrd" type="button" class="btn btn-primary">Agregar</button>
+                            <button type="button" class="btn btn-dark" data-dismiss="modal">Cancelar</button>
+                            <br />
+                            <p id="spnbtnGuardarDetPrd" class="text-sm text-danger"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+ 
+    <script>
+                       // ─────────── AUTOSAVE / RESTORE /PREVENT EXIT (MEJORADO) ───────────
+                    const DRAFT_KEY = 'draft-prdIlKwang'; // Clave única para esta vista
+
+                    function backupForm() {
+                        const formArr = $('#frmProduccion').serializeArray();
+                        // Guardar también el contenido HTML de la tabla de detalle
+                        const detalleHtml = $('#tblProduccion tbody').html();
+                        // Guardar el contador actual
+                        const contadorDetalle = typeof contadorDetallePrd !== 'undefined' ? contadorDetallePrd : 1;
+                        localStorage.setItem(DRAFT_KEY,
+                            JSON.stringify({ 
+                                form: formArr, 
+                                detalleHtml: detalleHtml,
+                                contadorDetallePrd: contadorDetalle
+                            })
+                        );
+                    }
+
+                    function restoreIfExists() {
+                        const draftStr = localStorage.getItem(DRAFT_KEY);
+                        if (!draftStr) return;
+                        if (confirm('Se encontró un borrador sin guardar. ¿Deseas restaurarlo?')) {
+                            const draft = JSON.parse(draftStr);
+                            
+                            // Restaurar campos del formulario
+                            draft.form.forEach(field => {
+                                const $el = $('[name="' + field.name + '"]');
+                                if ($el.hasClass('select2-hidden-accessible'))
+                                    $el.val(field.value).trigger('change');
+                                else
+                                    $el.val(field.value);
+                            });
+                            
+                            // Restaurar contenido de la tabla
+                            if (draft.detalleHtml) {
+                                $('#tblProduccion tbody').html(draft.detalleHtml);
+                            }
+                            
+                            // Restaurar contador
+                            if (draft.contadorDetallePrd) {
+                                contadorDetallePrd = draft.contadorDetallePrd;
+                            }
+                        }
+                    }
+                    // Restaura al cargar y luego auto‑respalda cada 30s
+                    restoreIfExists();
+                    setInterval(backupForm, 30000);
+
+                    // ───────── PREVENT UNLOAD (MEJORADO) ─────────
+                    function beforeUnloadHandler(e) {
+                        const hasRows = $('#tblProduccion tbody tr').length > 0;
+                        const isDirty = $('#frmProduccion').serialize() !== '';
+                        if (hasRows || isDirty) {
+                            e.preventDefault();
+                            e.returnValue = '';
+                        }
+                    }
+                    window.addEventListener('beforeunload', beforeUnloadHandler);
+
+                    $('#btnRegresar').off('click').on('click', function() {
+                        const url = $(this).data('url');
+                        if (confirm('¿Deseas salir sin guardar? Se perderán los datos .')) {
+                            // 1) Borra el draft
+                            localStorage.removeItem(DRAFT_KEY);
+                            // 2) Quita el beforeunload para no volver a pedir confirm
+                            window.removeEventListener('beforeunload', beforeUnloadHandler);
+                            // 3) Navega
+                            window.location.href = url;
+                        }
+                        // si cancela, no pasa nada y conserva el borrador
+                    });
+
+                    // ──────────END AUTOSAVE / RESTORE /PREVENT EXIT (MEJORADO) ───────────
+
+
+
+                function validarUnDecimal(input) {
+            let valor = input.value.replace(/[^0-9.]/g, '');
+            let partes = valor.split('.');
+            if (partes.length > 2) {
+                valor = partes[0] + '.' + partes[1];
+            }
+            if (valor.includes('.')) {
+                let [entero, decimal] = valor.split('.');
+                decimal = decimal.substring(0, 2);
+                valor = entero + '.' + decimal;
+            }
+            input.value = valor;
+        }
+
+
+            $("#IdTipoFabricacion").change(function () {
+            var selectedValue = $(this).val();
+            if (selectedValue == 2) {
+                $("#divNumeroPedido").show();
+            } else {
+                $("#divNumeroPedido").hide();
+            }
+        });
+
+
+        $('#modal-Detalle').on('shown.bs.modal', function () {
+              
+        
+            $("#IdEspesor").select2({
+                placeholder: "- Selecione Espesor -",
+                dropdownParent: $("#modal-Detalle"),
+                allowClear: true
+            });
+        
+            // 
+            $("#IdStatus").select2({
+                placeholder: "- Seleccione Status -",
+                dropdownParent: $("#modal-Detalle"),
+                allowClear: true
+            });
+         
+   
+            $("#IdTipo").select2({
+                placeholder: "- Seleccione Tipo -",
+                dropdownParent: $("#modal-Detalle"),
+                allowClear: true
+            });
+           
+        });
+
+        $("#IdUsuarios").select2({ placeholder: "- Selecciona los operarios -", allowClear: true });
+        
+        $("#IdMaquina").select2({ placeholder: "- Seleccione una maquina -", allowClear: true });
+        $("#IdArticulo").select2({ placeholder: "- Seleccione un articulo -", allowClear: true });
+        $("#IdTipoFabricacion").select2({ placeholder: "- Seleccione un Tipo Fabricacion -", allowClear: true });
+
+        //
+         $("#IdUbicacionBobinaA").select2({ placeholder: "- Seleccione Ubicacion Bobina -", allowClear: true });
+        //
+          $("#IdAnchoBobinaA").select2({ placeholder: "- Seleccione Ancho Bobina -", allowClear: true });
+        //
+        $("#IdColorBobinaA").select2({ placeholder: "- Seleccione Color Bobina -", allowClear: true });
+        //
+         $("#IdUbicacionBobinaB").select2({ placeholder: "- Seleccione Ubicacion Bobina -", allowClear: true });
+        //
+          $("#IdAnchoBobinaB").select2({ placeholder: "- Seleccione Ancho Bobina -", allowClear: true });
+        //
+          $("#IdColorBobinaB").select2({ placeholder: "- Seleccione Color Bobina -", allowClear: true });
+
+          var contadorDetallePrd = 1;
+        $("#btnGuardarDetPrd").click(function () {
+
+            $("#spnbtnGuardarDetPrd").text("");
+            var idEspesor = $("#IdEspesor").val().trim();
+            var espesorText = $("#IdEspesor option:selected").text().trim();
+            var cantidad = $("#Cantidad").val().trim();
+            var medida = $("#Medida").val().trim();
+            var idStatus = $("#IdStatus").val().trim();
+            var statusText = $("#IdStatus option:selected").text().trim();
+            var idTipo = $("#IdTipo").val().trim();
+            var tipoText = $("#IdTipo option:selected").text().trim();
+            if (idEspesor === "") { $("#spnbtnGuardarDetPrd").text("Seleccione espesor."); return false; }
+            if (cantidad === "") { $("#spnbtnGuardarDetPrd").text("Ingrese cantidad."); return false; }
+            if (medida === "") { $("#spnbtnGuardarDetPrd").text("Ingrese medida."); return false; }
+            if (idStatus === "") { $("#spnbtnGuardarDetPrd").text("Seleccione status."); return false; }
+            if (idTipo === "") { $("#spnbtnGuardarDetPrd").text("Seleccione tipo."); return false; }
+            var metros = parseFloat(cantidad) * parseFloat(medida);
+            var newRow = "<tr>" +
+              "<td>" + (contadorDetallePrd++) + "</td>" + // Número autoincrementable
+                "<td>" + espesorText + "</td>" +
+                "<td>" + cantidad + "</td>" +
+                "<td>" + medida + "</td>" +
+                "<td>" + metros.toFixed(2) + "</td>" +
+                "<td>" + statusText + "</td>" +
+                "<td>" + tipoText + "</td>" +
+                "<td style='display:none;'>" + idEspesor + "</td>" +
+                "<td style='display:none;'>" + idStatus + "</td>" +
+                "<td style='display:none;'>" + idTipo + "</td>" +
+                "</tr>";
+            $("#tblProduccion tbody").append(newRow);
+            $("#frmDetPrd")[0].reset();
+            $("#modal-Detalle").modal('hide');
+        });
+
+        $("#frmProduccion").submit(function (e) {
+            e.preventDefault();
+            $("#spnErrorProduccion").text("");
+            var errorMsg = "";
+            var idUsuarios = $("#IdUsuarios").val();
+            var idMaquina = $("#IdMaquina").val();
+            var horaInicio = $("#HoraInicio").val();
+            var horaFin = $("#HoraFin").val();
+            var fecha = $("#Fecha").val();
+            var tiempoParo = $("#TiempoParo").val();
+            var idArticulo = $("#IdArticulo").val();
+            var idTipoFabricacion = $("#IdTipoFabricacion").val();
+            var cliente = $("#Cliente").val();
+            var velocidadMaquina = $("#VelocidadMaquina").val();
+            var idUbicacionBobinaA = $("#IdUbicacionBobinaA").val();
+            var idAnchoBobinaA = $("#IdAnchoBobinaA").val();
+            var fabricanteBobinaA = $("#FabricanteBobinaA").val();
+            var codigoBobinaA = $("#CodigoBobinaA").val();
+            var calibreMmA = $("#CalibreMmA").val();
+            var idColorBobinaA = $("#IdColorBobinaA").val();
+            var anchoMmA = $("#AnchoMmA").val();
+            var pesoInicialKgA = $("#PesoInicialKgA").val();
+            var pesoFinalKgA = $("#PesoFinalKgA").val();
+            var metrosInicialA = $("#MetrosInicialA").val();
+            var metrosFinalA = $("#MetrosFinalA").val();
+            var espesorInicialCmA = $("#EspesorInicialCmA").val();
+            var espesorFinalCmA = $("#EspesorFinalCmA").val();
+            var idUbicacionBobinaB = $("#IdUbicacionBobinaB").val();
+            var idAnchoBobinaB = $("#IdAnchoBobinaB").val();
+            var fabricanteBobinaB = $("#FabricanteBobinaB").val();
+            var codigoBobinaB = $("#CodigoBobinaB").val();
+            var calibreMmB = $("#CalibreMmB").val();
+            var idColorBobinaB = $("#IdColorBobinaB").val();
+            var anchoMmB = $("#AnchoMmB").val();
+            var pesoInicialKgB = $("#PesoInicialKgB").val();
+            var pesoFinalKgB = $("#PesoFinalKgB").val();
+            var metrosInicialB = $("#MetrosInicialB").val();
+            var metrosFinalB = $("#MetrosFinalB").val();
+            var espesorInicialCmB = $("#EspesorInicialCmB").val();
+            var espesorFinalCmB = $("#EspesorFinalCmB").val();
+            var pesoInicialA = $("#PesoInicialA").val();
+            var cantidadUtilizadaA = $("#CantidadUtilizadaA").val();
+            var pesoFinalA = $("#PesoFinalA").val();
+            var velocidadSuperiorA = $("#VelocidadSuperiorA").val();
+            var velocidadInferiorA = $("#VelocidadInferiorA").val();
+            var loteA = $("#LoteA").val();
+            var vencimientoA = $("#VencimientoA").val();
+            var pesoInicialB = $("#PesoInicialB").val();
+            var cantidadUtilizadaB = $("#CantidadUtilizadaB").val();
+            var pesoFinalB = $("#PesoFinalB").val();
+            var velocidadSuperiorB = $("#VelocidadSuperiorB").val();
+            var velocidadInferiorB = $("#VelocidadInferiorB").val();
+            var loteB = $("#LoteB").val();
+            var vencimientoB = $("#VencimientoB").val();
+            var observaciones = $("#Observaciones").val();
+            var cantidadArranques = $("#CantidadArranques").val();
+
+            // Validaciones requeridas y de formato
+            if (!idUsuarios || idUsuarios.length === 0) {
+                errorMsg = "Seleccione al menos un Operador.";
+            } else if (!idMaquina) {
+                errorMsg = "Seleccione una Máquina.";
+            } else if (!horaInicio) {
+                errorMsg = "Ingrese la Hora de Inicio.";
+            } else if (!horaFin) {
+                errorMsg = "Ingrese la Hora de Fin.";
+            } else if (!fecha) {
+                errorMsg = "Ingrese la Fecha.";
+            } else if (!idArticulo || idArticulo.length === 0) {
+                errorMsg = "Seleccione al menos un Artículo.";
+            } else if (!idTipoFabricacion) {
+                errorMsg = "Seleccione un Tipo de Fabricación.";
+            } else if (!cliente) {
+                errorMsg = "Ingrese el Cliente.";
+            } else if (!velocidadMaquina) {
+                errorMsg = "Ingrese la Velocidad de Máquina.";
+            } else if (!idUbicacionBobinaA) {
+                errorMsg = "Seleccione la Ubicación de Bobina A.";
+            } else if (!idAnchoBobinaA) {
+                errorMsg = "Seleccione el Ancho de Bobina A.";
+            } else if (!fabricanteBobinaA) {
+                errorMsg = "Ingrese el Fabricante de Bobina A.";
+            } else if (!codigoBobinaA) {
+                errorMsg = "Ingrese el Código de Bobina A.";
+            } else if (!calibreMmA) {
+                errorMsg = "Ingrese el Calibre (mm) de Bobina A.";
+            } else if (!idColorBobinaA) {
+                errorMsg = "Seleccione el Color de Bobina A.";
+            } else if (!anchoMmA) {
+                errorMsg = "Ingrese el Ancho (mm) de Bobina A.";
+            } else if (!pesoInicialKgA) {
+                errorMsg = "Ingrese el Peso Inicial (Kg) de Bobina A.";
+            } else if (!pesoFinalKgA) {
+                errorMsg = "Ingrese el Peso Final (Kg) de Bobina A.";
+            } else if (!metrosInicialA) {
+                errorMsg = "Ingrese los Metros Iniciales de Bobina A.";
+            } else if (!metrosFinalA) {
+                errorMsg = "Ingrese los Metros Finales de Bobina A.";
+            } else if (!espesorInicialCmA) {
+                errorMsg = "Ingrese el Espesor Inicial (cm) de Bobina A.";
+            } else if (!espesorFinalCmA) {
+                errorMsg = "Ingrese el Espesor Final (cm) de Bobina A.";
+            } else if (!idUbicacionBobinaB) {
+                errorMsg = "Seleccione la Ubicación de Bobina B.";
+            } else if (!idAnchoBobinaB) {
+                errorMsg = "Seleccione el Ancho de Bobina B.";
+            } else if (!fabricanteBobinaB) {
+                errorMsg = "Ingrese el Fabricante de Bobina B.";
+            } else if (!codigoBobinaB) {
+                errorMsg = "Ingrese el Código de Bobina B.";
+            } else if (!calibreMmB) {
+                errorMsg = "Ingrese el Calibre (mm) de Bobina B.";
+            } else if (!idColorBobinaB) {
+                errorMsg = "Seleccione el Color de Bobina B.";
+            } else if (!anchoMmB) {
+                errorMsg = "Ingrese el Ancho (mm) de Bobina B.";
+            } else if (!pesoInicialKgB) {
+                errorMsg = "Ingrese el Peso Inicial (Kg) de Bobina B.";
+            } else if (!pesoFinalKgB) {
+                errorMsg = "Ingrese el Peso Final (Kg) de Bobina B.";
+            } else if (!metrosInicialB) {
+                errorMsg = "Ingrese los Metros Iniciales de Bobina B.";
+            } else if (!metrosFinalB) {
+                errorMsg = "Ingrese los Metros Finales de Bobina B.";
+            } else if (!espesorInicialCmB) {
+                errorMsg = "Ingrese el Espesor Inicial (cm) de Bobina B.";
+            } else if (!espesorFinalCmB) {
+                errorMsg = "Ingrese el Espesor Final (cm) de Bobina B.";
+            } else if (!pesoInicialA) {
+                errorMsg = "Ingrese el Peso Inicial A.";
+            } else if (!cantidadUtilizadaA) {
+                errorMsg = "Ingrese la Cantidad Utilizada A.";
+            } else if (!pesoFinalA) {
+                errorMsg = "Ingrese el Peso Final A.";
+            } else if (!velocidadSuperiorA) {
+                errorMsg = "Ingrese la Velocidad Superior A.";
+            } else if (!velocidadInferiorA) {
+                errorMsg = "Ingrese la Velocidad Inferior A.";
+            } else if (!loteA) {
+                errorMsg = "Ingrese el Lote A.";
+            } else if (!vencimientoA) {
+                errorMsg = "Ingrese el Vencimiento A.";
+            } else if (!pesoInicialB) {
+                errorMsg = "Ingrese el Peso Inicial B.";
+            } else if (!cantidadUtilizadaB) {
+                errorMsg = "Ingrese la Cantidad Utilizada B.";
+            } else if (!pesoFinalB) {
+                errorMsg = "Ingrese el Peso Final B.";
+            } else if (!velocidadSuperiorB) {
+                errorMsg = "Ingrese la Velocidad Superior B.";
+            } else if (!velocidadInferiorB) {
+                errorMsg = "Ingrese la Velocidad Inferior B.";
+            } else if (!loteB) {
+                errorMsg = "Ingrese el Lote B.";
+            } else if (!vencimientoB) {
+                errorMsg = "Ingrese el Vencimiento B.";
+            } else if (!observaciones) {
+                errorMsg = "Ingrese las Observaciones.";
+            } else if (!cantidadArranques) {
+                errorMsg = "Ingrese la Cantidad de Arranques.";
+            }
+            if (errorMsg) {
+                $("#spnErrorProduccion").text(errorMsg);
+                return false;
+            }
+
+            var numeroPedido = "";
+
+            // Si el campo "Número Pedido" es visible, obtener su valor
+            if ($("#divNumeroPedido").is(":visible")) {
+                numeroPedido = $("#NumeroPedido").val().trim();
+            } 
+
+            var token = $('input[name="__RequestVerificationToken"]').val();
+              
+            var viewModel = {
+                IdUsuarios: $("#IdUsuarios").val(),
+                IdMaquina: $("#IdMaquina").val(),
+                HoraInicio: $("#HoraInicio").val(),
+                HoraFin: $("#HoraFin").val(),
+                Fecha: $("#Fecha").val(),
+                TiempoParo: $("#TiempoParo").val(),
+                IdArticulo: $("#IdArticulo").val(),
+                IdTipoFabricacion: $("#IdTipoFabricacion").val(),
+                Cliente: $("#Cliente").val(),
+                NumeroPedido: parseInt(numeroPedido),
+                VelocidadMaquina: $("#VelocidadMaquina").val(),
+                IdUbicacionBobinaA: $("#IdUbicacionBobinaA").val(),
+                IdAnchoBobinaA: $("#IdAnchoBobinaA").val(),
+                FabricanteBobinaA: $("#FabricanteBobinaA").val(),
+                CodigoBobinaA: $("#CodigoBobinaA").val(),
+                CalibreMmA: $("#CalibreMmA").val(),
+                IdColorBobinaA: $("#IdColorBobinaA").val(),
+                AnchoMmA: $("#AnchoMmA").val(),
+                PesoInicialKgA: $("#PesoInicialKgA").val(),
+                PesoFinalKgA: $("#PesoFinalKgA").val(),
+                MetrosInicialA: $("#MetrosInicialA").val(),
+                MetrosFinalA: $("#MetrosFinalA").val(),
+                EspesorInicialCmA: $("#EspesorInicialCmA").val(),
+                EspesorFinalCmA: $("#EspesorFinalCmA").val(),
+                IdUbicacionBobinaB: $("#IdUbicacionBobinaB").val(),
+                IdAnchoBobinaB: $("#IdAnchoBobinaB").val(),
+                FabricanteBobinaB: $("#FabricanteBobinaB").val(),
+                CodigoBobinaB: $("#CodigoBobinaB").val(),
+                CalibreMmB: $("#CalibreMmB").val(),
+                IdColorBobinaB: $("#IdColorBobinaB").val(),
+                AnchoMmB: $("#AnchoMmB").val(),
+                PesoInicialKgB: $("#PesoInicialKgB").val(),
+                PesoFinalKgB: $("#PesoFinalKgB").val(),
+                MetrosInicialB: $("#MetrosInicialB").val(),
+                MetrosFinalB: $("#MetrosFinalB").val(),
+                EspesorInicialCmB: $("#EspesorInicialCmB").val(),
+                EspesorFinalCmB: $("#EspesorFinalCmB").val(),
+                PesoInicialA: $("#PesoInicialA").val(),
+                CantidadUtilizadaA: $("#CantidadUtilizadaA").val(),
+                PesoFinalA: $("#PesoFinalA").val(),
+                VelocidadSuperiorA: $("#VelocidadSuperiorA").val(),
+                VelocidadInferiorA: $("#VelocidadInferiorA").val(),
+                LoteA: $("#LoteA").val(),
+                VencimientoA: $("#VencimientoA").val(),
+                PesoInicialB: $("#PesoInicialB").val(),
+                CantidadUtilizadaB: $("#CantidadUtilizadaB").val(),
+                PesoFinalB: $("#PesoFinalB").val(),
+                VelocidadSuperiorB: $("#VelocidadSuperiorB").val(),
+                VelocidadInferiorB: $("#VelocidadInferiorB").val(),
+                LoteB: $("#LoteB").val(),
+                VencimientoB: $("#VencimientoB").val(),
+                Observaciones: $("#Observaciones").val(),
+                CantidadArranques: $("#CantidadArranques").val(),
+                DetPrdIlKwangs: []
+            };
+
+            $("#tblProduccion tbody tr").each(function () {
+                       var detalle = {
+            Posicion: parseInt($(this).find("td:eq(0)").text()),
+            Cantidad: parseInt($(this).find("td:eq(2)").text()),
+            Medida: parseFloat($(this).find("td:eq(3)").text()),
+            MetrosCuadrados: parseFloat($(this).find("td:eq(4)").text()),
+            IdEspesor: parseInt($(this).find("td:eq(7)").text()),
+            IdStatus: parseInt($(this).find("td:eq(8)").text()),
+            IdTipo: parseInt($(this).find("td:eq(9)").text())
+        };
+
+                viewModel.DetPrdIlKwangs.push(detalle);
+            });
+       
+            $.ajax({
+                url: '/PrdIlKwang/Create',
+                type: 'POST',
+                headers: {
+                    'RequestVerificationToken': token
+                },
+                data: JSON.stringify(viewModel),
+                contentType: 'application/json; charset=utf-8',
+                success: function (response) {
+                            // ══════════════ LIMPIAR BORRADOR (MEJORADO) ══════════════
+                            localStorage.removeItem(DRAFT_KEY);
+                            // ——— NUEVO: desactivar el aviso de "Leave site?" al salir ———
+                            window.removeEventListener('beforeunload', beforeUnloadHandler);
+                            // ════════════════════════════════════════════
+                    alert('Produccion Guardada!');
+                    window.location.href = '@Url.Action("Index", "Home")';
+                },
+                error: function (xhr, status, error) {
+                    alert('Error , Contacte a soporte!');
+                }
+            });
+
+        
+        });
+
+
+        $(function() {
+    // Genérico para pares de hora (en formato 24h: "HH:mm")
+    function validarHoras(inicialSelector, finalSelector, mensaje) {
+        $(finalSelector).on('blur', function() {
+            var hIni = $(inicialSelector).val();
+            var hFin = $(finalSelector).val();
+            if (hIni && hFin) {
+                // Convertir a minutos para comparar
+                var minutosIni = parseInt(hIni.split(':')[0]) * 60 + parseInt(hIni.split(':')[1]);
+                var minutosFin = parseInt(hFin.split(':')[0]) * 60 + parseInt(hFin.split(':')[1]);
+                if (minutosFin < minutosIni) {
+                    alert(mensaje || "La hora final no puede ser menor que la hora inicial.");
+                    $(finalSelector).val('');
+                    $(finalSelector).focus();
+                }
+            }
+        });
+    }
+
+    // Asume que tus ids son así (ajusta si tienes nombres distintos)
+    validarHoras("#HoraInicio", "#HoraFin", "La Hora de Fin no puede ser menor que la Hora de Inicio.");
+});
+
+
+        $(function() {
+            // Genérico para pares numéricos
+            function validarNumeros(inicialSelector, finalSelector, mensaje) {
+                $(finalSelector).on('blur', function() {
+                    var ini = parseFloat($(inicialSelector).val());
+                    var fin = parseFloat($(finalSelector).val());
+                    if (!isNaN(ini) && !isNaN(fin) && fin > ini) {
+                        alert(mensaje || "El valor final no puede ser mayor que el inicial.");
+                        $(finalSelector).val('');
+                        $(finalSelector).focus();
+                    }
+                });
+            }
+
+            // Ejemplo para todos los pares que mencionaste
+                    validarNumeros("#PesoInicialKgA", "#PesoFinalKgA", "El Peso Final (Kg) A no puede ser mayor que el Peso Inicial (Kg) A.");
+                    validarNumeros("#MetrosInicialA", "#MetrosFinalA", "Los Metros Finales A no pueden ser mayores que los Metros Iniciales A.");
+                    validarNumeros("#EspesorInicialCmA", "#EspesorFinalCmA", "El Espesor Final (cm) A no puede ser mayor que el Inicial.");
+                    validarNumeros("#PesoInicialKgB", "#PesoFinalKgB", "El Peso Final (Kg) B no puede ser mayor que el Peso Inicial (Kg) B.");
+            validarNumeros("#MetrosInicialB", "#MetrosFinalB", "Los Metros Finales B no pueden ser mayores que los Metros Iniciales B.");
+                    validarNumeros("#EspesorInicialCmB", "#EspesorFinalCmB", "El Espesor Final (cm) B no puede ser mayor que el Inicial.");
+                    validarNumeros("#PesoInicialA", "#PesoFinalA", "El Peso Final A no puede ser mayor que el Peso Inicial A.");
+                    validarNumeros("#PesoInicialB", "#PesoFinalB", "El Peso Final B no puede ser mayor que el Peso Inicial B.");
+        });
+
+
+    </script>
+
+}

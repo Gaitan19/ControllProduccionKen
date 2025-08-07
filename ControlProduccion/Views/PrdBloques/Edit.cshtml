@@ -1,0 +1,505 @@
+@using ControlProduccion.ViewModel;
+@model PrdBloqueViewModel
+@{
+    ViewData["Title"] = "Editar Producción Bloques";
+}
+<div class="col-md-8 offset-md-2">
+    <div class="ibox ">
+        <div class="ibox-title">
+            <h5>@ViewData["Title"]</h5>
+        </div>
+        <div class="ibox-content">
+            <form id="frmProduccion" method="post" asp-action="Edit" autocomplete="off">
+                @Html.AntiForgeryToken()
+                <input type="hidden" asp-for="Id" />
+                <div class="form-group">
+                    <label asp-for="IdUsuarios"></label>
+                    <select id="IdUsuarios" multiple asp-for="IdUsuarios" class="form-control select2" asp-items="Model.Operarios"></select>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Fecha"></label>
+                    <input asp-for="Fecha" class="form-control" />
+                </div>
+                <div class="hr-line-dashed"></div>
+                <div class="form-group row">
+                    <div class="col-sm-12" style="max-height:300px;overflow:scroll">
+                        <h4>Detalle Producción</h4>
+                        <table id="tblDetalle" class="table table-bordered">
+                            <thead class="table-light">
+                           
+                            </thead>
+                            <tbody>
+                                @for (int i=0; i<(Model.DetPrdBloques?.Count ?? 0); i++)
+                                {
+                                    var det = Model.DetPrdBloques[i];
+                                    <tr class="table-secondary">
+                                        <th style="display:none">Id</th>
+                                        <th>Posición</th>
+                                        <th>Máquina</th>
+                                        <th>Bloque</th>
+                                        <th>Producción Día</th>
+                                    </tr>
+                                    <tr>
+                                        <td style="display:none">@det.Id</td>
+                                        @if(Model.AprobadoGerencia!=true){
+                                            <td><a href="#" class="open-modal">@(i+1)</a></td>
+                                        } else { <td>@(i+1)</td> }
+                                        <td>@det.Maquina</td>
+                                        <td>@det.CatBloque</td>
+                                        <td>@det.ProduccionDia</td>
+                                        <td style="display:none">@det.IdMaquina</td>
+                                        <td style="display:none">@det.IdCatBloque</td>
+                                    </tr>
+                                    if(det.SubDetPrdBloques!=null && det.SubDetPrdBloques.Any()){
+                                        <tr>
+                                            <td colspan="5">
+                                                <table class="table table-sm table-bordered">
+                                                    <thead class="table-light">
+                                                        <tr>
+                                                            <th style="display:none">Id</th>
+                                                            <th>No.</th>
+                                                            <th>Artículo</th>
+                                                            <th>Hora</th>
+                                                            <th>Silo</th>
+                                                            <th>Densidad</th>
+                                                            <th>Tipo Bloque</th>
+                                                            <th>Peso</th>
+                                                            <th>Tipo Fab.</th>
+                                                            <th>No.Pedido</th>
+                                                            <th>Código</th>
+                                                            <th>Obs.</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        @foreach(var sub in det.SubDetPrdBloques){
+                                                            <tr>
+                                                                <td style="display:none">@sub.Id</td>
+                                                                @if(Model.AprobadoGerencia!=true){
+                                                                    <td><a href="#" class="open-modal-subdetail">@sub.No</a></td>
+                                                                } else {
+                                                                    <td>@sub.No</td>
+                                                                }
+                                                                <td>@sub.Articulo</td>
+                                                                <td>@To12HourFormat(sub.Hora)</td>
+                                                                <td>@sub.Silo</td>
+                                                                <td>@sub.Densidad</td>
+                                                                <td>@sub.TipoBloque</td>
+                                                                <td>@sub.Peso</td>
+                                                                <td>@sub.TipoFabricacion</td>
+                                                                <td>@sub.NumeroPedido</td>
+                                                                <td>@sub.CodigoBloque</td>
+                                                                <td>@sub.Observaciones</td>
+                                                                <td style="display:none">@sub.IdArticulo</td>
+                                                                <td style="display:none">@sub.IdDensidad</td>
+                                                                <td style="display:none">@sub.IdTipoBloque</td>
+                                                                <td style="display:none">@sub.IdTipoFabricacion</td>
+                                                                <td style="display:none">@det.Id</td> <!-- DetPrdBloquesId -->
+                                                            </tr>
+                                                        }
+                                                    </tbody>
+                                                </table>
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <button type="button" class="btn btn-dark" onclick="location.href='@Url.Action("Index","PrdBloques")'">Regresar</button>
+                @if(Model.AprobadoGerencia!=true){
+                    <button type="submit" class="btn btn-primary">Actualizar</button>
+                }
+                @if (User.IsInRole("JefeProduccion") && Model.AprobadoGerencia != true)
+                {
+                    <button id="btnAprobarProd" type="button" class="btn btn-danger" onclick="validar(@Model.Id)">Aprobar</button>
+                }
+                else
+                {
+                    <button type="button" class="btn btn-success">Aprobado</button>
+                }
+            </form>
+            <div id="modal-Detalle" class="modal fade" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-body">
+                            <form id="frmDetPrd">
+                                <input type="hidden" id="detrpdId" name="detrpdId" />
+                                <input type="hidden" id="Id" name="Id" />
+                                <input type="hidden" id="PrdBloqueId" name="PrdBloqueId" value="@Model.Id" />
+                                <h3>Editar Detalle</h3>
+                                <hr />
+                                <div class="mb-3">
+                                    <label class="form-label">Máquina</label>
+                                    <select name="IdMaquina" id="IdMaquinaDet" class="form-control" asp-items="Model.Maquinas"></select>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Bloque</label>
+                                    <select name="IdCatBloque" id="IdCatBloque" class="form-control" asp-items="Model.CatalogoBloques"></select>
+                                </div>
+                            </form>
+                            <button id="btnGuardarDetPrd" type="button" class="btn btn-primary">Actualizar</button>
+                            <button type="button" class="btn btn-dark" data-dismiss="modal">Cancelar</button>
+                            <p id="spnbtnGuardarDetPrd" class="text-sm text-danger"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Modal for editing sub-detail -->
+            <div id="modal-SubDetalle" class="modal fade" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-body">
+                            <form id="frmSubDetPrd">
+                                <input type="hidden" id="subDetId" name="subDetId" />
+                                <input type="hidden" id="DetPrdBloquesId" name="DetPrdBloquesId" />
+                                <h3>Editar Sub Detalle</h3>
+                                <hr />
+                                
+                                <div class="mb-3">
+                                    <label class="form-label">Artículo</label>
+                                    <select id="IdArticuloSub" name="IdArticulo" class="form-control" asp-items="Model.CatalogoBloques">
+                                        <option value="">-- Seleccione Artículo --</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label">No.</label>
+                                    <input readonly type="number" min="1" id="NoSub" name="No" class="form-control" />
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label">Hora</label>
+                                    <input readonly type="time" id="HoraSub" name="Hora" class="form-control" />
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label">Silo</label>
+                                    <input readonly type="number" min="1" id="SiloSub" name="Silo" class="form-control" />
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label">Densidad</label>
+                                    <select id="IdDensidadSub" name="IdDensidad" class="form-control" asp-items="Model.CatalogoDensidad">
+                                        <option value="">-- Seleccione Densidad --</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label">Tipo Bloque</label>
+                                    <select id="IdTipoBloqueSub" name="IdTipoBloque" class="form-control" asp-items="Model.CatalogoTipoBloque">
+                                        <option value="">-- Seleccione Tipo --</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label">Peso</label>
+                                    <input type="number" step="0.01" id="PesoSub" name="Peso" class="form-control" />
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label">Tipo Fabricación</label>
+                                    <select id="IdTipoFabricacionSub" name="IdTipoFabricacion" class="form-control" asp-items="Model.TiposFabricacion">
+                                        <option value="">-- Seleccione Tipo --</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="mb-3" id="divNumeroPedidoSub" style="display:none">
+                                    <label class="form-label">Número Pedido</label>
+                                    <input type="number" id="NumeroPedidoSub" name="NumeroPedido" class="form-control" />
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label">Código Bloque</label>
+                                    <input readonly id="CodigoBloqueSub" name="CodigoBloque" class="form-control" />
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label">Observaciones</label>
+                                    <textarea id="ObservacionesSub" name="Observaciones" class="form-control"></textarea>
+                                </div>
+                            </form>
+                            
+                            <button id="btnGuardarSubDetPrd" type="button" class="btn btn-primary">Actualizar</button>
+                            <button type="button" class="btn btn-dark" data-dismiss="modal">Cancelar</button>
+                            <p id="spnSubDet" class="text-sm text-danger"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+    <script>
+        $(document).ready(function() {
+            // Initialize select2 for main form
+            $("#IdUsuarios").select2({ 
+                allowClear: true,
+                placeholder: "- Selecciona los operarios -"
+            });
+            
+            // Initialize select2 for modals when they are shown
+            $('#modal-Detalle').on('shown.bs.modal', function() {
+                var $selects = $(this).find('#IdMaquinaDet, #IdCatBloque');
+                if ($selects.hasClass("select2-hidden-accessible")) {
+                    $selects.select2('destroy');
+                }
+                $selects.select2({
+                    dropdownParent: $('#modal-Detalle'),
+                    allowClear: true,
+                    width: '100%'
+                });
+            });
+            
+            $('#modal-SubDetalle').on('shown.bs.modal', function() {
+                var $modal = $(this);
+                var $selects = $modal.find('#IdArticuloSub, #IdDensidadSub, #IdTipoBloqueSub, #IdTipoFabricacionSub');
+                
+                $selects.each(function() {
+                    if ($(this).data('select2')) { 
+                        $(this).select2('destroy'); 
+                    }
+                });
+                
+                   $selects.select2({
+            // 👇 CAMBIO CLAVE AQUÍ
+            dropdownParent: $modal.find('.modal-content'),
+            allowClear: true,
+            width: '100%'
+        });
+            });
+        });
+
+        // Handle detail modal opening
+        $("#tblDetalle").on("click", ".open-modal", function(e){
+            e.preventDefault();
+            var $row = $(this).closest("tr");
+            var id = $row.find("td:eq(0)").text().trim();
+            var idMaquina = $row.find("td:eq(5)").text().trim();
+            var idBloque = $row.find("td:eq(6)").text().trim();
+
+            // Clear any previous error messages
+            $("#spnbtnGuardarDetPrd").text("");
+
+            $("#detrpdId").val(id);
+            $("#Id").val(id);
+            $("#IdMaquinaDet").val(idMaquina).trigger("change");
+            $("#IdCatBloque").val(idBloque).trigger("change");
+            $('#modal-Detalle').modal('show');
+        });
+
+        // Handle detail save
+        $("#btnGuardarDetPrd").click(function(e){
+            e.preventDefault();
+            
+            // Clear previous error messages
+            $("#spnbtnGuardarDetPrd").text("");
+            
+            // Basic validation
+            if (!$("#IdMaquinaDet").val() || !$("#IdCatBloque").val()) {
+                $("#spnbtnGuardarDetPrd").text("Por favor complete todos los campos obligatorios.");
+                return;
+            }
+            
+            var formData = $("#frmDetPrd").serialize();
+            $.ajax({
+                url:'@Url.Action("EditDetPrd","PrdBloques")',
+                type:'POST',
+                data: formData,
+                headers: {
+                    'RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val()
+                },
+                success:function(res){ 
+                    if(res.success){ 
+                        alert(res.message); 
+                        $("#modal-Detalle").modal('hide');
+                        location.reload(); 
+                    } else { 
+                        $("#spnbtnGuardarDetPrd").text('Error: ' + (res.message || 'Error desconocido')); 
+                    } 
+                },
+                error:function(xhr, status, error){ 
+                    console.error('Error details:', xhr.responseText);
+                    alert('Ocurrió un error en la solicitud: ' + error); 
+                }
+            });
+        });
+
+        // Handle sub-detail modal opening
+        $("#tblDetalle").on("click", ".open-modal-subdetail", function(e){
+            e.preventDefault();
+            var $row = $(this).closest("tr");
+            
+            // Clear any previous error messages
+            $("#spnSubDet").text("");
+            
+            // Get data from row
+            var id = $row.find("td:eq(0)").text().trim();
+            var no = $row.find("td:eq(1)").text().trim();
+            var articulo = $row.find("td:eq(2)").text().trim();
+           var hora12h = $row.find("td:eq(3)").text().trim(); // Esto devuelve "hh:mm AM/PM"
+            var silo = $row.find("td:eq(4)").text().trim();
+            var densidad = $row.find("td:eq(5)").text().trim();
+            var tipoBloque = $row.find("td:eq(6)").text().trim();
+            var peso = $row.find("td:eq(7)").text().trim();
+            var tipoFabricacion = $row.find("td:eq(8)").text().trim();
+            var numeroPedido = $row.find("td:eq(9)").text().trim();
+            var codigoBloque = $row.find("td:eq(10)").text().trim();
+            var observaciones = $row.find("td:eq(11)").text().trim();
+            var idArticulo = $row.find("td:eq(12)").text().trim();
+            var idDensidad = $row.find("td:eq(13)").text().trim();
+            var idTipoBloque = $row.find("td:eq(14)").text().trim();
+            var idTipoFabricacion = $row.find("td:eq(15)").text().trim();
+            var detPrdBloquesId = $row.find("td:eq(16)").text().trim();
+
+            // Populate modal
+            $("#subDetId").val(id);
+            $("#DetPrdBloquesId").val(detPrdBloquesId);
+            $("#IdArticuloSub").val(idArticulo);
+            $("#NoSub").val(no);
+
+                  // --- ✅ INICIO DEL CAMBIO ---
+        // 1. Separa la hora ("02:30") del período ("PM")
+        var partesHora = hora12h.split(' ');
+        var tiempo = partesHora[0];
+        var periodo = partesHora[1];
+
+        // 2. Usa tu función para convertir a formato 24 horas
+        var hora24h = convertTo24Hour(tiempo, periodo);
+
+        // 3. Asigna el valor en formato 24h al input
+        $("#HoraSub").val(hora24h);
+        // --- 🏁 FIN DEL CAMBIO ---
+            
+            $("#SiloSub").val(silo);
+            $("#IdDensidadSub").val(idDensidad);
+            $("#IdTipoBloqueSub").val(idTipoBloque);
+            $("#PesoSub").val(peso);
+            $("#IdTipoFabricacionSub").val(idTipoFabricacion);
+            $("#CodigoBloqueSub").val(codigoBloque);
+            $("#ObservacionesSub").val(observaciones);
+            
+            // Handle numero pedido visibility
+            if (idTipoFabricacion == "2") {
+                $("#divNumeroPedidoSub").show();
+                $("#NumeroPedidoSub").val(numeroPedido);
+            } else {
+                $("#divNumeroPedidoSub").hide();
+                $("#NumeroPedidoSub").val("");
+            }
+
+            $('#modal-SubDetalle').modal('show');
+        });
+
+        // Handle tipo fabricacion change for sub-detail
+        $(document).on('change', '#IdTipoFabricacionSub', function(){
+            if($(this).val() == 2){
+                $("#divNumeroPedidoSub").show();
+            } else {
+                $("#divNumeroPedidoSub").hide();
+                $("#NumeroPedidoSub").val("");
+            }
+        });
+
+        // Handle sub-detail save
+        $("#btnGuardarSubDetPrd").click(function(e){
+            e.preventDefault();
+            
+            // Clear previous error messages
+            $("#spnSubDet").text("");
+            
+            // Basic validation
+            if (!$("#IdArticuloSub").val() || !$("#NoSub").val() || !$("#HoraSub").val() || 
+                !$("#SiloSub").val() || !$("#IdDensidadSub").val() || !$("#IdTipoBloqueSub").val() || 
+                !$("#PesoSub").val() || !$("#IdTipoFabricacionSub").val() || !$("#CodigoBloqueSub").val()) {
+                $("#spnSubDet").text("Por favor complete todos los campos obligatorios.");
+                return;
+            }
+                // ——— NUEVO: generar CódigoBloque a partir de No + Fecha + Densidad + Tipo Bloque + Peso
+        var noText         = $('#NoSub').val();
+        var fechaText      = $('#Fecha').val();
+        var densText       = $('#IdDensidadSub option:selected').text();
+        var tipoBloqueText = $('#IdTipoBloqueSub option:selected').text();
+        var pesoText       = $('#PesoSub').val();
+
+        var codigoBloque = noText + fechaText + densText + tipoBloqueText + pesoText;
+        $('#CodigoBloqueSub').val(codigoBloque);
+        // ———————————————————————————————————————————————————————
+             
+            var formData = $("#frmSubDetPrd").serialize();
+            
+            $.ajax({
+                url:'@Url.Action("EditSubDetPrd","PrdBloques")',
+                type:'POST',
+                data: formData,
+                headers: {
+                    'RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val()
+                },
+                success:function(res){ 
+                    if(res.success){ 
+                        alert(res.message); 
+                        $("#modal-SubDetalle").modal('hide');
+                        location.reload(); 
+                    } else { 
+                        $("#spnSubDet").text('Error: ' + (res.message || 'Error desconocido')); 
+                    } 
+                },
+                error:function(xhr, status, error){ 
+                    console.error('Error details:', xhr.responseText);
+                    $("#spnSubDet").text('Ocurrió un error en la solicitud: ' + error); 
+                }
+            });
+        });
+
+        // Utility function to convert 12-hour to 24-hour format
+        function convertTo24Hour(time, period) {
+            var parts = time.split(':');
+            var hours = parseInt(parts[0], 10);
+            var minutes = parts[1];
+            
+            if (period === 'PM' && hours !== 12) {
+                hours += 12;
+            } else if (period === 'AM' && hours === 12) {
+                hours = 0;
+            }
+            
+            return String(hours).padStart(2, '0') + ':' + minutes;
+        }
+
+        // Approval function
+        function validar(id){
+            if(confirm("¿Está seguro de que desea Aprobar esta producción?")){
+                $.ajax({
+                    url:'@Url.Action("AprobarPrd","PrdBloques")',
+                    type:'POST',
+                    data:{id:id},
+                    headers: {
+                        'RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val()
+                    },
+                    success:function(res){ 
+                        if(res){ 
+                            alert('Producción Aprobada exitosamente'); 
+                            location.reload(); 
+                        } else { 
+                            alert('Error al aprobar la producción'); 
+                        } 
+                    },
+                    error:function(){ 
+                        alert('Error al procesar la solicitud'); 
+                    }
+                });
+            }
+        }
+    </script>
+}
+
+@functions {
+    public static string To12HourFormat(TimeSpan hora)
+    {
+        var dateTime = DateTime.Today.Add(hora);
+        return dateTime.ToString("hh:mm tt");
+    }
+}

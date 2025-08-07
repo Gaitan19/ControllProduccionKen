@@ -1,0 +1,72 @@
+﻿@using ControlProduccion.ViewModel;
+@model IEnumerable<AnchoBobinaViewModel>;
+@{
+    ViewData["Title"] = "Catalogo Ancho Bobina";
+}
+
+
+
+<div class="col-md-11 offset-md-1">
+
+    <h2 class="text-center"> Catalogo Ancho Bobina</h2>
+    <div class="ibox">
+        <div class="ibox-title">
+            <div class="col-sm-8">
+                <a asp-controller="GestionCatalogos" asp-action="CreateAnchoBobina" id="btnAdd" class="btn btn-info btn-outline">
+                    <i class="fa fa-plus"></i> Agregar
+                </a>
+
+            </div>
+        </div>
+        <div class="ibox-content">
+
+            <table id="tblColoresBobina" class="table tdatatable table-bordered">
+                <thead>
+                    <tr>
+                        <th>Valor</th>
+                        
+                        <th>Activo</th>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var cb in Model)
+                    {
+                            <tr>
+                                <td>
+                                    <a asp-action="EditAnchoBobina" asp-route-id="@cb.Id">
+                                    @cb.Valor
+                                    </a>
+                                </td>
+                               
+                                <td>
+                                @if ((bool)cb.Activo)
+                                {
+                                            <span class="badge badge-success">Activo</span>
+                                }
+                                else
+                                {
+                                            <span class="badge badge-danger">Inactivo</span>
+                                }
+                                </td>
+                            </tr>
+                    }
+
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+        <script>
+
+
+        </script>
+
+                }

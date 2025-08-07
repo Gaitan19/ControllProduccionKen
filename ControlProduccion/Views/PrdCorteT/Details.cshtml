@@ -1,0 +1,169 @@
+﻿@using ControlProduccion.ViewModel
+@model PrdCorteTViewModel
+
+@{
+    ViewData["Title"] = "Producción Corte T";
+}
+
+<div class="col-md-8 offset-md-2">
+    <div class="ibox">
+        <div class="ibox-title">
+            <h5>@ViewData["Title"]</h5>
+        </div>
+        <div class="ibox-content">
+            <form id="frmDetalle" autocomplete="off">
+                @Html.AntiForgeryToken()
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+                <div class="form-group">
+                    <label asp-for="IdUsuarios"></label>
+                    <select disabled="disabled"
+                            id="IdUsuarios"
+                            name="IdUsuarios"
+                            asp-for="IdUsuarios"
+                            class="form-control select2"
+                            asp-items="Model.Operarios">
+                    </select>
+                    <span asp-validation-for="IdUsuarios" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="IdMaquina"></label>
+                    <select disabled="disabled"
+                            id="IdMaquina"
+                            name="IdMaquina"
+                            asp-for="IdMaquina"
+                            class="form-control select2"
+                            asp-items="Model.Maquinas">
+                    </select>
+                    <span asp-validation-for="IdMaquina" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Fecha"></label>
+                    <input asp-for="Fecha" readonly="readonly" class="form-control" />
+                    <span asp-validation-for="Fecha" class="text-danger"></span>
+                </div>
+
+                <div class="hr-line-dashed"></div>
+
+                <div class="form-group row">
+                    <div class="col-sm-12" style="max-height: 300px; overflow: scroll">
+                        <h4>Detalle Producción Corte T</h4>
+                        <table id="tblDetalleCorteT" class="table table-bordered table-hover">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>No.</th>
+                                    <th>Artículo</th>
+                                    <th>Tipo de Fabricación</th>
+                                    <th>Código de Bloque</th>
+                                    <th>Densidad</th>
+                                    <th>Tipo de Bloque</th>
+                                    <th>Piezas Conformes</th>
+                                    <th>Piezas No Conformes</th>
+                                    <th>Nota</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var det in Model.DetPrdCorteT)
+                                {
+                                    <tr>
+                                        <td style="display:none;">@det.DetPrdCorteTId</td>
+                                        <td>@det.No</td>
+                                        <td>@det.Articulo</td>
+                                        <td>@det.TipoFabricacion</td>
+                                        <td>@det.PrdCodigoBloque</td>
+                                        <td>@det.Densidad</td>
+                                        <td>@det.TipoBloque</td>
+                                        <td>@det.CantidadPiezasConformes</td>
+                                        <td>@det.CantidadPiezasNoConformes</td>
+                                        <td>@det.Nota</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="hr-line-dashed"></div>
+
+                <div class="form-group">
+                    <label asp-for="Observaciones"></label>
+                    <textarea readonly="readonly" asp-for="Observaciones" class="form-control"></textarea>
+                    <span asp-validation-for="Observaciones" class="text-danger"></span>
+                </div>
+
+                <button type="button"
+                        class="btn btn-dark"
+                        onclick="location.href='@Url.Action("Index", "PrdCorteT")'">
+                    Regresar
+                </button>
+
+                @if (User.IsInRole("Supervisor") && Model.AprobadoSupervisor != true)
+                {
+                    <button type="button" id="btnValidarPrd" class="btn btn-danger">
+                        <i class="fa fa-check"></i> Validar
+                    </button>
+                }
+                else if (Model.AprobadoSupervisor == true)
+                {
+                    <button type="button" class="btn btn-success" disabled>
+                        <i class="fa fa-check"></i> Validado
+                    </button>
+                }
+
+               
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        $("#IdUsuarios").select2({
+            placeholder: "- Selecciona los operadores -",
+            allowClear: true
+        });
+
+        $("#IdMaquina").select2({
+            placeholder: "- Seleccione una máquina -",
+            allowClear: true
+        });
+
+        // Validar producción
+        $(document).on("click", "#btnValidarPrd", function (e) {
+            e.preventDefault();
+            if (!confirm("¿Está seguro de que desea validar esta producción?")) return;
+
+            // Obtener el valor del token antifalsificación generado por @Html.AntiForgeryToken()
+            var token = $('input[name="__RequestVerificationToken"]').val();
+
+            $.ajax({
+                url: '@Url.Action("ValidarPrd", "PrdCorteT")',
+                type: 'POST',
+                data: {
+                    __RequestVerificationToken: token,
+                    id: @Model.Id
+                },
+                success: function (response) {
+                    if (response) {
+                        alert("Producción validada exitosamente.");
+                        location.reload();
+                    } else {
+                        alert("Error al validar la producción.");
+                    }
+                },
+                error: function (xhr, status, error) {
+                    alert("Error al procesar la solicitud: " + error);
+                }
+            });
+        });
+
+
+
+    </script>
+}

@@ -1,0 +1,507 @@
+@using ControlProduccion.ViewModel;
+@model PrdBloqueViewModel
+@{
+    ViewData["Title"] = "Ingresar Producción Bloques";
+}
+<div class="col-md-8 offset-md-2">
+    <div class="ibox ">
+        <div class="ibox-title">
+            <h5>@ViewData["Title"]</h5>
+        </div>
+        <div class="ibox-content">
+            <form id="frmProduccion" method="post" autocomplete="off">
+                @Html.AntiForgeryToken()
+                <div class="form-group">
+                    <label asp-for="IdUsuarios"></label>
+                    <select id="IdUsuarios" multiple asp-for="IdUsuarios" class="form-control select2" asp-items="Model.Operarios"></select>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Fecha"></label>
+                    <input asp-for="Fecha" class="form-control" />
+                </div>
+                <div class="hr-line-dashed"></div>
+                <div class="form-group row">
+                    <a data-toggle='modal' href='#modal-Detalle' id="btnAgregarDetalle" class="btn btn-info btn-outline">
+                        <i class="fa fa-plus"></i> Agregar Detalle
+                    </a>
+                    <div class="col-sm-12" style="max-height:300px;overflow:scroll">
+                        <h4>Detalle Producción</h4>
+                        <table id="tblDetalle" class="table table-bordered">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Posición</th>
+                                    <th>Máquina</th>
+                                    <th>Bloque</th>
+                                   
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary">Guardar</button>
+                <button type="button"
+                        id="btnRegresar"
+                        class="btn btn-dark"
+                        data-url="@Url.Action("Index", "Home")">
+                    Regresar
+                </button>
+            </form>
+            <!-- modal detalle -->
+            <div id="modal-Detalle" class="modal fade" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-body">
+                            <form id="frmDetPrd">
+                                <h3>Nuevo Detalle</h3>
+                                <hr />
+                                <div class="mb-3">
+                                    <label class="form-label">Máquina</label>
+                                    <select id="IdMaquinaDet" class="form-control" asp-items="Model.Maquinas">
+                                        <option value="">-- Seleccione Máquina --</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Bloque</label>
+                                    <select id="IdCatBloque" class="form-control" asp-items="Model.CatalogoBloques">
+                                        <option value="">-- Seleccione Bloque --</option>
+                                    </select>
+                                </div>
+                            </form>
+                            <button id="btnGuardarDetPrd" type="button" class="btn btn-primary">Agregar</button>
+                            <button type="button" class="btn btn-dark" data-dismiss="modal">Cancelar</button>
+                            <p id="spnbtnGuardarDetPrd" class="text-sm text-danger"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- modal subdetalle -->
+            <div id="modal-SubDetalle" class="modal fade" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-body">
+                            <form id="frmSubDetPrd">
+                                <h3>Nuevo Sub Detalle</h3>
+                                <hr />
+                                <div class="mb-3">
+                                    <label class="form-label">Artículo</label>
+                                    <select id="IdArticulo" class="form-control" asp-items="Model.CatalogoBloques">
+                                        <option value="">-- Seleccione Artículo --</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">No.</label>
+                                    <input readonly  type="number" min="1" id="No" class="form-control" />
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Hora</label>
+                                    <input step="1" type="time"  readonly  id="Hora" class="form-control" />
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Silo</label>
+                                    <input type="number" min="1" id="Silo" class="form-control" />
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Densidad</label>
+                                    <select id="IdDensidad" class="form-control" asp-items="Model.CatalogoDensidad">
+                                        <option value="">-- Seleccione Densidad --</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Tipo Bloque</label>
+                                    <select id="IdTipoBloque" class="form-control" asp-items="Model.CatalogoTipoBloque">
+                                        <option value="">-- Seleccione Tipo --</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Peso</label>
+                                    <input type="number" step="0.01" id="Peso" class="form-control" />
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Tipo Fabricación</label>
+                                    <select id="IdTipoFabricacion" class="form-control" asp-items="Model.TiposFabricacion">
+                                        <option value="">-- Seleccione Tipo --</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3" id="divNumeroPedido" style="display:none">
+                                    <label class="form-label">Número Pedido</label>
+                                    <input type="number" id="NumeroPedido" class="form-control" />
+                                </div>
+                            @*     <div class="mb-3">
+                                    <label class="form-label">Código Bloque</label>
+                                    <input id="CodigoBloque" class="form-control" />
+                                </div> *@
+                                <div class="mb-3">
+                                    <label class="form-label">Observaciones</label>
+                                    <textarea id="Observaciones" class="form-control"></textarea>
+                                </div>
+                            </form>
+                            <button id="btnGuardarSubDetPrd" type="button" class="btn btn-primary">Agregar</button>
+                            <button type="button" class="btn btn-dark" data-dismiss="modal">Cancelar</button>
+                            <p id="spnSubDet" class="text-sm text-danger"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        $(document).ready(function() {
+        // ─────────── AUTOSAVE / RESTORE /PREVENT EXIT───────────
+        const DRAFT_KEY = 'draft-prdBloque';
+
+        function backupForm() {
+          const formArr     = $('#frmProduccion').serializeArray();
+          const detalleHtml = $('#tblDetalle tbody').html();
+          localStorage.setItem(DRAFT_KEY,
+            JSON.stringify({ form: formArr, detalleHtml: detalleHtml })
+          );
+        }
+
+                function restoreIfExists() {
+          const draftStr = localStorage.getItem(DRAFT_KEY);
+          if (!draftStr) return;
+
+          if (confirm('Se encontró un borrador sin guardar. ¿Deseas restaurarlo?')) {
+            const draft = JSON.parse(draftStr);
+
+            // 1) Agrupar valores por nombre de campo
+            const formMap = draft.form.reduce((acc, { name, value }) => {
+              acc[name] = acc[name] || [];
+              acc[name].push(value);
+              return acc;
+            }, {});
+
+            // 2) Restaurar cada campo, usando array para selects múltiples
+            Object.entries(formMap).forEach(([name, values]) => {
+              const $el = $('[name="' + name + '"]');
+              const valToSet = $el.prop('multiple') ? values : values[0];
+              if ($el.hasClass('select2-hidden-accessible')) {
+                $el.val(valToSet).trigger('change');
+              } else {
+                $el.val(valToSet);
+              }
+            });
+
+            // 3) Restaurar detalle HTML
+            $('#tblDetalle tbody').html(draft.detalleHtml);
+
+            // 4) Ajustar contador según índice
+            const indices = $('#tblDetalle tbody tr[data-index]')
+              .map(function() { return +$(this).data('index'); })
+              .get();
+            if (indices.length) detalleIndex = Math.max(...indices) + 1;
+          }
+        }
+
+
+        // Restaura al cargar y luego auto‑respalda cada 30s
+        restoreIfExists();
+        setInterval(backupForm, 30000);
+
+        // ───────── PREVENT UNLOAD ─────────
+        function beforeUnloadHandler(e) {
+          const hasRows = $('#tblDetalle tbody tr').length > 0;
+          const isDirty = $('#frmProduccion').serialize() !== '';
+          if (hasRows || isDirty) {
+            e.preventDefault();
+            e.returnValue = '';
+          }
+        }
+        window.addEventListener('beforeunload', beforeUnloadHandler);
+
+                $('#btnRegresar').off('click').on('click', function() {
+          const url = $(this).data('url');
+          if (confirm('¿Deseas salir sin guardar? Se perderán los datos .')) {
+            // 1) Borra el draft
+            localStorage.removeItem(DRAFT_KEY);
+            // 2) Quita el beforeunload para no volver a pedir confirm
+            window.removeEventListener('beforeunload', beforeUnloadHandler);
+            // 3) Navega
+            window.location.href = url;
+          }
+          // si cancela, no pasa nada y conserva el borrador
+        });
+
+        // ──────────END AUTOSAVE / RESTORE /PREVENT EXIT───────────
+
+
+
+
+            var detalleIndex = 0;
+            var currentDetalle = null;
+            
+
+            // --- INICIALIZACIÓN SELECT2 EN LA PÁGINA PRINCIPAL ---
+            $("#IdUsuarios").select2({
+                placeholder: "- Selecciona los operarios -",
+                allowClear: true,
+                width: '100%' // Es buena práctica definir el ancho
+            });
+
+            // --- MANEJO DEL MODAL #1: Detalle ---
+            $('#modal-Detalle').on('shown.bs.modal', function() {
+                // Se ejecuta CADA VEZ que el modal se muestra completamente.
+                // Usamos $(this) para referirnos a este modal y evitar conflictos.
+                var $selects = $(this).find('#IdMaquinaDet, #IdCatBloque');
+
+                if ($selects.hasClass("select2-hidden-accessible")) {
+                    $selects.select2('destroy');
+                }
+
+                $selects.select2({
+                    dropdownParent: $('#modal-Detalle'), // Correcto
+                    allowClear: true,
+                    width: '100%'
+                });
+            });
+
+                  $('#modal-SubDetalle').on('shown.bs.modal', function () {
+                       var $modal = $(this);
+            const $modalBody = $(this).find('.modal-body');
+            const $selects = $modalBody.find('#IdArticulo, #IdDensidad, #IdTipoBloque, #IdTipoFabricacion');
+
+            // Destruye solo si ya estaba inicializado
+            $selects.each(function () {
+                if ($(this).data('select2')) { $(this).select2('destroy'); }
+            });
+
+            // Vuelve a crear
+            $selects.select2({
+                dropdownParent: $modalBody,   // ⬅️  CAMBIO CLAVE
+                allowClear: true,
+                width: '100%'                 // evita anchos erráticos
+            });
+
+              // 2.a) Calcular el siguiente "No." basado en cuántas filas ya hay
+            var subCount = $("tr[data-parent='" + currentDetalle + "']")
+                               .find('table.subTable tbody tr').length;
+            $modal.find('#No').val(subCount + 1);
+
+
+
+             var $subs = $("tr[data-parent='" + currentDetalle + "']")
+                    .find('table.subTable tbody tr');
+            var nextSilo = 1;
+        if ($subs.length > 0) {
+            var last = parseInt($subs.last().find('td:eq(3)').text(), 10);
+            if (!isNaN(last)) nextSilo = last + 1;
+        }
+
+        $modal.find('#Silo').val(nextSilo);
+            // 2.b) Fijar la hora actual en formato HH:mm
+            var now = new Date();
+            var hh  = String(now.getHours()).padStart(2,'0');
+            var mm  = String(now.getMinutes()).padStart(2,'0');
+            $modal.find('#Hora').val(hh + ':' + mm);
+
+         
+            
+            
+        });
+
+             
+
+            // --- MANEJO DE EVENTOS (CON SELECTORES CORREGIDOS) ---
+
+            // Evento 'change' para TipoFabricacion dentro del modal
+            // Usamos delegación de eventos para asegurarnos que funcione siempre.
+            $(document).on('change', '#modal-SubDetalle #IdTipoFabricacion', function(){
+                var modalId = '#modal-SubDetalle';
+                if($(this).val() == 2){
+                    $(modalId + ' #divNumeroPedido').show();
+                } else {
+                    $(modalId + ' #divNumeroPedido').hide();
+                }
+            });
+
+            // Botón Guardar del primer modal
+            $('#btnGuardarDetPrd').click(function(){
+                     var modalId = '#modal-Detalle';
+                $(modalId + ' #spnbtnGuardarDetPrd').text('');
+
+                var idMaquina = $(modalId + ' #IdMaquinaDet').val();
+                var idBloque = $(modalId + ' #IdCatBloque').val();
+
+                if(!idMaquina || !idBloque){
+                    $(modalId + ' #spnbtnGuardarDetPrd').text('Complete la información.');
+                    return;
+                }
+
+                var maquinaText = $(modalId + ' #IdMaquinaDet option:selected').text();
+                var bloqueText = $(modalId + ' #IdCatBloque option:selected').text();
+
+                // AQUÍ LA CORRECCIÓN DE COLSPAN
+                var row = `<tr data-index="${detalleIndex}">
+                                <td>${detalleIndex+1}</td>
+                                <td>${maquinaText}</td>
+                                <td>${bloqueText}</td>
+                                <td><a href="#" class="btn btn-sm btn-outline-primary addSub" data-index="${detalleIndex}">Agregar Sub</a></td>
+                                <td style='display:none'>${idMaquina}</td>
+                                <td style='display:none'>${idBloque}</td>
+                               </tr>
+                               <tr data-parent="${detalleIndex}"><td colspan="6"><table class='table table-sm table-bordered subTable'>
+                                 <thead><tr><th>Artículo</th><th>No.</th><th>Hora</th><th>Silo</th><th>Densidad</th><th>Tipo Bloque</th><th>Peso</th><th>Tipo Fab.</th><th>No.Pedido</th><th>Código</th><th>Obs.</th><th style='display:none'>IdArt</th><th style='display:none'>IdDen</th><th style='display:none'>IdTipoB</th><th style='display:none'>IdTipoF</th></tr></thead>
+                                 <tbody></tbody></table></td></tr>`;
+
+              
+                $('#tblDetalle > tbody').append(row);
+
+                detalleIndex++;
+                $(modalId + ' #frmDetPrd')[0].reset();
+                $(modalId).modal('hide');
+            });
+
+            // Abrir el modal de sub-detalle (esto ya estaba bien)
+            $(document).on('click','.addSub',function(e){
+                e.preventDefault();
+                currentDetalle = $(this).data('index');
+                $('#modal-SubDetalle').modal('show');
+            });
+
+            // Botón Guardar del segundo modal
+            $('#btnGuardarSubDetPrd').click(function(){
+                var modalId = '#modal-SubDetalle'; // Definimos el scope
+                $(modalId + ' #spnSubDet').text('');
+
+                // CORREGIDO: Buscamos CADA ID dentro del modal para evitar errores
+                var idArt = $(modalId + ' #IdArticulo').val();
+                var no = $(modalId + ' #No').val();
+                var hora = $(modalId + ' #Hora').val();
+                var silo = $(modalId + ' #Silo').val();
+                var idDen = $(modalId + ' #IdDensidad').val();
+                var idTipoB = $(modalId + ' #IdTipoBloque').val();
+                var peso = $(modalId + ' #Peso').val();
+                var idTipoF = $(modalId + ' #IdTipoFabricacion').val();
+                var numPed = $(modalId + ' #NumeroPedido').val();
+              
+                var obs = $(modalId + ' #Observaciones').val();
+
+
+                        // ——— NUEVO: convertir “hora” (24h) a formato “hh:mm:00 AM/PM” ———
+        var rawHora = hora;            // p.ej. "13:44"
+        var parts   = rawHora.split(':');
+        var h24     = parseInt(parts[0],10), m = parts[1];
+        var ampm    = h24 >= 12 ? 'PM' : 'AM';
+        var h12     = (h24 % 12) || 12;
+        var formattedHora = ('0' + h12).slice(-2) + ':' + m + ':00 ' + ampm;
+         var rawHora24 = ('0'+h24).slice(-2) + ':' + m + ':00'; //formato 24H para el backend
+        // ————————————————————————————————————————————————————————
+
+                if(!idArt || !no || !hora || !silo || !idDen || !idTipoB || !peso || !idTipoF ){ $(modalId + ' #spnSubDet').text('Complete la información'); return; }
+
+
+                        var pesoRegex = /^\d+(\.\d{1})?$/;
+        if(!pesoRegex.test(peso)){
+            $(modalId + ' #spnSubDet').text('El peso debe tener máximo un decimal, p. ej.: 72 o 72.5');
+            return;
+        }
+
+                var artText = $(modalId + ' #IdArticulo option:selected').text();
+                var denText = $(modalId + ' #IdDensidad option:selected').text();
+                var tipoBText = $(modalId + ' #IdTipoBloque option:selected').text();
+                var tipoFText = $(modalId + ' #IdTipoFabricacion option:selected').text();
+
+
+
+                   var silo = $(modalId + ' #Silo').val();
+
+            // ————— AÑADIDO —————
+            // 3) Actualizar lastSilo para la próxima vez
+             lastSilo = parseInt(silo)+1;
+            
+                var row = `<tr>
+                                <td>${artText}</td>
+                                <td>${no}</td>
+                               <td data-hora="${rawHora24}">${formattedHora}</td>
+                                <td>${silo}</td>
+                                <td>${denText}</td>
+                                <td>${tipoBText}</td>
+                                <td>${peso}</td>
+                                <td>${tipoFText}</td>
+                                <td>${numPed||''}</td>
+                                <td></td>
+                                <td>${obs||''}</td>
+                                <td style='display:none'>${idArt}</td>
+                                <td style='display:none'>${idDen}</td>
+                                <td style='display:none'>${idTipoB}</td>
+                                <td style='display:none'>${idTipoF}</td>
+                           </tr>`;
+                var $subTable = $("tr[data-parent='"+currentDetalle+"']").find('table.subTable tbody');
+                $subTable.append(row);
+
+                var total = 0;
+                $subTable.find('tr').each(function(){ total += parseFloat($(this).find('td:eq(6)').text()) || 0; });
+                $("tr[data-index='"+currentDetalle+"']").find('.prodDia').text(total.toFixed(2));
+
+                $(modalId + ' #frmSubDetPrd')[0].reset();
+                $(modalId + ' #divNumeroPedido').hide();
+                $(modalId).modal('hide');
+            });
+
+            $('#frmProduccion').submit(function(e){
+                e.preventDefault();
+                var token = $('input[name="__RequestVerificationToken"]').val();
+                var viewModel = { IdUsuarios: $('#IdUsuarios').val(), Fecha: $('#Fecha').val(), DetPrdBloques: [] };
+                $('#tblDetalle tbody tr[data-index]').each(function(){
+                    var idx = $(this).data('index');
+                    var det = { IdMaquina: parseInt($(this).find('td:eq(4)').text()), IdCatBloque: parseInt($(this).find('td:eq(5)').text()), SubDetPrdBloques: [] };
+                    $("tr[data-parent='"+idx+"'] table.subTable tbody tr").each(function(){
+                             // ——— NUEVO: generar CodigoBloque a partir de No + Fecha + Densidad + Tipo Bloque + Peso
+                        var noText          = $(this).find('td:eq(1)').text();
+                        var fechaText       = $('#Fecha').val();
+                        var densText        = $(this).find('td:eq(4)').text();
+                        var tipoBloqueText  = $(this).find('td:eq(5)').text();
+                        var pesoText        = $(this).find('td:eq(6)').text();
+                        var codigoBloque    = noText + fechaText + densText + tipoBloqueText + pesoText;
+        // ————————————————————————————————————————————————————————————————
+                        
+                        var sd = {
+                            IdArticulo: parseInt($(this).find('td:eq(11)').text()),
+                            No: parseInt($(this).find('td:eq(1)').text()),
+                            Hora:  $(this).find('td:eq(2)').data('hora'),
+                            Silo: parseInt($(this).find('td:eq(3)').text()),
+                            IdDensidad: parseInt($(this).find('td:eq(12)').text()),
+                            IdTipoBloque: parseInt($(this).find('td:eq(13)').text()),
+                            Peso: parseFloat($(this).find('td:eq(6)').text()),
+                            IdTipoFabricacion: parseInt($(this).find('td:eq(14)').text()),
+                            NumeroPedido: $(this).find('td:eq(8)').text() !== '' ? parseInt($(this).find('td:eq(8)').text()) : null,
+                            CodigoBloque:codigoBloque,
+                            Observaciones: $(this).find('td:eq(10)').text()
+                        };
+                        det.SubDetPrdBloques.push(sd);
+                    });
+                    viewModel.DetPrdBloques.push(det);
+                });
+
+              //  console.log(JSON.stringify(viewModel));
+                $.ajax({
+                    url:'/PrdBloques/Create',
+                    type:'POST',
+                    headers:{'RequestVerificationToken':token},
+                    data: JSON.stringify(viewModel),
+                    contentType:'application/json; charset=utf-8',
+                    success:function(){
+                         // ══════════════ LIMPIAR BORRADOR ══════════════
+                    localStorage.removeItem(DRAFT_KEY);
+                           // ——— NUEVO: desactivar el aviso de "Leave site?" al salir ———
+                     window.removeEventListener('beforeunload', beforeUnloadHandler);
+                    // ════════════════════════════════════════════
+                        alert('Producción Guardada!');
+                        window.location.href='@Url.Action("Index", "Home")';
+                    },
+                    error:function(){
+                        alert('Error , Contacte a soporte!');
+                    }
+                });
+            });
+        });
+    </script>
+}

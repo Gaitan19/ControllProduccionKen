@@ -1,0 +1,59 @@
+﻿@using ControlProduccion.ViewModel;
+@model IEnumerable<LineaProduccionViewModel>;
+@{
+    ViewData["Title"] = "Catalogo Linea Producción";
+}
+
+<div class="col-md-11 offset-md-1">
+    <h2 class="text-center">Catalogo Linea Producción</h2>
+    <div class="ibox">
+        <div class="ibox-title">
+            <div class="col-sm-8">
+                <a asp-controller="GestionCatalogos" asp-action="CreateLineaProduccion" id="btnAdd" class="btn btn-info btn-outline">
+                    <i class="fa fa-plus"></i> Agregar
+                </a>
+            </div>
+        </div>
+        <div class="ibox-content">
+            <table id="tblLineaProduccion" class="table tdatatable table-bordered">
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Activo</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var lp in Model)
+                    {
+                        <tr>
+                            <td>
+                                <a asp-action="EditLineaProduccion" asp-route-id="@lp.Id">
+                                    @lp.Nombre
+                                </a>
+                            </td>
+                            <td>
+                                @if (lp.Activo)
+                                {
+                                    <span class="badge badge-success">Activo</span>
+                                }
+                                else
+                                {
+                                    <span class="badge badge-danger">Inactivo</span>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        // Puedes agregar aquí cualquier script adicional según sea necesario
+    </script>
+}

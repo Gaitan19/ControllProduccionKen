@@ -1,0 +1,68 @@
+﻿@using ControlProduccion.ViewModel;
+@model IEnumerable<CatalogoPanelesCovintecViewModel>;
+
+@{
+    ViewData["Title"] = "Catálogo Paneles Covintec";
+}
+
+<div class="col-md-11 offset-md-1">
+
+    <h2 class="text-center">Catálogo Paneles Covintec</h2>
+    <div class="ibox">
+        <div class="ibox-title">
+            <div class="col-sm-8">
+                <a asp-controller="GestionCatalogos" asp-action="CreateCatalogoPanelesCovintec" id="btnAdd" class="btn btn-info btn-outline">
+                    <i class="fa fa-plus"></i> Agregar
+                </a>
+            </div>
+        </div>
+        <div class="ibox-content">
+            <table id="tblPanelesCovintec" class="table tdatatable table-bordered">
+                <thead>
+                    <tr>
+                        <th>Id Línea Producción</th>
+                        <th>Descripción Artículo</th>
+                        <th>Código Artículo</th>
+                        <th>Mts2 Por Panel</th>
+                        <th>Activo</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var panel in Model)
+
+                    {
+                        <tr>
+                            <td>
+                                <a asp-action="EditCatalogoPanelesCovintec" asp-route-id="@panel.Id">
+                                    @panel.IdLineaProduccion
+                                </a>
+                            </td>
+                            <td>@panel.DescripcionArticulo</td>
+                            <td>@panel.CodigoArticulo</td>
+                            <td>@panel.Mts2PorPanel</td>
+                            <td>
+                                @if (panel.Activo)
+
+                                {
+                                    <span class="badge badge-success">Activo</span>
+                                }
+
+                                else
+
+                                {
+                                    <span class="badge badge-danger">Inactivo</span>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

@@ -1,0 +1,386 @@
+﻿@using ControlProduccion.ViewModel;
+@model PrdNeveraViewModel;
+@{
+    ViewData["Title"] = "Produccion Nevera";
+}
+
+<div class="col-md-8 offset-md-2">
+    <div class="ibox ">
+        <div class="ibox-title">
+            <h5>@ViewData["Title"]</h5>
+
+        </div>
+        <div class="ibox-content">
+            <form id="frmProduccion" method="post" asp-action="Edit" autocomplete="off">
+                @Html.AntiForgeryToken()
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+                <input type="hidden" asp-for="Id" />
+                <div class="form-group">
+                    <label asp-for="IdUsuarios"></label>
+                    <select id="IdUsuarios" multiple name="IdUsuarios" asp-for="IdUsuarios" class="form-control select2" asp-items="Model.Operarios">
+                    </select>
+                    <span asp-validation-for="IdUsuarios" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="IdMaquina"></label>
+                    <select id="IdMaquina" name="IdMaquina" asp-for="IdMaquina" class="form-control" asp-items="Model.Maquinas">
+                         <option>- Seleccione una maquina -</option>
+                    </select>
+                    <span asp-validation-for="IdMaquina" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Fecha"></label>
+                    <input asp-for="Fecha" class="form-control" />
+                    <span asp-validation-for="Fecha" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="HoraInicio"></label>
+                    <input  asp-for="HoraInicio" class="form-control" />
+                    <span asp-validation-for="HoraInicio" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="HoraFin"></label>
+                    <input  asp-for="HoraFin" class="form-control" />
+                    <span asp-validation-for="HoraFin" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="TiempoParo"></label>
+                    <input asp-for="TiempoParo" class="form-control" />
+                    <span asp-validation-for="TiempoParo" class="text-danger"></span>
+                </div>
+
+                <div class="hr-line-dashed"></div>
+                <div class="form-group row">
+
+                    @*         <a data-toggle='modal' href='#modal-Detalle' id="btnAgregarDetalle" class="btn btn-info btn-outline">
+                        <i class="fa fa-plus"></i> Agregar Nuevo Detalle
+                    </a> *@
+
+              
+                    <div class="col-sm-12" style="max-height: 300px; overflow: scroll">
+                        <h4 id="hdrVV" runat="server">Detalle Produccion</h4>
+
+                        <table id="tblProduccion" class="table table-bordered table-hover">
+                            <thead class="table-light">
+                                <tr>
+                                    <th style="display:none">Id</th>
+                                    <th>Posición</th>
+                                    <th>Articulo</th>
+                                    <th>Cantidad Producida</th>
+                                    <th>Cantidad No Conforme</th>
+                                    <th>Tipo Fabricación</th>
+                                    <th>Número Pedido</th>
+                                    
+                                   
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @*       <tr>
+
+                                    <td>Panel Térmico 1.5</td>
+                                    <td>120</td>
+                                    <td>5</td>
+                                    <td>Manual</td>
+                                    <td>4521</td>
+
+
+                                </tr> *@
+                                @foreach (var detalle in Model.DetPrdNeveras)
+                                {
+                                    <tr>
+
+                                        <td style="display:none">@detalle.Id</td>
+                                        @if(Model.AprobadoGerencia!=true)
+                                        {
+                                            <td><a href="#" class="open-modal">@detalle.Posicion</a></td>
+                                        }
+                                        else
+                                        {
+                                            <td><a >@detalle.Posicion</a></td>
+                                        }
+
+
+                                        
+                                        <td>@detalle.Articulo</td>
+                                        <td>@detalle.CantidadConforme</td>
+                                        <td>@detalle.CantidadNoConforme</td>
+                                        <td>@detalle.TipoFabricacion</td>
+                                        <td>@detalle.NumeroPedido</td>
+                                    
+                                   
+                                        <td style='display:none;'> @detalle.IdArticulo</td>
+                                        <td style='display:none;'> @detalle.IdTipoFabricacion </td>
+
+                                    </tr>
+                                }
+
+                            </tbody>
+                        </table>
+
+                    </div>
+                </div>
+               
+            
+
+                <div class="form-group">
+                    <label asp-for="Observaciones"></label>
+                    <textarea asp-for="Observaciones" class="form-control"></textarea>
+                    <span asp-validation-for="Observaciones" class="text-danger"></span>
+                </div>
+                <button type="button" class="btn btn-dark" onclick="location.href='@Url.Action("Index", "PrdNevera")'">Regresar</button>
+                @if (Model.AprobadoGerencia != true)
+                {
+                    <button type="submit" class="btn btn-primary">Actualizar</button>
+                }
+
+                @if (User.IsInRole("JefeProduccion") && Model.AprobadoGerencia != true)
+                {
+                    <button id="btnAprobarProd" type="button" class="btn btn-danger" onclick="validar(@Model.Id)">Aprobar</button>
+                }
+                else
+                {
+                    <button type="button" class="btn btn-success">Aprobado</button>
+                }
+               
+
+
+            </form>
+
+            @*     -----modal para agregar detalle prd------ *@
+            <div id="modal-Detalle" class="modal fade" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-body">
+                            <form id="frmDetPrd">
+                                <input type="hidden" id="detrpdId" name="detrpdId" />
+                                <h3>Editar Detalle</h3>
+                                <hr />
+
+                                <div class="mb-3">
+                                    <label class="form-label">Artículo</label>
+                                    <select id="IdArticulo" name="IdArticulo" class="form-control" asp-items="Model.Articulos">
+                                        <option value="">-- Selecione un articulo --</option>
+                                    </select>
+                                    <span class="text-danger"></span>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="CantidadProducida" class="form-label">Cantidad Conforme</label>
+                                    <input oninput="this.value = this.value.replace(/[^0-9\-]/g, '');" step="1" min="0" type="number" id="CantidadConforme" name="CantidadConforme" class="form-control" value="" />
+                                    <span class="text-danger"></span>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="CantidadNoConforme" class="form-label">Cantidad No Conforme</label>
+                                    <input oninput="this.value = this.value.replace(/[^0-9\-]/g, '');" step="1" min="0" type="number" id="CantidadNoConforme" name="CantidadNoConforme" class="form-control" value="" />
+                                    <span class="text-danger"></span>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label">Tipo Fabricación</label>
+                                    <select id="IdTipoFabricacion" name="IdTipoFabricacion" class="form-control" asp-items="Model.TiposFabricacion">
+                                        <option value="">-- Selecione un Tipo Fabricacion --</option>
+                                    </select>
+                                    <span class="text-danger"></span>
+                                </div>
+
+                                <div class="mb-3" id="divNumeroPedido" style="display:none">
+                                    <label for="NumeroPedido" class="form-label">Número Pedido</label>
+                                    <input oninput="this.value = this.value.replace(/[^0-9\-]/g, '');" step="1" min="0" type="number" id="NumeroPedido" name="NumeroPedido" class="form-control" value="" />
+                                    <span class="text-danger"></span>
+                                </div>
+                            </form>
+
+                            <button id="btnGuardarDetPrd" type="button" class="btn btn-primary">Actualizar</button>
+                            <button type="button" class="btn  btn-dark" data-dismiss="modal">Cancelar</button>
+                            <br />
+                            <p id="spnbtnGuardarDetPrd" class="text-sm text-danger"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+           
+
+        </div>
+    </div>
+</div>
+
+
+
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+
+                 function validarUnDecimal(input) {
+          // Elimina caracteres no válidos (solo dígitos y punto)
+          let valor = input.value.replace(/[^0-9.]/g, '');
+
+          // Si hay más de un punto, conserva solo el primero
+          let partes = valor.split('.');
+          if (partes.length > 2) {
+            valor = partes[0] + '.' + partes[1];
+          }
+
+          // Si existe el punto, limita la parte decimal a 1 dígito
+          if (valor.includes('.')) {
+            let [entero, decimal] = valor.split('.');
+            decimal = decimal.substring(0, 1); // conserva solo el primer dígito
+            valor = entero + '.' + decimal;
+          }
+
+          input.value = valor;
+        }
+
+
+
+
+
+
+
+                           $("#IdUsuarios").select2({
+            placeholder: "- Selecciona los operarios -",
+            allowClear:true
+        });
+
+                          $("#IdMaquina").select2({
+            placeholder: "- Seleccione una maquina -",
+            allowClear:true
+        });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                   $("#tblProduccion").on("click", ".open-modal", function(e){
+          e.preventDefault();
+          var $row = $(this).closest("tr");
+
+          // Con base en la estructura de tu tabla:
+          var id                   = $row.find("td:eq(0)").text().trim();
+          var posicion             = $row.find("td:eq(1)").text().trim();
+          var articulo             = $row.find("td:eq(2)").text().trim();
+          var cantidadProducida    = $row.find("td:eq(3)").text().trim();
+          var cantidadNoConforme   = $row.find("td:eq(4)").text().trim();
+          var tipoFabricacion      = $row.find("td:eq(5)").text().trim();
+          var numeroPedido         = $row.find("td:eq(6)").text().trim();
+          var idArticulo           = $row.find("td:eq(7)").text().trim();
+          var idTipoFabricacion    = $row.find("td:eq(8)").text().trim();
+
+          // Rellenar el modal
+          $("#detrpdId").val(id);
+          $("#IdArticulo").val(idArticulo);
+          $("#CantidadConforme").val(cantidadProducida);
+          $("#CantidadNoConforme").val(cantidadNoConforme);
+          $("#IdTipoFabricacion").val(idTipoFabricacion);
+
+          if (idTipoFabricacion == "2") {
+            $("#divNumeroPedido").show();
+          } else {
+            $("#divNumeroPedido").hide();
+          }
+          $("#NumeroPedido").val(numeroPedido);
+
+          $("#modal-Detalle").modal("show");
+        });
+
+
+
+
+                    $("#btnGuardarDetPrd").click(function(e){
+          e.preventDefault();
+
+          // Serializa los datos del formulario
+          var formData = $("#frmDetPrd").serialize();
+
+          $.ajax({
+        url: '@Url.Action("EditDetPrd", "PrdNevera")', // Reemplaza "NombreDelControlador" con el nombre real de tu controlador
+            type: 'POST',
+            data: formData,
+            success: function(response) {
+              if(response.success){
+                // Obtiene el Id actual a actualizar del campo oculto
+                var updatedId = $("#detrpdId").val().trim();
+
+                // Busca la fila en la tabla cuyo primer TD (Id) coincida con el valor actualizado
+                var $row = $("#tblProduccion tbody tr").filter(function(){
+                  return $(this).find("td:eq(0)").text().trim() === updatedId;
+                });
+
+
+
+                // Muestra el mensaje de éxito, cierra el modal y puedes agregar lógica adicional si es necesario
+                alert(response.message);
+                $("#modal-Detalle").modal("hide");
+                 location.reload();
+              } else {
+                alert("Error: " + response.message);
+              }
+            },
+            error: function(xhr, status, error) {
+              alert("Ocurrió un error en la solicitud: " + error);
+            }
+          });
+        });
+
+
+
+         $("#IdTipoFabricacion").change(function () {
+            var selectedValue = $(this).val();
+            if (selectedValue == 2) {
+                $("#divNumeroPedido").show();
+            } else {
+                $("#divNumeroPedido").hide();
+            }
+        });
+
+
+
+
+
+                        function validar(id) {
+            if (confirm("¿Está seguro de que desea Aprobar esta producción?")) {
+                $.ajax({
+                    url: '@Url.Action("AprobarPrd", "PrdNevera")',
+                    type: 'POST',
+                    data: { id: id },
+                    success: function(response) {
+                        if (response) {
+                            alert("Producción Aprobada exitosamente.");
+                            location.reload();
+                        } else {
+                            alert("Error al Aprobar la producción, contacte a soporte.");
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        alert("Error al procesar la solicitud: " + error);
+                    }
+                });
+            }
+        }
+
+    </script>
+}
+

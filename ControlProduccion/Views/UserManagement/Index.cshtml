@@ -1,0 +1,68 @@
+﻿@model IEnumerable<Microsoft.AspNetCore.Identity.IdentityUser>
+
+
+<div class="col-md-11 offset-md-1">
+
+    <h2 class="text-center"> Usuarios</h2>
+    <div class="ibox">
+        <div class="ibox-title">
+            <div class="col-sm-8">
+                <a asp-controller="UserManagement" asp-action="Create" id="btnAdd" class="btn btn-info btn-outline">
+                    <i class="fa fa-plus"></i> Add
+                </a>
+
+            </div>
+        </div>
+        <div class="ibox-content">
+
+            <table id="tblUsuarios" class="table tdatatable table-bordered">
+                <thead>
+                    <tr>
+                        <th>Usuario</th>
+                        <th>Accion</th>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach(var user in Model)
+                    {
+                        <tr>
+                            <td>
+                            <a asp-action="Edit" asp-route-id="@user.Id">
+                                @user.UserName
+                            </a>
+                            </td>
+                            <td>
+                                <form asp-action="ToggleLockout" asp-route-id="@user.Id" method="post" style="display:inline;">
+                                    @Html.AntiForgeryToken()
+                                    @if (user.LockoutEnd.HasValue && user.LockoutEnd.Value > DateTime.UtcNow)
+                                    {
+                                        <button type="submit" class="btn btn-warning">Desbloquear</button>
+                                    }
+                                    else
+                                    {
+                                        <button type="submit" class="btn btn-danger">Bloquear</button>
+                                    }
+                                </form>
+                            </td>
+                        </tr>
+                    }
+            
+            
+        </tbody>
+    </table>
+    </div>
+    </div>
+                    </div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+     
+
+    </script>
+      
+                }

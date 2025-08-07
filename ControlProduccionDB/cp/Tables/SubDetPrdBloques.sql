@@ -1,0 +1,26 @@
+﻿CREATE TABLE [cp].[SubDetPrdBloques] (
+    [Id]                     INT             IDENTITY (1, 1) NOT NULL,
+    [DetPrdBloquesId]        INT             NULL,
+    [IdArticulo]             INT             NOT NULL,
+    [No]                     INT             NOT NULL,
+    [Hora]                   TIME (7)        NOT NULL,
+    [Silo]                   INT             NOT NULL,
+    [IdDensidad]             INT             NOT NULL,
+    [IdTipoBloque]           INT             NOT NULL,
+    [Peso]                   DECIMAL (10, 1) NOT NULL,
+    [IdTipoFabricacion]      INT             NOT NULL,
+    [NumeroPedido]           INT             NULL,
+    [CodigoBloque]           VARCHAR (150)   NOT NULL,
+    [Observaciones]          VARCHAR (500)   NULL,
+    [IdUsuarioCreacion]      NVARCHAR (450)  NOT NULL,
+    [FechaCreacion]          DATETIME        NOT NULL,
+    [IdUsuarioActualizacion] NVARCHAR (450)  NULL,
+    [FechaActualizacion]     DATETIME        NULL,
+    CONSTRAINT [PK_SubDetPrdBloques] PRIMARY KEY CLUSTERED ([Id] ASC),
+    CONSTRAINT [FK_SubDetPrdBloques_CatalogoBloques] FOREIGN KEY ([IdArticulo]) REFERENCES [cp].[CatalogoBloques] ([Id]),
+    CONSTRAINT [FK_SubDetPrdBloques_DetPrdBloques] FOREIGN KEY ([DetPrdBloquesId]) REFERENCES [cp].[DetPrdBloques] ([Id]),
+    CONSTRAINT [FK_SubDetPrdBloques_MaestroCatalogo] FOREIGN KEY ([IdDensidad]) REFERENCES [cp].[MaestroCatalogo] ([Id]),
+    CONSTRAINT [FK_SubDetPrdBloques_MaestroCatalogo1] FOREIGN KEY ([IdTipoBloque]) REFERENCES [cp].[MaestroCatalogo] ([Id]),
+    CONSTRAINT [FK_SubDetPrdBloques_TipoFabricacion] FOREIGN KEY ([IdTipoFabricacion]) REFERENCES [cp].[TipoFabricacion] ([Id])
+);
+

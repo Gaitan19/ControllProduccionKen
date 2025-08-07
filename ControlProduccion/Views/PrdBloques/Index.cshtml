@@ -1,0 +1,80 @@
+@using Application.DTOs
+@model IEnumerable<ShowPrdBloqueDto>
+
+@{
+    ViewData["Title"] = "Producción Bloques";
+}
+
+<div class="col-md-15 offset-md-1">
+    <h2 class="text-center">@ViewData["Title"]</h2>
+    <div class="ibox">
+        <div class="ibox-title">
+            <div class="col-sm-8">
+                @if (User.IsInRole("JefeProduccion"))
+                {
+                    <a asp-controller="PrdBloques" asp-route-end="@DateTime.Now" asp-route-start="@DateTime.Now.AddDays(-1)" asp-action="GetDataReport" id="btnVerReporte" class="btn btn-info btn-outline">
+                        <i class="fa fa-print"></i> Ver Reporte
+                    </a>
+                }
+
+            </div>
+        </div>
+        <div class="ibox-content table-responsive">
+            <table id="tblProduccion" class="table tdatatable2 table-bordered">
+                <thead>
+                    <tr>
+                        <th>Id Producción</th>
+                        <th>Operarios</th>
+                        <th>Fecha</th>
+                        <th>Validado</th>
+                        <th>Aprobado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var produccion in Model)
+                    {
+                        <tr>
+                            @if (User.IsInRole("Supervisor"))
+                            {
+                                <td>
+                                    <a asp-action="Details" asp-route-id="@produccion.Id">@produccion.Id</a>
+                                </td>
+                            }
+                            else if (User.IsInRole("JefeProduccion"))
+                            {
+                                <td>
+                                    <a asp-action="Edit" asp-route-id="@produccion.Id">@produccion.Id</a>
+                                </td>
+                            }
+                            <td>@produccion.Operarios</td>
+                            <td>@produccion.Fecha?.ToString("yyyy-MM-dd")</td>
+                            <td>
+                                <i class="fa @(produccion.AprobadoSupervisor ? "fa-check text-success" : "fa-times text-danger")"></i>
+                            </td>
+                            <td>
+                                <i class="fa @(produccion.AprobadoGerencia ? "fa-check text-success" : "fa-times text-danger")"></i>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+    <script>
+        $('.tdatatable2').DataTable({
+            "order": [[0, 'desc']],
+            pageLength: 25,
+            responsive: true,
+            info: false,
+            language: {
+                search: '',
+                searchPlaceholder: "Buscar...",
+                emptyTable: "Sin Datos"
+            },
+        });
+    </script>
+}

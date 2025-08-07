@@ -1,0 +1,40 @@
+﻿@using ControlProduccion.ViewModel;
+@model UbicacionBobinaViewModel;
+@{
+    ViewData["Title"] = "Crear Ubicación Bobina";
+}
+
+<div class="col-md-8 offset-md-2">
+    <div class="ibox">
+        <div class="ibox-title">
+            <h5>@ViewData["Title"]</h5>
+        </div>
+        <div class="ibox-content">
+            <form id="frmUbicacionBobina" asp-controller="GestionCatalogos" asp-action="CreateUbicacionBobina" method="post" autocomplete="off">
+                @Html.AntiForgeryToken()
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+                <div class="form-group">
+                    <label asp-for="Descripcion"></label>
+                    <input asp-for="Descripcion" class="form-control" />
+                    <span asp-validation-for="Descripcion" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Activo"></label>
+                    <input asp-for="Activo" type="checkbox" />
+                    <span asp-validation-for="Activo" class="text-danger"></span>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Guardar</button>
+                <button type="button" class="btn btn-dark" onclick="location.href='@Url.Action("IndexUbicacionBobina", "GestionCatalogos")'">Regresar</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

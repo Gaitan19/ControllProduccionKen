@@ -1,0 +1,59 @@
+﻿@using ControlProduccion.ViewModel;
+@model CatalogoMallasCovintecViewModel;
+
+@{
+    ViewData["Title"] = "Catálogo de Mallas Convitec";
+}
+
+<div class="col-md-8 offset-md-2">
+    <div class="ibox">
+        <div class="ibox-title">
+            <h5>@ViewData["Title"]</h5>
+        </div>
+        <div class="ibox-content">
+            <form id="frmCatalogoCercha" asp-controller="GestionCatalogos" asp-action="CreateCatalogoMallasCovintec" method="post" autocomplete="off">
+                @Html.AntiForgeryToken()
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+            @*     <div class="form-group">
+                    <label asp-for="IdLineaProduccion"></label>
+                    <input asp-for="IdLineaProduccion" class="form-control" type="number" />
+                    <span asp-validation-for="IdLineaProduccion" class="text-danger"></span>
+                </div> *@
+
+                <div class="form-group">
+                    <label asp-for="CodigoArticulo"></label>
+                    <input asp-for="CodigoArticulo" class="form-control" maxlength="50" />
+                    <span asp-validation-for="CodigoArticulo" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="DescripcionArticulo"></label>
+                    <textarea asp-for="DescripcionArticulo" class="form-control" maxlength="200"></textarea>
+                    <span asp-validation-for="DescripcionArticulo" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="LongitudCentimetros"></label>
+                    <input asp-for="LongitudCentimetros" class="form-control" type="number" min="1" />
+                    <span asp-validation-for="LongitudCentimetros" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Activo"></label>
+                    <input asp-for="Activo" type="checkbox" />
+                    <span asp-validation-for="Activo" class="text-danger"></span>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Guardar</button>
+                <button type="button" class="btn btn-dark" onclick="location.href='@Url.Action("IndexCatalogoMallasCovintec", "GestionCatalogos")'">Regresar</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

@@ -1,0 +1,59 @@
+﻿@using ControlProduccion.ViewModel;
+@model IEnumerable<CatalogoStatusViewModel>;
+@{
+    ViewData["Title"] = "Catalogo Status";
+}
+
+<div class="col-md-11 offset-md-1">
+    <h2 class="text-center">Catalogo Status</h2>
+    <div class="ibox">
+        <div class="ibox-title">
+            <div class="col-sm-8">
+                <a asp-controller="GestionCatalogos" asp-action="CreateCatalogoStatus" id="btnAdd" class="btn btn-info btn-outline">
+                    <i class="fa fa-plus"></i> Agregar
+                </a>
+            </div>
+        </div>
+        <div class="ibox-content">
+            <table id="tblCatalogoStatus" class="table tdatatable table-bordered">
+                <thead>
+                    <tr>
+                        <th>Descripcion</th>
+                        <th>Activo</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var cs in Model)
+                    {
+                        <tr>
+                            <td>
+                                <a asp-action="EditCatalogoStatus" asp-route-id="@cs.Id">
+                                    @cs.Descripcion
+                                </a>
+                            </td>
+                            <td>
+                                @if (cs.Activo)
+                                {
+                                    <span class="badge badge-success">Activo</span>
+                                }
+                                else
+                                {
+                                    <span class="badge badge-danger">Inactivo</span>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        // Puedes agregar aquí cualquier script adicional que necesites
+    </script>
+}

@@ -1,0 +1,54 @@
+﻿@using ControlProduccion.ViewModel;
+@model ColoresBobinaViewModel;
+@{
+    ViewData["Title"] = "Crear Colores Bobina";
+}
+
+
+<div class="col-md-8 offset-md-2">
+    <div class="ibox ">
+        <div class="ibox-title">
+            <h5>@ViewData["Title"]</h5>
+
+        </div>
+        <div class="ibox-content">
+            <form id="frmCatColorBobina" asp-controller="GestionCatalogos" asp-action="CreateColorBonina" method="post" autocomplete="off">
+                @Html.AntiForgeryToken()
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+
+
+
+                <div class="form-group">
+                    <label asp-for="Color"></label>
+                    <input asp-for="Color" class="form-control" />
+                    <span asp-validation-for="Color" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Ral"></label>
+                    <input asp-for="Ral" class="form-control" />
+                    <span asp-validation-for="Ral" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Activo"></label>
+                    <input asp-for="Activo" type="checkbox"  />
+                    <span asp-validation-for="Activo" class="text-danger"></span>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Guardar</button>
+                <button type="button" class="btn btn-dark" onclick="location.href='@Url.Action("IndexColorBobina", "GestionCatalogos")'">Regresar</button>
+            </form>
+
+
+        </div>
+        </div>
+</div>
+
+        @section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+}

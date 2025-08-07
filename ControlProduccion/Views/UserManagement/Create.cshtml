@@ -1,0 +1,53 @@
+﻿@using ControlProduccion.ViewModel;
+@model CreateUserViewModel;
+
+@{
+    ViewData["Title"] = "Crear Usuario";
+}
+
+
+
+
+<div class="col-md-6 offset-md-2">
+    <div class="ibox ">
+        <div class="ibox-title">
+            <h5>@ViewData["Title"]</h5>
+
+        </div>
+        <div class="ibox-content">
+            <form asp-action="Create" method="post" autocomplete="off">
+                @Html.AntiForgeryToken()
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                <div class="form-group">
+                    <label asp-for="UserName"></label>
+                    <input asp-for="UserName" class="form-control" />
+                    <span asp-validation-for="UserName" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Password"></label>
+                    <input autocomplete="new-password" asp-for="Password" class="form-control" />
+                    <span asp-validation-for="Password" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="SelectedRole"></label>
+                    <select asp-for="SelectedRole" class="form-control" asp-items="Model.Roles">
+                        <option value="">-- Seleccione un rol --</option>
+                    </select>
+                    <span asp-validation-for="SelectedRole" class="text-danger"></span>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Crear Usuario</button>
+                <button type="button" class="btn btn-dark" onclick="location.href='@Url.Action("Index", "UserManagement")'">Regresar</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

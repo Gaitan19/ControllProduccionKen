@@ -1,0 +1,61 @@
+﻿@using ControlProduccion.ViewModel;
+@model CatalogoPanelesCovintecViewModel;
+
+@{
+    ViewData["Title"] = "Editar Catálogo Paneles Covintec";
+}
+
+<div class="col-md-8 offset-md-2">
+    <div class="ibox ">
+        <div class="ibox-title">
+            <h5>@ViewData["Title"]</h5>
+        </div>
+        <div class="ibox-content">
+            <form id="frmCatPanelesCovintec" asp-controller="GestionCatalogos" asp-action="EditCatalogoPanelesCovintec" method="post" autocomplete="off">
+                @Html.AntiForgeryToken()
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+                <input type="hidden" asp-for="Id" />
+
+                <div class="form-group">
+                    <label asp-for="IdLineaProduccion"></label>
+                    <input asp-for="IdLineaProduccion" class="form-control" />
+                    <span asp-validation-for="IdLineaProduccion" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="DescripcionArticulo"></label>
+                    <input asp-for="DescripcionArticulo" class="form-control" />
+                    <span asp-validation-for="DescripcionArticulo" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="CodigoArticulo"></label>
+                    <input asp-for="CodigoArticulo" class="form-control" />
+                    <span asp-validation-for="CodigoArticulo" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Mts2PorPanel"></label>
+                    <input asp-for="Mts2PorPanel" class="form-control" />
+                    <span asp-validation-for="Mts2PorPanel" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Activo"></label>
+                    <input asp-for="Activo" type="checkbox" />
+                    <span asp-validation-for="Activo" class="text-danger"></span>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Guardar</button>
+                <button type="button" class="btn btn-dark" onclick="location.href='@Url.Action("IndexCatalogoPanelesCovintec", "GestionCatalogos")'">Regresar</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
