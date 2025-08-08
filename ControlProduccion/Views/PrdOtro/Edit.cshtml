@@ -224,7 +224,6 @@
             // More flexible regex to handle different time formats
             var time = cleanTime.match(/(\d{1,2}):(\d{2})\s*(AM|PM)/i);
             if (!time) {
-                console.log('Time conversion failed for:', time12h);
                 return '';
             }
             
@@ -238,9 +237,7 @@
                 hours = 0;
             }
             
-            var result = (hours.toString().padStart(2, '0')) + ':' + minutes;
-            console.log('Converted', time12h, 'to', result);
-            return result;
+            return (hours.toString().padStart(2, '0')) + ':' + minutes;
         }
 
 
@@ -268,8 +265,6 @@
           var horaFin              = $row.find("td:eq(9)").text().trim();
           var idTipoFabricacion    = $row.find("td:eq(10)").text().trim();
 
-          console.log('Raw time values:', { horaInicio, horaFin });
-
           // Rellenar el modal
           $("#detrpdId").val(id);
           $("#Actividad").val(actividad);
@@ -282,8 +277,6 @@
           // Convert time from display format (with AM/PM) to input format (24-hour)
           var horaInicioFormatted = convertTo24Hour(horaInicio);
           var horaFinFormatted = convertTo24Hour(horaFin);
-          
-          console.log('Formatted time values:', { horaInicioFormatted, horaFinFormatted });
           
           $("#HoraInicio").val(horaInicioFormatted);
           $("#HoraFin").val(horaFinFormatted);
