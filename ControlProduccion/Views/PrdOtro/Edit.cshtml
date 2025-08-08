@@ -39,6 +39,7 @@
                             <thead class="table-light">
                                 <tr>
                                     <th style="display:none">Id</th>
+                                    <th>No.</th>
                                     <th>Actividad</th>
                                     <th>Descripción Producto</th>
                                     <th>Tipo Fabricación</th>
@@ -59,12 +60,13 @@
                                             <td style="display:none">@detalle.Id</td>
                                             @if(Model.AprobadoGerencia!=true)
                                             {
-                                                <td><a href="#" class="open-modal">@detalle.Actividad</a></td>
+                                                <td><a href="#" class="open-modal">@detalle.Id</a></td>
                                             }
                                             else
                                             {
-                                                <td>@detalle.Actividad</td>
+                                                <td>@detalle.Id</td>
                                             }
+                                            <td>@detalle.Actividad</td>
                                             <td>@detalle.DescripcionProducto</td>
                                             <td>@detalle.TipoFabricacion</td>
                                             <td>@(detalle.NumeroPedido?.ToString() ?? "")</td>
@@ -216,7 +218,7 @@
 
         // Function to convert 12-hour format to 24-hour format for input[type="time"]
         function convertTo24Hour(time12h) {
-            if (!time12h || time12h.trim() === '') {
+            if (!time12h || time12h.trim() === '' || time12h === '12:00 AM') {
                 return '';
             }
             
@@ -262,18 +264,31 @@
           e.preventDefault();
           var $row = $(this).closest("tr");
 
-          // Con base en la estructura de tu tabla:
+          // Adjusted for new table structure with "No." column:
+          // Column 0: Id (hidden)
+          // Column 1: No. (with ID and modal link)
+          // Column 2: Actividad
+          // Column 3: Descripción Producto
+          // Column 4: Tipo Fabricación
+          // Column 5: Número Pedido
+          // Column 6: Nota
+          // Column 7: Merma
+          // Column 8: Comentario
+          // Column 9: Hora Inicio
+          // Column 10: Hora Fin
+          // Column 11: IdTipoFabricacion (hidden)
+          
           var id                   = $row.find("td:eq(0)").text().trim();
-          var actividad            = $row.find("td:eq(1)").text().trim();
-          var descripcionProducto  = $row.find("td:eq(2)").text().trim();
-          var tipoFabricacion      = $row.find("td:eq(3)").text().trim();
-          var numeroPedido         = $row.find("td:eq(4)").text().trim();
-          var nota                 = $row.find("td:eq(5)").text().trim();
-          var merma                = $row.find("td:eq(6)").text().trim();
-          var comentario           = $row.find("td:eq(7)").text().trim();
-          var horaInicio = $row.find("td:eq(8)").text().trim();
-          var horaFin = $row.find("td:eq(9)").text().trim();
-          var idTipoFabricacion    = $row.find("td:eq(10)").text().trim();
+          var actividad            = $row.find("td:eq(2)").text().trim();
+          var descripcionProducto  = $row.find("td:eq(3)").text().trim();
+          var tipoFabricacion      = $row.find("td:eq(4)").text().trim();
+          var numeroPedido         = $row.find("td:eq(5)").text().trim();
+          var nota                 = $row.find("td:eq(6)").text().trim();
+          var merma                = $row.find("td:eq(7)").text().trim();
+          var comentario           = $row.find("td:eq(8)").text().trim();
+          var horaInicio           = $row.find("td:eq(9)").text().trim();
+          var horaFin              = $row.find("td:eq(10)").text().trim();
+          var idTipoFabricacion    = $row.find("td:eq(11)").text().trim();
 
           // Rellenar el modal con los datos básicos
           $("#detrpdId").val(id);
