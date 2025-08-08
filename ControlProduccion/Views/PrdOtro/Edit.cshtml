@@ -234,73 +234,7 @@
             return (hours.toString().padStart(2, '0')) + ':' + minutes;
         }
 
-        // ─────────── AUTOSAVE / RESTORE /PREVENT EXIT (MEJORADO) ───────────
-        const DRAFT_KEY = 'draft-prdOtro-edit-@Model.Id'; // Clave única para esta vista de edición
 
-        function backupForm() {
-            const formArr = $('#frmProduccion').serializeArray();
-            // Guardar también el contenido HTML de la tabla
-            const detalleHtml = $('#tblProduccion tbody').html();
-            localStorage.setItem(DRAFT_KEY,
-                JSON.stringify({ 
-                    form: formArr, 
-                    detalleHtml: detalleHtml
-                })
-            );
-        }
-
-        function restoreIfExists() {
-            const draftStr = localStorage.getItem(DRAFT_KEY);
-            if (!draftStr) return;
-            if (confirm('Se encontró un borrador sin guardar. ¿Deseas restaurarlo?')) {
-                const draft = JSON.parse(draftStr);
-
-                // Agrupar valores por nombre de campo
-                const formMap = draft.form.reduce((acc, { name, value }) => {
-                    acc[name] = acc[name] || [];
-                    acc[name].push(value);
-                    return acc;
-                }, {});
-
-                // Restaurar cada campo, usando array para selects múltiples
-                Object.entries(formMap).forEach(([name, values]) => {
-                    const $el = $('[name="' + name + '"]');
-                    const valToSet = $el.prop('multiple') ? values : values[0];
-                    if ($el.hasClass('select2-hidden-accessible')) {
-                        $el.val(valToSet).trigger('change');
-                    } else {
-                        $el.val(valToSet);
-                    }
-                });
-
-                // Restaurar contenido de la tabla
-                if (draft.detalleHtml) {
-                    $('#tblProduccion tbody').html(draft.detalleHtml);
-                }
-            }
-        }
-
-        // Restaura al cargar y luego auto‑respalda cada 30s
-        restoreIfExists();
-        setInterval(backupForm, 30000);
-
-        // ───────── PREVENT UNLOAD (MEJORADO) ─────────
-        function beforeUnloadHandler(e) {
-            const hasRows = $('#tblProduccion tbody tr').length > 0;
-            const isDirty = $('#frmProduccion').serialize() !== '';
-            if (hasRows || isDirty) {
-                e.preventDefault();
-                e.returnValue = '';
-            }
-        }
-        window.addEventListener('beforeunload', beforeUnloadHandler);
-
-        // Function to clean up localStorage and beforeunload handler
-        function cleanupAndNavigate(url) {
-            localStorage.removeItem(DRAFT_KEY);
-            window.removeEventListener('beforeunload', beforeUnloadHandler);
-            window.location.href = url;
-        }
 
                            $("#IdUsuarios").select2({
             placeholder: "- Selecciona los operarios -",
@@ -378,8 +312,7 @@
                 // Muestra el mensaje de éxito, cierra el modal y puedes agregar lógica adicional si es necesario
                 alert(response.message);
                 $("#modal-Detalle").modal("hide");
-                // Clear localStorage when detail is successfully updated
-                localStorage.removeItem(DRAFT_KEY);
+
                 location.reload();
               } else {
                 alert("Error: " + response.message);
@@ -415,7 +348,6 @@
                     success: function(response) {
                         if (response) {
                             alert("Producción Aprobada exitosamente.");
-                            localStorage.removeItem(DRAFT_KEY);
                             location.reload();
                         } else {
                             alert("Error al Aprobar la producción, contacte a soporte.");
@@ -428,11 +360,7 @@
             }
         }
 
-        // Handle form submission
-        $('#frmProduccion').on('submit', function() {
-            localStorage.removeItem(DRAFT_KEY);
-            window.removeEventListener('beforeunload', beforeUnloadHandler);
-        });
+
 
     </script>
 }
