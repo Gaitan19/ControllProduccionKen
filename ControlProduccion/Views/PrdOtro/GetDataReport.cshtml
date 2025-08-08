@@ -1,0 +1,260 @@
+﻿@using Infrastructure.DTO
+@model IEnumerable<PrdOtroReporteDTO>
+
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    ViewData["Title"] = "Reporte Otro";
+}
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f6f8fa;
+        margin: 0;
+        padding: 0;
+    }
+
+    .container {
+        width: 90%;
+        max-width: 1200px;
+        margin: 20px auto;
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 6px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    h1 {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+
+    /* Encabezado del reporte */
+    .report-header {
+        border-collapse: collapse;
+        width: 100%;
+        margin-bottom: 25px;
+    }
+
+        .report-header thead th {
+            background-color: #f2f2f2;
+            text-transform: uppercase;
+            font-weight: bold;
+            padding: 10px;
+            text-align: left;
+        }
+
+        .report-header td,
+        .report-header th {
+            border: 1px solid #e1e1e1;
+            padding: 10px;
+        }
+
+    .header-title {
+        font-weight: bold;
+        background-color: #b0f7cc;
+        padding: 12px;
+        margin-bottom: 10px;
+        border-radius: 4px;
+    }
+
+    /* Secciones de Detalles */
+    .section-title {
+        font-weight: bold;
+        padding: 12px;
+        background-color: #d9ecff;
+        margin-top: 20px;
+        margin-bottom: 5px;
+        border-radius: 4px;
+    }
+
+    .details-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 20px;
+    }
+
+        .details-table th {
+            background-color: #f2f2f2;
+            text-transform: uppercase;
+            font-weight: bold;
+            padding: 8px;
+            text-align: left;
+            font-size: 12px;
+            border: 1px solid #e1e1e1;
+        }
+
+        .details-table td {
+            padding: 8px;
+            border: 1px solid #e1e1e1;
+            font-size: 12px;
+        }
+
+    /* Estilos para los encabezados de producción */
+    .production-header {
+        background-color: #fffac2;
+        padding: 10px;
+        margin-top: 30px;
+        margin-bottom: 10px;
+        border-left: 5px solid #28a745;
+        border-radius: 4px;
+    }
+
+    /* Para los estados aprobado / validado */
+    .status-approved {
+        color: #28a745;
+        font-weight: bold;
+    }
+
+    .status-pending {
+        color: #dc3545;
+        font-weight: bold;
+    }
+
+    .page-break {
+        page-break-before: always;
+    }
+
+    /* Ocultar en pantalla, mostrar solo en impresión */
+    .print-only {
+        display: none;
+    }
+
+    /* Para impresión */
+    @@media print {
+        body {
+            background-color: white !important;
+        }
+
+        .container {
+            width: 100% !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            box-shadow: none !important;
+        }
+
+        .print-only {
+            display: block;
+        }
+
+        .no-print {
+            display: none;
+        }
+
+        .page-break {
+            page-break-before: always;
+        }
+    }
+</style>
+
+<div class="container">
+    <h1>Reporte de Producción - Otro</h1>
+
+    @if (Model == null || !Model.Any())
+    {
+        <div class="alert alert-info">
+            <h4>Sin datos</h4>
+            <p>No se encontraron registros para mostrar en el reporte.</p>
+        </div>
+    }
+    else
+    {
+        @foreach (var produccion in Model)
+        {
+            <div class="production-header">
+                <strong>Producción ID: @produccion.Id</strong> - Fecha: @produccion.Fecha.ToString("dd/MM/yyyy")
+            </div>
+
+            <!-- Información General -->
+            <div class="header-title">INFORMACIÓN GENERAL</div>
+            <table class="report-header">
+                <tr>
+                    <td><strong>ID Producción:</strong></td>
+                    <td>@produccion.Id</td>
+                    <td><strong>Fecha:</strong></td>
+                    <td>@produccion.Fecha.ToString("dd/MM/yyyy")</td>
+                </tr>
+                <tr>
+                    <td><strong>Operarios:</strong></td>
+                    <td colspan="3">@produccion.Operarios</td>
+                </tr>
+                <tr>
+                    <td><strong>Validado por Supervisor:</strong></td>
+                    <td class="@(produccion.AprobadoSupervisor ? "status-approved" : "status-pending")">
+                        @(produccion.AprobadoSupervisor ? "SÍ" : "NO")
+                        @if (!string.IsNullOrEmpty(produccion.Supervisor))
+                        {
+                            <span> - @produccion.Supervisor</span>
+                        }
+                    </td>
+                    <td><strong>Aprobado por Jefe Prod.:</strong></td>
+                    <td class="@(produccion.AprobadoGerencia ? "status-approved" : "status-pending")">
+                        @(produccion.AprobadoGerencia ? "SÍ" : "NO")
+                        @if (!string.IsNullOrEmpty(produccion.JefeProd))
+                        {
+                            <span> - @produccion.JefeProd</span>
+                        }
+                    </td>
+                </tr>
+            </table>
+
+            <!-- Detalles de Actividades -->
+            <div class="section-title">DETALLE DE ACTIVIDADES</div>
+            @if (produccion.Detalles != null && produccion.Detalles.Any())
+            {
+                <table class="details-table">
+                    <thead>
+                        <tr>
+                            <th>Actividad</th>
+                            <th>Descripción Producto</th>
+                            <th>Tipo Fabricación</th>
+                            <th>No. Pedido</th>
+                            <th>Nota</th>
+                            <th>Merma</th>
+                            <th>Comentario</th>
+                            <th>Hora Inicio</th>
+                            <th>Hora Fin</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var detalle in produccion.Detalles)
+                        {
+                            <tr>
+                                <td>@detalle.Actividad</td>
+                                <td>@detalle.DescripcionProducto</td>
+                                <td>@detalle.TipoFabricacion</td>
+                                <td>@(detalle.NumeroPedido?.ToString() ?? "-")</td>
+                                <td>@detalle.Nota</td>
+                                <td>@detalle.Merma</td>
+                                <td>@detalle.Comentario</td>
+                                <td>@detalle.HoraInicio.ToString(@"hh\:mm")</td>
+                                <td>@detalle.HoraFin.ToString(@"hh\:mm")</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <p><em>No hay detalles de actividades registrados.</em></p>
+            }
+
+            <!-- Separador entre producciones (menos la última) -->
+            @if (produccion != Model.Last())
+            {
+                <div class="page-break"></div>
+            }
+        }
+    }
+
+</div>
+
+<div class="no-print" style="text-align: center; margin: 20px;">
+    <button onclick="window.print()" class="btn btn-primary">
+        <i class="fa fa-print"></i> Imprimir Reporte
+    </button>
+    <button onclick="window.history.back()" class="btn btn-secondary">
+        <i class="fa fa-arrow-left"></i> Regresar
+    </button>
+</div>
