@@ -197,6 +197,8 @@ namespace ControlProduccion.Controllers
                     AprobadoGerencia = modelDto.AprobadoGerencia,
                     DetPrdOtros = modelDto.DetPrdOtros?.Select(x => new DetPrdOtroViewModel
                     {
+                        Id = x.Id,
+                        PrdOtroId = x.PrdOtroId,
                         Actividad = x.Actividad,
                         DescripcionProducto = x.DescripcionProducto,
                         IdTipoFabricacion = x.IdTipoFabricacion,
@@ -267,6 +269,8 @@ namespace ControlProduccion.Controllers
                     AprobadoGerencia = modelDto.AprobadoGerencia,
                     DetPrdOtros = modelDto.DetPrdOtros?.Select(x => new DetPrdOtroViewModel
                     {
+                        Id = x.Id,
+                        PrdOtroId = x.PrdOtroId,
                         Actividad = x.Actividad,
                         DescripcionProducto = x.DescripcionProducto,
                         IdTipoFabricacion = x.IdTipoFabricacion,
@@ -325,20 +329,34 @@ namespace ControlProduccion.Controllers
         [Authorize(Roles = "Supervisor")]
         public async Task<IActionResult> ValidarPrd(int id)
         {
-            var userId = _userManager.GetUserId(User);
-            var result = await _prdOtroService.ValidatePrdOtroByIdAsync(id, userId);
+            try
+            {
+                var userId = _userManager.GetUserId(User);
+                var result = await _prdOtroService.ValidatePrdOtroByIdAsync(id, userId);
 
-            return Json(result);
+                return Json(result);
+            }
+            catch (Exception ex)
+            {
+                return Json(false);
+            }
         }
 
         [HttpPost]
         [Authorize(Roles = "JefeProduccion")]
         public async Task<IActionResult> AprobarPrd(int id)
         {
-            var userId = _userManager.GetUserId(User);
-            var result = await _prdOtroService.AprovePrdOtroByIdAsync(id, userId);
+            try
+            {
+                var userId = _userManager.GetUserId(User);
+                var result = await _prdOtroService.AprovePrdOtroByIdAsync(id, userId);
 
-            return Json(result);
+                return Json(result);
+            }
+            catch (Exception ex)
+            {
+                return Json(false);
+            }
         }
 
 
@@ -346,25 +364,40 @@ namespace ControlProduccion.Controllers
         [Authorize(Roles = "JefeProduccion")]
         public async Task<ActionResult> EditDetPrd(DetPrdOtroViewModel model)
         {
-            var userId = _userManager.GetUserId(User);
-            var dto = new DetPrdOtroDTO
+            try
             {
-                Id = (int)model.detrpdId,
-                Actividad = model.Actividad,
-                DescripcionProducto = model.DescripcionProducto,
-                IdTipoFabricacion = model.IdTipoFabricacion,
-                NumeroPedido = model.NumeroPedido,
-                Nota = model.Nota,
-                Merma = model.Merma,
-                Comentario = model.Comentario,
-                HoraInicio = model.HoraInicio,
-                HoraFin = model.HoraFin,
-                IdUsuarioActualizacion = userId
-            };
+                var userId = _userManager.GetUserId(User);
+                
+                // Validate that detrpdId has a value
+                if (!model.detrpdId.HasValue || model.detrpdId.Value <= 0)
+                {
+                    return Json(new { success = false, message = "ID de detalle inválido" });
+                }
 
-            await _prdOtroService.UpdateDetPrd(dto);
+                var dto = new DetPrdOtroDTO
+                {
+                    Id = model.detrpdId.Value,
+                    Actividad = model.Actividad,
+                    DescripcionProducto = model.DescripcionProducto,
+                    IdTipoFabricacion = model.IdTipoFabricacion,
+                    NumeroPedido = model.NumeroPedido,
+                    Nota = model.Nota,
+                    Merma = model.Merma,
+                    Comentario = model.Comentario,
+                    HoraInicio = model.HoraInicio,
+                    HoraFin = model.HoraFin,
+                    IdUsuarioActualizacion = userId
+                };
 
-            return Json(new { success = true, message = "Actualizacion exitosa!" });
+                await _prdOtroService.UpdateDetPrd(dto);
+
+                return Json(new { success = true, message = "Actualización exitosa!" });
+            }
+            catch (Exception ex)
+            {
+                // Log the exception if logging is available
+                return Json(new { success = false, message = $"Error al actualizar: {ex.Message}" });
+            }
         }
 
         public async Task<ActionResult> GetDataReport(DateTime start, DateTime end)

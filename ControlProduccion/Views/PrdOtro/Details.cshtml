@@ -63,8 +63,8 @@
                                             <td>@detalle.Nota</td>
                                             <td>@detalle.Merma</td>
                                             <td>@detalle.Comentario</td>
-                                            <td>@detalle.HoraInicio.ToString("h:mm tt")</td>
-                                            <td>@detalle.HoraFin.ToString("h:mm tt")</td>
+                                            <td>@DateTime.Today.Add(detalle.HoraInicio).ToString("h:mm tt")</td>
+                                            <td>@DateTime.Today.Add(detalle.HoraFin).ToString("h:mm tt")</td>
                                         </tr>
                                     }
                                 }
