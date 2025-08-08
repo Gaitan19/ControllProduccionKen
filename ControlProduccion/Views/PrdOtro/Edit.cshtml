@@ -1,0 +1,384 @@
+﻿@using ControlProduccion.ViewModel;
+@model PrdOtroViewModel;
+@{
+    ViewData["Title"] = "Editar Produccion Otro";
+}
+
+<div class="col-md-10 offset-md-1">
+    <div class="ibox ">
+        <div class="ibox-title">
+            <h5>@ViewData["Title"]</h5>
+
+        </div>
+        <div class="ibox-content">
+            <form id="frmProduccion" method="post" asp-action="Edit" autocomplete="off">
+                @Html.AntiForgeryToken()
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+                <input type="hidden" asp-for="Id" />
+                <div class="form-group">
+                    <label asp-for="IdUsuarios"></label>
+                    <select id="IdUsuarios" multiple name="IdUsuarios" asp-for="IdUsuarios" class="form-control select2" asp-items="Model.Operarios">
+                    </select>
+                    <span asp-validation-for="IdUsuarios" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Fecha"></label>
+                    <input asp-for="Fecha" class="form-control" />
+                    <span asp-validation-for="Fecha" class="text-danger"></span>
+                </div>
+
+                <div class="hr-line-dashed"></div>
+                <div class="form-group row">
+
+                    <div class="col-sm-12" style="max-height: 400px; overflow: scroll">
+                        <h4 id="hdrVV" runat="server">Detalle Produccion</h4>
+
+                        <table id="tblProduccion" class="table table-bordered table-hover">
+                            <thead class="table-light">
+                                <tr>
+                                    <th style="display:none">Id</th>
+                                    <th>Actividad</th>
+                                    <th>Descripción Producto</th>
+                                    <th>Tipo Fabricación</th>
+                                    <th>Número Pedido</th>
+                                    <th>Nota</th>
+                                    <th>Merma</th>
+                                    <th>Comentario</th>
+                                    <th>Hora Inicio</th>
+                                    <th>Hora Fin</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var detalle in Model.DetPrdOtros)
+                                {
+                                    <tr>
+                                        <td style="display:none">@detalle.Id</td>
+                                        @if(Model.AprobadoGerencia!=true)
+                                        {
+                                            <td><a href="#" class="open-modal">@detalle.Actividad</a></td>
+                                        }
+                                        else
+                                        {
+                                            <td><a >@detalle.Actividad</a></td>
+                                        }
+                                        
+                                        <td>@detalle.DescripcionProducto</td>
+                                        <td>@detalle.TipoFabricacion</td>
+                                        <td>@detalle.NumeroPedido</td>
+                                        <td>@detalle.Nota</td>
+                                        <td>@detalle.Merma</td>
+                                        <td>@detalle.Comentario</td>
+                                        <td>@detalle.HoraInicio</td>
+                                        <td>@detalle.HoraFin</td>
+                                       
+                                        <td style='display:none;'> @detalle.IdTipoFabricacion </td>
+
+                                    </tr>
+                                }
+
+                            </tbody>
+                        </table>
+
+                    </div>
+                </div>
+               
+                <button type="button" class="btn btn-dark" onclick="location.href='@Url.Action("Index", "PrdOtro")'">Regresar</button>
+                @if (Model.AprobadoGerencia != true)
+                {
+                    <button type="submit" class="btn btn-primary">Actualizar</button>
+                }
+
+                @if (User.IsInRole("JefeProduccion") && Model.AprobadoGerencia != true)
+                {
+                    <button id="btnAprobarProd" type="button" class="btn btn-danger" onclick="validar(@Model.Id)">Aprobar</button>
+                }
+                else
+                {
+                    <button type="button" class="btn btn-success">Aprobado</button>
+                }
+
+            </form>
+
+            @*     -----modal para editar detalle prd------ *@
+            <div id="modal-Detalle" class="modal fade" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-body">
+                            <form id="frmDetPrd">
+                                <input type="hidden" id="detrpdId" name="detrpdId" />
+                                <h3>Editar Actividad</h3>
+                                <hr />
+
+                                <div class="mb-3">
+                                    <label class="form-label">Actividad</label>
+                                    <input type="text" id="Actividad" name="Actividad" class="form-control" maxlength="500" />
+                                    <span class="text-danger"></span>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label">Descripción del Producto</label>
+                                    <input type="text" id="DescripcionProducto" name="DescripcionProducto" class="form-control" maxlength="500" />
+                                    <span class="text-danger"></span>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label">Tipo Fabricación</label>
+                                    <select id="IdTipoFabricacion" name="IdTipoFabricacion" class="form-control" asp-items="Model.TiposFabricacion">
+                                        <option value="">-- Selecione un Tipo Fabricacion --</option>
+                                    </select>
+                                    <span class="text-danger"></span>
+                                </div>
+
+                                <div class="mb-3" id="divNumeroPedido" style="display:none">
+                                    <label for="NumeroPedido" class="form-label">Número Pedido</label>
+                                    <input oninput="this.value = this.value.replace(/[^0-9\-]/g, '');" step="1" min="0" type="number" id="NumeroPedido" name="NumeroPedido" class="form-control" value="" />
+                                    <span class="text-danger"></span>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label">Nota</label>
+                                    <textarea id="Nota" name="Nota" class="form-control" maxlength="1000" rows="3"></textarea>
+                                    <span class="text-danger"></span>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label">Merma</label>
+                                    <input type="text" id="Merma" name="Merma" class="form-control" maxlength="500" />
+                                    <span class="text-danger"></span>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label">Comentario</label>
+                                    <textarea id="Comentario" name="Comentario" class="form-control" maxlength="1000" rows="3"></textarea>
+                                    <span class="text-danger"></span>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="HoraInicio" class="form-label">Hora Inicio</label>
+                                            <input step="1" type="time" id="HoraInicio" name="HoraInicio" class="form-control" />
+                                            <span class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="HoraFin" class="form-label">Hora Fin</label>
+                                            <input step="1" type="time" id="HoraFin" name="HoraFin" class="form-control" />
+                                            <span class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+
+                            <button id="btnGuardarDetPrd" type="button" class="btn btn-primary">Actualizar</button>
+                            <button type="button" class="btn  btn-dark" data-dismiss="modal">Cancelar</button>
+                            <br />
+                            <p id="spnbtnGuardarDetPrd" class="text-sm text-danger"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+
+        $('#modal-Detalle').on('shown.bs.modal', function () {
+                   
+            $("#IdTipoFabricacion").select2({
+                placeholder: "- Selecione un Tipo Fabricacion -",
+                allowClear: true,
+                dropdownParent: $("#modal-Detalle")
+            });
+      
+        });
+
+        $("#IdUsuarios").select2({
+            placeholder: "- Selecciona los operarios -",
+            allowClear:true
+        });
+
+        $("#IdTipoFabricacion").change(function () {
+            var selectedValue = $(this).val();
+            if (selectedValue == 2) {
+                $("#divNumeroPedido").show();
+            } else {
+                $("#divNumeroPedido").hide();
+            }
+        });
+
+        // Evento para abrir el modal y cargar los datos de la fila
+        $(document).on('click', '.open-modal', function(e) {
+            e.preventDefault();
+
+            var $row = $(this).closest('tr');
+            var id = $row.find('td:eq(0)').text().trim(); // Id (oculto)
+            var actividad = $row.find('td:eq(1)').text().trim();
+            var descripcionProducto = $row.find('td:eq(2)').text().trim();
+            var tipoFabricacion = $row.find('td:eq(3)').text().trim();
+            var numeroPedido = $row.find('td:eq(4)').text().trim();
+            var nota = $row.find('td:eq(5)').text().trim();
+            var merma = $row.find('td:eq(6)').text().trim();
+            var comentario = $row.find('td:eq(7)').text().trim();
+            var horaInicio = $row.find('td:eq(8)').text().trim();
+            var horaFin = $row.find('td:eq(9)').text().trim();
+            var idTipoFabricacion = $row.find('td:eq(10)').text().trim(); // IdTipoFabricacion (oculto)
+
+            // Llenar el modal con los datos
+            $('#detrpdId').val(id);
+            $('#Actividad').val(actividad);
+            $('#DescripcionProducto').val(descripcionProducto);
+            $('#IdTipoFabricacion').val(idTipoFabricacion).trigger('change');
+            $('#NumeroPedido').val(numeroPedido);
+            $('#Nota').val(nota);
+            $('#Merma').val(merma);
+            $('#Comentario').val(comentario);
+            $('#HoraInicio').val(horaInicio);
+            $('#HoraFin').val(horaFin);
+
+            // Mostrar u ocultar el campo de número de pedido según el tipo de fabricación
+            if (idTipoFabricacion == 2) {
+                $("#divNumeroPedido").show();
+            } else {
+                $("#divNumeroPedido").hide();
+            }
+
+            // Abrir el modal
+            $('#modal-Detalle').modal('show');
+        });
+
+        $("#btnGuardarDetPrd").click(function () {
+            // Limpiar mensajes de error previos
+            $("#spnbtnGuardarDetPrd").text("");
+
+            // Obtener valores de los controles
+            var detrpdId = $("#detrpdId").val();
+            var actividad = $("#Actividad").val().trim();
+            var descripcionProducto = $("#DescripcionProducto").val().trim();
+            var idTipoFabricacion = $("#IdTipoFabricacion").val().trim();
+            var numeroPedido = "";
+            var nota = $("#Nota").val().trim();
+            var merma = $("#Merma").val().trim();
+            var comentario = $("#Comentario").val().trim();
+            var horaInicio = $("#HoraInicio").val();
+            var horaFin = $("#HoraFin").val();
+
+            // Si el campo "Número Pedido" es visible, obtener su valor
+            if ($("#divNumeroPedido").is(":visible")) {
+                numeroPedido = $("#NumeroPedido").val().trim();
+            }
+
+            // Validar que los campos requeridos no estén vacíos
+            if (actividad === "") {
+                $("#spnbtnGuardarDetPrd").text("Ingrese la actividad.");
+                return false;
+            }
+            if (descripcionProducto === "") {
+                $("#spnbtnGuardarDetPrd").text("Ingrese la descripción del producto.");
+                return false;
+            }
+            if (idTipoFabricacion === "") {
+                $("#spnbtnGuardarDetPrd").text("Seleccione un tipo de fabricación.");
+                return false;
+            }
+            if (nota === "") {
+                $("#spnbtnGuardarDetPrd").text("Ingrese una nota.");
+                return false;
+            }
+            if (merma === "") {
+                $("#spnbtnGuardarDetPrd").text("Ingrese la merma.");
+                return false;
+            }
+            if (comentario === "") {
+                $("#spnbtnGuardarDetPrd").text("Ingrese un comentario.");
+                return false;
+            }
+            if (horaInicio === "") {
+                $("#spnbtnGuardarDetPrd").text("Ingrese la hora de inicio.");
+                return false;
+            }
+            if (horaFin === "") {
+                $("#spnbtnGuardarDetPrd").text("Ingrese la hora de fin.");
+                return false;
+            }
+            if ($("#divNumeroPedido").is(":visible") && numeroPedido === "") {
+                $("#spnbtnGuardarDetPrd").text("Ingrese el número de pedido.");
+                return false;
+            }
+
+            // Validar horas
+            var minutosIni = parseInt(horaInicio.split(':')[0]) * 60 + parseInt(horaInicio.split(':')[1]);
+            var minutosFin = parseInt(horaFin.split(':')[0]) * 60 + parseInt(horaFin.split(':')[1]);
+            if (minutosFin < minutosIni) {
+                $("#spnbtnGuardarDetPrd").text("La hora de fin no puede ser menor que la hora de inicio.");
+                return false;
+            }
+
+            // Preparar el objeto para enviar
+            var detalle = {
+                detrpdId: detrpdId,
+                Actividad: actividad,
+                DescripcionProducto: descripcionProducto,
+                IdTipoFabricacion: idTipoFabricacion,
+                NumeroPedido: numeroPedido !== "" ? parseInt(numeroPedido) : null,
+                Nota: nota,
+                Merma: merma,
+                Comentario: comentario,
+                HoraInicio: horaInicio,
+                HoraFin: horaFin
+            };
+
+            // Enviar por AJAX
+            $.ajax({
+                url: '@Url.Action("EditDetPrd", "PrdOtro")',
+                type: 'POST',
+                data: detalle,
+                success: function(response) {
+                    if (response.success) {
+                        alert(response.message);
+                        location.reload();
+                    } else {
+                        alert("Error al actualizar el detalle.");
+                    }
+                },
+                error: function(xhr, status, error) {
+                    alert("Error al procesar la solicitud: " + error);
+                }
+            });
+        });
+
+        function validar(id) {
+            if (confirm("¿Está seguro de que desea aprobar esta producción?")) {
+                $.ajax({
+                    url: '@Url.Action("AprobarPrd", "PrdOtro")',
+                    type: 'POST',
+                    data: { id: id },
+                    success: function(response) {
+                        if (response) {
+                            alert("Producción aprobada exitosamente.");
+                            location.reload();
+                        } else {
+                            alert("Error al aprobar la producción, contacte a soporte.");
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        alert("Error al procesar la solicitud: " + error);
+                    }
+                });
+            }
+        }
+
+    </script>
+}
