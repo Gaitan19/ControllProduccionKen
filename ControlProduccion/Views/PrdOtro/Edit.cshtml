@@ -71,8 +71,8 @@
                                             <td>@detalle.Nota</td>
                                             <td>@detalle.Merma</td>
                                             <td>@detalle.Comentario</td>
-                                            <td>@detalle.HoraInicio.ToString(@"hh\:mm")<span style="font-size: 0.8em;">@(detalle.HoraInicio.Hours < 12 ? " AM" : " PM")</span></td>
-                                            <td>@detalle.HoraFin.ToString(@"hh\:mm")<span style="font-size: 0.8em;">@(detalle.HoraFin.Hours < 12 ? " AM" : " PM")</span></td>
+                                            <td>@detalle.HoraInicio.ToString("h:mm tt")</td>
+                                            <td>@detalle.HoraFin.ToString("h:mm tt")</td>
                                             <td style='display:none;'> @detalle.IdTipoFabricacion </td>
                                         </tr>
                                     }
@@ -214,6 +214,94 @@
 
     <script>
 
+        // Function to convert 12-hour format to 24-hour format for input[type="time"]
+        function convertTo24Hour(time12h) {
+            if (!time12h) return '';
+            
+            var time = time12h.match(/(\d+):(\d+)\s*(AM|PM)/i);
+            if (!time) return '';
+            
+            var hours = parseInt(time[1]);
+            var minutes = time[2];
+            var ampm = time[3].toUpperCase();
+            
+            if (ampm === 'PM' && hours !== 12) {
+                hours += 12;
+            } else if (ampm === 'AM' && hours === 12) {
+                hours = 0;
+            }
+            
+            return (hours.toString().padStart(2, '0')) + ':' + minutes;
+        }
+
+        // ─────────── AUTOSAVE / RESTORE /PREVENT EXIT (MEJORADO) ───────────
+        const DRAFT_KEY = 'draft-prdOtro-edit-@Model.Id'; // Clave única para esta vista de edición
+
+        function backupForm() {
+            const formArr = $('#frmProduccion').serializeArray();
+            // Guardar también el contenido HTML de la tabla
+            const detalleHtml = $('#tblProduccion tbody').html();
+            localStorage.setItem(DRAFT_KEY,
+                JSON.stringify({ 
+                    form: formArr, 
+                    detalleHtml: detalleHtml
+                })
+            );
+        }
+
+        function restoreIfExists() {
+            const draftStr = localStorage.getItem(DRAFT_KEY);
+            if (!draftStr) return;
+            if (confirm('Se encontró un borrador sin guardar. ¿Deseas restaurarlo?')) {
+                const draft = JSON.parse(draftStr);
+
+                // Agrupar valores por nombre de campo
+                const formMap = draft.form.reduce((acc, { name, value }) => {
+                    acc[name] = acc[name] || [];
+                    acc[name].push(value);
+                    return acc;
+                }, {});
+
+                // Restaurar cada campo, usando array para selects múltiples
+                Object.entries(formMap).forEach(([name, values]) => {
+                    const $el = $('[name="' + name + '"]');
+                    const valToSet = $el.prop('multiple') ? values : values[0];
+                    if ($el.hasClass('select2-hidden-accessible')) {
+                        $el.val(valToSet).trigger('change');
+                    } else {
+                        $el.val(valToSet);
+                    }
+                });
+
+                // Restaurar contenido de la tabla
+                if (draft.detalleHtml) {
+                    $('#tblProduccion tbody').html(draft.detalleHtml);
+                }
+            }
+        }
+
+        // Restaura al cargar y luego auto‑respalda cada 30s
+        restoreIfExists();
+        setInterval(backupForm, 30000);
+
+        // ───────── PREVENT UNLOAD (MEJORADO) ─────────
+        function beforeUnloadHandler(e) {
+            const hasRows = $('#tblProduccion tbody tr').length > 0;
+            const isDirty = $('#frmProduccion').serialize() !== '';
+            if (hasRows || isDirty) {
+                e.preventDefault();
+                e.returnValue = '';
+            }
+        }
+        window.addEventListener('beforeunload', beforeUnloadHandler);
+
+        // Function to clean up localStorage and beforeunload handler
+        function cleanupAndNavigate(url) {
+            localStorage.removeItem(DRAFT_KEY);
+            window.removeEventListener('beforeunload', beforeUnloadHandler);
+            window.location.href = url;
+        }
+
                            $("#IdUsuarios").select2({
             placeholder: "- Selecciona los operarios -",
             allowClear:true
@@ -246,9 +334,9 @@
           $("#Merma").val(merma);
           $("#Comentario").val(comentario);
 
-          // Convert time from display format (with AM/PM) to input format
-          var horaInicioFormatted = horaInicio.replace(/ AM| PM/g, '');
-          var horaFinFormatted = horaFin.replace(/ AM| PM/g, '');
+          // Convert time from display format (with AM/PM) to input format (24-hour)
+          var horaInicioFormatted = convertTo24Hour(horaInicio);
+          var horaFinFormatted = convertTo24Hour(horaFin);
           $("#HoraInicio").val(horaInicioFormatted);
           $("#HoraFin").val(horaFinFormatted);
 
@@ -290,7 +378,9 @@
                 // Muestra el mensaje de éxito, cierra el modal y puedes agregar lógica adicional si es necesario
                 alert(response.message);
                 $("#modal-Detalle").modal("hide");
-                 location.reload();
+                // Clear localStorage when detail is successfully updated
+                localStorage.removeItem(DRAFT_KEY);
+                location.reload();
               } else {
                 alert("Error: " + response.message);
               }
@@ -316,7 +406,7 @@
 
 
 
-                        function validar(id) {
+        function validar(id) {
             if (confirm("¿Está seguro de que desea Aprobar esta producción?")) {
                 $.ajax({
                     url: '@Url.Action("AprobarPrd", "PrdOtro")',
@@ -325,6 +415,7 @@
                     success: function(response) {
                         if (response) {
                             alert("Producción Aprobada exitosamente.");
+                            localStorage.removeItem(DRAFT_KEY);
                             location.reload();
                         } else {
                             alert("Error al Aprobar la producción, contacte a soporte.");
@@ -336,6 +427,12 @@
                 });
             }
         }
+
+        // Handle form submission
+        $('#frmProduccion').on('submit', function() {
+            localStorage.removeItem(DRAFT_KEY);
+            window.removeEventListener('beforeunload', beforeUnloadHandler);
+        });
 
     </script>
 }

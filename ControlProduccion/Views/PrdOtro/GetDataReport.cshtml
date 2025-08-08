@@ -375,6 +375,6 @@
     public static string To12HourFormat(TimeSpan hora)
     {
         var dateTime = DateTime.Today.Add(hora);
-        return dateTime.ToString("hh:mm tt");
+        return dateTime.ToString("h:mm tt");
     }
 }
