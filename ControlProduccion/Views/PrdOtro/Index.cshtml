@@ -13,7 +13,7 @@
             <div class="col-sm-8">
                 @if (User.IsInRole("JefeProduccion"))
                 {
-                    <a asp-controller="PrdOtro" asp-route-end="@DateTime.Now" asp-route-start="@DateTime.Now.AddDays(-1)" asp-action="GetDataReport" id="btnVerReporte" class="btn btn-info btn-outline">
+                    <a asp-controller="PrdOtro" asp-route-end="@DateTime.Now.ToString("yyyy-MM-dd")" asp-route-start="@DateTime.Now.AddDays(-1).ToString("yyyy-MM-dd")" asp-action="GetDataReport" id="btnVerReporte" class="btn btn-info btn-outline">
                         <i class="fa fa-print"></i> Ver Reporte
                     </a>
                 }

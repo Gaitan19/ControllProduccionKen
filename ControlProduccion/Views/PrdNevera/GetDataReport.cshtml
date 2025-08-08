@@ -266,13 +266,21 @@
         var startParam = ViewContext.HttpContext.Request.Query["start"].ToString();
         var endParam = ViewContext.HttpContext.Request.Query["end"].ToString();
 
-        var defaultStartDate = string.IsNullOrEmpty(startParam)
-            ? DateTime.Now.AddDays(-1).ToString("MM/dd/yyyy")
-            : startParam;
+        // Parse and validate date parameters
+        DateTime startDate, endDate;
+        
+        if (!DateTime.TryParse(startParam, out startDate) || startDate < new DateTime(1753, 1, 1))
+        {
+            startDate = DateTime.Now.AddDays(-1);
+        }
+        
+        if (!DateTime.TryParse(endParam, out endDate) || endDate < new DateTime(1753, 1, 1))
+        {
+            endDate = DateTime.Now;
+        }
 
-        var defaultEndDate = string.IsNullOrEmpty(endParam)
-            ? DateTime.Now.ToString("MM/dd/yyyy")
-            : endParam;
+        var defaultStartDate = startDate.ToString("MM/dd/yyyy");
+        var defaultEndDate = endDate.ToString("MM/dd/yyyy");
     }
     <script src="~/js/html2canvas.min.js"></script>
     <script src="~/js/jspdf.umd.min.js"></script>
