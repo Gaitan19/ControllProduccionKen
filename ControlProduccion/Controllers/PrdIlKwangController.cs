@@ -635,8 +635,34 @@ namespace ControlProduccion.Controllers
         [Authorize(Roles = "JefeProduccion")]
         public async Task<ActionResult> GetDataReport(DateTime start, DateTime end)
         {
+            // Validate and ensure DateTime parameters are within valid SQL Server range
+            start = ValidateDateTimeParameter(start);
+            end = ValidateDateTimeParameter(end);
+            
             var reportData = await _prdIlKwangService.GetAllPrdIlKwangWithDetailsAsync(start, end);
             return View(reportData);
+        }
+
+        /// <summary>
+        /// Validates DateTime parameters to ensure they're within SQL Server's valid range
+        /// and provides sensible defaults for invalid values
+        /// </summary>
+        /// <param name="dateTime">DateTime to validate</param>
+        /// <returns>Valid DateTime within SQL Server range</returns>
+        private static DateTime ValidateDateTimeParameter(DateTime dateTime)
+        {
+            // SQL Server DateTime range: 1/1/1753 12:00:00 AM to 12/31/9999 11:59:59 PM
+            var sqlMinDate = new DateTime(1753, 1, 1);
+            var sqlMaxDate = new DateTime(9999, 12, 31, 23, 59, 59);
+
+            // If the date is outside the valid range or is DateTime.MinValue, return a sensible default
+            if (dateTime < sqlMinDate || dateTime == DateTime.MinValue)
+                return DateTime.Today.AddDays(-1); // Yesterday as default start
+
+            if (dateTime > sqlMaxDate)
+                return DateTime.Today; // Today as default end
+
+            return dateTime;
         }
     }
 }

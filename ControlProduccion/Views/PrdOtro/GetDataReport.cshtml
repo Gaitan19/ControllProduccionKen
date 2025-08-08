@@ -1,11 +1,11 @@
-﻿@using Infrastructure.DTO
-@model IEnumerable<PrdNeveraReporteDTO>
+@using Infrastructure.DTO
+@model IEnumerable<PrdOtroReporteDTO>
 
 @*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 @{
-    ViewData["Title"] = "Reporte Nevera";
+    ViewData["Title"] = "Reporte Otro";
 }
 <style>
     body {
@@ -129,7 +129,6 @@
 </style>
 
 <div class="col-md-15 offset-md-1">
-    @*     <h2 class="text-center"> Reporte Nevera</h2> *@
     <div class="ibox">
         <div class="ibox-title">
 
@@ -143,13 +142,12 @@
         </div>
         <div id="divMainReportAll" class="ibox-content table-responsive">
 
-            <h1>Reporte de Producción Nevera</h1>
+            <h1>Reporte de Producción Otro</h1>
             @foreach (var reporte in Model)
             {
 
                 <div class="report-page">
                     <!-- Encabezado del Reporte -->
-                    @*   <div class="header-title">Reporte Id:@reporte.Id</div> *@
                     <img src="~/logoEcotec.png" alt="Logo Ecotec" style="width:150px; height:50px;">
                     <br />
                     <br />
@@ -161,7 +159,6 @@
                             </tr>
                         </thead>
                         <tbody>
-
                             <tr>
                                 <td>Operarios</td>
                                 <td>@reporte.Operarios</td>
@@ -169,26 +166,6 @@
                             <tr>
                                 <td>Fecha</td>
                                 <td>@reporte.Fecha.ToString("yyyy-MM-dd")</td>
-                            </tr>
-                            <tr>
-                                <td>Máquina</td>
-                                <td>@reporte.Maquina</td>
-                            </tr>
-                            <tr>
-                                <td>Hora Inicio</td>
-                                <td>@To12HourFormat(reporte.HoraInicio)</td>
-                            </tr>
-                            <tr>
-                                <td>Hora Fin</td>
-                                <td>@To12HourFormat(reporte.HoraFin)</td>
-                            </tr>
-                            <tr>
-                                <td>Observaciones</td>
-                                <td>@reporte.Observaciones</td>
-                            </tr>
-                            <tr>
-                                <td>Tiempo Paro (Horas)</td>
-                                <td>@reporte.TiempoParo</td>
                             </tr>
                             <tr>
                                 <td>Validador</td>
@@ -201,29 +178,35 @@
                         </tbody>
                     </table>
 
-                    <!-- Detalles de Nevera -->
-                    <div class="section-title">Detalles de Nevera</div>
+                    <!-- Detalles de Actividades -->
+                    <div class="section-title">Detalles de Actividades</div>
                     <table class="details-table">
                         <thead>
                             <tr>
-                                <th>Posición</th>
-                                <th>Artículo</th>
-                                <th>Cant. Conforme</th>
-                                <th>Cant. No Conforme</th>
+                                <th>Actividad</th>
+                                <th>Descripción Producto</th>
                                 <th>Tipo Fabricación</th>
                                 <th>N° Pedido</th>
+                                <th>Nota</th>
+                                <th>Merma</th>
+                                <th>Comentario</th>
+                                <th>Hora Inicio</th>
+                                <th>Hora Fin</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach (var detalle in reporte.Detalles)
                             {
                                 <tr>
-                                    <td>@detalle.Posicion</td>
-                                    <td>@detalle.Articulo</td>
-                                    <td>@detalle.CantidadConforme</td>
-                                    <td>@detalle.CantidadNoConforme</td>
+                                    <td>@detalle.Actividad</td>
+                                    <td>@detalle.DescripcionProducto</td>
                                     <td>@detalle.TipoFabricacion</td>
-                                    <td>@detalle.NumeroPedido</td>
+                                    <td>@(detalle.NumeroPedido?.ToString() ?? "")</td>
+                                    <td>@detalle.Nota</td>
+                                    <td>@detalle.Merma</td>
+                                    <td>@detalle.Comentario</td>
+                                    <td>@To12HourFormat(detalle.HoraInicio)</td>
+                                    <td>@To12HourFormat(detalle.HoraFin)</td>
                                 </tr>
                             }
                         </tbody>
@@ -304,7 +287,7 @@
 
             // Al aplicar un nuevo rango, se redirige a la acción con los parámetros
             $('#datesReport').on('apply.daterangepicker', function(ev, picker) {
-                window.location.href = '@Url.Action("GetDataReport", "PrdNevera")'
+                window.location.href = '@Url.Action("GetDataReport", "PrdOtro")'
                     + '?start=' + picker.startDate.format('YYYY-MM-DD')
                     + '&end=' + picker.endDate.format('YYYY-MM-DD');
             });
@@ -327,9 +310,6 @@
             originalStyles.push({ element: page, style: page.style.cssText }); // Guarda estilo inline actual
             page.style.width = fixedWidth;
             page.style.maxWidth = fixedWidth; // Asegura que no se limite por otras reglas
-            // Podrías necesitar añadir más estilos aquí para forzar la visibilidad
-            // de elementos que se ocultan en móvil, por ejemplo:
-            // page.querySelectorAll('.elemento-oculto-en-movil').forEach(el => el.style.display = 'block');
         });
         // --- Fin: Modificación Temporal ---
 
@@ -342,8 +322,6 @@
             useCORS: true,
             // Intenta simular un viewport más ancho
             windowWidth: 1200, // Un ancho típico de escritorio en píxeles
-            // Opcional: Forzar el ancho del canvas resultante (puede escalar, no siempre arregla layout)
-            // width: 1200,
             scrollX: 0,
             scrollY: -window.scrollY // Capturar desde la parte superior
         };
@@ -386,7 +364,7 @@
               page.style.cssText = originalStyles[idx].style;
           });
 
-          pdf.save('ReporteProduccionNevera.pdf');
+          pdf.save('ReporteProduccionOtro.pdf');
         });
 
     </script>
@@ -397,7 +375,6 @@
     public static string To12HourFormat(TimeSpan hora)
     {
         var dateTime = DateTime.Today.Add(hora);
-        return dateTime.ToString("hh:mm tt");
+        return dateTime.ToString("h:mm tt");
     }
 }
-

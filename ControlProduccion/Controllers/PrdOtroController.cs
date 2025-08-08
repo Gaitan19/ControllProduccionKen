@@ -1,4 +1,4 @@
-﻿using Application.DTOs;
+using Application.DTOs;
 using Application.Interfaces;
 using Application.Services;
 using ControlProduccion.ViewModel;
@@ -11,69 +11,64 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 namespace ControlProduccion.Controllers
 {
     [Authorize]
-    public class PrdNeveraController : Controller
+    public class PrdOtroController : Controller
     {
         private readonly UserManager<IdentityUser> _userManager;
-        private readonly IPrdNeveraService _prdNeveraService;
+        private readonly IPrdOtroService _prdOtroService;
 
-        public PrdNeveraController(UserManager<IdentityUser> userManager, IPrdNeveraService prdNeveraService)
+        public PrdOtroController(UserManager<IdentityUser> userManager, IPrdOtroService prdOtroService)
         {
-               _prdNeveraService = prdNeveraService;
+               _prdOtroService = prdOtroService;
             _userManager = userManager;
         }
-        // GET: PrdNeveraController
+        // GET: PrdOtroController
         public async Task<ActionResult> Index()
         {
-            var model =await _prdNeveraService.GetAllAsync();
+            var model =await _prdOtroService.GetAllAsync();
             return View(model);
         }
 
-        // GET: PrdNeveraController/Details/5
+        // GET: PrdOtroController/Details/5
         public async Task<ActionResult> Details(int id)
         {
 
             // Catálogos y usuarios
-            var dtoCat = await _prdNeveraService.GetCreateData();
+            var dtoCat = await _prdOtroService.GetCreateData();
             var operarios = await _userManager
                 .GetUsersInRoleAsync("Operario");
 
             // Datos de la entidad
-            var modelDto = await _prdNeveraService.GetByIdAsync(id);
+            var modelDto = await _prdOtroService.GetByIdAsync(id);
             if (modelDto == null)
             {
                 return NotFound();
             }
 
-            var vm= new PrdNeveraViewModel
+            var vm= new PrdOtroViewModel
             {
                 Id = modelDto.Id,
                 IdUsuarios = modelDto.IdUsuarios,
-                IdMaquina = modelDto.IdMaquina,
                 Fecha = modelDto.Fecha,
-                Observaciones = modelDto.Observaciones,
-                HoraInicio = modelDto.HoraInicio,
-                HoraFin = modelDto.HoraFin,
-                TiempoParo = modelDto.TiempoParo,
                 AprobadoSupervisor = modelDto.AprobadoSupervisor,
                 AprobadoGerencia = modelDto.AprobadoGerencia,
-                DetPrdNeveras = modelDto.DetPrdNeveras?.Select(x => new DetPrdNeveraViewModel
+                DetPrdOtros = modelDto.DetPrdOtros?.Select(x => new DetPrdOtroViewModel
                 {
-                    Posicion=x.Posicion,
-                    IdArticulo = x.IdArticulo,
-                    Articulo= dtoCat.CatalogoNeveras
-                                  .FirstOrDefault(c => c.Id == x.IdArticulo)?
-                                  .Descripcion,
-                    CantidadConforme = x.CantidadConforme,
-                    CantidadNoConforme = x.CantidadNoConforme,
+                    Id = x.Id,
+                    PrdOtroId = x.PrdOtroId,
+                    Actividad = x.Actividad,
+                    DescripcionProducto = x.DescripcionProducto,
                     IdTipoFabricacion = x.IdTipoFabricacion,
                     TipoFabricacion = dtoCat.CatTipoFabricacion
                                        .FirstOrDefault(t => t.Id == x.IdTipoFabricacion)?
                                        .Descripcion,
-                    NumeroPedido = x.NumeroPedido
+                    NumeroPedido = x.NumeroPedido,
+                    Nota = x.Nota,
+                    Merma = x.Merma,
+                    Comentario = x.Comentario,
+                    HoraInicio = x.HoraInicio,
+                    HoraFin = x.HoraFin
                 }).ToList(),
-                Articulos = dtoCat.CatalogoNeveras.Select(a => new SelectListItem { Value = a.Id.ToString(), Text = a.Codigo + "-" + a.Descripcion }),
                 Operarios = operarios.Select(o => new SelectListItem { Value = o.Id, Text = o.UserName }),
-                Maquinas = dtoCat.CatMaquina.Select(m => new SelectListItem { Value = m.Id.ToString(), Text = m.Nombre }),
                 TiposFabricacion=dtoCat.CatTipoFabricacion.Select(tf => new SelectListItem { Value = tf.Id.ToString(), Text = tf.Descripcion })
             };
 
@@ -81,19 +76,19 @@ namespace ControlProduccion.Controllers
             return View(vm);
         }
 
-        // GET: PrdNeveraController/Create
+        // GET: PrdOtroController/Create
         public async Task<ActionResult> Create()
         {
-            PrdNeveraViewModel model= new PrdNeveraViewModel();
+            PrdOtroViewModel model= new PrdOtroViewModel();
             // Populate dropdown lists asynchronously
             await PopulateDropdownListsAsync(model);
             return View(model);
         }
 
-        // POST: PrdNeveraController/Create
+        // POST: PrdOtroController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create([FromBody] PrdNeveraViewModel model)
+        public async Task<ActionResult> Create([FromBody] PrdOtroViewModel model)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -102,135 +97,122 @@ namespace ControlProduccion.Controllers
             model.IdUsuarioCreacion = userId;
             
 
-            var detallePrd = model.DetPrdNeveras?.Select(x => new DetPrdNeveraDTO
+            var detallePrd = model.DetPrdOtros?.Select(x => new DetPrdOtroDTO
             {
-                IdArticulo = x.IdArticulo,
-                CantidadConforme = x.CantidadConforme,
-                CantidadNoConforme = x.CantidadNoConforme,
+                Actividad = x.Actividad,
+                DescripcionProducto = x.DescripcionProducto,
                 IdTipoFabricacion = x.IdTipoFabricacion,
                 NumeroPedido = x.NumeroPedido,
+                Nota = x.Nota,
+                Merma = x.Merma,
+                Comentario = x.Comentario,
+                HoraInicio = x.HoraInicio,
+                HoraFin = x.HoraFin,
                 IdUsuarioCreacion = userId
             }).ToList();
 
 
-            var dto = new PrdNeveraDto
+            var dto = new PrdOtroDto
             {
                 IdUsuarios = model.IdUsuarios,
-                IdMaquina = model.IdMaquina,
                 Fecha = model.Fecha,
-                Observaciones = model.Observaciones,
-               HoraInicio= model.HoraInicio,
-               HoraFin = model.HoraFin,
-                TiempoParo = model.TiempoParo,
                 IdUsuarioCreacion = model.IdUsuarioCreacion!,
-                DetPrdNeveras = detallePrd
+                DetPrdOtros = detallePrd
               
             };
 
-            await _prdNeveraService.CreateAsync(dto);
+            await _prdOtroService.CreateAsync(dto);
             return Json(new { success = true, message = "Producción guardada!" });
 
         }
 
-        // GET: PrdNeveraController/Edit/5
+        // GET: PrdOtroController/Edit/5
         public async Task<ActionResult> Edit(int id)
         {
-            var dtoCat= await _prdNeveraService.GetCreateData();
+            var dtoCat= await _prdOtroService.GetCreateData();
             var userId = _userManager.GetUserId(User);
             var operarios = await _userManager.GetUsersInRoleAsync("Operario");
 
 
-            var modelDto = await _prdNeveraService.GetByIdAsync(id);
+            var modelDto = await _prdOtroService.GetByIdAsync(id);
             if (modelDto == null)
             {
                 return NotFound();
             }
 
-           var model = new PrdNeveraViewModel
+           var model = new PrdOtroViewModel
             {
                 Id = modelDto.Id,
                 IdUsuarios = modelDto.IdUsuarios,
-                IdMaquina = modelDto.IdMaquina,
                 Fecha = modelDto.Fecha,
-                Observaciones = modelDto.Observaciones,
-                HoraInicio = modelDto.HoraInicio,
-                HoraFin = modelDto.HoraFin,
-                TiempoParo = modelDto.TiempoParo,
                 AprobadoSupervisor = modelDto.AprobadoSupervisor,
                 AprobadoGerencia = modelDto.AprobadoGerencia,
-                DetPrdNeveras = modelDto.DetPrdNeveras?.Select(x => new DetPrdNeveraViewModel
+                DetPrdOtros = modelDto.DetPrdOtros?.Select(x => new DetPrdOtroViewModel
                 {
                     Id= x.Id,
-                    PrdNeveraId = x.PrdNeveraId,
-                    Posicion =x.Posicion,
-                    IdArticulo = x.IdArticulo,
-                    Articulo= dtoCat.CatalogoNeveras
-                                  .FirstOrDefault(c => c.Id == x.IdArticulo)?
-                                  .Descripcion,
-                    CantidadConforme = x.CantidadConforme,
-                    CantidadNoConforme = x.CantidadNoConforme,
+                    PrdOtroId = x.PrdOtroId,
+                    Actividad = x.Actividad,
+                    DescripcionProducto = x.DescripcionProducto,
                     IdTipoFabricacion = x.IdTipoFabricacion,
                     TipoFabricacion = dtoCat.CatTipoFabricacion
                                        .FirstOrDefault(t => t.Id == x.IdTipoFabricacion)?
                                        .Descripcion,
-                    NumeroPedido = x.NumeroPedido
+                    NumeroPedido = x.NumeroPedido,
+                    Nota = x.Nota,
+                    Merma = x.Merma,
+                    Comentario = x.Comentario,
+                    HoraInicio = x.HoraInicio,
+                    HoraFin = x.HoraFin
                 }).ToList(),
-                Articulos = dtoCat.CatalogoNeveras.Select(a => new SelectListItem { Value = a.Id.ToString(), Text = a.Codigo + "-" + a.Descripcion }),
                 Operarios = operarios.Select(o => new SelectListItem { Value = o.Id, Text = o.UserName }),
-                Maquinas = dtoCat.CatMaquina.Select(m => new SelectListItem { Value = m.Id.ToString(), Text = m.Nombre }),
                 TiposFabricacion=dtoCat.CatTipoFabricacion.Select(tf => new SelectListItem { Value = tf.Id.ToString(), Text = tf.Descripcion })
             };
 
             return View(model);
         }
 
-        // POST: PrdNeveraController/Edit/5
+        // POST: PrdOtroController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "JefeProduccion")]
-        public async Task<ActionResult> Edit(PrdNeveraViewModel model)
+        public async Task<ActionResult> Edit(PrdOtroViewModel model)
         {
             var userId = _userManager.GetUserId(User);
             if (!ModelState.IsValid)
             {
-                var dtoCat = await _prdNeveraService.GetCreateData();
+                var dtoCat = await _prdOtroService.GetCreateData();
                
                 var operarios = await _userManager.GetUsersInRoleAsync("Operario");
 
 
-                var modelDto = await _prdNeveraService.GetByIdAsync(model.Id);
+                var modelDto = await _prdOtroService.GetByIdAsync(model.Id);
 
 
-                var vm = new PrdNeveraViewModel
+                var vm = new PrdOtroViewModel
                 {
                     Id = modelDto.Id,
                     IdUsuarios = modelDto.IdUsuarios,
-                    IdMaquina = modelDto.IdMaquina,
                     Fecha = modelDto.Fecha,
-                    Observaciones = modelDto.Observaciones,
-                    HoraInicio = modelDto.HoraInicio,
-                    HoraFin = modelDto.HoraFin,
-                    TiempoParo = modelDto.TiempoParo,
                     AprobadoSupervisor = modelDto.AprobadoSupervisor,
                     AprobadoGerencia = modelDto.AprobadoGerencia,
-                    DetPrdNeveras = modelDto.DetPrdNeveras?.Select(x => new DetPrdNeveraViewModel
+                    DetPrdOtros = modelDto.DetPrdOtros?.Select(x => new DetPrdOtroViewModel
                     {
-                        Posicion = x.Posicion,
-                        IdArticulo = x.IdArticulo,
-                        Articulo = dtoCat.CatalogoNeveras
-                                      .FirstOrDefault(c => c.Id == x.IdArticulo)?
-                                      .Descripcion,
-                        CantidadConforme = x.CantidadConforme,
-                        CantidadNoConforme = x.CantidadNoConforme,
+                        Id = x.Id,
+                        PrdOtroId = x.PrdOtroId,
+                        Actividad = x.Actividad,
+                        DescripcionProducto = x.DescripcionProducto,
                         IdTipoFabricacion = x.IdTipoFabricacion,
                         TipoFabricacion = dtoCat.CatTipoFabricacion
                                            .FirstOrDefault(t => t.Id == x.IdTipoFabricacion)?
                                            .Descripcion,
-                        NumeroPedido = x.NumeroPedido
+                        NumeroPedido = x.NumeroPedido,
+                        Nota = x.Nota,
+                        Merma = x.Merma,
+                        Comentario = x.Comentario,
+                        HoraInicio = x.HoraInicio,
+                        HoraFin = x.HoraFin
                     }).ToList(),
-                    Articulos = dtoCat.CatalogoNeveras.Select(a => new SelectListItem { Value = a.Id.ToString(), Text = a.Codigo + "-" + a.Descripcion }),
                     Operarios = operarios.Select(o => new SelectListItem { Value = o.Id, Text = o.UserName }),
-                    Maquinas = dtoCat.CatMaquina.Select(m => new SelectListItem { Value = m.Id.ToString(), Text = m.Nombre }),
                     TiposFabricacion = dtoCat.CatTipoFabricacion.Select(tf => new SelectListItem { Value = tf.Id.ToString(), Text = tf.Descripcion })
                 };
 
@@ -244,21 +226,16 @@ namespace ControlProduccion.Controllers
             {
                 
 
-                var dto = new PrdNeveraDto
+                var dto = new PrdOtroDto
                 {
                     Id = model.Id,
                     IdUsuarios = model.IdUsuarios,
-                    IdMaquina = model.IdMaquina,
                     Fecha = model.Fecha,
-                    Observaciones = model.Observaciones,
-                    HoraInicio = model.HoraInicio,
-                    HoraFin = model.HoraFin,
-                    TiempoParo = model.TiempoParo,
                     IdUsuarioActualizacion = userId,
                     FechaActualizacion = DateTime.Now
                 };
                 // Llamar al servicio para actualizar
-                await _prdNeveraService.UpdateAsync(dto);
+                await _prdOtroService.UpdateAsync(dto);
                 // Redirigir a la lista de producciones
 
 
@@ -271,48 +248,43 @@ namespace ControlProduccion.Controllers
             catch (Exception ex)
             {
                 // Log the exception here if logging is available
-                // _logger.LogError(ex, "Error updating PrdIlKwang");
+                // _logger.LogError(ex, "Error updating PrdOtro");
                 ModelState.AddModelError("", "Ocurrió un error al actualizar el registro. Intente nuevamente.");
 
                 // Repopulate dropdowns and return the view
-                var dtoCat = await _prdNeveraService.GetCreateData();
+                var dtoCat = await _prdOtroService.GetCreateData();
               
                 var operarios = await _userManager.GetUsersInRoleAsync("Operario");
 
 
-                var modelDto = await _prdNeveraService.GetByIdAsync(model.Id);
+                var modelDto = await _prdOtroService.GetByIdAsync(model.Id);
 
 
-                var vm = new PrdNeveraViewModel
+                var vm = new PrdOtroViewModel
                 {
                     Id = modelDto.Id,
                     IdUsuarios = modelDto.IdUsuarios,
-                    IdMaquina = modelDto.IdMaquina,
                     Fecha = modelDto.Fecha,
-                    Observaciones = modelDto.Observaciones,
-                    HoraInicio = modelDto.HoraInicio,
-                    HoraFin = modelDto.HoraFin,
-                    TiempoParo = modelDto.TiempoParo,
                     AprobadoSupervisor = modelDto.AprobadoSupervisor,
                     AprobadoGerencia = modelDto.AprobadoGerencia,
-                    DetPrdNeveras = modelDto.DetPrdNeveras?.Select(x => new DetPrdNeveraViewModel
+                    DetPrdOtros = modelDto.DetPrdOtros?.Select(x => new DetPrdOtroViewModel
                     {
-                        Posicion = x.Posicion,
-                        IdArticulo = x.IdArticulo,
-                        Articulo = dtoCat.CatalogoNeveras
-                                      .FirstOrDefault(c => c.Id == x.IdArticulo)?
-                                      .Descripcion,
-                        CantidadConforme = x.CantidadConforme,
-                        CantidadNoConforme = x.CantidadNoConforme,
+                        Id = x.Id,
+                        PrdOtroId = x.PrdOtroId,
+                        Actividad = x.Actividad,
+                        DescripcionProducto = x.DescripcionProducto,
                         IdTipoFabricacion = x.IdTipoFabricacion,
                         TipoFabricacion = dtoCat.CatTipoFabricacion
                                            .FirstOrDefault(t => t.Id == x.IdTipoFabricacion)?
                                            .Descripcion,
-                        NumeroPedido = x.NumeroPedido
+                        NumeroPedido = x.NumeroPedido,
+                        Nota = x.Nota,
+                        Merma = x.Merma,
+                        Comentario = x.Comentario,
+                        HoraInicio = x.HoraInicio,
+                        HoraFin = x.HoraFin
                     }).ToList(),
-                    Articulos = dtoCat.CatalogoNeveras.Select(a => new SelectListItem { Value = a.Id.ToString(), Text = a.Codigo + "-" + a.Descripcion }),
                     Operarios = operarios.Select(o => new SelectListItem { Value = o.Id, Text = o.UserName }),
-                    Maquinas = dtoCat.CatMaquina.Select(m => new SelectListItem { Value = m.Id.ToString(), Text = m.Nombre }),
                     TiposFabricacion = dtoCat.CatTipoFabricacion.Select(tf => new SelectListItem { Value = tf.Id.ToString(), Text = tf.Descripcion })
                 };
 
@@ -322,13 +294,13 @@ namespace ControlProduccion.Controllers
 
         }
 
-        // GET: PrdNeveraController/Delete/5
+        // GET: PrdOtroController/Delete/5
         public ActionResult Delete(int id)
         {
             return View();
         }
 
-        // POST: PrdNeveraController/Delete/5
+        // POST: PrdOtroController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Delete(int id, IFormCollection collection)
@@ -344,13 +316,11 @@ namespace ControlProduccion.Controllers
         }
 
         //metodos endpoints
-        private async Task PopulateDropdownListsAsync(PrdNeveraViewModel model)
+        private async Task PopulateDropdownListsAsync(PrdOtroViewModel model)
         {
-            var dtoCat = await _prdNeveraService.GetCreateData();
+            var dtoCat = await _prdOtroService.GetCreateData();
             var operarios = await _userManager.GetUsersInRoleAsync("Operario");
-            model.Articulos =dtoCat.CatalogoNeveras.Select(a => new SelectListItem { Value = a.Id.ToString(), Text = a.Codigo+"-"+a.Descripcion });
             model.Operarios = operarios.Select(o => new SelectListItem { Value = o.Id, Text = o.UserName });
-            model.Maquinas = dtoCat.CatMaquina.Select(m => new SelectListItem { Value = m.Id.ToString(), Text = m.Nombre });
             model.TiposFabricacion=dtoCat.CatTipoFabricacion.Select(tf => new SelectListItem { Value = tf.Id.ToString(), Text = tf.Descripcion });
 
         }
@@ -359,42 +329,75 @@ namespace ControlProduccion.Controllers
         [Authorize(Roles = "Supervisor")]
         public async Task<IActionResult> ValidarPrd(int id)
         {
-            var userId = _userManager.GetUserId(User);
-            var result = await _prdNeveraService.ValidatePrdNeveraByIdAsync(id, userId);
+            try
+            {
+                var userId = _userManager.GetUserId(User);
+                var result = await _prdOtroService.ValidatePrdOtroByIdAsync(id, userId);
 
-            return Json(result);
+                return Json(result);
+            }
+            catch (Exception ex)
+            {
+                return Json(false);
+            }
         }
 
         [HttpPost]
         [Authorize(Roles = "JefeProduccion")]
         public async Task<IActionResult> AprobarPrd(int id)
         {
-            var userId = _userManager.GetUserId(User);
-            var result = await _prdNeveraService.AprovePrdNeveraByIdAsync(id, userId);
+            try
+            {
+                var userId = _userManager.GetUserId(User);
+                var result = await _prdOtroService.AprovePrdOtroByIdAsync(id, userId);
 
-            return Json(result);
+                return Json(result);
+            }
+            catch (Exception ex)
+            {
+                return Json(false);
+            }
         }
 
 
         [HttpPost]
         [Authorize(Roles = "JefeProduccion")]
-        public async Task<ActionResult> EditDetPrd(DetPrdNeveraViewModel model)
+        public async Task<ActionResult> EditDetPrd(DetPrdOtroViewModel model)
         {
-            var userId = _userManager.GetUserId(User);
-            var dto = new DetPrdNeveraDTO
+            try
             {
-                Id = (int)model.detrpdId,
-                IdArticulo = model.IdArticulo,
-                CantidadConforme = model.CantidadConforme,
-                CantidadNoConforme = model.CantidadNoConforme,
-                IdTipoFabricacion = model.IdTipoFabricacion,
-                NumeroPedido = model.NumeroPedido,
-                IdUsuarioActualizacion = userId
-            };
+                var userId = _userManager.GetUserId(User);
+                
+                // Validate that detrpdId has a value
+                if (!model.detrpdId.HasValue || model.detrpdId.Value <= 0)
+                {
+                    return Json(new { success = false, message = "ID de detalle inválido" });
+                }
 
-            await _prdNeveraService.UpdateDetPrd(dto);
+                var dto = new DetPrdOtroDTO
+                {
+                    Id = model.detrpdId.Value,
+                    Actividad = model.Actividad,
+                    DescripcionProducto = model.DescripcionProducto,
+                    IdTipoFabricacion = model.IdTipoFabricacion,
+                    NumeroPedido = model.NumeroPedido,
+                    Nota = model.Nota,
+                    Merma = model.Merma,
+                    Comentario = model.Comentario,
+                    HoraInicio = model.HoraInicio,
+                    HoraFin = model.HoraFin,
+                    IdUsuarioActualizacion = userId
+                };
 
-            return Json(new { success = true, message = "Actualizacion exitosa!" });
+                await _prdOtroService.UpdateDetPrd(dto);
+
+                return Json(new { success = true, message = "Actualización exitosa!" });
+            }
+            catch (Exception ex)
+            {
+                // Log the exception if logging is available
+                return Json(new { success = false, message = $"Error al actualizar: {ex.Message}" });
+            }
         }
 
         public async Task<ActionResult> GetDataReport(DateTime start, DateTime end)
@@ -403,7 +406,7 @@ namespace ControlProduccion.Controllers
             start = ValidateDateTimeParameter(start);
             end = ValidateDateTimeParameter(end);
             
-            var data = await _prdNeveraService.GetAllPrdNeveraWithDetailsAsync(start, end);
+            var data = await _prdOtroService.GetAllPrdOtroWithDetailsAsync(start, end);
             return View(data);
         }
 

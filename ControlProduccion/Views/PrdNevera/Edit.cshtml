@@ -245,6 +245,8 @@
 
 
 
+
+
                            $("#IdUsuarios").select2({
             placeholder: "- Selecciona los operarios -",
             allowClear:true
@@ -334,6 +336,8 @@
                 // Muestra el mensaje de éxito, cierra el modal y puedes agregar lógica adicional si es necesario
                 alert(response.message);
                 $("#modal-Detalle").modal("hide");
+                // Clear localStorage when detail is successfully updated
+                localStorage.removeItem(DRAFT_KEY);
                  location.reload();
               } else {
                 alert("Error: " + response.message);
@@ -353,6 +357,7 @@
                 $("#divNumeroPedido").show();
             } else {
                 $("#divNumeroPedido").hide();
+                $("#NumeroPedido").val(""); // Clear the value when hiding
             }
         });
 
@@ -369,6 +374,7 @@
                     success: function(response) {
                         if (response) {
                             alert("Producción Aprobada exitosamente.");
+                            localStorage.removeItem(DRAFT_KEY);
                             location.reload();
                         } else {
                             alert("Error al Aprobar la producción, contacte a soporte.");
@@ -380,6 +386,12 @@
                 });
             }
         }
+
+        // Handle form submission
+        $('#frmProduccion').on('submit', function() {
+            localStorage.removeItem(DRAFT_KEY);
+            window.removeEventListener('beforeunload', beforeUnloadHandler);
+        });
 
     </script>
 }

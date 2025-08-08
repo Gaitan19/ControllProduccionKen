@@ -235,6 +235,8 @@
     @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
     <script>
         $(document).ready(function() {
+
+
             // Initialize select2 for main form
             $("#IdUsuarios").select2({ 
                 allowClear: true,
@@ -316,6 +318,8 @@
                     if(res.success){ 
                         alert(res.message); 
                         $("#modal-Detalle").modal('hide');
+                        // Clear localStorage when detail is successfully updated
+                        localStorage.removeItem(DRAFT_KEY);
                         location.reload(); 
                     } else { 
                         $("#spnbtnGuardarDetPrd").text('Error: ' + (res.message || 'Error desconocido')); 
@@ -442,6 +446,8 @@
                     if(res.success){ 
                         alert(res.message); 
                         $("#modal-SubDetalle").modal('hide');
+                        // Clear localStorage when subdetail is successfully updated
+                        localStorage.removeItem(DRAFT_KEY);
                         location.reload(); 
                     } else { 
                         $("#spnSubDet").text('Error: ' + (res.message || 'Error desconocido')); 
@@ -482,6 +488,7 @@
                     success:function(res){ 
                         if(res){ 
                             alert('Producción Aprobada exitosamente'); 
+                            localStorage.removeItem(DRAFT_KEY);
                             location.reload(); 
                         } else { 
                             alert('Error al aprobar la producción'); 
@@ -493,6 +500,12 @@
                 });
             }
         }
+
+        // Handle form submission
+        $('#frmProduccion').on('submit', function() {
+            localStorage.removeItem(DRAFT_KEY);
+            window.removeEventListener('beforeunload', beforeUnloadHandler);
+        });
     </script>
 }
 

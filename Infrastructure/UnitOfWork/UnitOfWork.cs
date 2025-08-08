@@ -1,4 +1,5 @@
-﻿using Infrastructure.Data;
+﻿#nullable disable
+using Infrastructure.Data;
 using Infrastructure.Models;
 using Infrastructure.Repositories;
 using Infrastructure.Repositories.Interfaces;
@@ -14,7 +15,7 @@ namespace Infrastructure.UnitOfWork
     public class UnitOfWork : IUnitOfWork
     {
         private readonly AppDbContext _context;
-        private IDbContextTransaction _transaction;
+        private IDbContextTransaction? _transaction;
 
         // Campos privados para repositorios especificos
         // private IProductoRepository _productoRepository;
@@ -72,6 +73,8 @@ namespace Infrastructure.UnitOfWork
         private IGenericRepository<MaestroCatalogo> _maestroCatalogoRepository;
         private IGenericRepository<PrdNevera> _prdNeveraRepository;
         private IGenericRepository<DetPrdNevera> _detPrdNeveraRepository;
+        private IGenericRepository<PrdOtro> _prdOtroRepository;
+        private IGenericRepository<DetPrdOtro> _detPrdOtroRepository;
         private IGenericRepository<SubDetPrdBloque> _subDetPrdBloqueRepository;
         private IGenericRepository<PrdBloque> _prdBloqueRepository;
         private IGenericRepository<DetPrdBloque> _detPrdBloqueRepository;
@@ -339,6 +342,24 @@ namespace Infrastructure.UnitOfWork
             {
                 return _detPrdNeveraRepository
                     ??= new GenericRepository<DetPrdNevera>(_context);
+            }
+        }
+
+        public IGenericRepository<PrdOtro> PrdOtroRepository
+        {
+            get
+            {
+                return _prdOtroRepository
+                    ??= new GenericRepository<PrdOtro>(_context);
+            }
+        }
+
+        public IGenericRepository<DetPrdOtro> DetPrdOtroRepository
+        {
+            get
+            {
+                return _detPrdOtroRepository
+                    ??= new GenericRepository<DetPrdOtro>(_context);
             }
         }
 

@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.SqlTypes;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -20,8 +21,32 @@ namespace Infrastructure.Repositories
             _context = context;
         }
 
+        /// <summary>
+        /// Validates and ensures DateTime parameters are within SQL Server's valid range
+        /// </summary>
+        /// <param name="dateTime">DateTime to validate</param>
+        /// <returns>Valid DateTime within SQL Server range</returns>
+        private static DateTime ValidateSqlDateTime(DateTime dateTime)
+        {
+            // SQL Server DateTime range: 1/1/1753 12:00:00 AM to 12/31/9999 11:59:59 PM
+            var sqlMinDate = SqlDateTime.MinValue.Value;
+            var sqlMaxDate = SqlDateTime.MaxValue.Value;
+
+            if (dateTime < sqlMinDate)
+                return sqlMinDate;
+            
+            if (dateTime > sqlMaxDate)
+                return sqlMaxDate;
+            
+            return dateTime;
+        }
+
         public async Task<IEnumerable<PrdCerchaCovintecReporteDTO>> GetAllCerchaProduccionWithDetailsAsync(DateTime start, DateTime end)
         {
+            // Validate DateTime parameters to ensure they're within SQL Server range
+            start = ValidateSqlDateTime(start);
+            end = ValidateSqlDateTime(end);
+
             using var connection = _context.Database.GetDbConnection();
             if (connection.State == ConnectionState.Closed)
                 connection.Open();
@@ -107,6 +132,10 @@ FROM cp.DetAlambrePrdCerchaCovintec DAPC;
 
         public async Task<IEnumerable<PrdMallasCovintecReporteDTO>> GetAllMallaProduccionWithDetailsAsync(DateTime start, DateTime end)
         {
+            // Validate DateTime parameters to ensure they're within SQL Server range
+            start = ValidateSqlDateTime(start);
+            end = ValidateSqlDateTime(end);
+
             // Obtén la conexión (ajusta según dónde la expongas)
             using var connection = _context.Database.GetDbConnection();
             if (connection.State == ConnectionState.Closed)
@@ -180,6 +209,10 @@ FROM cp.DetAlambrePrdMallaCovintec A;
 
         public async Task<IEnumerable<PrdPanelesCovintecReporteDTO>> GetAllPanelProduccionWithDetailsAsync(DateTime start, DateTime end)
         {
+            // Validate DateTime parameters to ensure they're within SQL Server range
+            start = ValidateSqlDateTime(start);
+            end = ValidateSqlDateTime(end);
+
             using (var connection = _context.Database.GetDbConnection())
             {
                 if (connection.State == ConnectionState.Closed)
@@ -240,6 +273,10 @@ FROM cp.DetAlambrePrdPanelesCovintec DAPC;
 
         public async Task<IEnumerable<PrdBloquesReporteDTO>> GetAllPrdBloqueWithDetailsAsync(DateTime start, DateTime end)
         {
+            // Validate DateTime parameters to ensure they're within SQL Server range
+            start = ValidateSqlDateTime(start);
+            end = ValidateSqlDateTime(end);
+
             using (var connection = _context.Database.GetDbConnection())
             {
                 if (connection.State == ConnectionState.Closed)
@@ -330,6 +367,10 @@ WHERE S.DetPrdBloquesId IN (
 
         public async Task<IEnumerable<PrdCorteTReporteDTO>> GetAllPrdCorteTWithDetailsAsync(DateTime start, DateTime end)
         {
+            // Validate DateTime parameters to ensure they're within SQL Server range
+            start = ValidateSqlDateTime(start);
+            end = ValidateSqlDateTime(end);
+
             using (var connection = _context.Database.GetDbConnection())
             {
                 if (connection.State == ConnectionState.Closed)
@@ -407,6 +448,10 @@ WHERE D.PrdCorteTId IN (
 
         public async Task<IEnumerable<PrdIlKwangReporteDTO>> GetAllPrdIlKwangWithDetailsAsync(DateTime start, DateTime end)
         {
+            // Validate DateTime parameters to ensure they're within SQL Server range
+            start = ValidateSqlDateTime(start);
+            end = ValidateSqlDateTime(end);
+
             using var connection = _context.Database.GetDbConnection();
             if (connection.State == ConnectionState.Closed)
                 connection.Open();
@@ -541,6 +586,10 @@ WHERE D.PrdIlKwangId IN (
 
         public async Task<IEnumerable<PrdNeveraReporteDTO>> GetAllPrdNeveraWithDetailsAsync(DateTime start, DateTime end)
         {
+            // Validate DateTime parameters to ensure they're within SQL Server range
+            start = ValidateSqlDateTime(start);
+            end = ValidateSqlDateTime(end);
+
             using (var connection = _context.Database.GetDbConnection())
             {
                 if (connection.State == ConnectionState.Closed)
@@ -608,6 +657,82 @@ WHERE  D.PrdNeveraId IN (
                     {
                         header.Detalles = detalles
                             .Where(d => d.IdNevera == header.Id)
+                            .ToList();
+                    }
+
+                    return headers;
+                }
+            }
+        }
+
+        public async Task<IEnumerable<PrdOtroReporteDTO>> GetAllPrdOtroWithDetailsAsync(DateTime start, DateTime end)
+        {
+            // Validate DateTime parameters to ensure they're within SQL Server range
+            start = ValidateSqlDateTime(start);
+            end = ValidateSqlDateTime(end);
+
+            using (var connection = _context.Database.GetDbConnection())
+            {
+                if (connection.State == ConnectionState.Closed)
+                    connection.Open();
+
+                var sql = @"
+-- 1) Encabezados de PrdOtro
+SELECT 
+    PO.Id,
+    PO.IdTipoReporte,
+    PO.IdUsuarios,
+    dbo.GetUserNamesFromIDs(PO.IdUsuarios) AS Operarios,
+    PO.Fecha,
+    PO.IdUsuarioCreacion,
+    PO.FechaCreacion,
+    PO.IdUsuarioActualizacion,
+    PO.FechaActualizacion,
+    PO.AprobadoSupervisor,
+    PO.AprobadoGerencia,
+    PO.IdAprobadoSupervisor,
+    PO.IdAprobadoGerencia,
+    dbo.GetUserNamesFromIDs(PO.IdAprobadoSupervisor) AS Supervisor,
+    dbo.GetUserNamesFromIDs(PO.IdAprobadoGerencia) AS JefeProd
+FROM cp.PrdOtro PO
+WHERE CAST(PO.Fecha AS DATE) BETWEEN CAST(@start AS DATE) AND CAST(@end AS DATE)
+ AND PO.AprobadoGerencia = 1;
+
+-- 2) Detalles de cada PrdOtro
+SELECT 
+    D.PrdOtroId      AS IdPrdOtro,
+    D.Actividad,
+    D.DescripcionProducto,
+    TF.Descripcion   AS TipoFabricacion,
+    D.NumeroPedido,
+    D.Nota,
+    D.Merma,
+    D.Comentario,
+    D.HoraInicio,
+    D.HoraFin
+FROM cp.DetPrdOtro D
+INNER JOIN cp.TipoFabricacion   TF ON TF.Id = D.IdTipoFabricacion
+WHERE  D.PrdOtroId IN (
+    SELECT P.Id 
+    FROM cp.PrdOtro P 
+    WHERE CAST(P.Fecha AS DATE) BETWEEN CAST(@start AS DATE) AND CAST(@end AS DATE)
+      AND P.AprobadoGerencia = 1
+);
+
+";
+
+                using (var multi = await connection.QueryMultipleAsync(sql, new { start, end }))
+                {
+                    // Leer encabezados
+                    var headers = (await multi.ReadAsync<PrdOtroReporteDTO>()).ToList();
+                    // Leer todos los detalles
+                    var detalles = (await multi.ReadAsync<DetalleOtroDto>()).ToList();
+
+                    // Asociar detalles
+                    foreach (var header in headers)
+                    {
+                        header.Detalles = detalles
+                            .Where(d => d.IdPrdOtro == header.Id)
                             .ToList();
                     }
 

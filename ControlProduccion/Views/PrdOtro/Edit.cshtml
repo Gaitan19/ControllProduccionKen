@@ -1,0 +1,375 @@
+@using ControlProduccion.ViewModel;
+@model PrdOtroViewModel;
+@{
+    ViewData["Title"] = "Editar Produccion Otro";
+}
+
+<div class="col-md-10 offset-md-1">
+    <div class="ibox ">
+        <div class="ibox-title">
+            <h5>@ViewData["Title"]</h5>
+        </div>
+        <div class="ibox-content">
+            <form id="frmProduccion" method="post" asp-action="Edit" autocomplete="off">
+                @Html.AntiForgeryToken()
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+                <input type="hidden" asp-for="Id" />
+                <div class="form-group">
+                    <label asp-for="IdUsuarios"></label>
+                    <select id="IdUsuarios" multiple name="IdUsuarios" asp-for="IdUsuarios" class="form-control select2" asp-items="Model.Operarios">
+                    </select>
+                    <span asp-validation-for="IdUsuarios" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Fecha"></label>
+                    <input asp-for="Fecha" class="form-control" />
+                    <span asp-validation-for="Fecha" class="text-danger"></span>
+                </div>
+
+                <div class="hr-line-dashed"></div>
+                <div class="form-group row">
+                    <div class="col-sm-12" style="max-height: 400px; overflow: scroll">
+                        <h4 id="hdrVV" runat="server">Detalle Actividades</h4>
+
+                        <table id="tblProduccion" class="table table-bordered table-hover">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>No.</th>
+                                    <th>Actividad</th>
+                                    <th>Descripción Producto</th>
+                                    <th>Tipo Fabricación</th>
+                                    <th>Número Pedido</th>
+                                    <th>Nota</th>
+                                    <th>Merma</th>
+                                    <th>Comentario</th>
+                                    <th>Hora Inicio</th>
+                                    <th>Hora Fin</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model.DetPrdOtros != null)
+                                {
+                                    foreach (var detalle in Model.DetPrdOtros)
+                                    {
+                                        // Guardamos datos útiles como data-attributes para no depender de índices de columna.
+                                        var horaInicioData = DateTime.Today.Add(detalle.HoraInicio).ToString("HH:mm");
+                                        var horaFinData = DateTime.Today.Add(detalle.HoraFin).ToString("HH:mm");
+                                        var numeroPedidoData = detalle.NumeroPedido?.ToString() ?? "";
+                                        <text>
+                                        <tr data-id="@detalle.Id"
+                                            data-horainicio="@horaInicioData"
+                                            data-horafin="@horaFinData"
+                                            data-idtipofabricacion="@detalle.IdTipoFabricacion"
+                                            data-numeropedido="@numeroPedidoData">
+                                            <td>
+                                                    @if (Model.AprobadoGerencia != true)
+                                                    {
+                                                    <a href="#" class="open-modal">@detalle.Id</a>
+                                                    }
+                                                    else
+                                                    {
+                                                        @detalle.Id
+                                                    }
+                                            </td>
+                                            <td>@detalle.Actividad</td>
+                                            <td>@detalle.DescripcionProducto</td>
+                                            <td>@detalle.TipoFabricacion</td>
+                                            <td>
+                                                    @(detalle.IdTipoFabricacion == 2 ? (detalle.NumeroPedido?.ToString() ?? "") : "")
+                                            </td>
+
+                                            <td>@detalle.Nota</td>
+                                            <td>@detalle.Merma</td>
+                                            <td>@detalle.Comentario</td>
+                                            <td>@DateTime.Today.Add(detalle.HoraInicio).ToString("h:mm tt")</td>
+                                            <td>@DateTime.Today.Add(detalle.HoraFin).ToString("h:mm tt")</td>
+                                        </tr>
+                                        </text>
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <button type="button" class="btn btn-dark" onclick="location.href='@Url.Action("Index", "PrdOtro")'">Regresar</button>
+                @if (Model.AprobadoGerencia != true)
+                {
+                    <button type="submit" class="btn btn-primary">Actualizar</button>
+                }
+
+                @if (User.IsInRole("JefeProduccion") && Model.AprobadoGerencia != true)
+                {
+                    <button id="btnAprobarProd" type="button" class="btn btn-danger" onclick="validar(@Model.Id)">Aprobar</button>
+                }
+                else
+                {
+                    <button type="button" class="btn btn-success">Aprobado</button>
+                }
+            </form>
+
+            <!-- Modal para editar detalle -->
+            <div id="modal-Detalle" class="modal fade" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-body">
+                            <form id="frmDetPrd">
+                                <input type="hidden" id="detrpdId" name="detrpdId" />
+                                <h3>Editar Detalle</h3>
+                                <hr />
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="form-label">Actividad</label>
+                                            <input type="text" id="Actividad" name="Actividad" class="form-control" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="form-label">Descripción Producto</label>
+                                            <input type="text" id="DescripcionProducto" name="DescripcionProducto" class="form-control" />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="form-label">Tipo Fabricación</label>
+                                            <select id="IdTipoFabricacion" name="IdTipoFabricacion" class="form-control" asp-items="Model.TiposFabricacion">
+                                                <option value="">-- Seleccione un Tipo Fabricacion --</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3" id="divNumeroPedido" style="display:none">
+                                            <label for="NumeroPedido" class="form-label">Número Pedido</label>
+                                            <input oninput="this.value = this.value.replace(/[^0-9\-]/g, '');" step="1" min="0" type="number" id="NumeroPedido" name="NumeroPedido" class="form-control" />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="mb-3">
+                                            <label class="form-label">Nota</label>
+                                            <input type="text" id="Nota" name="Nota" class="form-control" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="mb-3">
+                                            <label class="form-label">Merma</label>
+                                            <input type="text" id="Merma" name="Merma" class="form-control" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="mb-3">
+                                            <label class="form-label">Comentario</label>
+                                            <input type="text" id="Comentario" name="Comentario" class="form-control" />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="form-label">Hora Inicio</label>
+                                            <input step="1" type="time" id="HoraInicio" name="HoraInicio" class="form-control" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="form-label">Hora Fin</label>
+                                            <input step="1" type="time" id="HoraFin" name="HoraFin" class="form-control" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+
+                            <button id="btnGuardarDetPrd" type="button" class="btn btn-primary">Actualizar</button>
+                            <button type="button" class="btn btn-dark" data-dismiss="modal">Cancelar</button>
+                            <p id="spnbtnGuardarDetPrd" class="text-sm text-danger"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        (function ($) {
+            // Si por alguna razón los data-attributes no están, intentamos convertir desde un texto visible.
+            function convertTo24HourFromText(time12h) {
+                if (!time12h) return '';
+                var clean = time12h.trim().replace(/\s+/g, ' ');
+                var m = clean.match(/(\d{1,2}):(\d{2})\s*(AM|PM)/i);
+                if (m) {
+                    var h = parseInt(m[1], 10), min = m[2], ap = m[3].toUpperCase();
+                    if (ap === 'PM' && h !== 12) h += 12;
+                    if (ap === 'AM' && h === 12) h = 0;
+                    return h.toString().padStart(2, '0') + ':' + min;
+                }
+                // Ya en 24h?
+                var m2 = clean.match(/(\d{1,2}):(\d{2})$/);
+                if (m2) {
+                    var hh = parseInt(m2[1], 10), mm = m2[2];
+                    return hh.toString().padStart(2, '0') + ':' + mm;
+                }
+                return '';
+            }
+
+            function timeToMinutes(t) {
+                if (!t || t.indexOf(':') === -1) return null;
+                var parts = t.split(':');
+                var hh = parseInt(parts[0], 10);
+                var mm = parseInt(parts[1], 10);
+                if (isNaN(hh) || isNaN(mm)) return null;
+                return hh * 60 + mm;
+            }
+
+            $("#IdUsuarios").select2({
+                placeholder: "- Selecciona los operarios -",
+                allowClear: true
+            });
+
+            // Abrir modal haciendo click en el No. (Id)
+            $("#tblProduccion").on("click", ".open-modal", function (e) {
+                e.preventDefault();
+                var $row = $(this).closest("tr");
+
+                // Preferimos leer los data-attributes (HH:mm) que siempre definimos en cada <tr>
+                var id = $row.data("id");
+                var horaInicioData = $row.data("horainicio"); // formato HH:mm
+                var horaFinData = $row.data("horafin");       // formato HH:mm
+                var idTipoFabricacion = $row.data("idtipofabricacion");
+                var numeroPedido = $row.data("numeropedido");
+
+                // Rellenar campos visibles sacando texto de columnas si hace falta
+                var actividad = $row.find("td:eq(1)").text().trim();
+                var descripcionProducto = $row.find("td:eq(2)").text().trim();
+                var tipoFabricacion = $row.find("td:eq(3)").text().trim();
+                var nota = $row.find("td:eq(5)").text().trim();
+                var merma = $row.find("td:eq(6)").text().trim();
+                var comentario = $row.find("td:eq(7)").text().trim();
+
+                $("#detrpdId").val(id);
+                $("#Actividad").val(actividad);
+                $("#DescripcionProducto").val(descripcionProducto);
+                // Asignar el select por value (idTipoFabricacion puede venir como número o string)
+                $("#IdTipoFabricacion").val(String(idTipoFabricacion));
+                $("#Nota").val(nota);
+                $("#Merma").val(merma);
+                $("#Comentario").val(comentario);
+
+                // Si existen data-attributes los usamos tal cual (formato HH:mm), si no, intentamos convertir desde la celda
+                var hi = horaInicioData || convertTo24HourFromText($row.find("td:eq(8)").text().trim());
+                var hf = horaFinData || convertTo24HourFromText($row.find("td:eq(9)").text().trim());
+
+                $("#HoraInicio").val(hi);
+                $("#HoraFin").val(hf);
+
+                // Mostrar/ocultar NumeroPedido según el tipo de fabricación
+                if (idTipoFabricacion == "2") { // tipo pedido
+                    $("#divNumeroPedido").show();
+                    $("#NumeroPedido").val(numeroPedido);
+                } else { // tipo almacen u otro
+                    $("#divNumeroPedido").hide();
+                    $("#NumeroPedido").val('');
+                }
+
+
+                // Limpiar mensajes previos
+                $("#spnbtnGuardarDetPrd").text('');
+
+                $("#modal-Detalle").modal("show");
+            });
+
+            // Cuando cambie el tipo de fabricacion en modal
+            $("#IdTipoFabricacion").change(function () {
+                var selectedValue = $(this).val();
+                if (selectedValue == "2") { // tipo pedido
+                    $("#divNumeroPedido").show();
+                } else { // tipo almacen
+                    $("#divNumeroPedido").hide();
+                    $("#NumeroPedido").val('');
+                }
+            });
+
+
+            // Guardar detalle con validación de horas (HoraFin > HoraInicio)
+            $("#btnGuardarDetPrd").click(function (e) {
+                e.preventDefault();
+                $("#spnbtnGuardarDetPrd").text('');
+
+                var horaInicio = $("#HoraInicio").val(); // formato HH:mm
+                var horaFin = $("#HoraFin").val();       // formato HH:mm
+
+                // Validaciones: ambos deben existir y horaFin > horaInicio
+                var hiMin = timeToMinutes(horaInicio);
+                var hfMin = timeToMinutes(horaFin);
+
+                if (hiMin === null || hfMin === null) {
+                    $("#spnbtnGuardarDetPrd").text("Por favor ingrese Hora Inicio y Hora Fin en formato válido.");
+                    return;
+                }
+
+                // HoraFin *debe ser mayor* que HoraInicio
+                if (hfMin <= hiMin) {
+                    $("#spnbtnGuardarDetPrd").text("La hora fin debe ser mayor que la hora inicio.");
+                    return;
+                }
+
+                // Si el tipo fabricacion es Almacén (por ejemplo id = 1), asegurar NumeroPedido vacío
+                if (String($("#IdTipoFabricacion").val()) !== "2") {
+                    $("#NumeroPedido").val('');
+                }
+
+
+                var formData = $("#frmDetPrd").serialize();
+
+                $.ajax({
+                    url: '@Url.Action("EditDetPrd", "PrdOtro")',
+                    type: 'POST',
+                    data: formData,
+                    success: function (response) {
+                        if (response && response.success) {
+                            // Éxito: recargar para reflejar cambios (puedes sustituir por actualización inline si prefieres)
+                            $("#modal-Detalle").modal("hide");
+                            location.reload();
+                        } else {
+                            var msg = (response && response.message) ? response.message : "Error al actualizar el detalle.";
+                            $("#spnbtnGuardarDetPrd").text(msg);
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        $("#spnbtnGuardarDetPrd").text("Ocurrió un error en la solicitud: " + error);
+                    }
+                });
+            });
+
+            // Función de aprobación (igual que antes)
+            window.validar = function (id) {
+                if (confirm("¿Está seguro de que desea Aprobar esta producción?")) {
+                    $.post('@Url.Action("AprobarPrd", "PrdOtro")', { id: id }, function (response) {
+                        if (response) {
+                            alert("Producción Aprobada exitosamente.");
+                            location.reload();
+                        } else {
+                            alert("Error al Aprobar la producción, contacte a soporte.");
+                        }
+                    });
+                }
+            };
+
+        })(jQuery);
+    </script>
+}

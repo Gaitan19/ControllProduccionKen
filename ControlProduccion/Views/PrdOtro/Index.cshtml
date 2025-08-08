@@ -1,8 +1,8 @@
-﻿@using Application.DTOs
-@model IEnumerable<ShowPrdNeveraDto>
+@using Application.DTOs
+@model IEnumerable<ShowPrdOtroDto>
 
 @{
-    ViewData["Title"] = "Produccion Nevera";
+    ViewData["Title"] = "Produccion Otro";
 }
 
 <div class="col-md-15 offset-md-1">
@@ -13,7 +13,7 @@
             <div class="col-sm-8">
                 @if (User.IsInRole("JefeProduccion"))
                 {
-                    <a asp-controller="PrdNevera" asp-route-end="@DateTime.Now.ToString("yyyy-MM-dd")" asp-route-start="@DateTime.Now.AddDays(-1).ToString("yyyy-MM-dd")" asp-action="GetDataReport" id="btnVerReporte" class="btn btn-info btn-outline">
+                    <a asp-controller="PrdOtro" asp-route-end="@DateTime.Now.ToString("yyyy-MM-dd")" asp-route-start="@DateTime.Now.AddDays(-1).ToString("yyyy-MM-dd")" asp-action="GetDataReport" id="btnVerReporte" class="btn btn-info btn-outline">
                         <i class="fa fa-print"></i> Ver Reporte
                     </a>
                 }
@@ -26,9 +26,7 @@
                     <tr>
                         <th>Id Produccion</th>
                         <th>Operario</th>
-                        <th>Maquina</th>
                         <th>Fecha</th>
-
                         <th>Validado</th>
                         <th>Aprobado</th>
                         @* <th>Accion</th> *@
@@ -58,8 +56,7 @@
 
 
                             <td>@produccion.Operarios</td>
-                            <td>@produccion.Maquina</td>
-                            <td>@produccion.Fecha</td>
+                            <td>@produccion.Fecha.ToString("dd/MM/yyyy")</td>
 
                             <td>
                                 <i class="fa @(produccion.AprobadoSupervisor ? "fa-check text-success" : "fa-times text-danger")"></i>
@@ -100,4 +97,3 @@
 
     </script>
 }
-

@@ -228,6 +228,8 @@
             input.value = valor;
         }
 
+
+
         $("#IdUsuarios").select2({
             placeholder: "- Selecciona los operarios -",
             allowClear: true
@@ -296,6 +298,8 @@
                     if(response.success){
                         alert(response.message);
                         $("#modal-Detalle").modal("hide");
+                        // Clear localStorage when detail is successfully updated
+                        localStorage.removeItem(DRAFT_KEY);
                         location.reload();
                     } else {
                         alert("Error: " + response.message);
@@ -333,6 +337,7 @@
                     success: function(response) {
                         if (response) {
                             alert("Producción Aprobada exitosamente.");
+                            localStorage.removeItem(DRAFT_KEY);
                             location.reload();
                         } else {
                             alert("Error al Aprobar la producción, contacte a soporte.");
@@ -346,6 +351,11 @@
             }
         }
 
+        // Handle form submission
+        $('#frmProduccion').on('submit', function() {
+            localStorage.removeItem(DRAFT_KEY);
+            window.removeEventListener('beforeunload', beforeUnloadHandler);
+        });
 
                   $(document).on('shown.bs.modal', '#modal-Detalle', function () {
             var $modal = $(this);

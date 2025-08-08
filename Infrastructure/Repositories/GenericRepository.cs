@@ -1,4 +1,5 @@
-﻿using Infrastructure.Data;
+﻿#nullable disable
+using Infrastructure.Data;
 using Infrastructure.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System;
