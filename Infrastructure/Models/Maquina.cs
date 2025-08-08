@@ -15,6 +15,8 @@ public partial class Maquina
 
     public virtual ICollection<PrdCerchaCovintec> PrdCerchaCovintecs { get; set; } = new List<PrdCerchaCovintec>();
 
+    public virtual ICollection<PrdCorteP> PrdCortePs { get; set; } = new List<PrdCorteP>();
+
     public virtual ICollection<PrdCorteT> PrdCorteTs { get; set; } = new List<PrdCorteT>();
 
     public virtual ICollection<PrdIlKwang> PrdIlKwangs { get; set; } = new List<PrdIlKwang>();

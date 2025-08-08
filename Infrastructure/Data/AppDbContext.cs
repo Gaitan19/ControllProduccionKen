@@ -22,6 +22,8 @@ public partial class AppDbContext : DbContext
 
     public virtual DbSet<CatLamina> CatLaminas { get; set; }
 
+    public virtual DbSet<CatPantografo> CatPantografos { get; set; }
+
     public virtual DbSet<CatProdTermoIsoPanel> CatProdTermoIsoPanels { get; set; }
 
     public virtual DbSet<CatalogoBloque> CatalogoBloques { get; set; }
@@ -50,6 +52,8 @@ public partial class AppDbContext : DbContext
 
     public virtual DbSet<DetPrdCerchaCovintec> DetPrdCerchaCovintecs { get; set; }
 
+    public virtual DbSet<DetPrdCorteP> DetPrdCortePs { get; set; }
+
     public virtual DbSet<DetPrdCorteT> DetPrdCorteTs { get; set; }
 
     public virtual DbSet<DetPrdIlKwang> DetPrdIlKwangs { get; set; }
@@ -71,6 +75,8 @@ public partial class AppDbContext : DbContext
     public virtual DbSet<PrdBloque> PrdBloques { get; set; }
 
     public virtual DbSet<PrdCerchaCovintec> PrdCerchaCovintecs { get; set; }
+
+    public virtual DbSet<PrdCorteP> PrdCortePs { get; set; }
 
     public virtual DbSet<PrdCorteT> PrdCorteTs { get; set; }
 
@@ -122,6 +128,18 @@ public partial class AppDbContext : DbContext
         modelBuilder.Entity<CatLamina>(entity =>
         {
             entity.ToTable("CatLaminas", "cp");
+
+            entity.Property(e => e.CodigoArticulo)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.DescripcionArticulo)
+                .HasMaxLength(200)
+                .IsUnicode(false);
+        });
+
+        modelBuilder.Entity<CatPantografo>(entity =>
+        {
+            entity.ToTable("CatPantografo", "cp");
 
             entity.Property(e => e.CodigoArticulo)
                 .HasMaxLength(50)
@@ -404,6 +422,40 @@ public partial class AppDbContext : DbContext
                 .HasConstraintName("FK_DetPrdCerchaCovintec_TipoFabricacion");
         });
 
+        modelBuilder.Entity<DetPrdCorteP>(entity =>
+        {
+            entity.ToTable("DetPrdCorteP", "cp");
+
+            entity.Property(e => e.CantidadPiezasConformes).HasColumnType("decimal(10, 1)");
+            entity.Property(e => e.CantidadPiezasNoConformes).HasColumnType("decimal(10, 1)");
+            entity.Property(e => e.FechaActualizacion).HasColumnType("datetime");
+            entity.Property(e => e.FechaCreacion).HasColumnType("datetime");
+            entity.Property(e => e.IdUsuarioActualizacion).HasMaxLength(450);
+            entity.Property(e => e.IdUsuarioCreacion).HasMaxLength(450);
+            entity.Property(e => e.Nota)
+                .HasMaxLength(200)
+                .IsUnicode(false);
+            entity.Property(e => e.PrdCodigoBloque)
+                .HasMaxLength(200)
+                .IsUnicode(false);
+            entity.Property(e => e.PrdCortePid).HasColumnName("PrdCortePId");
+
+            entity.HasOne(d => d.IdArticuloNavigation).WithMany(p => p.DetPrdCortePs)
+                .HasForeignKey(d => d.IdArticulo)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_DetPrdCorteP_CatPantografo");
+
+            entity.HasOne(d => d.IdTipoFabricacionNavigation).WithMany(p => p.DetPrdCortePs)
+                .HasForeignKey(d => d.IdTipoFabricacion)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_DetPrdCorteP_CatalogoTipo");
+
+            entity.HasOne(d => d.PrdCorteP).WithMany(p => p.DetPrdCortePs)
+                .HasForeignKey(d => d.PrdCortePid)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_DetPrdCorteP_PrdCorteP");
+        });
+
         modelBuilder.Entity<DetPrdCorteT>(entity =>
         {
             entity.ToTable("DetPrdCorteT", "cp");
@@ -655,6 +707,26 @@ public partial class AppDbContext : DbContext
                 .HasForeignKey(d => d.IdMaquina)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_PrdCerchaCovintec_Maquinas");
+        });
+
+        modelBuilder.Entity<PrdCorteP>(entity =>
+        {
+            entity.ToTable("PrdCorteP", "cp");
+
+            entity.Property(e => e.Fecha).HasColumnType("date");
+            entity.Property(e => e.FechaActualizacion).HasColumnType("datetime");
+            entity.Property(e => e.FechaCreacion).HasColumnType("datetime");
+            entity.Property(e => e.IdAprobadoGerencia).HasMaxLength(450);
+            entity.Property(e => e.IdAprobadoSupervisor).HasMaxLength(450);
+            entity.Property(e => e.IdUsuarioActualizacion).HasMaxLength(450);
+            entity.Property(e => e.IdUsuarioCreacion).HasMaxLength(450);
+            entity.Property(e => e.Observaciones).HasMaxLength(4000);
+            entity.Property(e => e.TiempoParo).HasColumnType("decimal(18, 1)");
+
+            entity.HasOne(d => d.IdMaquinaNavigation).WithMany(p => p.PrdCortePs)
+                .HasForeignKey(d => d.IdMaquina)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_PrdCorteP_Maquinas");
         });
 
         modelBuilder.Entity<PrdCorteT>(entity =>
