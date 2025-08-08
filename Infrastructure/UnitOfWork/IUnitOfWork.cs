@@ -60,6 +60,8 @@ namespace Infrastructure.UnitOfWork
         IGenericRepository<CatLamina> CatLaminaRepository { get; }
         IGenericRepository<PrdCorteT> PrdCorteTRepository { get; }
         IGenericRepository<DetPrdCorteT> DetPrdCorteTRepository { get; }
+        IGenericRepository<PrdOtro> PrdOtroRepository { get; }
+        IGenericRepository<DetPrdOtro> DetPrdOtroRepository { get; }
 
         Task<int> SaveChangesAsync();
         Task BeginTransactionAsync();

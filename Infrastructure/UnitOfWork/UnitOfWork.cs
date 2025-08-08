@@ -79,6 +79,8 @@ namespace Infrastructure.UnitOfWork
         private IGenericRepository<CatLamina> _catLaminaRepository;
         private IGenericRepository<PrdCorteT> _prdCorteTRepository;
         private IGenericRepository<DetPrdCorteT> _detPrdCorteTRepository;
+        private IGenericRepository<PrdOtro> _prdOtroRepository;
+        private IGenericRepository<DetPrdOtro> _detPrdOtroRepository;
         public IReportesDapperRepository ReportesDapperRepository
         {
             get
@@ -391,6 +393,22 @@ namespace Infrastructure.UnitOfWork
             get
             {
                 return _detPrdCorteTRepository ??= new GenericRepository<DetPrdCorteT>(_context);
+            }
+        }
+
+        public IGenericRepository<PrdOtro> PrdOtroRepository
+        {
+            get
+            {
+                return _prdOtroRepository ??= new GenericRepository<PrdOtro>(_context);
+            }
+        }
+
+        public IGenericRepository<DetPrdOtro> DetPrdOtroRepository
+        {
+            get
+            {
+                return _detPrdOtroRepository ??= new GenericRepository<DetPrdOtro>(_context);
             }
         }
 
