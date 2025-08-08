@@ -214,6 +214,8 @@
     }
 
     <script>
+        const DRAFT_KEY = 'draft-prdCorteP';
+        
         function validarUnDecimal(input) {
             let valor = input.value.replace(/[^0-9.]/g, '');
             let partes = valor.split('.');
@@ -318,6 +320,7 @@
                 $("#divNumeroPedido").show();
             } else {
                 $("#divNumeroPedido").hide();
+                $("#NumeroPedido").val(''); // Clear the value when hiding
             }
         });
 

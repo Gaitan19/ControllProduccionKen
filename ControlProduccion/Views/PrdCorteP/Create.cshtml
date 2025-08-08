@@ -177,7 +177,7 @@
     <script>
         $(document).ready(function() {
             // ─────────── AUTOSAVE / RESTORE /PREVENT EXIT───────────
-            const DRAFT_KEY = 'draft-prdCorteT';
+            const DRAFT_KEY = 'draft-prdCorteP';
 
             function backupForm() {
                 const formArr = $('#frmProduccion').serializeArray();
@@ -360,6 +360,11 @@
                     return;
                 }
 
+                // Set numeroPedido to null if not "Por Pedido" type
+                if(idTipoFabricacion != 2) {
+                    numeroPedido = null;
+                }
+
                 // Validar formato de cantidades
                 var cantidadRegex = /^\d+(\.\d{1,2})?$/;
                 if(!cantidadRegex.test(cantidadConformes) || !cantidadRegex.test(cantidadNoConformes)){
@@ -429,11 +434,14 @@
                 // Recopilar datos de la tabla usando data attributes
                 $('#tblDetalle tbody tr[data-no]').each(function(){
                     var $row = $(this);
+                    var idTipoFabricacion = parseInt($row.data('idtipofabricacion'));
+                    var numeroPedido = $row.data('numeropedido');
+                    
                     var detalle = {
                         No: parseInt($row.data('no')),
                         IdArticulo: parseInt($row.data('idarticulo')),
-                        IdTipoFabricacion: parseInt($row.data('idtipofabricacion')),
-                        NumeroPedido: $row.data('numeropedido') ? parseInt($row.data('numeropedido')) : null,
+                        IdTipoFabricacion: idTipoFabricacion,
+                        NumeroPedido: idTipoFabricacion == 2 && numeroPedido ? parseInt(numeroPedido) : null,
                         PrdCodigoBloque: String($row.data('prdcodigobloque')),
                         IdDensidad: parseInt($row.data('iddensidad')),
                         IdTipoBloque: parseInt($row.data('idtipobloque')),

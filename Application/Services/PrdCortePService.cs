@@ -55,7 +55,7 @@ namespace Application.Services
                         No = d.No,
                         IdArticulo = d.IdArticulo,
                         IdTipoFabricacion = d.IdTipoFabricacion,
-                        NumeroPedido = d.NumeroPedido,
+                        NumeroPedido = d.IdTipoFabricacion == 2 ? d.NumeroPedido : null, // Set to null if not "Por Pedido"
                         PrdCodigoBloque = d.PrdCodigoBloque,
                         IdDensidad = d.IdDensidad,
                         IdTipoBloque = d.IdTipoBloque,
@@ -186,7 +186,7 @@ namespace Application.Services
                 det.No = dto.No;
                 det.IdArticulo = dto.IdArticulo;
                 det.IdTipoFabricacion = dto.IdTipoFabricacion;
-                det.NumeroPedido = dto.NumeroPedido;
+                det.NumeroPedido = dto.IdTipoFabricacion == 2 ? dto.NumeroPedido : null; // Set to null if not "Por Pedido"
                 det.PrdCodigoBloque = dto.PrdCodigoBloque;
                 det.IdDensidad = dto.IdDensidad;
                 det.IdTipoBloque = dto.IdTipoBloque;
