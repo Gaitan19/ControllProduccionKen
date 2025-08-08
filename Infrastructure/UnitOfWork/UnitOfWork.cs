@@ -1,4 +1,5 @@
-﻿using Infrastructure.Data;
+﻿#nullable disable
+using Infrastructure.Data;
 using Infrastructure.Models;
 using Infrastructure.Repositories;
 using Infrastructure.Repositories.Interfaces;
@@ -14,7 +15,7 @@ namespace Infrastructure.UnitOfWork
     public class UnitOfWork : IUnitOfWork
     {
         private readonly AppDbContext _context;
-        private IDbContextTransaction _transaction;
+        private IDbContextTransaction? _transaction;
 
         // Campos privados para repositorios especificos
         // private IProductoRepository _productoRepository;
