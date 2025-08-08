@@ -1,0 +1,385 @@
+﻿@using ControlProduccion.ViewModel;
+@model PrdCortePViewModel;
+@{
+    ViewData["Title"] = "Produccion Corte P";
+}
+
+<div class="col-md-8 offset-md-2">
+    <div class="ibox ">
+        <div class="ibox-title">
+            <h5>@ViewData["Title"]</h5>
+        </div>
+        <div class="ibox-content">
+            <form id="frmProduccion" method="post" asp-action="Edit" autocomplete="off">
+                @Html.AntiForgeryToken()
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+                <input type="hidden" asp-for="Id" />
+                <div class="form-group">
+                    <label asp-for="IdUsuarios"></label>
+                    <select id="IdUsuarios" multiple name="IdUsuarios" asp-for="IdUsuarios" class="form-control select2" asp-items="Model.Operarios">
+                    </select>
+                    <span asp-validation-for="IdUsuarios" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="IdMaquina"></label>
+                    <select id="IdMaquina" name="IdMaquina" asp-for="IdMaquina" class="form-control" asp-items="Model.Maquinas">
+                        <option>- Seleccione una maquina -</option>
+                    </select>
+                    <span asp-validation-for="IdMaquina" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Fecha"></label>
+                    <input asp-for="Fecha" class="form-control" />
+                    <span asp-validation-for="Fecha" class="text-danger"></span>
+                </div>
+
+                <div class="hr-line-dashed"></div>
+                <div class="form-group row">
+                    <div class="col-sm-12" style="max-height: 300px; overflow: scroll">
+                        <h4 id="hdrVV" runat="server">Detalle Produccion</h4>
+
+                        <table id="tblProduccion" class="table table-bordered table-hover">
+                            <thead class="table-light">
+                                <tr>
+                                    <th style="display:none" data-field="id">Id</th>
+                                    <th data-field="no">No.</th>
+                                    <th data-field="articulo">Articulo</th>
+                                    <th data-field="tipoFabricacion">Tipo Fabricación</th>
+                                    <th data-field="numeroPedido">Número Pedido</th>
+                                    <th data-field="codigoBloque">Código Bloque</th>
+                                    <th data-field="densidad">Densidad</th>
+                                    <th data-field="tipoBloque">Tipo Bloque</th>
+                                    <th data-field="piezasConformes">Piezas Conformes</th>
+                                    <th data-field="piezasNoConformes">Piezas No Conformes</th>
+                                    <th data-field="nota">Nota</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model.DetPrdCorteP != null)
+                                {
+                                    @foreach (var detalle in Model.DetPrdCorteP)
+                                    {
+                                        <tr>
+                                            <td style="display:none" data-field="id">@detalle.DetPrdCortePId</td>
+                                            @if (Model.AprobadoGerencia != true)
+                                            {
+                                                <td data-field="no"><a href="#" class="open-modal">@detalle.No</a></td>
+                                            }
+                                            else
+                                            {
+                                                <td data-field="no"><a>@detalle.No</a></td>
+                                            }
+                                            <td data-field="articulo">@detalle.Articulo</td>
+                                            <td data-field="tipoFabricacion">@detalle.TipoFabricacion</td>
+                                            <td data-field="numeroPedido">@detalle.NumeroPedido</td>
+                                            <td data-field="codigoBloque">@detalle.PrdCodigoBloque</td>
+                                            <td data-field="densidad">@detalle.Densidad</td>
+                                            <td data-field="tipoBloque">@detalle.TipoBloque</td>
+                                            <td data-field="piezasConformes">@detalle.CantidadPiezasConformes</td>
+                                            <td data-field="piezasNoConformes">@detalle.CantidadPiezasNoConformes</td>
+                                            <td data-field="nota">@detalle.Nota</td>
+
+                                            <td style='display:none;' data-field="idArticulo">@detalle.IdArticulo</td>
+                                            <td style='display:none;' data-field="idTipoFabricacion">@detalle.IdTipoFabricacion</td>
+                                            <td style='display:none;' data-field="idDensidad">@detalle.IdDensidad</td>
+                                            <td style='display:none;' data-field="idTipoBloque">@detalle.IdTipoBloque</td>
+                                        </tr>
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Observaciones"></label>
+                    <textarea asp-for="Observaciones" class="form-control"></textarea>
+                    <span asp-validation-for="Observaciones" class="text-danger"></span>
+                </div>
+                <button type="button" class="btn btn-dark" onclick="location.href='@Url.Action("Index", "PrdCorteP")'">Regresar</button>
+                @if (Model.AprobadoGerencia != true)
+                {
+                    <button type="submit" class="btn btn-primary">Actualizar</button>
+                }
+
+                @if (User.IsInRole("JefeProduccion") && Model.AprobadoGerencia != true)
+                {
+                    <button id="btnAprobarProd" type="button" class="btn btn-danger" onclick="validar(@Model.Id)">Aprobar</button>
+                }
+                else
+                {
+                    <button type="button" class="btn btn-success">Aprobado</button>
+                }
+            </form>
+
+            @* Modal para agregar detalle prd *@
+            <div id="modal-Detalle" class="modal fade" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-body">
+                            <form id="frmDetPrd">
+                                <input type="hidden" id="DetPrdCortePId" name="DetPrdCortePId" />
+                                <input type="hidden" id="PrdCortePid" name="PrdCortePid" />
+
+                                <h3>Editar Detalle</h3>
+                                <hr />
+
+                                <div class="mb-3">
+                                    <label for="No" class="form-label">No.</label>
+                                    <input readonly oninput="this.value = this.value.replace(/[^0-9]/g, '');" type="number" id="No" name="No" class="form-control" value="" min="1" />
+                                    <span class="text-danger"></span>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label">Artículo</label>
+                                    <select id="IdArticulo" name="IdArticulo" class="form-control" asp-items="Model.Articulos">
+                                        <option value="">-- Selecione un articulo --</option>
+                                    </select>
+                                    <span class="text-danger"></span>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label">Tipo Fabricación</label>
+                                    <select id="IdTipoFabricacion" name="IdTipoFabricacion" class="form-control" asp-items="Model.TiposFabricacion">
+                                        <option value="">-- Selecione un Tipo Fabricacion --</option>
+                                    </select>
+                                    <span class="text-danger"></span>
+                                </div>
+
+                                <div class="mb-3" id="divNumeroPedido" style="display:none">
+                                    <label for="NumeroPedido" class="form-label">Número Pedido</label>
+                                    <input oninput="this.value = this.value.replace(/[^0-9]/g, '');" type="number" id="NumeroPedido" name="NumeroPedido" class="form-control" value="" min="0" />
+                                    <span class="text-danger"></span>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="PrdCodigoBloque" class="form-label">Código Bloque</label>
+                                    <select id="PrdCodigoBloque" name="PrdCodigoBloque" class="form-control" asp-items="Model.subDetalleBloqueCodigo">
+                                        <option value="">-- Selecione un código de bloque --</option>
+                                    </select>
+                                    <span class="text-danger"></span>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label">Densidad</label>
+                                    <select id="IdDensidad" name="IdDensidad" class="form-control" asp-items="Model.CatalogoDensidad">
+                                        <option value="">-- Selecione una densidad --</option>
+                                    </select>
+                                    <span class="text-danger"></span>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label">Tipo Bloque</label>
+                                    <select id="IdTipoBloque" name="IdTipoBloque" class="form-control" asp-items="Model.CatalogoTipoBloque">
+                                        <option value="">-- Selecione un tipo de bloque --</option>
+                                    </select>
+                                    <span class="text-danger"></span>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="CantidadPiezasConformes" class="form-label">Piezas Conformes</label>
+                                    <input oninput="validarUnDecimal(this);" step="0.1" min="0" type="number" id="CantidadPiezasConformes" name="CantidadPiezasConformes" class="form-control" value="" />
+                                    <span class="text-danger"></span>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="CantidadPiezasNoConformes" class="form-label">Piezas No Conformes</label>
+                                    <input oninput="validarUnDecimal(this);" step="0.1" min="0" type="number" id="CantidadPiezasNoConformes" name="CantidadPiezasNoConformes" class="form-control" value="" />
+                                    <span class="text-danger"></span>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="Nota" class="form-label">Nota</label>
+                                    <textarea id="Nota" name="Nota" class="form-control" maxlength="200"></textarea>
+                                    <span class="text-danger"></span>
+                                </div>
+                            </form>
+
+                            <button id="btnGuardarDetPrd" type="button" class="btn btn-primary">Actualizar</button>
+                            <button type="button" class="btn  btn-dark" data-dismiss="modal">Cancelar</button>
+                            <br />
+                            <p id="spnbtnGuardarDetPrd" class="text-sm text-danger"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        function validarUnDecimal(input) {
+            let valor = input.value.replace(/[^0-9.]/g, '');
+            let partes = valor.split('.');
+            if (partes.length > 2) {
+                valor = partes[0] + '.' + partes[1];
+            }
+            if (valor.includes('.')) {
+                let [entero, decimal] = valor.split('.');
+                decimal = decimal.substring(0, 1);
+                valor = entero + '.' + decimal;
+            }
+            input.value = valor;
+        }
+
+
+
+        $("#IdUsuarios").select2({
+            placeholder: "- Selecciona los operarios -",
+            allowClear: true
+        });
+
+        $("#IdMaquina").select2({
+            placeholder: "- Seleccione una maquina -",
+            allowClear: true
+        });
+
+        $("#tblProduccion").on("click", ".open-modal", function(e){
+            e.preventDefault();
+            var $row = $(this).closest("tr");
+
+            var id                  = $row.find("td[data-field='id']").text().trim();
+            var no                  = $row.find("td[data-field='no']").text().trim();
+            var numeroPedido        = $row.find("td[data-field='numeroPedido']").text().trim();
+            var codigoBloque        = $row.find("td[data-field='codigoBloque']").text().trim();
+            var piezasConformes     = $row.find("td[data-field='piezasConformes']").text().trim();
+            var piezasNoConformes   = $row.find("td[data-field='piezasNoConformes']").text().trim();
+            var nota                = $row.find("td[data-field='nota']").text().trim();
+            var idArticulo          = $row.find("td[data-field='idArticulo']").text().trim();
+            var idTipoFabricacion   = $row.find("td[data-field='idTipoFabricacion']").text().trim();
+            var idDensidad          = $row.find("td[data-field='idDensidad']").text().trim();
+            var idTipoBloque        = $row.find("td[data-field='idTipoBloque']").text().trim();
+
+            // AJUSTE 2: Rellenar los campos del modal con los IDs y nombres correctos
+            $("#DetPrdCortePId").val(id);
+            $("#PrdCortePid").val(@Model.Id); // <- Se asigna el ID del registro principal
+            $("#No").val(no);
+            $("#IdArticulo").val(idArticulo);
+            $("#IdTipoFabricacion").val(idTipoFabricacion);
+            $("#PrdCodigoBloque").val(codigoBloque);
+            $("#IdDensidad").val(idDensidad);
+            $("#IdTipoBloque").val(idTipoBloque);
+            $("#CantidadPiezasConformes").val(piezasConformes);
+            $("#CantidadPiezasNoConformes").val(piezasNoConformes);
+            $("#Nota").val(nota);
+
+            if (idTipoFabricacion == "2") {
+                $("#divNumeroPedido").show();
+            } else {
+                $("#divNumeroPedido").hide();
+            }
+            $("#NumeroPedido").val(numeroPedido);
+
+            $("#modal-Detalle").modal("show");
+        });
+
+        $("#btnGuardarDetPrd").click(function(e){
+            e.preventDefault();
+
+            // AJUSTE 3: Obtener el token del formulario principal (#frmProduccion)
+            var token = $("#frmProduccion").find("input[name='__RequestVerificationToken']").val();
+
+            var formData = $("#frmDetPrd").serialize();
+
+            $.ajax({
+                url: '@Url.Action("EditDetPrd", "PrdCorteP")',
+                type: 'POST',
+                data: formData,
+                headers: {
+                    "RequestVerificationToken": token
+                },
+                success: function(response) {
+                    if(response.success){
+                        alert(response.message);
+                        $("#modal-Detalle").modal("hide");
+                        // Clear localStorage when detail is successfully updated
+                        localStorage.removeItem(DRAFT_KEY);
+                        location.reload();
+                    } else {
+                        alert("Error: " + response.message);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error(xhr.responseText); // Log para depuración
+                    alert("Ocurrió un error en la solicitud: " + error);
+                }
+            });
+        });
+
+        $("#IdTipoFabricacion").change(function () {
+            var selectedValue = $(this).val();
+            if (selectedValue == 2) {
+                $("#divNumeroPedido").show();
+            } else {
+                $("#divNumeroPedido").hide();
+            }
+        });
+
+              function validar(id) {
+            if (confirm("¿Está seguro de que desea Aprobar esta producción?")) {
+                // 1. Obtener el token del formulario principal donde se generó
+                var token = $("#frmProduccion").find("input[name='__RequestVerificationToken']").val();
+
+                $.ajax({
+                    url: '@Url.Action("AprobarPrd", "PrdCorteP")',
+                    type: 'POST',
+                    data: { id: id },
+                    // 2. Añadir el token a las cabeceras de la solicitud
+                    headers: {
+                        "RequestVerificationToken": token
+                    },
+                    success: function(response) {
+                        if (response) {
+                            alert("Producción Aprobada exitosamente.");
+                            localStorage.removeItem(DRAFT_KEY);
+                            location.reload();
+                        } else {
+                            alert("Error al Aprobar la producción, contacte a soporte.");
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error("Error en la solicitud de aprobación:", xhr.responseText);
+                        alert("Error al procesar la solicitud: " + error);
+                    }
+                });
+            }
+        }
+
+        // Handle form submission
+        $('#frmProduccion').on('submit', function() {
+            localStorage.removeItem(DRAFT_KEY);
+            window.removeEventListener('beforeunload', beforeUnloadHandler);
+        });
+
+                  $(document).on('shown.bs.modal', '#modal-Detalle', function () {
+            var $modal = $(this);
+            var $selects = $modal.find('#IdArticulo, #IdTipoFabricacion, #PrdCodigoBloque, #IdDensidad, #IdTipoBloque');
+
+            // Si ya estaban inicializados, destruir antes de re-inicializar
+            $selects.each(function () {
+                if ($(this).hasClass('select2-hidden-accessible')) {
+                    $(this).select2('destroy');
+                }
+            });
+
+            // Inicializar con el contenedor del modal como parent
+            $selects.each(function () {
+                var $s = $(this);
+                var placeholder = $s.find('option[value=""]').text() || 'Seleccione...';
+
+                $s.select2({
+                    dropdownParent: $modal.find('.modal-content'),
+                    allowClear: true,
+                    width: '100%',
+                    placeholder: placeholder
+                });
+            });
+        });
+    </script>
+}

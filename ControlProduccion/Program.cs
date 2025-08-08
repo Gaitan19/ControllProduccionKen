@@ -71,6 +71,7 @@ builder.Services.AddScoped<IPrdNeveraService, PrdNeveraService>();
 builder.Services.AddScoped<IPrdOtroService, PrdOtroService>();
 builder.Services.AddScoped<IPrdBloquesService, PrdBloquesService>();
 builder.Services.AddScoped<IPrdCorteTService, PrdCorteTService>();
+builder.Services.AddScoped<IPrdCortePService, PrdCortePService>();
 builder.Services.AddRazorPages();
 var app = builder.Build();
 
