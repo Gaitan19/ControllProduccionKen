@@ -235,6 +235,80 @@
     @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
     <script>
         $(document).ready(function() {
+            // ═══════════════════ LOCALSTORAGE AUTO-SAVE ═══════════════════
+            const DRAFT_KEY = 'PrdBloquesEditDraft_' + '@Model.Id';
+            
+            function backupForm() {
+                const formArr = $('#frmProduccion').serializeArray();
+                // Guardar también el contenido HTML de la tabla
+                const detalleHtml = $('#tblDetalle tbody').html();
+                localStorage.setItem(DRAFT_KEY,
+                    JSON.stringify({ 
+                        form: formArr, 
+                        detalleHtml: detalleHtml
+                    })
+                );
+            }
+
+            function restoreIfExists() {
+                const draftStr = localStorage.getItem(DRAFT_KEY);
+                if (!draftStr) return;
+                if (confirm('Se encontró un borrador sin guardar. ¿Deseas restaurarlo?')) {
+                    const draft = JSON.parse(draftStr);
+
+                    // Agrupar valores por nombre de campo
+                    const formMap = draft.form.reduce((acc, { name, value }) => {
+                        acc[name] = acc[name] || [];
+                        acc[name].push(value);
+                        return acc;
+                    }, {});
+
+                    // Restaurar valores del formulario
+                    Object.entries(formMap).forEach(([name, values]) => {
+                        const $field = $(`[name="${name}"]`);
+                        if ($field.length) {
+                            if ($field.is('select[multiple]')) {
+                                $field.val(values).trigger('change');
+                            } else {
+                                $field.val(values[0]).trigger('change');
+                            }
+                        }
+                    });
+
+                    // Restaurar contenido de la tabla
+                    if (draft.detalleHtml) {
+                        $('#tblDetalle tbody').html(draft.detalleHtml);
+                    }
+                }
+            }
+
+            // Auto-save every 30 seconds
+            setInterval(backupForm, 30000);
+
+            // Backup on form changes
+            $('#frmProduccion').on('change input', 'input, select, textarea', backupForm);
+
+            // Warning when leaving page with unsaved changes
+            function beforeUnloadHandler(e) {
+                const draft = localStorage.getItem(DRAFT_KEY);
+                if (draft) {
+                    e.preventDefault();
+                    e.returnValue = '';
+                }
+            }
+            window.addEventListener('beforeunload', beforeUnloadHandler);
+
+            // Function to clean up localStorage and beforeunload handler
+            function cleanupAndNavigate(url) {
+                localStorage.removeItem(DRAFT_KEY);
+                window.removeEventListener('beforeunload', beforeUnloadHandler);
+                window.location.href = url;
+            }
+
+            // Restore draft on page load
+            restoreIfExists();
+            // ═══════════════════ END LOCALSTORAGE ═══════════════════
+
             // Initialize select2 for main form
             $("#IdUsuarios").select2({ 
                 allowClear: true,
@@ -316,6 +390,8 @@
                     if(res.success){ 
                         alert(res.message); 
                         $("#modal-Detalle").modal('hide');
+                        // Clear localStorage when detail is successfully updated
+                        localStorage.removeItem(DRAFT_KEY);
                         location.reload(); 
                     } else { 
                         $("#spnbtnGuardarDetPrd").text('Error: ' + (res.message || 'Error desconocido')); 
@@ -442,6 +518,8 @@
                     if(res.success){ 
                         alert(res.message); 
                         $("#modal-SubDetalle").modal('hide');
+                        // Clear localStorage when subdetail is successfully updated
+                        localStorage.removeItem(DRAFT_KEY);
                         location.reload(); 
                     } else { 
                         $("#spnSubDet").text('Error: ' + (res.message || 'Error desconocido')); 
@@ -482,6 +560,7 @@
                     success:function(res){ 
                         if(res){ 
                             alert('Producción Aprobada exitosamente'); 
+                            localStorage.removeItem(DRAFT_KEY);
                             location.reload(); 
                         } else { 
                             alert('Error al aprobar la producción'); 
@@ -493,6 +572,12 @@
                 });
             }
         }
+
+        // Handle form submission
+        $('#frmProduccion').on('submit', function() {
+            localStorage.removeItem(DRAFT_KEY);
+            window.removeEventListener('beforeunload', beforeUnloadHandler);
+        });
     </script>
 }
 
