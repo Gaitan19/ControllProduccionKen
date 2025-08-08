@@ -445,6 +445,86 @@ WHERE D.PrdCorteTId IN (
             }
         }
 
+        public async Task<IEnumerable<PrdCortePReporteDTO>> GetAllPrdCortePWithDetailsAsync(DateTime start, DateTime end)
+        {
+            // Validate DateTime parameters to ensure they're within SQL Server range
+            start = ValidateSqlDateTime(start);
+            end = ValidateSqlDateTime(end);
+
+            using (var connection = _context.Database.GetDbConnection())
+            {
+                if (connection.State == ConnectionState.Closed)
+                    connection.Open();
+
+                var sql = @"
+-- 1) Encabezados de Corte P
+SELECT
+    P.Id,
+    P.TiempoParo,
+    P.IdTipoReporte,
+    P.IdUsuarios,
+    dbo.GetUserNamesFromIDs(P.IdUsuarios)           AS Operarios,
+    P.IdMaquina,
+    M.Nombre                                        AS Maquina,
+    P.Fecha,
+    P.Observaciones,
+    P.IdUsuarioCreacion,
+    P.FechaCreacion,
+    P.IdUsuarioActualizacion,
+    P.FechaActualizacion,
+    P.AprobadoSupervisor,
+    P.AprobadoGerencia,
+    P.IdAprobadoSupervisor,
+    P.IdAprobadoGerencia,
+    dbo.GetUserNamesFromIDs(P.IdAprobadoSupervisor) AS Supervisor,
+    dbo.GetUserNamesFromIDs(P.IdAprobadoGerencia)   AS JefeProd
+FROM cp.PrdCorteP P
+INNER JOIN cp.Maquinas M ON M.Id = P.IdMaquina
+WHERE CAST(P.Fecha AS DATE) BETWEEN CAST(@start AS DATE) AND CAST(@end AS DATE)
+  AND P.AprobadoGerencia = 1;
+
+-- 2) Detalles de Corte P
+SELECT
+    D.Id,
+    D.PrdCortePId              AS IdCorteP,
+    D.No,
+    CP.DescripcionArticulo     AS Articulo,
+    TF.Descripcion             AS TipoFabricacion,
+    D.NumeroPedido,
+    D.PrdCodigoBloque,
+    MC.Descripcion             AS Densidad,
+    TB.Descripcion             AS TipoBloque,
+    D.CantidadPiezasConformes  AS CantidadConforme,
+    D.CantidadPiezasNoConformes AS CantidadNoConforme,
+    D.Nota
+FROM cp.DetPrdCorteP D
+INNER JOIN cp.CatPantografo     CP  ON CP.Id = D.IdArticulo
+INNER JOIN cp.TipoFabricacion   TF  ON TF.Id  = D.IdTipoFabricacion
+INNER JOIN cp.MaestroCatalogo   MC  ON MC.Id  = D.IdDensidad
+INNER JOIN cp.MaestroCatalogo   TB  ON TB.Id  = D.IdTipoBloque
+WHERE D.PrdCortePId IN (
+    SELECT P.Id
+    FROM cp.PrdCorteP P
+    WHERE CAST(P.Fecha AS DATE) BETWEEN CAST(@start AS DATE) AND CAST(@end AS DATE)
+      AND P.AprobadoGerencia = 1
+);
+";
+
+                using (var multi = await connection.QueryMultipleAsync(sql, new { start, end }))
+                {
+                    var headers = (await multi.ReadAsync<PrdCortePReporteDTO>()).ToList();
+                    var detalles = (await multi.ReadAsync<DetalleCortePDto>()).ToList();
+
+                    foreach (var header in headers)
+                    {
+                        header.Detalles = detalles.Where(d => d.IdCorteP == header.Id).ToList();
+                    }
+
+                    return headers;
+                }
+            }
+        }
+
 
         public async Task<IEnumerable<PrdIlKwangReporteDTO>> GetAllPrdIlKwangWithDetailsAsync(DateTime start, DateTime end)
         {
