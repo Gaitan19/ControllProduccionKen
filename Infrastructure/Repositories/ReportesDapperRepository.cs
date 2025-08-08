@@ -615,5 +615,75 @@ WHERE  D.PrdNeveraId IN (
                 }
             }
         }
+
+        public async Task<IEnumerable<PrdOtroReporteDTO>> GetAllPrdOtroWithDetailsAsync(DateTime start, DateTime end)
+        {
+            using var connection = _context.Database.GetDbConnection();
+            if (connection.State == ConnectionState.Closed)
+                connection.Open();
+
+            var sql = @"
+-- Encabezado: registros de otro
+SELECT 
+    PrdOMain.Id,
+    PrdOMain.IdUsuarios,
+    dbo.GetUserNamesFromIDs(PrdOMain.IdUsuarios)        AS Operarios,
+    PrdOMain.Fecha,
+    PrdOMain.IdUsuarioCreacion,
+    PrdOMain.FechaCreacion,
+    PrdOMain.IdUsuarioActualizacion,
+    PrdOMain.FechaActualizacion,
+    PrdOMain.AprobadoSupervisor,
+    PrdOMain.AprobadoGerencia,
+    PrdOMain.IdAprobadoSupervisor,
+    PrdOMain.IdAprobadoGerencia,
+    dbo.GetUserNamesFromIDs(PrdOMain.IdAprobadoSupervisor) AS Supervisor,
+    dbo.GetUserNamesFromIDs(PrdOMain.IdAprobadoGerencia)   AS JefeProd,
+    PrdOMain.IdTipoReporte
+FROM cp.PrdOtro PrdOMain
+WHERE CAST(PrdOMain.Fecha AS DATE) BETWEEN CAST(@start AS DATE) AND CAST(@end AS DATE) AND 
+      PrdOMain.AprobadoGerencia = 1;
+
+-- Detalles: todos los registros correspondientes
+SELECT 
+    D.PrdOtroId     AS IdOtro,
+    D.Actividad,
+    D.DescripcionProducto,
+    TF.Descripcion  AS TipoFabricacion,
+    D.NumeroPedido,
+    D.Nota,
+    D.Merma,
+    D.Comentario,
+    D.HoraInicio,
+    D.HoraFin
+FROM cp.DetPrdOtro D
+INNER JOIN cp.TipoFabricacion   TF ON TF.Id = D.IdTipoFabricacion
+WHERE  D.PrdOtroId IN (
+    SELECT P.Id 
+    FROM cp.PrdOtro P 
+    WHERE CAST(P.Fecha AS DATE) BETWEEN CAST(@start AS DATE) AND CAST(@end AS DATE)
+      AND P.AprobadoGerencia = 1
+);
+
+";
+
+            using (var multi = await connection.QueryMultipleAsync(sql, new { start, end }))
+            {
+                // Leer encabezados
+                var headers = (await multi.ReadAsync<PrdOtroReporteDTO>()).ToList();
+                // Leer todos los detalles
+                var detalles = (await multi.ReadAsync<DetalleOtroDto>()).ToList();
+
+                // Asociar detalles
+                foreach (var header in headers)
+                {
+                    header.Detalles = detalles
+                        .Where(d => d.IdOtro == header.Id)
+                        .ToList();
+                }
+
+                return headers;
+            }
+        }
     }
 }
