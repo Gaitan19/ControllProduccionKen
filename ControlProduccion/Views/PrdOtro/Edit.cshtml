@@ -223,30 +223,31 @@
             // Clean the time string and handle various formats
             var cleanTime = time12h.trim().replace(/\s+/g, ' ');
             
-            // More flexible regex to handle different time formats including single digits
+            // Handle 12-hour format with AM/PM
             var time = cleanTime.match(/(\d{1,2}):(\d{2})\s*(AM|PM)/i);
-            if (!time) {
-                // Try without AM/PM in case it's already 24-hour format
-                var time24 = cleanTime.match(/(\d{1,2}):(\d{2})$/);
-                if (time24) {
-                    var hours24 = parseInt(time24[1]);
-                    var minutes24 = time24[2];
-                    return (hours24.toString().padStart(2, '0')) + ':' + minutes24;
+            if (time) {
+                var hours = parseInt(time[1]);
+                var minutes = time[2];
+                var ampm = time[3].toUpperCase();
+                
+                if (ampm === 'PM' && hours !== 12) {
+                    hours += 12;
+                } else if (ampm === 'AM' && hours === 12) {
+                    hours = 0;
                 }
-                return '';
+                
+                return (hours.toString().padStart(2, '0')) + ':' + minutes;
             }
             
-            var hours = parseInt(time[1]);
-            var minutes = time[2];
-            var ampm = time[3].toUpperCase();
-            
-            if (ampm === 'PM' && hours !== 12) {
-                hours += 12;
-            } else if (ampm === 'AM' && hours === 12) {
-                hours = 0;
+            // If no AM/PM, check if it's already 24-hour format
+            var time24 = cleanTime.match(/(\d{1,2}):(\d{2})$/);
+            if (time24) {
+                var hours24 = parseInt(time24[1]);
+                var minutes24 = time24[2];
+                return (hours24.toString().padStart(2, '0')) + ':' + minutes24;
             }
             
-            return (hours.toString().padStart(2, '0')) + ':' + minutes;
+            return '';
         }
 
 
@@ -270,8 +271,8 @@
           var nota                 = $row.find("td:eq(5)").text().trim();
           var merma                = $row.find("td:eq(6)").text().trim();
           var comentario           = $row.find("td:eq(7)").text().trim();
-          var horaInicio           = $row.find("td:eq(8)").text().trim();
-          var horaFin              = $row.find("td:eq(9)").text().trim();
+          var horaInicio = $row.find("td:eq(8)").text().trim();
+          var horaFin = $row.find("td:eq(9)").text().trim();
           var idTipoFabricacion    = $row.find("td:eq(10)").text().trim();
 
           // Rellenar el modal con los datos básicos
@@ -283,13 +284,20 @@
           $("#Merma").val(merma);
           $("#Comentario").val(comentario);
 
-          // Convert time from display format (with AM/PM) to input format (24-hour)
-          var horaInicioFormatted = convertTo24Hour(horaInicio);
-          var horaFinFormatted = convertTo24Hour(horaFin);
+          // Convert and populate time inputs - handle all valid time formats including 12:00 AM
+          if (horaInicio && horaInicio !== '') {
+              var horaInicioFormatted = convertTo24Hour(horaInicio);
+              $("#HoraInicio").val(horaInicioFormatted);
+          } else {
+              $("#HoraInicio").val('');
+          }
           
-          // Set time values - ensure they're not empty
-          $("#HoraInicio").val(horaInicioFormatted || '');
-          $("#HoraFin").val(horaFinFormatted || '');
+          if (horaFin && horaFin !== '') {
+              var horaFinFormatted = convertTo24Hour(horaFin);
+              $("#HoraFin").val(horaFinFormatted);
+          } else {
+              $("#HoraFin").val('');
+          }
 
           // Show/hide numero pedido based on tipo fabricacion
           if (idTipoFabricacion == "2") {
