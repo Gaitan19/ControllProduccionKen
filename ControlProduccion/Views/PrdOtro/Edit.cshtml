@@ -216,14 +216,23 @@
 
         // Function to convert 12-hour format to 24-hour format for input[type="time"]
         function convertTo24Hour(time12h) {
-            if (!time12h || time12h.trim() === '') return '';
+            if (!time12h || time12h.trim() === '') {
+                return '';
+            }
             
             // Clean the time string and handle various formats
             var cleanTime = time12h.trim().replace(/\s+/g, ' ');
             
-            // More flexible regex to handle different time formats
+            // More flexible regex to handle different time formats including single digits
             var time = cleanTime.match(/(\d{1,2}):(\d{2})\s*(AM|PM)/i);
             if (!time) {
+                // Try without AM/PM in case it's already 24-hour format
+                var time24 = cleanTime.match(/(\d{1,2}):(\d{2})$/);
+                if (time24) {
+                    var hours24 = parseInt(time24[1]);
+                    var minutes24 = time24[2];
+                    return (hours24.toString().padStart(2, '0')) + ':' + minutes24;
+                }
                 return '';
             }
             
@@ -265,7 +274,7 @@
           var horaFin              = $row.find("td:eq(9)").text().trim();
           var idTipoFabricacion    = $row.find("td:eq(10)").text().trim();
 
-          // Rellenar el modal
+          // Rellenar el modal con los datos básicos
           $("#detrpdId").val(id);
           $("#Actividad").val(actividad);
           $("#DescripcionProducto").val(descripcionProducto);
@@ -278,15 +287,18 @@
           var horaInicioFormatted = convertTo24Hour(horaInicio);
           var horaFinFormatted = convertTo24Hour(horaFin);
           
-          $("#HoraInicio").val(horaInicioFormatted);
-          $("#HoraFin").val(horaFinFormatted);
+          // Set time values - ensure they're not empty
+          $("#HoraInicio").val(horaInicioFormatted || '');
+          $("#HoraFin").val(horaFinFormatted || '');
 
+          // Show/hide numero pedido based on tipo fabricacion
           if (idTipoFabricacion == "2") {
             $("#divNumeroPedido").show();
+            $("#NumeroPedido").val(numeroPedido);
           } else {
             $("#divNumeroPedido").hide();
+            $("#NumeroPedido").val(''); // Clear when not needed
           }
-          $("#NumeroPedido").val(numeroPedido);
 
           $("#modal-Detalle").modal("show");
         });
