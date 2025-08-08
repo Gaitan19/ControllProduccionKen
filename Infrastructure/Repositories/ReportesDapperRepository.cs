@@ -615,5 +615,77 @@ WHERE  D.PrdNeveraId IN (
                 }
             }
         }
+
+        public async Task<IEnumerable<PrdOtroReporteDTO>> GetAllPrdOtroWithDetailsAsync(DateTime start, DateTime end)
+        {
+            using (var connection = _context.Database.GetDbConnection())
+            {
+                if (connection.State == ConnectionState.Closed)
+                    connection.Open();
+
+                var sql = @"
+-- 1) Encabezados de PrdOtro
+SELECT 
+    PO.Id,
+    PO.IdTipoReporte,
+    PO.IdUsuarios,
+    dbo.GetUserNamesFromIDs(PO.IdUsuarios) AS Operarios,
+    PO.Fecha,
+    PO.IdUsuarioCreacion,
+    PO.FechaCreacion,
+    PO.IdUsuarioActualizacion,
+    PO.FechaActualizacion,
+    PO.AprobadoSupervisor,
+    PO.AprobadoGerencia,
+    PO.IdAprobadoSupervisor,
+    PO.IdAprobadoGerencia,
+    dbo.GetUserNamesFromIDs(PO.IdAprobadoSupervisor) AS Supervisor,
+    dbo.GetUserNamesFromIDs(PO.IdAprobadoGerencia) AS JefeProd
+FROM cp.PrdOtro PO
+WHERE CAST(PO.Fecha AS DATE) BETWEEN CAST(@start AS DATE) AND CAST(@end AS DATE)
+ AND PO.AprobadoGerencia = 1;
+
+-- 2) Detalles de cada PrdOtro
+SELECT 
+    D.PrdOtroId      AS IdPrdOtro,
+    D.Actividad,
+    D.DescripcionProducto,
+    TF.Descripcion   AS TipoFabricacion,
+    D.NumeroPedido,
+    D.Nota,
+    D.Merma,
+    D.Comentario,
+    D.HoraInicio,
+    D.HoraFin
+FROM cp.DetPrdOtro D
+INNER JOIN cp.TipoFabricacion   TF ON TF.Id = D.IdTipoFabricacion
+WHERE  D.PrdOtroId IN (
+    SELECT P.Id 
+    FROM cp.PrdOtro P 
+    WHERE CAST(P.Fecha AS DATE) BETWEEN CAST(@start AS DATE) AND CAST(@end AS DATE)
+      AND P.AprobadoGerencia = 1
+);
+
+";
+
+                using (var multi = await connection.QueryMultipleAsync(sql, new { start, end }))
+                {
+                    // Leer encabezados
+                    var headers = (await multi.ReadAsync<PrdOtroReporteDTO>()).ToList();
+                    // Leer todos los detalles
+                    var detalles = (await multi.ReadAsync<DetalleOtroDto>()).ToList();
+
+                    // Asociar detalles
+                    foreach (var header in headers)
+                    {
+                        header.Detalles = detalles
+                            .Where(d => d.IdPrdOtro == header.Id)
+                            .ToList();
+                    }
+
+                    return headers;
+                }
+            }
+        }
     }
 }

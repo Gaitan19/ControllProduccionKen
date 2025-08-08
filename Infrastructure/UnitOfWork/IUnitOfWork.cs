@@ -52,7 +52,9 @@ namespace Infrastructure.UnitOfWork
         IGenericRepository<MaestroCatalogo> MaestroCatalogoRepository { get; }
         IGenericRepository<PrdNevera> PrdNeveraRepository  { get; }
 
-        IGenericRepository<DetPrdNevera> DetPrdNeveraRepository { get; }    
+        IGenericRepository<DetPrdNevera> DetPrdNeveraRepository { get; }
+        IGenericRepository<PrdOtro> PrdOtroRepository { get; }
+        IGenericRepository<DetPrdOtro> DetPrdOtroRepository { get; }
         IGenericRepository<SubDetPrdBloque> SubDetPrdBloqueRepository { get; }
         IGenericRepository<PrdBloque> PrdBloqueRepository { get; }
         IGenericRepository<DetPrdBloque> DetPrdBloqueRepository { get; }
