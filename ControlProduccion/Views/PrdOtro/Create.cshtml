@@ -1,0 +1,444 @@
+﻿@using ControlProduccion.ViewModel;
+@model PrdOtroViewModel;
+@{
+    ViewData["Title"] = "Ingresar Produccion Otro";
+}
+
+<div class="col-md-8 offset-md-2">
+    <div class="ibox ">
+        <div class="ibox-title">
+            <h5>@ViewData["Title"]</h5>
+
+        </div>
+        <div class="ibox-content">
+            <form id="frmProduccion" method="post" autocomplete="off">
+                @Html.AntiForgeryToken()
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+
+                <div class="form-group">
+                    <label asp-for="IdUsuarios"></label>
+                    <select id="IdUsuarios" multiple name="IdUsuarios" asp-for="IdUsuarios" class="form-control select2" asp-items="Model.Operarios">
+                    </select>
+                    <span asp-validation-for="IdUsuarios" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Fecha"></label>
+                    <input asp-for="Fecha" class="form-control" />
+                    <span asp-validation-for="Fecha" class="text-danger"></span>
+                </div>
+              
+                <div class="hr-line-dashed"></div>
+                <div class="form-group row">
+
+                    <a data-toggle='modal' href='#modal-Detalle' id="btnAgregarDetalle" class="btn btn-info btn-outline">
+                        <i class="fa fa-plus"></i> Agregar Nueva Actividad
+                    </a>
+
+                    <div class="col-sm-12" style="max-height: 300px; overflow: scroll">
+                        <h4 id="hdrVV" runat="server">Detalle Produccion</h4>
+
+                        <table id="tblProduccion" class="table table-bordered table-hover">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Actividad</th>
+                                    <th>Descripción Producto</th>
+                                    <th>Tipo Fabricación</th>
+                                    <th>Número Pedido</th>
+                                    <th>Nota</th>
+                                    <th>Merma</th>
+                                    <th>Comentario</th>
+                                    <th>Hora Inicio</th>
+                                    <th>Hora Fin</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Guardar</button>
+                <button type="button"
+                        id="btnRegresar"
+                        class="btn btn-dark"
+                        data-url="@Url.Action("Index", "Home")">
+                    Regresar
+                </button>
+            </form>
+            @*     -----modal para agregar detalle prd------ *@
+            <div id="modal-Detalle" class="modal fade" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-body">
+                            <form id="frmDetPrd">
+                                <input type="hidden" name="uid" value="<%=idx%>" />
+                                <h3>Nueva Actividad</h3>
+                                <hr />
+
+                                <div class="mb-3">
+                                    <label class="form-label">Actividad</label>
+                                    <input type="text" id="Actividad" name="Actividad" class="form-control" maxlength="500" />
+                                    <span class="text-danger"></span>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label">Descripción del Producto</label>
+                                    <input type="text" id="DescripcionProducto" name="DescripcionProducto" class="form-control" maxlength="500" />
+                                    <span class="text-danger"></span>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label">Tipo Fabricación</label>
+                                    <select id="IdTipoFabricacion" name="IdTipoFabricacion" class="form-control" asp-items="Model.TiposFabricacion">
+                                        <option value="">-- Selecione un Tipo Fabricacion --</option>
+                                    </select>
+                                    <span class="text-danger"></span>
+                                </div>
+
+                                <div class="mb-3" id="divNumeroPedido" style="display:none">
+                                    <label for="NumeroPedido" class="form-label">Número Pedido</label>
+                                    <input oninput="this.value = this.value.replace(/[^0-9\-]/g, '');" step="1" min="0" type="number" id="NumeroPedido" name="NumeroPedido" class="form-control" value="" />
+                                    <span class="text-danger"></span>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label">Nota</label>
+                                    <textarea id="Nota" name="Nota" class="form-control" maxlength="1000" rows="3"></textarea>
+                                    <span class="text-danger"></span>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label">Merma</label>
+                                    <input type="text" id="Merma" name="Merma" class="form-control" maxlength="500" />
+                                    <span class="text-danger"></span>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label">Comentario</label>
+                                    <textarea id="Comentario" name="Comentario" class="form-control" maxlength="1000" rows="3"></textarea>
+                                    <span class="text-danger"></span>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="HoraInicio" class="form-label">Hora Inicio</label>
+                                            <input step="1" type="time" id="HoraInicio" name="HoraInicio" class="form-control" />
+                                            <span class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="HoraFin" class="form-label">Hora Fin</label>
+                                            <input step="1" type="time" id="HoraFin" name="HoraFin" class="form-control" />
+                                            <span class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+
+                            <button id="btnGuardarDetPrd" type="button" class="btn btn-primary">Agregar</button>
+                            <button type="button" class="btn  btn-dark" data-dismiss="modal">Cancelar</button>
+                            <br />
+                            <p id="spnbtnGuardarDetPrd" class="text-sm text-danger"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+    
+        </div>
+    </div>
+</div>
+
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+   
+    <script>
+
+           // ─────────── AUTOSAVE / RESTORE /PREVENT EXIT (MEJORADO) ───────────
+           const DRAFT_KEY = 'draft-prdOtro'; // Clave única para esta vista
+
+            function backupForm() {
+                const formArr = $('#frmProduccion').serializeArray();
+                // Guardar también el contenido HTML de la tabla
+                const detalleHtml = $('#tblProduccion tbody').html();
+                localStorage.setItem(DRAFT_KEY,
+                    JSON.stringify({ 
+                        form: formArr, 
+                        detalleHtml: detalleHtml
+                    })
+                );
+            }
+
+          function restoreIfExists() {
+            const draftStr = localStorage.getItem(DRAFT_KEY);
+            if (!draftStr) return;
+            if (confirm('Se encontró un borrador sin guardar. ¿Deseas restaurarlo?')) {
+                const draft = JSON.parse(draftStr);
+
+                // Agrupar valores por nombre de campo
+                const formMap = draft.form.reduce((acc, { name, value }) => {
+                    acc[name] = acc[name] || [];
+                    acc[name].push(value);
+                    return acc;
+                }, {});
+
+                // Restaurar cada campo, usando array para selects múltiples
+                Object.entries(formMap).forEach(([name, values]) => {
+                    const $el = $('[name="' + name + '"]');
+                    const valToSet = $el.prop('multiple') ? values : values[0];
+                    if ($el.hasClass('select2-hidden-accessible')) {
+                        $el.val(valToSet).trigger('change');
+                    } else {
+                        $el.val(valToSet);
+                    }
+                });
+
+                // Restaurar contenido de la tabla
+                if (draft.detalleHtml) {
+                    $('#tblProduccion tbody').html(draft.detalleHtml);
+                }
+            }
+        }
+
+            // Restaura al cargar y luego auto‑respalda cada 30s
+            restoreIfExists();
+            setInterval(backupForm, 30000);
+
+            // ───────── PREVENT UNLOAD (MEJORADO) ─────────
+            function beforeUnloadHandler(e) {
+                const hasRows = $('#tblProduccion tbody tr').length > 0;
+                const isDirty = $('#frmProduccion').serialize() !== '';
+                if (hasRows || isDirty) {
+                    e.preventDefault();
+                    e.returnValue = '';
+                }
+            }
+            window.addEventListener('beforeunload', beforeUnloadHandler);
+
+            $('#btnRegresar').off('click').on('click', function() {
+                const url = $(this).data('url');
+                if (confirm('¿Deseas salir sin guardar? Se perderán los datos .')) {
+                    // 1) Borra el draft
+                    localStorage.removeItem(DRAFT_KEY);
+                    // 2) Quita el beforeunload para no volver a pedir confirm
+                    window.removeEventListener('beforeunload', beforeUnloadHandler);
+                    // 3) Navega
+                    window.location.href = url;
+                }
+                // si cancela, no pasa nada y conserva el borrador
+            });
+
+            // ──────────END AUTOSAVE / RESTORE /PREVENT EXIT (MEJORADO) ───────────
+
+                $('#modal-Detalle').on('shown.bs.modal', function () {
+                   
+            $("#IdTipoFabricacion").select2({
+                placeholder: "- Selecione un Tipo Fabricacion -",
+                allowClear: true,
+                dropdownParent: $("#modal-Detalle")
+            });
+      
+        });
+
+                           $("#IdUsuarios").select2({
+            placeholder: "- Selecciona los operarios -",
+            allowClear:true
+        });
+
+        $("#IdTipoFabricacion").change(function () {
+            var selectedValue = $(this).val();
+            if (selectedValue == 2) {
+                $("#divNumeroPedido").show();
+            } else {
+                $("#divNumeroPedido").hide();
+            }
+        });
+
+                  $("#btnGuardarDetPrd").click(function () {
+            // Limpiar mensajes de error previos
+            $("#spnbtnGuardarDetPrd").text("");
+
+            // Obtener valores de los controles y eliminamos espacios en blanco
+            var actividad = $("#Actividad").val().trim();
+            var descripcionProducto = $("#DescripcionProducto").val().trim();
+            var idTipoFabricacion = $("#IdTipoFabricacion").val().trim();
+            var tipoFabricacionText = $("#IdTipoFabricacion option:selected").text().trim();
+            var numeroPedido = "";
+            var nota = $("#Nota").val().trim();
+            var merma = $("#Merma").val().trim();
+            var comentario = $("#Comentario").val().trim();
+            var horaInicio = $("#HoraInicio").val();
+            var horaFin = $("#HoraFin").val();
+
+            // Si el campo "Número Pedido" es visible, obtener su valor
+            if ($("#divNumeroPedido").is(":visible")) {
+                numeroPedido = $("#NumeroPedido").val().trim();
+            }
+
+            // Validar que los campos requeridos no estén vacíos
+            if (actividad === "") {
+                $("#spnbtnGuardarDetPrd").text("Ingrese la actividad.");
+                return false;
+            }
+            if (descripcionProducto === "") {
+                $("#spnbtnGuardarDetPrd").text("Ingrese la descripción del producto.");
+                return false;
+            }
+            if (idTipoFabricacion === "") {
+                $("#spnbtnGuardarDetPrd").text("Seleccione un tipo de fabricación.");
+                return false;
+            }
+            if (nota === "") {
+                $("#spnbtnGuardarDetPrd").text("Ingrese una nota.");
+                return false;
+            }
+            if (merma === "") {
+                $("#spnbtnGuardarDetPrd").text("Ingrese la merma.");
+                return false;
+            }
+            if (comentario === "") {
+                $("#spnbtnGuardarDetPrd").text("Ingrese un comentario.");
+                return false;
+            }
+            if (horaInicio === "") {
+                $("#spnbtnGuardarDetPrd").text("Ingrese la hora de inicio.");
+                return false;
+            }
+            if (horaFin === "") {
+                $("#spnbtnGuardarDetPrd").text("Ingrese la hora de fin.");
+                return false;
+            }
+            if ($("#divNumeroPedido").is(":visible") && numeroPedido === "") {
+                $("#spnbtnGuardarDetPrd").text("Ingrese el número de pedido.");
+                return false;
+            }
+
+            // Validar horas
+            var minutosIni = parseInt(horaInicio.split(':')[0]) * 60 + parseInt(horaInicio.split(':')[1]);
+            var minutosFin = parseInt(horaFin.split(':')[0]) * 60 + parseInt(horaFin.split(':')[1]);
+            if (minutosFin < minutosIni) {
+                $("#spnbtnGuardarDetPrd").text("La hora de fin no puede ser menor que la hora de inicio.");
+                return false;
+            }
+
+            // Crear la nueva fila a insertar en la tabla,
+            // se incluyen celdas visibles y celdas ocultas para guardar los id´s
+            var newRow = "<tr>" +
+                "<td>" + actividad + "</td>" +
+                "<td>" + descripcionProducto + "</td>" +
+                "<td>" + tipoFabricacionText + "</td>" +
+                "<td>" + (numeroPedido ? numeroPedido : "") + "</td>" +
+                "<td>" + nota + "</td>" +
+                "<td>" + merma + "</td>" +
+                "<td>" + comentario + "</td>" +
+                "<td>" + horaInicio + "</td>" +
+                "<td>" + horaFin + "</td>" +
+                "<td style='display:none;'>" + idTipoFabricacion + "</td>" +
+                "</tr>";
+
+            // Agregar la nueva fila al tbody de la tabla sin eliminar las filas anteriores
+            $("#tblProduccion tbody").append(newRow);
+
+            // Limpiar los controles del formulario
+            $("#frmDetPrd")[0].reset();
+
+            // Opcional: Si "Número Pedido" debe ocultarse de nuevo después de guardar
+            $("#divNumeroPedido").hide();
+              $("#modal-Detalle").modal('hide');
+        });
+
+                  $("#frmProduccion").submit(function (e) {
+            e.preventDefault();
+
+            // Obtener el token antiforgery (asegúrate de que tu formulario incluya @Html.AntiForgeryToken())
+            var token = $('input[name="__RequestVerificationToken"]').val();
+
+            // Recoger los datos del formulario (registro maestro)
+            var viewModel = {
+                // Los select con atributo multiple devolverán un arreglo de valores
+                IdUsuarios: $("#IdUsuarios").val(),
+                Fecha: $("#Fecha").val(),
+                // Inicializar arreglos para los detalles
+                DetPrdOtros: []
+            };
+
+            console.log(viewModel);
+
+            // Recoger los detalles de producción desde la tabla (#tblProduccion)
+            // Se asume que la fila contiene:
+            // [0]: Actividad, [1]: DescripcionProducto, [2]: TipoFabricacion (texto), 
+            // [3]: NumeroPedido, [4]: Nota, [5]: Merma, [6]: Comentario, 
+            // [7]: HoraInicio, [8]: HoraFin, [9]: IdTipoFabricacion (oculto)
+            $("#tblProduccion tbody tr").each(function () {
+                var detalle = {
+                    Actividad: $(this).find("td:eq(0)").text(),
+                    DescripcionProducto: $(this).find("td:eq(1)").text(),
+                    IdTipoFabricacion: parseInt($(this).find("td:eq(9)").text()),
+                    NumeroPedido: $(this).find("td:eq(3)").text() !== "" ? parseInt($(this).find("td:eq(3)").text()) : null,
+                    Nota: $(this).find("td:eq(4)").text(),
+                    Merma: $(this).find("td:eq(5)").text(),
+                    Comentario: $(this).find("td:eq(6)").text(),
+                    HoraInicio: $(this).find("td:eq(7)").text(),
+                    HoraFin: $(this).find("td:eq(8)").text()
+                };
+                viewModel.DetPrdOtros.push(detalle);
+            });
+
+            // Enviar la información vía AJAX al método Create del controlador
+            $.ajax({
+                url: '/PrdOtro/Create', // Asegúrate de que la URL coincida con tu ruta
+                type: 'POST',
+                headers: {
+                    'RequestVerificationToken': token
+                },
+                data: JSON.stringify(viewModel),
+                contentType: 'application/json; charset=utf-8',
+                success: function (response) {
+                      // ══════════════ LIMPIAR BORRADOR (MEJORADO) ══════════════
+                      localStorage.removeItem(DRAFT_KEY);
+                      // ——— NUEVO: desactivar el aviso de "Leave site?" al salir ———
+                      window.removeEventListener('beforeunload', beforeUnloadHandler);
+                      // ════════════════════════════════════════════
+                    alert('Produccion Guardada!');
+                    window.location.href = '@Url.Action("Index", "Home")';
+                },
+                error: function (xhr, status, error) {
+                    alert('Error , Contacte a soporte!');
+                }
+            });
+        });
+
+        $(function() {
+            // Genérico para pares de hora (en formato 24h: "HH:mm")
+            function validarHoras(inicialSelector, finalSelector, mensaje) {
+                $(finalSelector).on('blur', function() {
+                    var hIni = $(inicialSelector).val();
+                    var hFin = $(finalSelector).val();
+                    if (hIni && hFin) {
+                        // Convertir a minutos para comparar
+                        var minutosIni = parseInt(hIni.split(':')[0]) * 60 + parseInt(hIni.split(':')[1]);
+                        var minutosFin = parseInt(hFin.split(':')[0]) * 60 + parseInt(hFin.split(':')[1]);
+                        if (minutosFin < minutosIni) {
+                            alert(mensaje || "La hora final no puede ser menor que la hora inicial.");
+                            $(finalSelector).val('');
+                            $(finalSelector).focus();
+                        }
+                    }
+                });
+            }
+
+            // Asume que tus ids son así (ajusta si tienes nombres distintos)
+            validarHoras("#HoraInicio", "#HoraFin", "La Hora de Fin no puede ser menor que la Hora de Inicio.");
+        });
+
+    </script>
+
+}

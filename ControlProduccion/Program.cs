@@ -68,6 +68,7 @@ builder.Services.AddScoped<IGestionCatalogosService, GestionCatalogosService>();
 builder.Services.AddScoped<IPrdMallasCovintecService, PrdMallasCovintecService>();
 builder.Services.AddScoped<IPrdIlKwangService, PrdIlKwangService>();
 builder.Services.AddScoped<IPrdNeveraService, PrdNeveraService>();
+builder.Services.AddScoped<IPrdOtroService, PrdOtroService>();
 builder.Services.AddScoped<IPrdBloquesService, PrdBloquesService>();
 builder.Services.AddScoped<IPrdCorteTService, PrdCorteTService>();
 builder.Services.AddRazorPages();
