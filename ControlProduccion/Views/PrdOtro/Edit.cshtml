@@ -87,7 +87,7 @@
                 <button type="button" class="btn btn-dark" onclick="location.href='@Url.Action("Index", "PrdOtro")'">Regresar</button>
                 @if (Model.AprobadoGerencia != true)
                 {
-                    <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                    <button type="submit" class="btn btn-primary">Actualizar</button>
                 }
 
                 @if (User.IsInRole("JefeProduccion") && Model.AprobadoGerencia != true)
@@ -309,6 +309,7 @@
                 $("#divNumeroPedido").show();
             } else {
                 $("#divNumeroPedido").hide();
+                $("#NumeroPedido").val(""); // Clear the value when hiding
             }
         });
 
