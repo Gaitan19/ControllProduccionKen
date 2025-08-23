@@ -57,6 +57,10 @@ namespace ControlProduccion.ViewModel
         [StringLength(500, ErrorMessage = "Las observaciones no pueden exceder 500 caracteres")]
         public string? Observaciones { get; set; }
 
+        [Display(Name = "Tiempo de paro (horas)")]
+        [Range(0, double.MaxValue, ErrorMessage = "El tiempo de paro debe ser mayor o igual a 0")]
+        public decimal? TiempoParo { get; set; }
+
         // Detalles
         public List<DetPrdCortePViewModel>? DetPrdCorteP { get; set; }
 
