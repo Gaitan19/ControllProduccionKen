@@ -132,7 +132,10 @@
                                     <input type="number" min="0" id="CantidadNoConforme" name="CantidadNoConforme" class="form-control" />
                                 </div>
 
-                         
+                                <div class="form-group">
+                                    <label class="form-label">Mts² por Panel <span class="text-danger">*</span></label>
+                                    <input type="number" step="0.01" min="0.1" id="Mts2PorPanel" name="Mts2PorPanel" class="form-control" />
+                                </div>
 
                                 <div class="form-group">
                                     <label class="form-label">Número de Alambre <span class="text-danger">*</span></label>
@@ -313,14 +316,14 @@
                 var numeroPedido = $(modalId + ' #NumeroPedido').val();
                 var cantidadProducida = $(modalId + ' #CantidadProducida').val();
                 var cantidadNoConforme = $(modalId + ' #CantidadNoConforme').val();
-       
+                var mts2PorPanel = $(modalId + ' #Mts2PorPanel').val();
                 var numeroAlambre = $(modalId + ' #NumeroAlambre').val();
                 var pesoAlambreKg = $(modalId + ' #PesoAlambreKg').val();
                 var mermaAlambreKg = $(modalId + ' #MermaAlambreKg').val();
 
                 // Validaciones
                 if(!idArticulo || !longitud || !idTipoFabricacion || !cantidadProducida || 
-                   !cantidadNoConforme || !numeroAlambre || !pesoAlambreKg || !mermaAlambreKg){
+                   !cantidadNoConforme || !mts2PorPanel || !numeroAlambre || !pesoAlambreKg || !mermaAlambreKg){
                     $(modalId + ' #spnbtnGuardarDetPrd').text('Complete todos los campos obligatorios.');
                     return;
                 }
@@ -333,7 +336,7 @@
 
                 // Validar formato de cantidades
                 var cantidadRegex = /^\d+(\.\d{1,2})?$/;
-                if(!cantidadRegex.test(longitud)  || 
+                if(!cantidadRegex.test(longitud) || !cantidadRegex.test(mts2PorPanel) ||
                    !cantidadRegex.test(pesoAlambreKg) || !cantidadRegex.test(mermaAlambreKg)){
                     $(modalId + ' #spnbtnGuardarDetPrd').text('Las cantidades deben ser números válidos con máximo 2 decimales.');
                     return;
@@ -351,7 +354,7 @@
                               data-numeropedido="${numeroPedido || ''}"
                               data-cantidadproducida="${cantidadProducida}"
                               data-cantidadnoconforme="${cantidadNoConforme}"
-                            
+                              data-mts2porpanel="${mts2PorPanel}"
                               data-numeroalambre="${numeroAlambre}"
                               data-pesoalambrekg="${pesoAlambreKg}"
                               data-mermaalambrekg="${mermaAlambreKg}">
@@ -362,7 +365,7 @@
                                <td>${numeroPedido || ''}</td>
                                <td>${cantidadProducida}</td>
                                <td>${cantidadNoConforme}</td>
-                          
+                               <td>${mts2PorPanel}</td>
                                <td>${numeroAlambre}</td>
                                <td>${pesoAlambreKg}</td>
                                <td>${mermaAlambreKg}</td>
@@ -410,7 +413,7 @@
                         NumeroPedido: $row.data('numeropedido') ? parseInt($row.data('numeropedido')) : null,
                         CantidadProducida: parseInt($row.data('cantidadproducida')),
                         CantidadNoConforme: parseInt($row.data('cantidadnoconforme')),
-                    
+                        Mts2PorPanel: parseFloat($row.data('mts2porpanel')),
                         NumeroAlambre: parseInt($row.data('numeroalambre')),
                         PesoAlambreKg: parseFloat($row.data('pesoalambrekg')),
                         MermaAlambreKg: parseFloat($row.data('mermaalambrekg'))
