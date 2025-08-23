@@ -228,6 +228,11 @@
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
+                            <label asp-for="MetrosInicialPoliol"></label>
+                            <input readonly="readonly" asp-for="MetrosInicialPoliol" class="form-control" />
+                            <span asp-validation-for="MetrosInicialPoliol" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
                             <label asp-for="PesoInicialA"></label>
                             <input readonly="readonly" asp-for="PesoInicialA" class="form-control" />
                             <span asp-validation-for="PesoInicialA" class="text-danger"></span>
@@ -264,6 +269,11 @@
                         </div>
                     </div>
                     <div class="col-md-6">
+                        <div class="form-group">
+                            <label asp-for="MetrosInicialIsocianato"></label>
+                            <input readonly="readonly" asp-for="MetrosInicialIsocianato" class="form-control" />
+                            <span asp-validation-for="MetrosInicialIsocianato" class="text-danger"></span>
+                        </div>
                         <div class="form-group">
                             <label asp-for="PesoInicialB"></label>
                             <input readonly="readonly" asp-for="PesoInicialB" class="form-control" />
@@ -302,11 +312,7 @@
                     </div>
                 </div>
                 
-                <div class="form-group">
-                    <label asp-for="CantidadArranques"></label>
-                    <input readonly="readonly" asp-for="CantidadArranques" class="form-control" />
-                    <span asp-validation-for="CantidadArranques" class="text-danger"></span>
-                </div>
+           
 
                 <div class="hr-line-dashed"></div>
                 <div class="form-group row">
@@ -349,6 +355,12 @@
                     <label asp-for="Observaciones"></label>
                     <textarea readonly="readonly" asp-for="Observaciones" class="form-control"></textarea>
                     <span asp-validation-for="Observaciones" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="CantidadArranques"></label>
+                    <input readonly="readonly" asp-for="CantidadArranques" class="form-control" />
+                    <span asp-validation-for="CantidadArranques" class="text-danger"></span>
                 </div>
 
                 <button type="button" class="btn btn-dark" onclick="location.href='@Url.Action("Index", "PrdIlKwang")'">Regresar</button>

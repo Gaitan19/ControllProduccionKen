@@ -82,6 +82,23 @@ namespace Infrastructure.UnitOfWork
         private IGenericRepository<CatLamina> _catLaminaRepository;
         private IGenericRepository<PrdCorteT> _prdCorteTRepository;
         private IGenericRepository<DetPrdCorteT> _detPrdCorteTRepository;
+        private IGenericRepository<PrdCorteP> _prdCortePRepository;
+        private IGenericRepository<DetPrdCorteP> _detPrdCortePRepository;
+        private IGenericRepository<PrdpreExpansion> _prdpreExpansionRepository;
+        private IGenericRepository<DetPrdpreExpansion> _detPrdpreExpansionRepository;
+        private IGenericRepository<CatPantografo> _catPantografoRepository;
+        private IGenericRepository<CatTipoMalla> _catTipoMallaRepository;
+        private IGenericRepository<PrdMallaPch> _prdMallaPchRepository;
+        private IGenericRepository<DetPrdPchMaquinaA> _detPrdPchMaquinaARepository;
+        private IGenericRepository<DetPrdPchMaquinaB> _detPrdPchMaquinaBRepository;
+        private IGenericRepository<DetPrdPchMaquinaC> _detPrdPchMaquinaCRepository;
+        private IGenericRepository<CatalogoPanelesPch> _catalogoPanelesPchRepository;
+        private IGenericRepository<PrdPaneladoraPch> _prdPaneladoraPchRepository;
+        private IGenericRepository<DetPrdPaneladoraPch> _detPrdPaneladoraPchRepository;
+        private IGenericRepository<CatalogoAccesorio> _catalogoAccesorioRepository;
+        private IGenericRepository<ErrorLog> _errorLogRepository;
+        private IGenericRepository<PrdAccesorio> _prdAccesorioRepository;
+        private IGenericRepository<DetPrdAccesorio> _detPrdAccesorioRepository;
         public IReportesDapperRepository ReportesDapperRepository
         {
             get
@@ -249,12 +266,7 @@ namespace Infrastructure.UnitOfWork
             }
         }
 
-        //public IGenericRepository<PrdMallaCovintec> PrdMallaCovintecRepository => throw new NotImplementedException();
-
-        //public IGenericRepository<DetPrdMallaCovintec> DetAlambrePrdMallaCovintecRepository => throw new NotImplementedException();
-
-        //public IGenericRepository<DetPrdMallaCovintec> DetPrdMallaCovintecRepository => throw new NotImplementedException();
-
+     
      public IGenericRepository<PrdMallaCovintec> PrdMallaCovintecRepository
         {
             get
@@ -412,6 +424,127 @@ namespace Infrastructure.UnitOfWork
             get
             {
                 return _detPrdCorteTRepository ??= new GenericRepository<DetPrdCorteT>(_context);
+            }
+        }
+        public IGenericRepository<PrdCorteP> PrdCortePRepository
+        {
+            get
+            {
+                return _prdCortePRepository ??= new GenericRepository<PrdCorteP>(_context);
+            }
+        }
+        public IGenericRepository<DetPrdCorteP> DetPrdCortePRepository
+        {
+            get
+            {
+                return _detPrdCortePRepository ??= new GenericRepository<DetPrdCorteP>(_context);
+            }
+        }
+
+        public IGenericRepository<PrdpreExpansion> PrdpreExpansionRepository
+        {
+            get
+            {
+                return _prdpreExpansionRepository ??= new GenericRepository<PrdpreExpansion>(_context);
+            }
+        }
+
+        public IGenericRepository<DetPrdpreExpansion> DetPrdpreExpansionRepository
+        {
+            get
+            {
+                return _detPrdpreExpansionRepository ??= new GenericRepository<DetPrdpreExpansion>(_context);
+            }
+        }
+        public IGenericRepository<CatPantografo> CatPantografoRepository
+        {
+            get
+            {
+                return _catPantografoRepository ??= new GenericRepository<CatPantografo>(_context);
+            }
+        }
+        public IGenericRepository<CatTipoMalla> CatTipoMallaRepository
+        {
+            get
+            {
+                return _catTipoMallaRepository ??= new GenericRepository<CatTipoMalla>(_context);
+            }
+        }
+        public IGenericRepository<PrdMallaPch> PrdMallaPchRepository
+        {
+            get
+            {
+                return _prdMallaPchRepository ??= new GenericRepository<PrdMallaPch>(_context);
+            }
+        }
+        public IGenericRepository<DetPrdPchMaquinaA> DetPrdPchMaquinaARepository
+        {
+            get
+            {
+                return _detPrdPchMaquinaARepository ??= new GenericRepository<DetPrdPchMaquinaA>(_context);
+            }
+        }
+        public IGenericRepository<DetPrdPchMaquinaB> DetPrdPchMaquinaBRepository
+        {
+            get
+            {
+                return _detPrdPchMaquinaBRepository ??= new GenericRepository<DetPrdPchMaquinaB>(_context);
+            }
+        }
+        public IGenericRepository<DetPrdPchMaquinaC> DetPrdPchMaquinaCRepository
+        {
+            get
+            {
+                return _detPrdPchMaquinaCRepository ??= new GenericRepository<DetPrdPchMaquinaC>(_context);
+            }
+        }
+        public IGenericRepository<CatalogoPanelesPch> CatalogoPanelesPchRepository
+        {
+            get
+            {
+                return _catalogoPanelesPchRepository ??= new GenericRepository<CatalogoPanelesPch>(_context);
+            }
+        }
+        public IGenericRepository<PrdPaneladoraPch> PrdPaneladoraPchRepository
+        {
+            get
+            {
+                return _prdPaneladoraPchRepository ??= new GenericRepository<PrdPaneladoraPch>(_context);
+            }
+        }
+        public IGenericRepository<DetPrdPaneladoraPch> DetPrdPaneladoraPchRepository
+        {
+            get
+            {
+                return _detPrdPaneladoraPchRepository ??= new GenericRepository<DetPrdPaneladoraPch>(_context);
+            }
+        }
+        public IGenericRepository<CatalogoAccesorio> CatalogoAccesorioRepository
+        {
+            get
+            {
+                return _catalogoAccesorioRepository ??= new GenericRepository<CatalogoAccesorio>(_context);
+            }
+        }
+        public IGenericRepository<PrdAccesorio> PrdAccesorioRepository
+        {
+            get
+            {
+                return _prdAccesorioRepository ??= new GenericRepository<PrdAccesorio>(_context);
+            }
+        }
+        public IGenericRepository<DetPrdAccesorio> DetPrdAccesorioRepository
+        {
+            get
+            {
+                return _detPrdAccesorioRepository ??= new GenericRepository<DetPrdAccesorio>(_context);
+            }
+        }
+        public IGenericRepository<ErrorLog> ErrorLogRepository
+        {
+            get
+            {
+                return _errorLogRepository ??= new GenericRepository<ErrorLog>(_context);
             }
         }
 

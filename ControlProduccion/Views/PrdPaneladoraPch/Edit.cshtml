@@ -1,0 +1,384 @@
+﻿@using ControlProduccion.ViewModel;
+@model PrdPaneladoraPchViewModel;
+@{
+    ViewData["Title"] = "Produccion Paneladora PCH";
+}
+
+<div class="col-md-8 offset-md-2">
+    <div class="ibox ">
+        <div class="ibox-title">
+            <h5>@ViewData["Title"]</h5>
+        </div>
+        <div class="ibox-content">
+            <form id="frmProduccion" method="post" asp-action="Edit" autocomplete="off">
+                @Html.AntiForgeryToken()
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+                <input type="hidden" asp-for="Id" />
+                @if (Model.AprobadoGerencia == true)
+                {
+                    <div class="alert alert-success">
+                        <i class="fa fa-check"></i> Esta producción ha sido aprobada y no puede ser modificada.
+                    </div>
+                }
+                <div class="form-group">
+                    <label asp-for="IdUsuarios"></label>
+                    <select id="IdUsuarios" multiple name="IdUsuarios" asp-for="IdUsuarios" class="form-control select2" asp-items="Model.Operarios">
+                    </select>
+                    <span asp-validation-for="IdUsuarios" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="IdMaquina"></label>
+                    <select id="IdMaquina" name="IdMaquina" asp-for="IdMaquina" class="form-control" asp-items="Model.Maquinas">
+                        <option>- Seleccione una maquina -</option>
+                    </select>
+                    <span asp-validation-for="IdMaquina" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Fecha"></label>
+                    <input asp-for="Fecha" class="form-control" />
+                    <span asp-validation-for="Fecha" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="TiempoParo"></label>
+                    <input asp-for="TiempoParo" class="form-control" type="number" step="0.1" min="0" />
+                    <span asp-validation-for="TiempoParo" class="text-danger"></span>
+                </div>
+
+                <div class="hr-line-dashed"></div>
+                <div class="form-group row">
+                    <div class="col-sm-12" style="max-height: 300px; overflow: scroll">
+                        <h4 id="hdrVV" runat="server">Detalle Produccion</h4>
+
+                        <table id="tblProduccion" class="table table-bordered table-hover">
+                            <thead class="table-light">
+                                <tr>
+                                    <th style="display:none" data-field="id">Id</th>
+                                    <th data-field="articulo">Articulo</th>
+                                    <th data-field="longitud">Longitud (mts)</th>
+                                    <th data-field="cantProducida">Cantidad Producida</th>
+                                    <th data-field="cantNoConforme">Cantidad No Conforme</th>
+                                    <th data-field="mts2Panel">Mts² por Panel</th>
+                                    <th data-field="tipoFabricacion">Tipo Fabricación</th>
+                                    <th data-field="numeroPedido">Número Pedido</th>
+                                    <th data-field="numAlambre">N° Alambre</th>
+                                    <th data-field="pesoAlambre">Peso Alambre (kg)</th>
+                                    <th data-field="mermaAlambre">Merma Alambre (kg)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model.DetPrdPaneladoraPch != null)
+                                {
+                                    @foreach (var detalle in Model.DetPrdPaneladoraPch)
+                                    {
+                                        <tr>
+                                            <td style="display:none" data-field="id">@detalle.DetPrdPaneladoraPchId</td>
+                                            @if (Model.AprobadoGerencia != true)
+                                            {
+                                                <td data-field="articulo"><a href="#" class="open-modal">@detalle.Articulo</a></td>
+                                            }
+                                            else
+                                            {
+                                                <td data-field="articulo"><a>@detalle.Articulo</a></td>
+                                            }
+                                            <td data-field="longitud">@detalle.Longitud.ToString("N2")</td>
+                                            <td data-field="cantProducida">@detalle.CantidadProducida</td>
+                                            <td data-field="cantNoConforme">@detalle.CantidadNoConforme</td>
+                                            <td data-field="mts2Panel">@detalle.Mts2PorPanel?.ToString("N2")</td>
+                                            <td data-field="tipoFabricacion">@detalle.TipoFabricacion</td>
+                                            <td data-field="numeroPedido">@(detalle.NumeroPedido?.ToString() ?? "-")</td>
+                                            <td data-field="numAlambre">@detalle.NumeroAlambre</td>
+                                            <td data-field="pesoAlambre">@detalle.PesoAlambreKg.ToString("N2")</td>
+                                            <td data-field="mermaAlambre">@detalle.MermaAlambreKg.ToString("N2")</td>
+
+                                            <td style='display:none;' data-field="idArticulo">@detalle.IdArticulo</td>
+                                            <td style='display:none;' data-field="idTipoFabricacion">@detalle.IdTipoFabricacion</td>
+                                        </tr>
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label asp-for="ProduccionDia"></label>
+                    <input readonly asp-for="ProduccionDia" class="form-control" />
+                    <span asp-validation-for="ProduccionDia" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Observaciones"></label>
+                    <textarea asp-for="Observaciones" class="form-control"></textarea>
+                    <span asp-validation-for="Observaciones" class="text-danger"></span>
+                </div>
+                <button type="button" class="btn btn-dark" onclick="location.href='@Url.Action("Index", "PrdPaneladoraPch")'">Regresar</button>
+                @if (Model.AprobadoGerencia != true)
+                {
+                    <button type="submit" class="btn btn-primary">Actualizar</button>
+                }
+
+                @if (User.IsInRole("JefeProduccion") && Model.AprobadoGerencia != true)
+                {
+                    <button id="btnAprobarProd" type="button" class="btn btn-danger" onclick="validar(@Model.Id)">Aprobar</button>
+                }
+                else
+                {
+                    <button type="button" class="btn btn-success">Aprobado</button>
+                }
+            </form>
+            @* Modal para agregar detalle prd *@
+            <div id="modal-Detalle" class="modal fade" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-body">
+                            <form id="frmDetPrd">
+                                <input type="hidden" id="DetPrdPaneladoraPchId" name="DetPrdPaneladoraPchId" />
+                                <input type="hidden" id="PrdPaneladoraPchId" name="PrdPaneladoraPchId" />
+
+                                <h3>Editar Detalle</h3>
+                                <hr />
+
+                                <div class="mb-3">
+                                    <label class="form-label">Artículo</label>
+                                    <select id="IdArticulo" name="IdArticulo" class="form-control" asp-items="Model.CatalogoPaneles">
+                                        <option value="">-- Selecione un articulo --</option>
+                                    </select>
+                                    <span class="text-danger"></span>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="Longitud" class="form-label">Longitud (mts)</label>
+                                    <input oninput="validarUnDecimal(this);" step="0.01" min="0.01" type="number" id="Longitud" name="Longitud" class="form-control" value="" />
+                                    <span class="text-danger"></span>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="CantidadProducida" class="form-label">Cantidad Producida</label>
+                                    <input oninput="this.value = this.value.replace(/[^0-9]/g, '');" type="number" id="CantidadProducida" name="CantidadProducida" class="form-control" value="" min="0" />
+                                    <span class="text-danger"></span>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="CantidadNoConforme" class="form-label">Cantidad No Conforme</label>
+                                    <input oninput="this.value = this.value.replace(/[^0-9]/g, '');" type="number" id="CantidadNoConforme" name="CantidadNoConforme" class="form-control" value="" min="0" />
+                                    <span class="text-danger"></span>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label">Tipo Fabricación</label>
+                                    <select id="IdTipoFabricacion" name="IdTipoFabricacion" class="form-control" asp-items="Model.TiposFabricacion">
+                                        <option value="">-- Selecione un Tipo Fabricacion --</option>
+                                    </select>
+                                    <span class="text-danger"></span>
+                                </div>
+
+                                <div class="mb-3" id="divNumeroPedido" style="display:none">
+                                    <label for="NumeroPedido" class="form-label">Número Pedido</label>
+                                    <input oninput="this.value = this.value.replace(/[^0-9]/g, '');" type="number" id="NumeroPedido" name="NumeroPedido" class="form-control" value="" min="0" />
+                                    <span class="text-danger"></span>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="NumeroAlambre" class="form-label">Número Alambre</label>
+                                    <input oninput="this.value = this.value.replace(/[^0-9]/g, '');" type="number" id="NumeroAlambre" name="NumeroAlambre" class="form-control" value="" min="1" />
+                                    <span class="text-danger"></span>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="PesoAlambreKg" class="form-label">Peso Alambre (Kg)</label>
+                                    <input oninput="validarUnDecimal(this);" step="0.1" min="0" type="number" id="PesoAlambreKg" name="PesoAlambreKg" class="form-control" value="" />
+                                    <span class="text-danger"></span>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="MermaAlambreKg" class="form-label">Merma Alambre (Kg)</label>
+                                    <input oninput="validarUnDecimal(this);" step="0.1" min="0" type="number" id="MermaAlambreKg" name="MermaAlambreKg" class="form-control" value="" />
+                                    <span class="text-danger"></span>
+                                </div>
+                            </form>
+
+                            <button id="btnGuardarDetPrd" type="button" class="btn btn-primary">Actualizar</button>
+                            <button type="button" class="btn  btn-dark" data-dismiss="modal">Cancelar</button>
+                            <br />
+                            <p id="spnbtnGuardarDetPrd" class="text-sm text-danger"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        function validarUnDecimal(input) {
+            let valor = input.value.replace(/[^0-9.]/g, '');
+            let partes = valor.split('.');
+            if (partes.length > 2) {
+                valor = partes[0] + '.' + partes[1];
+            }
+            if (valor.includes('.')) {
+                let [entero, decimal] = valor.split('.');
+                decimal = decimal.substring(0, 1);
+                valor = entero + '.' + decimal;
+            }
+            input.value = valor;
+        }
+
+
+
+        $("#IdUsuarios").select2({
+            placeholder: "- Selecciona los operarios -",
+            allowClear: true
+        });
+
+        $("#IdMaquina").select2({
+            placeholder: "- Seleccione una maquina -",
+            allowClear: true
+        });
+
+        $("#tblProduccion").on("click", ".open-modal", function(e){
+            e.preventDefault();
+            var $row = $(this).closest("tr");
+
+            var id                  = $row.find("td[data-field='id']").text().trim();
+            var longitud            = $row.find("td[data-field='longitud']").text().trim();
+            var cantProducida       = $row.find("td[data-field='cantProducida']").text().trim();
+            var cantNoConforme      = $row.find("td[data-field='cantNoConforme']").text().trim();
+            var mts2Panel           = $row.find("td[data-field='mts2Panel']").text().trim();
+            var numeroPedido        = $row.find("td[data-field='numeroPedido']").text().trim();
+            var numAlambre          = $row.find("td[data-field='numAlambre']").text().trim();
+            var pesoAlambre         = $row.find("td[data-field='pesoAlambre']").text().trim();
+            var mermaAlambre        = $row.find("td[data-field='mermaAlambre']").text().trim();
+            var idArticulo          = $row.find("td[data-field='idArticulo']").text().trim();
+            var idTipoFabricacion   = $row.find("td[data-field='idTipoFabricacion']").text().trim();
+
+            // AJUSTE 2: Rellenar los campos del modal con los IDs y nombres correctos
+            $("#DetPrdPaneladoraPchId").val(id);
+            $("#PrdPaneladoraPchId").val(@Model.Id); // <- Se asigna el ID del registro principal
+            $("#IdArticulo").val(idArticulo);
+            $("#Longitud").val(longitud.replace(',', '.'));
+            $("#CantidadProducida").val(cantProducida);
+            $("#CantidadNoConforme").val(cantNoConforme);
+            $("#IdTipoFabricacion").val(idTipoFabricacion);
+            $("#NumeroAlambre").val(numAlambre);
+            $("#PesoAlambreKg").val(pesoAlambre.replace(',', '.'));
+            $("#MermaAlambreKg").val(mermaAlambre.replace(',', '.'));
+
+            if (idTipoFabricacion == "2") {
+                $("#divNumeroPedido").show();
+            } else {
+                $("#divNumeroPedido").hide();
+            }
+            $("#NumeroPedido").val(numeroPedido === "-" ? "" : numeroPedido);
+
+            $("#modal-Detalle").modal("show");
+        });
+
+        $("#btnGuardarDetPrd").click(function(e){
+            e.preventDefault();
+
+            // AJUSTE 3: Obtener el token del formulario principal (#frmProduccion)
+            var token = $("#frmProduccion").find("input[name='__RequestVerificationToken']").val();
+
+            var formData = $("#frmDetPrd").serialize();
+
+            $.ajax({
+                url: '@Url.Action("EditDetPrd", "PrdPaneladoraPch")',
+                type: 'POST',
+                data: formData,
+                headers: {
+                    "RequestVerificationToken": token
+                },
+                success: function(response) {
+                    if(response.success){
+                        alert(response.message);
+                        $("#modal-Detalle").modal("hide");
+                        // Clear localStorage when detail is successfully updated
+                   
+                        location.reload();
+                    } else {
+                        alert("Error: " + response.message);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error(xhr.responseText); // Log para depuración
+                    alert("Ocurrió un error en la solicitud: " + error);
+                }
+            });
+        });
+
+        $("#IdTipoFabricacion").change(function () {
+            var selectedValue = $(this).val();
+            if (selectedValue == 2) {
+                $("#divNumeroPedido").show();
+            } else {
+                $("#divNumeroPedido").hide();
+            }
+        });
+
+              function validar(id) {
+            if (confirm("¿Está seguro de que desea Aprobar esta producción?")) {
+                // 1. Obtener el token del formulario principal donde se generó
+                var token = $("#frmProduccion").find("input[name='__RequestVerificationToken']").val();
+
+                $.ajax({
+                    url: '@Url.Action("AprobarPrd", "PrdPaneladoraPch")',
+                    type: 'POST',
+                    data: { id: id },
+                    // 2. Añadir el token a las cabeceras de la solicitud
+                    headers: {
+                        "RequestVerificationToken": token
+                    },
+                    success: function(response) {
+                        if (response) {
+                            alert("Producción Aprobada exitosamente.");
+                          
+                            location.reload();
+                        } else {
+                            alert("Error al Aprobar la producción, contacte a soporte.");
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error("Error en la solicitud de aprobación:", xhr.responseText);
+                        alert("Error al procesar la solicitud: " + error);
+                    }
+                });
+            }
+        }
+
+        // Handle form submission
+        $('#frmProduccion').on('submit', function() {
+            localStorage.removeItem(DRAFT_KEY);
+            window.removeEventListener('beforeunload', beforeUnloadHandler);
+        });
+
+                  $(document).on('shown.bs.modal', '#modal-Detalle', function () {
+            var $modal = $(this);
+            var $selects = $modal.find('#IdArticulo, #IdTipoFabricacion');
+
+            // Si ya estaban inicializados, destruir antes de re-inicializar
+            $selects.each(function () {
+                if ($(this).hasClass('select2-hidden-accessible')) {
+                    $(this).select2('destroy');
+                }
+            });
+
+            // Inicializar con el contenedor del modal como parent
+            $selects.each(function () {
+                var $s = $(this);
+                var placeholder = $s.find('option[value=""]').text() || 'Seleccione...';
+
+                $s.select2({
+                    dropdownParent: $modal.find('.modal-content'),
+                    allowClear: true,
+                    width: '100%',
+                    placeholder: placeholder
+                });
+            });
+        });
+    </script>
+}

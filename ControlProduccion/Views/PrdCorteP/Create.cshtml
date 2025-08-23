@@ -1,0 +1,486 @@
+@using ControlProduccion.ViewModel;
+@model PrdCortePViewModel
+@{
+    ViewData["Title"] = "Ingresar Producción Corte P";
+}
+<div class="col-md-8 offset-md-2">
+    <div class="ibox ">
+        <div class="ibox-title">
+            <h5>@ViewData["Title"]</h5>
+        </div>
+        <div class="ibox-content">
+            <form id="frmProduccion" method="post" autocomplete="off">
+                @Html.AntiForgeryToken()
+            
+               
+                   
+                        <div class="form-group">
+                            <label asp-for="IdUsuarios"></label>
+                            <select id="IdUsuarios" multiple asp-for="IdUsuarios" class="form-control select2" asp-items="Model.Operarios"></select>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="IdMaquina"></label>
+                            <select id="IdMaquina" asp-for="IdMaquina" class="form-control select2" asp-items="Model.Maquinas">
+                                <option value="">-- Seleccione Máquina --</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Fecha"></label>
+                            <input asp-for="Fecha" class="form-control" />
+                        </div>
+           
+                
+            
+             
+                <div class="hr-line-dashed"></div>
+                <div class="form-group row">
+                    <div class="col-sm-12">
+                        <a data-toggle='modal' href='#modal-Detalle' id="btnAgregarDetalle" class="btn btn-info btn-outline">
+                            <i class="fa fa-plus"></i> Agregar Detalle
+                        </a>
+                    </div>
+                    <div class="col-sm-12 mt-3" style="max-height: 300px; overflow: scroll">
+                        <h4>Detalle Producción</h4>
+                        <table id="tblDetalle" class="table table-bordered table-striped">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>No.</th>
+                                    <th>Artículo</th>
+                                    <th>Tipo Fabricación</th>
+                                    <th>No. Pedido</th>
+                                    <th>Código Bloque</th>
+                                    <th>Densidad</th>
+                                    <th>Tipo Bloque</th>
+                                    <th>Piezas Conformes</th>
+                                    <th>Piezas No Conformes</th>
+                                    <th>Nota</th>
+                                
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+             
+                    <div class="form-group">
+                        <label asp-for="Observaciones"></label>
+                        <textarea asp-for="Observaciones" id="Observaciones" class="form-control" rows="3"></textarea>
+                        <span asp-validation-for="Observaciones" class="text-danger"></span>
+                    </div>
+              
+                <button type="submit" class="btn btn-primary">
+                    Guardar
+                </button>
+                <button type="button"
+                        id="btnRegresar"
+                        class="btn btn-dark"
+                        data-url="@Url.Action("Index", "Home")">
+                    Regresar
+                </button>
+            </form>
+            
+            <!-- Modal Detalle -->
+            <div id="modal-Detalle" class="modal fade" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title">Nuevo Detalle de Producción</h4>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="frmDetPrd">
+                                <input type="hidden" name="uid" value="<%=idx%>" />
+
+                                <div class="form-group">
+                                    <label class="form-label">No. <span class="text-danger">*</span></label>
+                                    <input readonly type="number" min="1" id="No" name="No" class="form-control" />
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">Artículo <span class="text-danger">*</span></label>
+                                    <select id="IdArticulo" name="IdArticulo" class="form-control" asp-items="Model.Articulos">
+                                        <option value="">-- Seleccione Artículo --</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">Tipo de Fabricación <span class="text-danger">*</span></label>
+                                    <select id="IdTipoFabricacion" name="IdTipoFabricacion" class="form-control" asp-items="Model.TiposFabricacion">
+                                        <option value="">-- Seleccione Tipo --</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group" id="divNumeroPedido" style="display:none">
+                                    <label class="form-label">Número de Pedido <span class="text-danger">*</span></label>
+                                    <input type="number" id="NumeroPedido" name="NumeroPedido" class="form-control" min="0" step="1" />
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">Código de Bloque <span class="text-danger">*</span></label>
+                                    <select id="PrdCodigoBloque" name="PrdCodigoBloque" class="form-control" asp-items="Model.subDetalleBloqueCodigo">
+                                        <option value="">-- Seleccione o escriba código --</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">Densidad <span class="text-danger">*</span></label>
+                                    <select id="IdDensidad" name="IdDensidad" class="form-control" asp-items="Model.CatalogoDensidad">
+                                        <option value="">-- Seleccione Densidad --</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">Tipo de Bloque <span class="text-danger">*</span></label>
+                                    <select id="IdTipoBloque" name="IdTipoBloque" class="form-control" asp-items="Model.CatalogoTipoBloque">
+                                        <option value="">-- Seleccione Tipo --</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">Cantidad Piezas Conformes <span class="text-danger">*</span></label>
+                                    <input type="number" step="0.01" min="0" id="CantidadPiezasConformes" name="CantidadPiezasConformes" class="form-control" />
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">Cantidad Piezas No Conformes <span class="text-danger">*</span></label>
+                                    <input type="number" step="0.01" min="0" id="CantidadPiezasNoConformes" name="CantidadPiezasNoConformes" class="form-control" />
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">Nota</label>
+                                    <textarea id="Nota" name="Nota" class="form-control" rows="3"></textarea>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button id="btnGuardarDetPrd" type="button" class="btn btn-primary">Agregar</button>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                            <div class="w-100">
+                                <p id="spnbtnGuardarDetPrd" class="text-sm text-danger mt-2"></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        $(document).ready(function() {
+            // ─────────── AUTOSAVE / RESTORE /PREVENT EXIT───────────
+            const DRAFT_KEY = 'draft-prdCorteP';
+
+            function backupForm() {
+                const formArr = $('#frmProduccion').serializeArray();
+                const detalleHtml = $('#tblDetalle tbody').html();
+                localStorage.setItem(DRAFT_KEY,
+                    JSON.stringify({ form: formArr, detalleHtml: detalleHtml })
+                );
+            }
+
+           function restoreIfExists() {
+            const draftStr = localStorage.getItem(DRAFT_KEY);
+            if (!draftStr) return;
+
+            if (confirm('Se encontró un borrador sin guardar. ¿Deseas restaurarlo?')) {
+                const draft = JSON.parse(draftStr);
+
+                // Agrupar valores por nombre
+                const formMap = draft.form.reduce((acc, { name, value }) => {
+                    acc[name] = acc[name] || [];
+                    acc[name].push(value);
+                    return acc;
+                }, {});
+
+                // Restaurar cada campo
+                Object.entries(formMap).forEach(([name, values]) => {
+                    const $el = $('[name="' + name + '"]');
+                    const valToSet = $el.prop('multiple') ? values : values[0];
+                    if ($el.hasClass('select2-hidden-accessible')) {
+                        $el.val(valToSet).trigger('change');
+                    } else {
+                        $el.val(valToSet);
+                    }
+                });
+
+                // Restaurar detalle HTML
+                $('#tblDetalle tbody').html(draft.detalleHtml);
+
+                // Ajustar contador de No.
+                const nos = $('#tblDetalle tbody tr[data-no]')
+                    .map(function() { return +$(this).data('no'); })
+                    .get();
+                if (nos.length) detalleNo = Math.max(...nos) + 1;
+            }
+        }
+
+
+            // Restaura al cargar y luego auto‑respalda cada 30s
+            restoreIfExists();
+            setInterval(backupForm, 30000);
+
+            // ───────── PREVENT UNLOAD ─────────
+            function beforeUnloadHandler(e) {
+                const hasRows = $('#tblDetalle tbody tr').length > 0;
+                const isDirty = $('#frmProduccion').serialize() !== '';
+                if (hasRows || isDirty) {
+                    e.preventDefault();
+                    e.returnValue = '';
+                }
+            }
+            window.addEventListener('beforeunload', beforeUnloadHandler);
+
+            $('#btnRegresar').off('click').on('click', function() {
+                const url = $(this).data('url');
+                if (confirm('¿Deseas salir sin guardar? Se perderán los datos no guardados.')) {
+                    // 1) Borra el draft
+                    localStorage.removeItem(DRAFT_KEY);
+                    // 2) Quita el beforeunload para no volver a pedir confirm
+                    window.removeEventListener('beforeunload', beforeUnloadHandler);
+                    // 3) Navega
+                    window.location.href = url;
+                }
+                // si cancela, no pasa nada y conserva el borrador
+            });
+
+            // ──────────END AUTOSAVE / RESTORE /PREVENT EXIT───────────
+
+            var detalleNo = 1;
+
+            // --- INICIALIZACIÓN SELECT2 EN LA PÁGINA PRINCIPAL ---
+            $("#IdUsuarios").select2({
+                placeholder: "- Selecciona los operarios -",
+                allowClear: true,
+                width: '100%'
+            });
+
+            $("#IdMaquina").select2({
+                placeholder: "- Selecciona la máquina -",
+                allowClear: true,
+                width: '100%'
+            });
+
+            // --- MANEJO DEL MODAL: Detalle ---
+           
+        $('#modal-Detalle').on('shown.bs.modal', function() {
+            var $modal = $(this); // Se obtiene una referencia al modal actual
+                        const $modalBody = $(this).find('.modal-body');
+            // Selects normales
+            var $selects = $modal.find('#IdArticulo, #IdTipoFabricacion, #IdDensidad, #IdTipoBloque');
+
+            // Destruye instancias previas si existen para evitar conflictos
+            $selects.each(function() {
+                if ($(this).data('select2')) {
+                    $(this).select2('destroy');
+                }
+            });
+
+            // Vuelve a inicializar, AÑADIENDO la opción clave
+            $selects.select2({
+                dropdownParent: $modalBody, // ✨ FIX: Adjunta el dropdown al modal
+                allowClear: true,
+                width: '100%'
+            });
+
+            // Configuración especial para el select con autocompletado
+            var $codigoSelect = $modal.find('#PrdCodigoBloque');
+            if ($codigoSelect.data('select2')) {
+                $codigoSelect.select2('destroy');
+            }
+
+            $codigoSelect.select2({
+                dropdownParent: $modalBody, // ✨ FIX: Adjunta el dropdown al bodymodal
+                allowClear: true,
+                width: '100%',
+                tags: true, // Permite crear nuevas opciones
+                createTag: function (params) {
+                    var term = $.trim(params.term);
+                    if (term === '') {
+                        return null;
+                    }
+                    return {
+                        id: term,
+                        text: term,
+                        newTag: true
+                    };
+                }
+            });
+
+            // Lógica adicional (esto ya estaba bien)
+            $modal.find('#No').val(detalleNo);
+        });
+
+            // Evento 'change' para TipoFabricacion
+            $(document).on('change', '#modal-Detalle #IdTipoFabricacion', function(){
+                var modalId = '#modal-Detalle';
+                if($(this).val() == 2){ // Asumiendo que 2 es "Por Pedido"
+                    $(modalId + ' #divNumeroPedido').show();
+                } else {
+                    $(modalId + ' #divNumeroPedido').hide();
+                    $(modalId + ' #NumeroPedido').val('');
+                }
+            });
+
+            // Botón Guardar del modal
+            $('#btnGuardarDetPrd').click(function(){
+                var modalId = '#modal-Detalle';
+                $(modalId + ' #spnbtnGuardarDetPrd').text('');
+
+                // Obtener valores usando IDs específicos
+                var no = $(modalId + ' #No').val();
+                var idArticulo = $(modalId + ' #IdArticulo').val();
+                var idTipoFabricacion = $(modalId + ' #IdTipoFabricacion').val();
+                var numeroPedido = $(modalId + ' #NumeroPedido').val();
+                var prdCodigoBloque = $(modalId + ' #PrdCodigoBloque').val();
+                var idDensidad = $(modalId + ' #IdDensidad').val();
+                var idTipoBloque = $(modalId + ' #IdTipoBloque').val();
+                var cantidadConformes = $(modalId + ' #CantidadPiezasConformes').val();
+                var cantidadNoConformes = $(modalId + ' #CantidadPiezasNoConformes').val();
+                var nota = $(modalId + ' #Nota').val();
+
+                // Validaciones
+                if(!idArticulo || !idTipoFabricacion || !prdCodigoBloque || !idDensidad || 
+                   !idTipoBloque || !cantidadConformes || !cantidadNoConformes){
+                    $(modalId + ' #spnbtnGuardarDetPrd').text('Complete todos los campos obligatorios.');
+                    return;
+                }
+
+                // Validar número de pedido si es requerido
+                if(idTipoFabricacion == 2 && !numeroPedido){
+                    $(modalId + ' #spnbtnGuardarDetPrd').text('El número de pedido es obligatorio para el tipo "Por Pedido".');
+                    return;
+                }
+
+                // Set numeroPedido to null if not "Por Pedido" type
+                if(idTipoFabricacion != 2) {
+                    numeroPedido = null;
+                }
+
+                // Validar formato de cantidades
+                var cantidadRegex = /^\d+(\.\d{1,2})?$/;
+                if(!cantidadRegex.test(cantidadConformes) || !cantidadRegex.test(cantidadNoConformes)){
+                    $(modalId + ' #spnbtnGuardarDetPrd').text('Las cantidades deben ser números válidos con máximo 2 decimales.');
+                    return;
+                }
+
+                // Obtener textos para mostrar
+                var articuloText = $(modalId + ' #IdArticulo option:selected').text();
+                var tipoFabricacionText = $(modalId + ' #IdTipoFabricacion option:selected').text();
+                var densidadText = $(modalId + ' #IdDensidad option:selected').text();
+                var tipoBloqueText = $(modalId + ' #IdTipoBloque option:selected').text();
+
+                // Crear fila con data attributes para identificación
+                var row = `<tr data-no="${no}" 
+                              data-idarticulo="${idArticulo}"
+                              data-idtipofabricacion="${idTipoFabricacion}"
+                              data-numeropedido="${numeroPedido || ''}"
+                              data-prdcodigobloque="${prdCodigoBloque}"
+                              data-iddensidad="${idDensidad}"
+                              data-idtipobloque="${idTipoBloque}"
+                              data-cantidadconformes="${cantidadConformes}"
+                              data-cantidadnoconformes="${cantidadNoConformes}"
+                              data-nota="${nota || ''}">
+                               <td>${no}</td>
+                               <td>${articuloText}</td>
+                               <td>${tipoFabricacionText}</td>
+                               <td>${numeroPedido || ''}</td>
+                               <td>${prdCodigoBloque}</td>
+                               <td>${densidadText}</td>
+                               <td>${tipoBloqueText}</td>
+                               <td>${cantidadConformes}</td>
+                               <td>${cantidadNoConformes}</td>
+                             
+                              
+                           </tr>`;
+
+                $('#tblDetalle > tbody').append(row);
+
+                detalleNo++;
+                $(modalId + ' #frmDetPrd')[0].reset();
+                $(modalId + ' #divNumeroPedido').hide();
+                $(modalId).modal('hide');
+            });
+
+            // Eliminar fila
+            $(document).on('click', '.btn-delete-row', function() {
+                if(confirm('¿Está seguro de eliminar este registro?')) {
+                    $(this).closest('tr').remove();
+                }
+            });
+
+            // Envío del formulario principal
+            $('#frmProduccion').submit(function(e){
+                e.preventDefault();
+                var token = $('input[name="__RequestVerificationToken"]').val();
+                
+                // Construir el viewModel
+                var viewModel = { 
+                    IdUsuarios: $('#IdUsuarios').val(), 
+                    IdMaquina: parseInt($('#IdMaquina').val()),
+                    Fecha: $('#Fecha').val(),
+                    Observaciones: $('#Observaciones').val(),
+                    DetPrdCorteP: [] 
+                };
+
+                // Recopilar datos de la tabla usando data attributes
+                $('#tblDetalle tbody tr[data-no]').each(function(){
+                    var $row = $(this);
+                    var idTipoFabricacion = parseInt($row.data('idtipofabricacion'));
+                    var numeroPedido = $row.data('numeropedido');
+                    
+                    var detalle = {
+                        No: parseInt($row.data('no')),
+                        IdArticulo: parseInt($row.data('idarticulo')),
+                        IdTipoFabricacion: idTipoFabricacion,
+                        NumeroPedido: idTipoFabricacion == 2 && numeroPedido ? parseInt(numeroPedido) : null,
+                        PrdCodigoBloque: String($row.data('prdcodigobloque')),
+                        IdDensidad: parseInt($row.data('iddensidad')),
+                        IdTipoBloque: parseInt($row.data('idtipobloque')),
+                        CantidadPiezasConformes: parseFloat($row.data('cantidadconformes')),
+                        CantidadPiezasNoConformes: parseFloat($row.data('cantidadnoconformes')),
+                        Nota: $row.data('nota')
+                    };
+                    viewModel.DetPrdCorteP.push(detalle);
+                });
+
+                // Validar que haya al menos un detalle
+                if(viewModel.DetPrdCorteP.length === 0){
+                    alert('Debe agregar al menos un detalle de producción.');
+                    return;
+                }
+                // console.log(JSON.stringify(viewModel));
+                // Enviar datos via AJAX
+                $.ajax({
+                    url: '/PrdCorteP/Create',
+                    type: 'POST',
+                    headers: {'RequestVerificationToken': token},
+                    data: JSON.stringify(viewModel),
+                    contentType: 'application/json; charset=utf-8',
+                    success: function(response){
+                        // Limpiar borrador
+                        localStorage.removeItem(DRAFT_KEY);
+                        // Desactivar el aviso de "Leave site?"
+                        window.removeEventListener('beforeunload', beforeUnloadHandler);
+                        
+                        alert('Producción guardada exitosamente!');
+                        window.location.href = '@Url.Action("Index", "Home")';
+                    },
+                    error: function(xhr, status, error){
+                        console.error('Error:', xhr.responseText);
+                        alert('Error al guardar la producción. Contacte a soporte.');
+                    }
+                });
+
+            });
+        });
+    </script>
+}

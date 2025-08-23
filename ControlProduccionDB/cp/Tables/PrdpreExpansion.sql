@@ -1,0 +1,27 @@
+﻿CREATE TABLE [cp].[PrdpreExpansion] (
+    [Id]                     INT             IDENTITY (1, 1) NOT NULL,
+    [IdTipoReporte]          INT             NULL,
+    [IdUsuarios]             NVARCHAR (MAX)  NOT NULL,
+    [IdMaquina]              INT             NOT NULL,
+    [Fecha]                  DATE            NOT NULL,
+    [HoraInicio]             TIME (7)        NOT NULL,
+    [HoraFin]                TIME (7)        NOT NULL,
+    [PresionCaldera]         NVARCHAR (150)  NULL,
+    [Lote]                   NVARCHAR (150)  NULL,
+    [FechaProduccion]        DATE            NULL,
+    [CodigoSaco]             NVARCHAR (150)  NULL,
+    [IdTipoFabricacion]      INT             NOT NULL,
+    [NumeroPedido]           INT             NULL,
+    [Observaciones]          NVARCHAR (4000) NULL,
+    [TiempoParo]             INT             NULL,
+    [IdUsuarioCreacion]      NVARCHAR (450)  NOT NULL,
+    [FechaCreacion]          DATETIME        NOT NULL,
+    [IdUsuarioActualizacion] NVARCHAR (450)  NULL,
+    [FechaActualizacion]     DATETIME        NULL,
+    [AprobadoSupervisor]     BIT             CONSTRAINT [DF_PrdpreExpansion_AprobSup] DEFAULT ((0)) NOT NULL,
+    [AprobadoGerencia]       BIT             CONSTRAINT [DF_PrdpreExpansion_AprobGer] DEFAULT ((0)) NOT NULL,
+    [IdAprobadoSupervisor]   NVARCHAR (450)  NULL,
+    [IdAprobadoGerencia]     NVARCHAR (450)  NULL,
+    CONSTRAINT [PK_PrdpreExpansion] PRIMARY KEY CLUSTERED ([Id] ASC)
+);
+

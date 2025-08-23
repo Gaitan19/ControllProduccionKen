@@ -13,6 +13,14 @@ public partial class Maquina
 
     public virtual ICollection<DetPrdBloque> DetPrdBloques { get; set; } = new List<DetPrdBloque>();
 
+    public virtual ICollection<DetPrdPchMaquinaA> DetPrdPchMaquinaAs { get; set; } = new List<DetPrdPchMaquinaA>();
+
+    public virtual ICollection<DetPrdPchMaquinaB> DetPrdPchMaquinaBs { get; set; } = new List<DetPrdPchMaquinaB>();
+
+    public virtual ICollection<DetPrdPchMaquinaC> DetPrdPchMaquinaCs { get; set; } = new List<DetPrdPchMaquinaC>();
+
+    public virtual ICollection<PrdAccesorio> PrdAccesorios { get; set; } = new List<PrdAccesorio>();
+
     public virtual ICollection<PrdCerchaCovintec> PrdCerchaCovintecs { get; set; } = new List<PrdCerchaCovintec>();
 
     public virtual ICollection<PrdCorteP> PrdCortePs { get; set; } = new List<PrdCorteP>();
@@ -24,6 +32,8 @@ public partial class Maquina
     public virtual ICollection<PrdMallaCovintec> PrdMallaCovintecs { get; set; } = new List<PrdMallaCovintec>();
 
     public virtual ICollection<PrdNevera> PrdNeveras { get; set; } = new List<PrdNevera>();
+
+    public virtual ICollection<PrdPaneladoraPch> PrdPaneladoraPches { get; set; } = new List<PrdPaneladoraPch>();
 
     public virtual ICollection<PrdPanelesCovintec> PrdPanelesCovintecs { get; set; } = new List<PrdPanelesCovintec>();
 }

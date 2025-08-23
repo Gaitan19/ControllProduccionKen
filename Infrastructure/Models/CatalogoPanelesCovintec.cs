@@ -19,6 +19,8 @@ public partial class CatalogoPanelesCovintec
 
     public virtual ICollection<DetPrdMallaCovintec> DetPrdMallaCovintecs { get; set; } = new List<DetPrdMallaCovintec>();
 
+    public virtual ICollection<DetPrdPaneladoraPch> DetPrdPaneladoraPches { get; set; } = new List<DetPrdPaneladoraPch>();
+
     public virtual ICollection<DetPrdPanelesCovintec> DetPrdPanelesCovintecs { get; set; } = new List<DetPrdPanelesCovintec>();
 
     public virtual LineaProduccion IdLineaProduccionNavigation { get; set; } = null!;

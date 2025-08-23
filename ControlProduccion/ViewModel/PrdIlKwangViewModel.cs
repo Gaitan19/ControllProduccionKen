@@ -42,6 +42,7 @@ namespace ControlProduccion.ViewModel
         public DateTime Fecha { get; set; } = DateTime.Now;
 
         [Display(Name = "Tiempo de Paro (Horas)")]
+        
         public decimal TiempoParo { get; set; }
 
         [Required(ErrorMessage = "El campo Artículo es obligatorio")]
@@ -205,7 +206,13 @@ namespace ControlProduccion.ViewModel
 
         [Display(Name = "Cantidad de Arranques")]
         public int CantidadArranques { get; set; }
+        [Display(Name = "Metros Inicial Poliol")]
+        [Required(ErrorMessage = "El campo {0} es obligatorio")]
+        public int MetrosInicialPoliol { get; set; }
 
+        [Display(Name = "Metros Inicial Isocianato")]
+        [Required(ErrorMessage = "El campo {0} es obligatorio")]
+        public int MetrosInicialIsocianato { get; set; }
         public string? IdUsuarioCreacion { get; set; } = string.Empty;
         public DateTime? FechaCreacion { get; set; } = DateTime.Now;
         public string? IdUsuarioActualizacion { get; set; }

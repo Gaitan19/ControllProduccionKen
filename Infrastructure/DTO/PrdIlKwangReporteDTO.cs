@@ -86,6 +86,8 @@ namespace Infrastructure.DTO
         //public DateTime FechaCreacion { get; set; }
         //public DateTime? FechaActualizacion { get; set; }
         // Detalles
+        public int? MetroInicialPoliol { get; set; }
+        public int? MetroInicialIsocianato { get; set; }
         public List<DetalleIlKwangDto> DetallesProduccion { get; set; } = new List<DetalleIlKwangDto>();
     }
 

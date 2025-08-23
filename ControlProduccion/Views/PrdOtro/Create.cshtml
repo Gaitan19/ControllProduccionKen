@@ -355,6 +355,8 @@
                 }
             }
 
+
+
             // Crear la nueva fila a insertar en la tabla,
             // se incluyen celdas visibles y celdas ocultas para guardar los id´s
             var newRow = "<tr>" +
@@ -365,8 +367,8 @@
                 "<td>" + nota + "</td>" +
                 "<td>" + merma + "</td>" +
                 "<td>" + comentario + "</td>" +
-                "<td>" + horaInicio + "</td>" +
-                "<td>" + horaFin + "</td>" +
+                "<td>" + to12h(horaInicio) + "</td>" +
+                "<td>" +to12h(horaFin)  + "</td>" +
                 "<td style='display:none;'>" + idTipoFabricacion + "</td>" +
                 "</tr>";
 
@@ -413,8 +415,8 @@
                     Nota: $(this).find("td:eq(4)").text(),
                     Merma: $(this).find("td:eq(5)").text(),
                     Comentario: $(this).find("td:eq(6)").text(),
-                    HoraInicio: $(this).find("td:eq(7)").text(),
-                    HoraFin: $(this).find("td:eq(8)").text()
+                    HoraInicio:to24h($(this).find("td:eq(7)").text()) ,
+                    HoraFin: to24h($(this).find("td:eq(8)").text())
                 };
                 viewModel.DetPrdOtros.push(detalle);
             });
@@ -444,6 +446,37 @@
                 }
             });
         });
+
+
+
+                function to24h(str) {
+            if (!str) return "";
+            const m = String(str).trim().match(/^(\d{1,2}):(\d{2})(?::(\d{2}))?\s*(AM|PM)?$/i);
+            if (!m) return str; // ya podría venir "HH:mm"
+            let h = parseInt(m[1], 10), min = parseInt(m[2], 10), sec = m[3] ? parseInt(m[3], 10) : 0;
+            const ap = m[4] ? m[4].toUpperCase() : null;
+            if (ap === "AM" && h === 12) h = 0;
+            if (ap === "PM" && h < 12) h += 12;
+            const hh = ('0' + h).slice(-2);
+            const mm = ('0' + min).slice(-2);
+            const ss = ('0' + sec).slice(-2);
+            return `${hh}:${mm}:${ss}`;
+        }
+        function to12h(hhmmss) {
+            if (!hhmmss) return "";
+            const parts = String(hhmmss).split(':');
+            let h = parseInt(parts[0],10);
+            const m = parseInt(parts[1],10) || 0;
+            const ap = h >= 12 ? 'PM' : 'AM';
+            h = (h % 12) || 12;
+            const hh = ('0' + h).slice(-2);
+            const mm = ('0' + m).slice(-2);
+            return `${hh}:${mm} ${ap}`;
+        }
+        function minutesOf(hhmmss) {
+            const [h, m] = String(hhmmss).split(':');
+            return parseInt(h,10)*60 + parseInt(m,10);
+        }
 
     </script>
 

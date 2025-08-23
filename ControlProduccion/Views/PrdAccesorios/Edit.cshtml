@@ -1,0 +1,650 @@
+@using ControlProduccion.ViewModel;
+@model PrdAccesorioViewModel;
+@{
+    ViewData["Title"] = "Editar Producción Accesorios";
+}
+
+<div class="col-md-8 offset-md-2">
+    <div class="ibox ">
+        <div class="ibox-title">
+            <h5>@ViewData["Title"] - #@Model.Id</h5>
+        </div>
+        <div class="ibox-content">
+            <form id="frmProduccion" method="post" asp-action="Edit" autocomplete="off">
+                @Html.AntiForgeryToken()
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+                <input type="hidden" asp-for="Id" />
+                
+                @if (Model.AprobadoGerencia == true)
+                {
+                    <div class="alert alert-success">
+                        <i class="fa fa-check"></i> Esta producción ha sido aprobada y no puede ser modificada.
+                    </div>
+                }
+
+                <div class="form-group">
+                    <label asp-for="IdUsuarios"></label>
+                    @if (Model.AprobadoGerencia == true)
+                    {
+                        <select id="IdUsuarios" multiple name="IdUsuarios" asp-for="IdUsuarios" class="form-control select2" asp-items="Model.Operarios" disabled>
+                        </select>
+                    }
+                    else
+                    {
+                        <select id="IdUsuarios" multiple name="IdUsuarios" asp-for="IdUsuarios" class="form-control select2" asp-items="Model.Operarios">
+                        </select>
+                    }
+                    <span asp-validation-for="IdUsuarios" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="IdMaquina"></label>
+                    @if (Model.AprobadoGerencia == true)
+                    {
+                        <select id="IdMaquina" name="IdMaquina" asp-for="IdMaquina" class="form-control select2" asp-items="Model.Maquinas" disabled>
+                            <option>- Seleccione una máquina -</option>
+                        </select>
+                    }
+                    else
+                    {
+                        <select id="IdMaquina" name="IdMaquina" asp-for="IdMaquina" class="form-control select2" asp-items="Model.Maquinas">
+                            <option>- Seleccione una máquina -</option>
+                        </select>
+                    }
+                    <span asp-validation-for="IdMaquina" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Fecha"></label>
+                    @if (Model.AprobadoGerencia == true)
+                    {
+                        <input asp-for="Fecha" class="form-control" readonly />
+                    }
+                    else
+                    {
+                        <input asp-for="Fecha" class="form-control" />
+                    }
+                    <span asp-validation-for="Fecha" class="text-danger"></span>
+                </div>
+
+                <!-- Campos de Merma -->
+                <div class="hr-line-dashed"></div>
+                <h4>Mermas</h4>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label asp-for="MermaMallaCovintecKg"></label>
+                            @if (Model.AprobadoGerencia == true)
+                            {
+                                <input asp-for="MermaMallaCovintecKg" class="form-control validarUnDecimal" readonly />
+                            }
+                            else
+                            {
+                                <input asp-for="MermaMallaCovintecKg" class="form-control validarUnDecimal" />
+                            }
+                            <span asp-validation-for="MermaMallaCovintecKg" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label asp-for="MermaMallaPchKg"></label>
+                            @if (Model.AprobadoGerencia == true)
+                            {
+                                <input asp-for="MermaMallaPchKg" class="form-control validarUnDecimal" readonly />
+                            }
+                            else
+                            {
+                                <input asp-for="MermaMallaPchKg" class="form-control validarUnDecimal" />
+                            }
+                            <span asp-validation-for="MermaMallaPchKg" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label asp-for="MermaBobinasKg"></label>
+                            @if (Model.AprobadoGerencia == true)
+                            {
+                                <input asp-for="MermaBobinasKg" class="form-control validarUnDecimal" readonly />
+                            }
+                            else
+                            {
+                                <input asp-for="MermaBobinasKg" class="form-control validarUnDecimal" />
+                            }
+                            <span asp-validation-for="MermaBobinasKg" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label asp-for="MermaLitewallKg"></label>
+                            @if (Model.AprobadoGerencia == true)
+                            {
+                                <input asp-for="MermaLitewallKg" class="form-control validarUnDecimal" readonly />
+                            }
+                            else
+                            {
+                                <input asp-for="MermaLitewallKg" class="form-control validarUnDecimal" />
+                            }
+                            <span asp-validation-for="MermaLitewallKg" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="hr-line-dashed"></div>
+                <div class="form-group row">
+                    <div class="col-sm-12" style="max-height: 400px; overflow: scroll">
+                        <h4>Detalle Producción</h4>
+
+                        <table id="tblProduccion" class="table table-bordered table-hover">
+                            <thead class="table-light">
+                                <tr>
+                                    <th style="display:none" data-field="id">Id</th>
+                                    <th data-field="no">No.</th>
+                                    <th data-field="tipoarticulo">Tipo Artículo</th>
+                                    <th data-field="articulo">Artículo</th>
+                                    <th data-field="tipoFabricacion">Tipo Fabricación</th>
+                                    <th data-field="numeroPedido">No. Pedido</th>
+                                    <th data-field="mallaCovintec">Malla Covintec</th>
+                                    <th data-field="cantidadMallaUn">Cant. Malla (Un)</th>
+                                    <th data-field="tipoMallaPch">Tipo Malla PCH</th>
+                                    <th data-field="cantidadPchKg">Cant. PCH (Kg)</th>
+                                    <th data-field="anchoBobina">Ancho Bobina</th>
+                                    <th data-field="cantidadBobinaKg">Cant. Bobina (Kg)</th>
+                                    <th data-field="calibre">Calibre</th>
+                                    <th data-field="cantidadCalibreKg">Cant. Calibre (Kg)</th>
+                              
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model.DetPrdAccesorios != null)
+                                {
+                                    int counter = 1;
+                                    @foreach (var detalle in Model.DetPrdAccesorios)
+                                    {
+                                        <tr>
+                                            <td style="display:none" data-field="id">@detalle.DetPrdAccesorioId</td>
+                                            @if (Model.AprobadoGerencia != true)
+                                            {
+                                                <td data-field="no"><a href="#" class="open-modal">@counter</a></td>
+                                            }
+                                            else
+                                            {
+                                                <td data-field="no"><a>@counter</a></td>
+                                            }
+                                            <td data-field="tipoarticulo">@detalle.TipoArticulo</td>
+                                            <td data-field="articulo">@detalle.Articulo</td>
+                                            <td data-field="tipoFabricacion">@detalle.TipoFabricacion</td>
+                                            <td data-field="numeroPedido">@detalle.NumeroPedido</td>
+                                            <td data-field="mallaCovintec">@detalle.MallaCovintec</td>
+                                            <td data-field="cantidadMallaUn">@detalle.CantidadMallaUn</td>
+                                            <td data-field="tipoMallaPch">@detalle.TipoMallaPch</td>
+                                            <td data-field="cantidadPchKg">@detalle.CantidadPchKg</td>
+                                            <td data-field="anchoBobina">@detalle.AnchoBobina</td>
+                                            <td data-field="cantidadBobinaKg">@detalle.CantidadBobinaKg</td>
+                                            <td data-field="calibre">@detalle.Calibre</td>
+                                            <td data-field="cantidadCalibreKg">@detalle.CantidadCalibreKg</td>
+                                           
+
+                                            <td style='display:none;' data-field="idTipoArticulo">@detalle.IdTipoArticulo</td>
+                                            <td style='display:none;' data-field="idArticulo">@detalle.IdArticulo</td>
+                                            <td style='display:none;' data-field="idTipoFabricacion">@detalle.IdTipoFabricacion</td>
+                                            <td style='display:none;' data-field="idMallaCovintec">@detalle.IdMallaCovintec</td>
+                                            <td style='display:none;' data-field="idTipoMallaPch">@detalle.IdTipoMallaPch</td>
+                                            <td style='display:none;' data-field="idAnchoBobina">@detalle.IdAnchoBobina</td>
+                                            <td style='display:none;' data-field="idCalibre">@detalle.IdCalibre</td>
+                                        </tr>
+                                        counter++;
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Observaciones"></label>
+                    @if (Model.AprobadoGerencia == true)
+                    {
+                        <textarea asp-for="Observaciones" class="form-control" readonly></textarea>
+                    }
+                    else
+                    {
+                        <textarea asp-for="Observaciones" class="form-control"></textarea>
+                    }
+                    <span asp-validation-for="Observaciones" class="text-danger"></span>
+                </div>
+
+                <button type="button" class="btn btn-dark" onclick="location.href='@Url.Action("Index", "PrdAccesorios")'">Regresar</button>
+                @if (Model.AprobadoGerencia != true)
+                {
+                    <button type="submit" class="btn btn-primary">Actualizar</button>
+                }
+
+                @if (User.IsInRole("JefeProduccion") && Model.AprobadoGerencia != true)
+                {
+                    <button id="btnAprobarPrd" type="button" class="btn btn-success" onclick="validar(@Model.Id)">Aprobar</button>
+                }
+                else if (Model.AprobadoGerencia == true)
+                {
+                    <button type="button" class="btn btn-success">Aprobado</button>
+                }
+            </form>
+
+            @* Modal para editar detalle prd *@
+            @if (Model.AprobadoGerencia != true)
+            {
+                <div id="modal-Detalle" class="modal fade" aria-hidden="true">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-body">
+                                <form id="frmDetPrd">
+                                    <input type="hidden" id="DetPrdAccesorioId" name="DetPrdAccesorioId" />
+                                    <input type="hidden" id="PrdAccesoriosId" name="PrdAccesoriosId" />
+
+                                    <h3>Editar Detalle</h3>
+                                    <hr />
+
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label class="form-label">Tipo de Artículo <span class="text-danger">*</span></label>
+                                                <select id="IdTipoArticulo" name="IdTipoArticulo" class="form-control" asp-items="Model.TiposArticulo">
+                                                    <option value="">-- Seleccione --</option>
+                                                </select>
+                                                <span class="text-danger"></span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label class="form-label">Artículo <span class="text-danger">*</span></label>
+                                                <select id="IdArticulo" name="IdArticulo" class="form-control" asp-items="Model.Articulos">
+                                                    <option value="">-- Seleccione --</option>
+                                                </select>
+                                                <span class="text-danger"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label class="form-label">Tipo de Fabricación <span class="text-danger">*</span></label>
+                                                <select id="IdTipoFabricacion" name="IdTipoFabricacion" class="form-control" asp-items="Model.TiposFabricacion">
+                                                    <option value="">-- Seleccione --</option>
+                                                </select>
+                                                <span class="text-danger"></span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="mb-3" id="divNumeroPedido" style="display:none">
+                                                <label for="NumeroPedido" class="form-label">Número Pedido</label>
+                                                <input oninput="this.value = this.value.replace(/[^0-9]/g, '');" type="number" id="NumeroPedido" name="NumeroPedido" class="form-control" value="" min="0" />
+                                                <span class="text-danger"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label class="form-label">Malla Covintec</label>
+                                                <select id="IdMallaCovintec" name="IdMallaCovintec" class="form-control" asp-items="Model.MallasCovintec">
+                                                    <option value="">-- Seleccione --</option>
+                                                </select>
+                                                <span class="text-danger"></span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label class="form-label">Cantidad Malla (Un)</label>
+                                                <input type="number" min="0" id="CantidadMallaUn" name="CantidadMallaUn" class="form-control" />
+                                                <span class="text-danger"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label class="form-label">Tipo Malla PCH</label>
+                                                <select id="IdTipoMallaPch" name="IdTipoMallaPch" class="form-control" asp-items="Model.TiposMallaPch">
+                                                    <option value="">-- Seleccione --</option>
+                                                </select>
+                                                <span class="text-danger"></span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label class="form-label">Cantidad PCH (Kg)</label>
+                                                <input type="text" id="CantidadPchKg" name="CantidadPchKg" class="form-control validarUnDecimal" />
+                                                <span class="text-danger"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label class="form-label">Ancho Bobina</label>
+                                                <select id="IdAnchoBobina" name="IdAnchoBobina" class="form-control" asp-items="Model.AnchosBobina">
+                                                    <option value="">-- Seleccione --</option>
+                                                </select>
+                                                <span class="text-danger"></span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label class="form-label">Cantidad Bobina (Kg)</label>
+                                                <input type="text" id="CantidadBobinaKg" name="CantidadBobinaKg" class="form-control validarUnDecimal" />
+                                                <span class="text-danger"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label class="form-label">Calibre</label>
+                                                <select id="IdCalibre" name="IdCalibre" class="form-control" asp-items="Model.Calibres">
+                                                    <option value="">-- Seleccione --</option>
+                                                </select>
+                                                <span class="text-danger"></span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label class="form-label">Cantidad Calibre (Kg)</label>
+                                                <input type="text" id="CantidadCalibreKg" name="CantidadCalibreKg" class="form-control validarUnDecimal" />
+                                                <span class="text-danger"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                             
+                                </form>
+
+                                <button id="btnGuardarDetPrd" type="button" class="btn btn-primary">Actualizar</button>
+                                <button type="button" class="btn btn-dark" data-dismiss="modal">Cancelar</button>
+                                <br />
+                                <p id="spnbtnGuardarDetPrd" class="text-sm text-danger"></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        function validarUnDecimal(input) {
+            let valor = input.value.replace(/[^0-9.]/g, '');
+            let partes = valor.split('.');
+            if (partes.length > 2) valor = partes[0] + '.' + partes[1];
+            if (valor.includes('.')) {
+                let [entero, decimal] = valor.split('.');
+                valor = entero + '.' + decimal.substring(0, 2);
+            }
+            input.value = valor;
+        }
+
+        $(document).ready(function () {
+            // Select2 básicos
+            $("#IdUsuarios").select2({ placeholder: "- Selecciona los operarios -", allowClear: true });
+            $("#IdMaquina").select2({ placeholder: "- Seleccione una máquina -", allowClear: true });
+
+            $('.validarUnDecimal').on('input', function () { validarUnDecimal(this); });
+
+            // Carga dependiente de artículos
+            function loadArticulosByTipo(tipoId, selectedArticuloId) {
+                $('#IdArticulo').empty().append('<option value="">-- Seleccione --</option>');
+                if (!tipoId) return $.Deferred().resolve().promise();
+
+                return $.getJSON('@Url.Action("GetArticulosByTipo", "PrdAccesorios")', { idTipoArticulo: tipoId })
+                    .done(function (data) {
+                        $.each(data, function (i, item) {
+                            $('#IdArticulo').append($('<option>', { value: item.id, text: item.texto }));
+                        });
+                        if (selectedArticuloId) {
+                            $('#IdArticulo').val(selectedArticuloId).trigger('change');
+                        }
+                    });
+            }
+
+            // Mostrar/ocultar por tipo de artículo (sin limpiar valores al abrir)
+            const TIPO_ART = { PCH: '25', COVINTEC: '26', ISO: '27', LITEWALL: '28' };
+
+            function rowOf(sel) { return $('#modal-Detalle ' + sel).closest('.row'); }
+            function hideAllTipoRows() {
+                [rowOf('#IdMallaCovintec'), rowOf('#IdTipoMallaPch'), rowOf('#IdAnchoBobina'), rowOf('#IdCalibre')].forEach($r => $r.hide());
+            }
+            function clearRow($row) {
+                $row.find('input[type="text"], input[type="number"]').val('');
+                $row.find('select').val(null).trigger('change');
+            }
+            function showOnlyRow($row, shouldClear) {
+                hideAllTipoRows();
+                if (shouldClear) clearRow($row);
+                $row.show();
+            }
+            function applyTipoArticulo(tipoVal, shouldClear = false) {
+                switch (tipoVal) {
+                    case TIPO_ART.COVINTEC: showOnlyRow(rowOf('#IdMallaCovintec'), shouldClear); break;
+                    case TIPO_ART.PCH:      showOnlyRow(rowOf('#IdTipoMallaPch'), shouldClear); break;
+                    case TIPO_ART.ISO:      showOnlyRow(rowOf('#IdAnchoBobina'), shouldClear); break;
+                    case TIPO_ART.LITEWALL: showOnlyRow(rowOf('#IdCalibre'), shouldClear); break;
+                    default: hideAllTipoRows(); break;
+                }
+            }
+
+            // Abrir modal desde la tabla (edición de fila)
+            $("#tblProduccion").on("click", ".open-modal", function (e) {
+                e.preventDefault();
+                var $row = $(this).closest("tr");
+
+                var id = $row.find("td[data-field='id']").text().trim();
+                var idTipoArticulo = $row.find("td[data-field='idTipoArticulo']").text().trim();
+                var idArticulo = $row.find("td[data-field='idArticulo']").text().trim();
+                var idTipoFabricacion = $row.find("td[data-field='idTipoFabricacion']").text().trim();
+                var numeroPedido = $row.find("td[data-field='numeroPedido']").text().trim();
+                var idMallaCovintec = $row.find("td[data-field='idMallaCovintec']").text().trim();
+                var cantidadMallaUn = $row.find("td[data-field='cantidadMallaUn']").text().trim();
+                var idTipoMallaPch = $row.find("td[data-field='idTipoMallaPch']").text().trim();
+                var cantidadPchKg = $row.find("td[data-field='cantidadPchKg']").text().trim();
+                var idAnchoBobina = $row.find("td[data-field='idAnchoBobina']").text().trim();
+                var cantidadBobinaKg = $row.find("td[data-field='cantidadBobinaKg']").text().trim();
+                var idCalibre = $row.find("td[data-field='idCalibre']").text().trim();
+                var cantidadCalibreKg = $row.find("td[data-field='cantidadCalibreKg']").text().trim();
+
+                // Setear IDs base
+                $("#DetPrdAccesorioId").val(id);
+                $("#PrdAccesoriosId").val(@Model.Id);
+                $("#IdTipoArticulo").val(idTipoArticulo);
+                $("#IdTipoFabricacion").val(idTipoFabricacion);
+                $("#NumeroPedido").val(numeroPedido);
+
+                // Poblar Artículos y seleccionar el actual
+                $.when(loadArticulosByTipo(idTipoArticulo, idArticulo)).always(function () {
+                    // Resto de campos específicos
+                    $("#IdMallaCovintec").val(idMallaCovintec);
+                    $("#CantidadMallaUn").val(cantidadMallaUn);
+                    $("#IdTipoMallaPch").val(idTipoMallaPch);
+                    $("#CantidadPchKg").val(cantidadPchKg);
+                    $("#IdAnchoBobina").val(idAnchoBobina);
+                    $("#CantidadBobinaKg").val(cantidadBobinaKg);
+                    $("#IdCalibre").val(idCalibre);
+                    $("#CantidadCalibreKg").val(cantidadCalibreKg);
+
+                    // Mostrar/ocultar número de pedido
+                    if (idTipoFabricacion === "2") { $("#divNumeroPedido").show(); } else { $("#divNumeroPedido").hide(); }
+
+                    // Abrir modal
+                    $("#modal-Detalle").modal("show");
+                });
+            });
+
+            // Inicializar Select2 del modal y aplicar lógica al mostrarlo
+            $(document).on('shown.bs.modal', '#modal-Detalle', function () {
+                var $modal = $(this);
+                var $selects = $modal.find('#IdTipoArticulo, #IdArticulo, #IdTipoFabricacion, #IdMallaCovintec, #IdTipoMallaPch, #IdAnchoBobina, #IdCalibre');
+
+                $selects.each(function () {
+                    if ($(this).hasClass('select2-hidden-accessible')) $(this).select2('destroy');
+                });
+                $selects.each(function () {
+                    var placeholder = $(this).find('option[value=""]').text() || 'Seleccione...';
+                    $(this).select2({ dropdownParent: $modal.find('.modal-content'), allowClear: true, width: '100%', placeholder });
+                });
+
+                // Aplicar visibilidad según el tipo actualmente seteado (sin limpiar)
+                applyTipoArticulo($('#IdTipoArticulo').val(), false);
+            });
+
+            // Cambio de Tipo de Artículo dentro del modal
+            $(document).on('change', '#modal-Detalle #IdTipoArticulo', function () {
+                var tipoId = $(this).val();
+                loadArticulosByTipo(tipoId, null);
+                applyTipoArticulo(tipoId, true); // limpiar al cambiar manualmente
+            });
+
+            // Cambio de Tipo de Fabricación: mostrar/ocultar Número de Pedido
+            $(document).on('change', '#modal-Detalle #IdTipoFabricacion', function () {
+                if ($(this).val() === "2") { $("#divNumeroPedido").show(); } else { $("#divNumeroPedido").hide(); $("#NumeroPedido").val(''); }
+            });
+
+            // Guardar detalle editado (igual que tenías)
+            $("#btnGuardarDetPrd").click(function (e) {
+                e.preventDefault();
+                var token = $("#frmProduccion").find("input[name='__RequestVerificationToken']").val();
+                var formData = $("#frmDetPrd").serialize();
+
+                $.ajax({
+                    url: '@Url.Action("EditDetPrd", "PrdAccesorios")',
+                    type: 'POST',
+                    data: formData,
+                    headers: { "RequestVerificationToken": token },
+                    success: function (response) {
+                        if (response.success) {
+                            alert(response.message);
+                            $("#modal-Detalle").modal("hide");
+                            location.reload();
+                        } else {
+                            alert("Error: " + response.message);
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error(xhr.responseText);
+                        alert("Ocurrió un error en la solicitud: " + error);
+                    }
+                });
+            });
+
+            // Aprobar (igual que tenías)
+            function validar(id) {
+                if (confirm("¿Está seguro de que desea Aprobar esta producción?")) {
+                    var token = $("#frmProduccion").find("input[name='__RequestVerificationToken']").val();
+                    $.ajax({
+                        url: '@Url.Action("AprobarPrd", "PrdAccesorios")',
+                        type: 'POST',
+                        data: { id: id },
+                        headers: { "RequestVerificationToken": token },
+                        success: function (response) {
+                            if (response) { alert("Producción Aprobada exitosamente."); location.reload(); }
+                            else { alert("Error al Aprobar la producción, contacte a soporte."); }
+                        },
+                        error: function (xhr, status, error) {
+                            console.error("Error en la solicitud de aprobación:", xhr.responseText);
+                            alert("Error al procesar la solicitud: " + error);
+                        }
+                    });
+                }
+            }
+            window.validar = validar;
+
+            // Submit del form principal (igual que tenías)
+            $('#frmProduccion').on('submit', function (e) {
+                e.preventDefault();
+                var token = $('input[name="__RequestVerificationToken"]').val();
+                var viewModel = {
+                    Id: parseInt($('#Id').val()),
+                    IdUsuarios: $('#IdUsuarios').val(),
+                    IdMaquina: parseInt($('#IdMaquina').val()),
+                    Fecha: $('#Fecha').val(),
+                    MermaMallaCovintecKg: $('#MermaMallaCovintecKg').val() ? parseFloat($('#MermaMallaCovintecKg').val()) : null,
+                    MermaMallaPchKg: $('#MermaMallaPchKg').val() ? parseFloat($('#MermaMallaPchKg').val()) : null,
+                    MermaBobinasKg: $('#MermaBobinasKg').val() ? parseFloat($('#MermaBobinasKg').val()) : null,
+                    MermaLitewallKg: $('#MermaLitewallKg').val() ? parseFloat($('#MermaLitewallKg').val()) : null,
+                    Observaciones: $('#Observaciones').val()
+                };
+
+                $.ajax({
+                    url: '@Url.Action("Edit", "PrdAccesorios")',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(viewModel),
+                    headers: { 'RequestVerificationToken': token },
+                    success: function (response) {
+                        if (response.success) {
+                            alert(response.message);
+                            window.location.href = '@Url.Action("Index", "PrdAccesorios")';
+                        } else {
+                            alert('Error: ' + (response.message || 'Error desconocido'));
+                        }
+                    },
+                    error: function (xhr) {
+                        if (xhr.status === 400 && xhr.responseJSON && xhr.responseJSON.errors) {
+                            var errors = xhr.responseJSON.errors;
+                            var errorMessage = 'Errores de validación:\n';
+                            for (var field in errors) { errorMessage += '- ' + errors[field].join(', ') + '\n'; }
+                            alert(errorMessage);
+                        } else {
+                            alert('Error al actualizar la producción');
+                        }
+                    }
+                });
+            });
+        });
+
+
+                function hydrateArticuloColumn() {
+          var grupos = {}; // { tipoId: [{ row: jQuery<tr>, artId: "123" }, ...] }
+
+          $('#tblProduccion tbody tr').each(function () {
+            var $row = $(this);
+            // si ya tiene texto, no tocar
+            if ($row.find("td[data-field='articulo']").text().trim()) return;
+
+            var tipoId = $row.find("td[data-field='idTipoArticulo']").text().trim();
+            var artId  = $row.find("td[data-field='idArticulo']").text().trim();
+
+            if (!tipoId || !artId) return;
+            (grupos[tipoId] = grupos[tipoId] || []).push({ row: $row, artId: String(artId) });
+          });
+
+          var requests = Object.keys(grupos).map(function (tipoId) {
+            return $.getJSON('@Url.Action("GetArticulosByTipo", "PrdAccesorios")', { idTipoArticulo: tipoId })
+              .done(function (data) {
+                var dict = {};
+                (data || []).forEach(function (it) { dict[String(it.id)] = it.texto; });
+
+                grupos[tipoId].forEach(function (x) {
+                  var nombre = dict[x.artId] || '';
+                  x.row.find("td[data-field='articulo']").text(nombre);
+                });
+              });
+          });
+
+          if (requests.length) { $.when.apply($, requests); }
+        }
+
+        // Llamar al cargar la página (después de que se pinte la tabla)
+        hydrateArticuloColumn();
+
+    </script>
+
+}

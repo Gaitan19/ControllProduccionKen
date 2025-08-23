@@ -1,0 +1,25 @@
+﻿CREATE TABLE [cp].[DetPrdPaneladoraPch] (
+    [Id]                     INT             IDENTITY (1, 1) NOT NULL,
+    [PrdPaneladoraPchId]     INT             NOT NULL,
+    [IdArticulo]             INT             NOT NULL,
+    [Longitud]               DECIMAL (18, 2) NOT NULL,
+    [CantidadProducida]      INT             NOT NULL,
+    [CantidadNoConforme]     INT             NOT NULL,
+    [Mts2PorPanel]           DECIMAL (10, 1) NOT NULL,
+    [IdTipoFabricacion]      INT             NOT NULL,
+    [NumeroPedido]           INT             NULL,
+    [NumeroAlambre]          INT             NOT NULL,
+    [PesoAlambreKg]          DECIMAL (18, 1) NOT NULL,
+    [MermaAlambreKg]         DECIMAL (18, 1) NOT NULL,
+    [IdUsuarioCreacion]      NVARCHAR (450)  NOT NULL,
+    [FechaCreacion]          DATETIME        NOT NULL,
+    [IdUsuarioActualizacion] NVARCHAR (450)  NULL,
+    [FechaActualizacion]     DATETIME        NULL,
+    CONSTRAINT [PK_DetPrdPaneladoraPch] PRIMARY KEY CLUSTERED ([Id] ASC),
+    CONSTRAINT [FK_cp_DetPrdPaneladoraPch_CatPanelesCovintec] FOREIGN KEY ([IdArticulo]) REFERENCES [cp].[CatalogoPanelesCovintec] ([Id]),
+    CONSTRAINT [FK_cp_DetPrdPaneladoraPch_PrdPaneladoraPch] FOREIGN KEY ([PrdPaneladoraPchId]) REFERENCES [cp].[PrdPaneladoraPch] ([Id]) ON DELETE CASCADE,
+    CONSTRAINT [FK_cp_DetPrdPaneladoraPch_TipoFabricacion] FOREIGN KEY ([IdTipoFabricacion]) REFERENCES [cp].[TipoFabricacion] ([Id]),
+    CONSTRAINT [FK_DetPrdPaneladoraPch_CatalogoPanelesPCH] FOREIGN KEY ([IdArticulo]) REFERENCES [cp].[CatalogoPanelesPCH] ([Id]),
+    CONSTRAINT [FK_DetPrdPaneladoraPch_TipoFabricacion] FOREIGN KEY ([IdTipoFabricacion]) REFERENCES [cp].[TipoFabricacion] ([Id])
+);
+

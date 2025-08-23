@@ -1,0 +1,257 @@
+﻿@using Infrastructure.DTO
+@model IEnumerable<PrdPaneladoraPchReporteDTO>
+
+@{
+    ViewData["Title"] = "Reporte Producción Paneladora PCH";
+    Layout = null; // For printing
+}
+@* otro ejemplo de otra forma de reporte. *@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f6f8fa;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            width: 95%;
+            margin: 20px auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 6px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #333;
+        }
+
+        .report-header {
+            border-collapse: collapse;
+            width: 100%;
+            margin-bottom: 25px;
+        }
+
+            .report-header thead th {
+                background-color: #f2f2f2;
+                text-transform: uppercase;
+                font-weight: bold;
+                padding: 10px;
+                text-align: left;
+                border: 1px solid #e1e1e1;
+            }
+
+            .report-header td {
+                border: 1px solid #e1e1e1;
+                padding: 8px;
+                vertical-align: top;
+            }
+
+        .details-table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-top: 10px;
+            font-size: 0.9em;
+        }
+
+            .details-table th,
+            .details-table td {
+                border: 1px solid #ddd;
+                padding: 6px;
+                text-align: left;
+            }
+
+            .details-table th {
+                background-color: #f9f9f9;
+                font-weight: bold;
+            }
+
+            .details-table tbody tr:nth-child(even) {
+                background-color: #f9f9f9;
+            }
+
+        .production-summary {
+            background-color: #e8f4f8;
+            padding: 10px;
+            margin-bottom: 20px;
+            border-left: 4px solid #2196F3;
+        }
+
+        .status-badge {
+            padding: 3px 8px;
+            border-radius: 3px;
+            font-size: 0.8em;
+            font-weight: bold;
+            color: white;
+        }
+
+        .status-approved {
+            background-color: #4CAF50;
+        }
+
+        .status-pending {
+            background-color: #FF9800;
+        }
+
+        .text-right {
+            text-align: right;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        @@media print {
+            .container {
+                box-shadow: none;
+                margin: 0;
+                width: 100%;
+            }
+
+            .no-print {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>@ViewData["Title"]</h1>
+
+        <div class="no-print" style="margin-bottom: 20px; text-align: center;">
+            <button onclick="window.print()" class="btn btn-primary">
+                🖨️ Imprimir Reporte
+            </button>
+            <button onclick="window.close()" class="btn btn-secondary">
+                ❌ Cerrar
+            </button>
+        </div>
+
+        @if (Model != null && Model.Any())
+        {
+            <div class="production-summary">
+                <h3>Resumen de Producción</h3>
+                <p><strong>Total de registros:</strong> @Model.Count()</p>
+                <p><strong>Producción total:</strong> @Model.Sum(x => x.ProduccionDia ?? 0).ToString("N2") Mts²</p>
+                <p><strong>Tiempo de paro total:</strong> @Model.Sum(x => x.TiempoParo ?? 0).ToString("N2") horas</p>
+            </div>
+
+            @foreach (var produccion in Model.OrderBy(p => p.Fecha).ThenBy(p => p.Id))
+            {
+                <table class="report-header">
+                    <thead>
+                        <tr>
+                            <th colspan="6">Producción ID: @produccion.Id - Fecha: @produccion.Fecha.ToString("yyyy-MM-dd")</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Operarios:</strong></td>
+                            <td>@produccion.Operarios</td>
+                            <td><strong>Máquina:</strong></td>
+                            <td>@produccion.Maquina</td>
+                            <td><strong>Producción del día:</strong></td>
+                            <td class="text-right">@(produccion.ProduccionDia?.ToString("N2") ?? "0.00") Mts²</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Tiempo de Paro:</strong></td>
+                            <td>@(produccion.TiempoParo?.ToString("N2") ?? "0.00") horas</td>
+                            <td><strong>Validado por:</strong></td>
+                            <td>@(produccion.Supervisor ?? "Pendiente")</td>
+                            <td><strong>Aprobado por:</strong></td>
+                            <td>@(produccion.JefeProd ?? "Pendiente")</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Estado:</strong></td>
+                            <td colspan="2">
+                                <span class="status-badge @(produccion.AprobadoSupervisor ? "status-approved" : "status-pending")">
+                                    @(produccion.AprobadoSupervisor ? "Validado" : "Pendiente Validación")
+                                </span>
+                                <span class="status-badge @(produccion.AprobadoGerencia ? "status-approved" : "status-pending")">
+                                    @(produccion.AprobadoGerencia ? "Aprobado" : "Pendiente Aprobación")
+                                </span>
+                            </td>
+                            <td><strong>Observaciones:</strong></td>
+                            <td colspan="2">@(produccion.Observaciones ?? "N/A")</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                @if (produccion.Detalles != null && produccion.Detalles.Any())
+                {
+                    <table class="details-table">
+                        <thead>
+                            <tr>
+                                <th>Artículo</th>
+                                <th>Longitud (mts)</th>
+                                <th>Cant. Producida</th>
+                                <th>Cant. No Conforme</th>
+                                <th>Mts² por Panel</th>
+                                <th>Total Mts²</th>
+                                <th>Tipo Fabricación</th>
+                                <th>N° Pedido</th>
+                                <th>N° Alambre</th>
+                                <th>Peso Alambre (kg)</th>
+                                <th>Merma Alambre (kg)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var detalle in produccion.Detalles)
+                            {
+                                <tr>
+                                    <td>@detalle.Articulo</td>
+                                    <td class="text-right">@detalle.Longitud.ToString("N2")</td>
+                                    <td class="text-center">@detalle.CantidadProducida</td>
+                                    <td class="text-center">@detalle.CantidadNoConforme</td>
+                                    <td class="text-right">@detalle.Mts2PorPanel.ToString("N2")</td>
+                                    <td class="text-right">@((detalle.Mts2PorPanel * detalle.CantidadProducida).ToString("N2"))</td>
+                                    <td>@detalle.TipoFabricacion</td>
+                                    <td class="text-center">@(detalle.NumeroPedido?.ToString() ?? "-")</td>
+                                    <td class="text-center">@detalle.NumeroAlambre</td>
+                                    <td class="text-right">@detalle.PesoAlambreKg.ToString("N2")</td>
+                                    <td class="text-right">@detalle.MermaAlambreKg.ToString("N2")</td>
+                                </tr>
+                            }
+                        </tbody>
+                        <tfoot>
+                            <tr style="background-color: #f0f0f0; font-weight: bold;">
+                                <td colspan="5" class="text-right">Totales del registro:</td>
+                                <td class="text-right">@produccion.Detalles.Sum(d => d.Mts2PorPanel * d.CantidadProducida).ToString("N2") Mts²</td>
+                                <td colspan="3"></td>
+                                <td class="text-right">@produccion.Detalles.Sum(d => d.PesoAlambreKg).ToString("N2") kg</td>
+                                <td class="text-right">@produccion.Detalles.Sum(d => d.MermaAlambreKg).ToString("N2") kg</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                }
+                else
+                {
+                    <p style="text-align: center; font-style: italic; color: #666;">No hay detalles registrados para esta producción.</p>
+                }
+
+                <hr style="margin: 30px 0; border: 1px solid #ddd;" />
+            }
+        }
+        else
+        {
+            <div style="text-align: center; padding: 50px; color: #666;">
+                <h3>No hay datos para mostrar</h3>
+                <p>No se encontraron registros de producción para el período seleccionado.</p>
+            </div>
+        }
+
+        <div style="margin-top: 30px; text-align: center; font-size: 0.9em; color: #666;">
+            <p>Reporte generado el @DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")</p>
+        </div>
+    </div>
+</body>
+</html>

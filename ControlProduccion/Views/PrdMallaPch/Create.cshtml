@@ -1,0 +1,832 @@
+﻿@using ControlProduccion.ViewModel;
+@model PrdMallaPchViewModel;
+@{
+    ViewData["Title"] = "Ingresar Produccion Malla PCH";
+}
+
+<div class="col-md-10 offset-md-1">
+    <div class="ibox ">
+        <div class="ibox-title">
+            <h5>@ViewData["Title"]</h5>
+        </div>
+        <div class="ibox-content">
+            <form id="frmProduccion" method="post" autocomplete="off">
+                @Html.AntiForgeryToken()
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+                <div class="form-group">
+                    <label asp-for="IdUsuarios"></label>
+                    <select id="IdUsuarios" multiple name="IdUsuarios" asp-for="IdUsuarios" class="form-control select2" asp-items="Model.Operarios">
+                    </select>
+                    <span asp-validation-for="IdUsuarios" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Fecha"></label>
+                    <input asp-for="Fecha" class="form-control" />
+                    <span asp-validation-for="Fecha" class="text-danger"></span>
+                </div>
+
+                <div class="hr-line-dashed"></div>
+
+                <!-- Sección Máquina A -->
+                <div class="form-group row">
+                    <div class="col-sm-12">
+                        <h4>Detalle Máquina A - Hilos Transversales</h4>
+                        <a data-toggle='modal' href='#modal-DetalleA' id="btnAgregarDetalleA" class="btn btn-info btn-outline">
+                            <i class="fa fa-plus"></i> Agregar Detalle Máquina A
+                        </a>
+                    </div>
+                    <div class="col-sm-12 mt-3" style="max-height: 300px; overflow-y: auto">
+                        <table id="tblDetalleA" class="table table-bordered table-hover">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Máquina</th>
+                                    <th>Hilos Transversales (un)</th>
+                                    <th>Merma Hilos Transversales (kg)</th>
+                                    <th>Tipo Fabricación</th>
+                                    <th>N° Pedido</th>
+                                    <th>Longitud (m)</th>
+                                    <th>Cantidad (un)</th>
+                                    <th>N° Alambre A</th>
+                                    <th>Peso Alambre A (kg)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="hr-line-dashed"></div>
+
+                <!-- Sección Máquina B -->
+                <div class="form-group row">
+                    <div class="col-sm-12">
+                        <h4>Detalle Máquina B - Hilos Longitudinales</h4>
+                        <a data-toggle='modal' href='#modal-DetalleB' id="btnAgregarDetalleB" class="btn btn-success btn-outline">
+                            <i class="fa fa-plus"></i> Agregar Detalle Máquina B
+                        </a>
+                    </div>
+                    <div class="col-sm-12 mt-3" style="max-height: 300px; overflow-y: auto">
+                        <table id="tblDetalleB" class="table table-bordered table-hover">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Máquina</th>
+                                    <th>Hilos Longitudinales (un)</th>
+                                    <th>Merma Hilos Longitudinales (kg)</th>
+                                    <th>Tipo Fabricación</th>
+                                    <th>N° Pedido</th>
+                                    <th>Longitud (m)</th>
+                                    <th>Cantidad (un)</th>
+                                    <th>N° Alambre B</th>
+                                    <th>Peso Alambre B (kg)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="hr-line-dashed"></div>
+
+                <!-- Sección Máquina C -->
+                <div class="form-group row">
+                    <div class="col-sm-12">
+                        <h4>Detalle Máquina C - Mallas</h4>
+                        <a data-toggle='modal' href='#modal-DetalleC' id="btnAgregarDetalleC" class="btn btn-warning btn-outline">
+                            <i class="fa fa-plus"></i> Agregar Detalle Máquina C
+                        </a>
+                    </div>
+                    <div class="col-sm-12 mt-3" style="max-height: 300px; overflow-y: auto">
+                        <table id="tblDetalleC" class="table table-bordered table-hover">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Máquina</th>
+                                    <th>Tipo Malla</th>
+                                    <th>Merma Mallas (kg)</th>
+                                    <th>Tipo Fabricación</th>
+                                    <th>N° Pedido</th>
+                                    <th>Longitud (m)</th>
+                                    <th>Cantidad (un)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="hr-line-dashed"></div>
+
+                <div class="form-group">
+                    <label asp-for="Observaciones"></label>
+                    <textarea asp-for="Observaciones" class="form-control" rows="3"></textarea>
+                    <span asp-validation-for="Observaciones" class="text-danger"></span>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Guardar</button>
+                <button type="button"
+                        id="btnRegresar"
+                        class="btn btn-dark"
+                        data-url="@Url.Action("Index", "Home")">
+                    Regresar
+                </button>
+            </form>
+
+            <!-- Modal Detalle Máquina A -->
+            <div id="modal-DetalleA" class="modal fade" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title">Nuevo Detalle Máquina A</h4>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="frmDetPrdA">
+                                <input type="hidden" name="uid" value="<%=idx%>" />
+
+                                <div class="form-group">
+                                    <label class="form-label">Máquina <span class="text-danger">*</span></label>
+                                    <select  id="IdMaquinaA" name="IdMaquina" class="form-control" asp-items="Model.Maquinas">
+                                        <option value="">-- Seleccione Máquina --</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">Hilos Transversales (un) <span class="text-danger">*</span></label>
+                                    <input type="number" step="1" min="0" id="HilosTransversalesUn" name="HilosTransversalesUn" class="form-control" />
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">Merma Hilos Transversales (kg) <span class="text-danger">*</span></label>
+                                    <input type="number" step="0.01" min="0" id="MermaHilosTransversalesKg" name="MermaHilosTransversalesKg" class="form-control" />
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">Tipo de Fabricación <span class="text-danger">*</span></label>
+                                    <select id="IdTipoFabricacionA" name="IdTipoFabricacion" class="form-control" asp-items="Model.TiposFabricacion">
+                                        <option value="">-- Seleccione Tipo --</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group" id="divNumeroPedidoA" style="display:none">
+                                    <label class="form-label">Número de Pedido <span class="text-danger">*</span></label>
+                                    <input type="number" id="NumeroPedidoA" name="NumeroPedido" class="form-control" min="0" step="1" />
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">Longitud (m) <span class="text-danger">*</span></label>
+                                    <input type="number" step="0.01" min="0" id="LongitudA" name="Longitud" class="form-control" />
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">Cantidad (un) <span class="text-danger">*</span></label>
+                                    <input type="number" step="1" min="0" id="CantidadA" name="Cantidad" class="form-control" />
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">N° Alambre A <span class="text-danger">*</span></label>
+                                    <input type="number" step="1" min="0" id="NumeroAlambreA" name="NumeroAlambreA" class="form-control" />
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">Peso Alambre A (kg) <span class="text-danger">*</span></label>
+                                    <input type="number" step="0.01" min="0" id="PesoAlambreKgA" name="PesoAlambreKgA" class="form-control" />
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button id="btnGuardarDetPrdA" type="button" class="btn btn-primary">Agregar</button>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                            <div class="w-100">
+                                <p id="spnbtnGuardarDetPrdA" class="text-sm text-danger mt-2"></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal Detalle Máquina B -->
+            <div id="modal-DetalleB" class="modal fade" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title">Nuevo Detalle Máquina B</h4>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="frmDetPrdB">
+                                <input type="hidden" name="uid" value="<%=idx%>" />
+
+                                <div class="form-group">
+                                    <label class="form-label">Máquina <span class="text-danger">*</span></label>
+                                    <select id="IdMaquinaB" name="IdMaquina" class="form-control" asp-items="Model.Maquinas">
+                                        <option value="">-- Seleccione Máquina --</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">Hilos Longitudinales (un) <span class="text-danger">*</span></label>
+                                    <input type="number" step="1" min="0" id="HilosLongitudinalesUn" name="HilosLongitudinalesUn" class="form-control" />
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">Merma Hilos Longitudinales (kg) <span class="text-danger">*</span></label>
+                                    <input type="number" step="0.01" min="0" id="MermaHilosLongitudinalesKg" name="MermaHilosLongitudinalesKg" class="form-control" />
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">Tipo de Fabricación <span class="text-danger">*</span></label>
+                                    <select id="IdTipoFabricacionB" name="IdTipoFabricacion" class="form-control" asp-items="Model.TiposFabricacion">
+                                        <option value="">-- Seleccione Tipo --</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group" id="divNumeroPedidoB" style="display:none">
+                                    <label class="form-label">Número de Pedido <span class="text-danger">*</span></label>
+                                    <input type="number" id="NumeroPedidoB" name="NumeroPedido" class="form-control" min="0" step="1" />
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">Longitud (m) <span class="text-danger">*</span></label>
+                                    <input type="number" step="0.01" min="0" id="LongitudB" name="Longitud" class="form-control" />
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">Cantidad (un) <span class="text-danger">*</span></label>
+                                    <input type="number" step="1" min="0" id="CantidadB" name="Cantidad" class="form-control" />
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">N° Alambre B <span class="text-danger">*</span></label>
+                                    <input type="number" step="1" min="0" id="NumeroAlambreB" name="NumeroAlambreB" class="form-control" />
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">Peso Alambre B (kg) <span class="text-danger">*</span></label>
+                                    <input type="number" step="0.01" min="0" id="PesoAlambreKgB" name="PesoAlambreKgB" class="form-control" />
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button id="btnGuardarDetPrdB" type="button" class="btn btn-primary">Agregar</button>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                            <div class="w-100">
+                                <p id="spnbtnGuardarDetPrdB" class="text-sm text-danger mt-2"></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal Detalle Máquina C -->
+            <div id="modal-DetalleC" class="modal fade" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title">Nuevo Detalle Máquina C</h4>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="frmDetPrdC">
+                                <input type="hidden" name="uid" value="<%=idx%>" />
+
+                                <div class="form-group">
+                                    <label class="form-label">Máquina <span class="text-danger">*</span></label>
+                                    <select id="IdMaquinaC" name="IdMaquina" class="form-control" asp-items="Model.Maquinas">
+                                        <option value="">-- Seleccione Máquina --</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">Tipo de Malla <span class="text-danger">*</span></label>
+                                    <select id="IdTipoMalla" name="IdTipoMalla" class="form-control" asp-items="Model.TiposMalla">
+                                        <option value="">-- Seleccione Tipo de Malla --</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">Merma de Mallas (kg) <span class="text-danger">*</span></label>
+                                    <input type="number" step="0.01" min="0" id="MermaMallasKg" name="MermaMallasKg" class="form-control" />
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">Tipo de Fabricación <span class="text-danger">*</span></label>
+                                    <select id="IdTipoFabricacionC" name="IdTipoFabricacion" class="form-control" asp-items="Model.TiposFabricacion">
+                                        <option value="">-- Seleccione Tipo --</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group" id="divNumeroPedidoC" style="display:none">
+                                    <label class="form-label">Número de Pedido <span class="text-danger">*</span></label>
+                                    <input type="number" id="NumeroPedidoC" name="NumeroPedido" class="form-control" min="0" step="1" />
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">Longitud (m) <span class="text-danger">*</span></label>
+                                    <input type="number" step="0.01" min="0" id="LongitudC" name="Longitud" class="form-control" />
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">Cantidad (un) <span class="text-danger">*</span></label>
+                                    <input type="number" step="1" min="0" id="CantidadC" name="Cantidad" class="form-control" />
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button id="btnGuardarDetPrdC" type="button" class="btn btn-primary">Agregar</button>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                            <div class="w-100">
+                                <p id="spnbtnGuardarDetPrdC" class="text-sm text-danger mt-2"></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        $(document).ready(function() {
+            // ─────────── AUTOSAVE / RESTORE /PREVENT EXIT ───────────
+            const DRAFT_KEY = 'draft-prdMallaPch';
+
+            function backupForm() {
+                const formArr = $('#frmProduccion').serializeArray();
+                const detalleAHtml = $('#tblDetalleA tbody').html();
+                const detalleBHtml = $('#tblDetalleB tbody').html();
+                const detalleCHtml = $('#tblDetalleC tbody').html();
+                localStorage.setItem(DRAFT_KEY,
+                    JSON.stringify({ 
+                        form: formArr, 
+                        detalleAHtml: detalleAHtml,
+                        detalleBHtml: detalleBHtml,
+                        detalleCHtml: detalleCHtml
+                    })
+                );
+            }
+
+            function restoreIfExists() {
+                const draftStr = localStorage.getItem(DRAFT_KEY);
+                if (!draftStr) return;
+
+                if (confirm('Se encontró un borrador sin guardar. ¿Deseas restaurarlo?')) {
+                    const draft = JSON.parse(draftStr);
+
+                    // Agrupar valores por nombre de campo
+                    const formMap = draft.form.reduce((acc, { name, value }) => {
+                        acc[name] = acc[name] || [];
+                        acc[name].push(value);
+                        return acc;
+                    }, {});
+
+                    // Restaurar cada campo, usando array para selects múltiples
+                    Object.entries(formMap).forEach(([name, values]) => {
+                        const $el = $('[name="' + name + '"]');
+                        const valToSet = $el.prop('multiple') ? values : values[0];
+                        if ($el.hasClass('select2-hidden-accessible')) {
+                            $el.val(valToSet).trigger('change');
+                        } else {
+                            $el.val(valToSet);
+                        }
+                    });
+
+                    // Restaurar contenido de las tablas
+                    if (draft.detalleAHtml) {
+                        $('#tblDetalleA tbody').html(draft.detalleAHtml);
+                    }
+                    if (draft.detalleBHtml) {
+                        $('#tblDetalleB tbody').html(draft.detalleBHtml);
+                    }
+                    if (draft.detalleCHtml) {
+                        $('#tblDetalleC tbody').html(draft.detalleCHtml);
+                    }
+                }
+            }
+
+            // Restaura al cargar y luego auto‑respalda cada 30s
+            restoreIfExists();
+            setInterval(backupForm, 30000);
+
+            // ───────── PREVENT UNLOAD ─────────
+            function beforeUnloadHandler(e) {
+                const hasRows = $('#tblDetalleA tbody tr').length > 0 || 
+                               $('#tblDetalleB tbody tr').length > 0 || 
+                               $('#tblDetalleC tbody tr').length > 0;
+                const isDirty = $('#frmProduccion').serialize() !== '';
+                if (hasRows || isDirty) {
+                    e.preventDefault();
+                    e.returnValue = '';
+                }
+            }
+            window.addEventListener('beforeunload', beforeUnloadHandler);
+
+            $('#btnRegresar').off('click').on('click', function() {
+                const url = $(this).data('url');
+                if (confirm('¿Deseas salir sin guardar? Se perderán los datos no guardados.')) {
+                    localStorage.removeItem(DRAFT_KEY);
+                    window.removeEventListener('beforeunload', beforeUnloadHandler);
+                    window.location.href = url;
+                }
+            });
+
+            // ──────────END AUTOSAVE / RESTORE /PREVENT EXIT ───────────
+
+            // --- INICIALIZACIÓN SELECT2 EN LA PÁGINA PRINCIPAL ---
+            $("#IdUsuarios").select2({
+                placeholder: "- Selecciona los operarios -",
+                allowClear: true,
+                width: '100%'
+            });
+
+            // --- MANEJO DE MODALES ---
+            $('#modal-DetalleA').on('shown.bs.modal', function() {
+                const $modal = $(this);
+                const $modalBody = $modal.find('.modal-body');
+
+                // Destruir instancias previas de Select2
+                $modal.find('select').each(function() {
+                    if ($(this).data('select2')) {
+                        $(this).select2('destroy');
+                    }
+                });
+
+                // Reinicializar Select2
+                $modal.find('select').select2({
+                    dropdownParent: $modalBody,
+                    allowClear: true,
+                    width: '100%'
+                });
+
+                //setear id 17 para select maquina de este modal
+                $('#IdMaquinaA').val(17).trigger('change');
+                        var $sel = $('#IdMaquinaA');
+                        var name = $sel.attr('name');
+                        // crea el hidden con el valor actual
+                        $('<input>', { type: 'hidden', name: name, value: $sel.val() }).insertAfter($sel);
+                        // deshabilita el select (solo lectura visual y funcional)
+                        $sel.prop('disabled', true);
+            });
+
+            $('#modal-DetalleB').on('shown.bs.modal', function() {
+                const $modal = $(this);
+                const $modalBody = $modal.find('.modal-body');
+
+                $modal.find('select').each(function() {
+                    if ($(this).data('select2')) {
+                        $(this).select2('destroy');
+                    }
+                });
+
+                $modal.find('select').select2({
+                    dropdownParent: $modalBody,
+                    allowClear: true,
+                    width: '100%'
+                });
+
+                 //setear id 18 para select maquina de este modal
+                 $('#IdMaquinaB').val(18).trigger('change');
+                   var $sel = $('#IdMaquinaB');
+                        var name = $sel.attr('name');
+                        // crea el hidden con el valor actual
+                        $('<input>', { type: 'hidden', name: name, value: $sel.val() }).insertAfter($sel);
+                        // deshabilita el select (solo lectura visual y funcional)
+                        $sel.prop('disabled', true);
+            });
+
+            $('#modal-DetalleC').on('shown.bs.modal', function() {
+                const $modal = $(this);
+                const $modalBody = $modal.find('.modal-body');
+
+                $modal.find('select').each(function() {
+                    if ($(this).data('select2')) {
+                        $(this).select2('destroy');
+                    }
+                });
+
+                $modal.find('select').select2({
+                    dropdownParent: $modalBody,
+                    allowClear: true,
+                    width: '100%'
+                });
+
+                 //setear id 7 para select maquina de este modal
+                    $('#IdMaquinaC').val(7).trigger('change');
+                     var $sel = $('#IdMaquinaC');
+                        var name = $sel.attr('name');
+                        // crea el hidden con el valor actual
+                        $('<input>', { type: 'hidden', name: name, value: $sel.val() }).insertAfter($sel);
+                        // deshabilita el select (solo lectura visual y funcional)
+                        $sel.prop('disabled', true);
+            });
+
+            // Eventos 'change' para TipoFabricacion en cada modal
+            $(document).on('change', '#IdTipoFabricacionA', function(){
+                if($(this).val() == 2) {
+                    $('#divNumeroPedidoA').show();
+                } else {
+                    $('#divNumeroPedidoA').hide();
+                    $('#NumeroPedidoA').val('');
+                }
+            });
+
+            $(document).on('change', '#IdTipoFabricacionB', function(){
+                if($(this).val() == 2) {
+                    $('#divNumeroPedidoB').show();
+                } else {
+                    $('#divNumeroPedidoB').hide();
+                    $('#NumeroPedidoB').val('');
+                }
+            });
+
+            $(document).on('change', '#IdTipoFabricacionC', function(){
+                if($(this).val() == 2) {
+                    $('#divNumeroPedidoC').show();
+                } else {
+                    $('#divNumeroPedidoC').hide();
+                    $('#NumeroPedidoC').val('');
+                }
+            });
+
+            // Botones Guardar de los modales
+            $('#btnGuardarDetPrdA').click(function(){
+                $('#spnbtnGuardarDetPrdA').text('');
+
+                // Obtener valores
+                var idMaquina = $('#IdMaquinaA').val();
+                var hilosTransversales = $('#HilosTransversalesUn').val();
+                var mermaHilos = $('#MermaHilosTransversalesKg').val();
+                var idTipoFabricacion = $('#IdTipoFabricacionA').val();
+                var numeroPedido = $('#NumeroPedidoA').val();
+                var longitud = $('#LongitudA').val();
+                var cantidad = $('#CantidadA').val();
+                var numeroAlambre = $('#NumeroAlambreA').val();
+                var pesoAlambre = $('#PesoAlambreKgA').val();
+
+                // Validaciones básicas
+                if(!idMaquina || !hilosTransversales || !mermaHilos || !idTipoFabricacion || 
+                   !longitud || !cantidad || !numeroAlambre || !pesoAlambre){
+                    $('#spnbtnGuardarDetPrdA').text('Complete todos los campos obligatorios.');
+                    return;
+                }
+
+                if(idTipoFabricacion == 2 && !numeroPedido){
+                    $('#spnbtnGuardarDetPrdA').text('El número de pedido es obligatorio para el tipo "Por Pedido".');
+                    return;
+                }
+
+                // Obtener textos para mostrar
+                var maquinaText = $('#IdMaquinaA option:selected').text();
+                var tipoFabricacionText = $('#IdTipoFabricacionA option:selected').text();
+
+                // Crear fila con data attributes
+                var row = `<tr data-idmaquina="${idMaquina}"
+                              data-hilostransversales="${hilosTransversales}"
+                              data-mermahilos="${mermaHilos}"
+                              data-idtipofabricacion="${idTipoFabricacion}"
+                              data-numeropedido="${numeroPedido || ''}"
+                              data-longitud="${longitud}"
+                              data-cantidad="${cantidad}"
+                              data-numeroalambre="${numeroAlambre}"
+                              data-pesoalambre="${pesoAlambre}">
+                               <td>${maquinaText}</td>
+                               <td>${hilosTransversales}</td>
+                               <td>${mermaHilos}</td>
+                               <td>${tipoFabricacionText}</td>
+                               <td>${numeroPedido || ''}</td>
+                               <td>${longitud}</td>
+                               <td>${cantidad}</td>
+                               <td>${numeroAlambre}</td>
+                               <td>${pesoAlambre}</td>
+                           </tr>`;
+
+                $('#tblDetalleA > tbody').append(row);
+
+                $('#frmDetPrdA')[0].reset();
+                $('#divNumeroPedidoA').hide();
+                $('#modal-DetalleA').modal('hide');
+            });
+
+            $('#btnGuardarDetPrdB').click(function(){
+                $('#spnbtnGuardarDetPrdB').text('');
+
+                // Obtener valores
+                var idMaquina = $('#IdMaquinaB').val();
+                var hilosLongitudinales = $('#HilosLongitudinalesUn').val();
+                var mermaHilos = $('#MermaHilosLongitudinalesKg').val();
+                var idTipoFabricacion = $('#IdTipoFabricacionB').val();
+                var numeroPedido = $('#NumeroPedidoB').val();
+                var longitud = $('#LongitudB').val();
+                var cantidad = $('#CantidadB').val();
+                var numeroAlambre = $('#NumeroAlambreB').val();
+                var pesoAlambre = $('#PesoAlambreKgB').val();
+
+                // Validaciones básicas
+                if(!idMaquina || !hilosLongitudinales || !mermaHilos || !idTipoFabricacion || 
+                   !longitud || !cantidad || !numeroAlambre || !pesoAlambre){
+                    $('#spnbtnGuardarDetPrdB').text('Complete todos los campos obligatorios.');
+                    return;
+                }
+
+                if(idTipoFabricacion == 2 && !numeroPedido){
+                    $('#spnbtnGuardarDetPrdB').text('El número de pedido es obligatorio para el tipo "Por Pedido".');
+                    return;
+                }
+
+                // Obtener textos para mostrar
+                var maquinaText = $('#IdMaquinaB option:selected').text();
+                var tipoFabricacionText = $('#IdTipoFabricacionB option:selected').text();
+
+                // Crear fila con data attributes
+                var row = `<tr data-idmaquina="${idMaquina}"
+                              data-hiloslongitudinales="${hilosLongitudinales}"
+                              data-mermahilos="${mermaHilos}"
+                              data-idtipofabricacion="${idTipoFabricacion}"
+                              data-numeropedido="${numeroPedido || ''}"
+                              data-longitud="${longitud}"
+                              data-cantidad="${cantidad}"
+                              data-numeroalambre="${numeroAlambre}"
+                              data-pesoalambre="${pesoAlambre}">
+                               <td>${maquinaText}</td>
+                               <td>${hilosLongitudinales}</td>
+                               <td>${mermaHilos}</td>
+                               <td>${tipoFabricacionText}</td>
+                               <td>${numeroPedido || ''}</td>
+                               <td>${longitud}</td>
+                               <td>${cantidad}</td>
+                               <td>${numeroAlambre}</td>
+                               <td>${pesoAlambre}</td>
+                           </tr>`;
+
+                $('#tblDetalleB > tbody').append(row);
+
+                $('#frmDetPrdB')[0].reset();
+                $('#divNumeroPedidoB').hide();
+                $('#modal-DetalleB').modal('hide');
+            });
+
+            $('#btnGuardarDetPrdC').click(function(){
+                $('#spnbtnGuardarDetPrdC').text('');
+
+                // Obtener valores
+                var idMaquina = $('#IdMaquinaC').val();
+                var idTipoMalla = $('#IdTipoMalla').val();
+                var mermaMallas = $('#MermaMallasKg').val();
+                var idTipoFabricacion = $('#IdTipoFabricacionC').val();
+                var numeroPedido = $('#NumeroPedidoC').val();
+                var longitud = $('#LongitudC').val();
+                var cantidad = $('#CantidadC').val();
+
+                // Validaciones básicas
+                if(!idMaquina || !idTipoMalla || !mermaMallas || !idTipoFabricacion || 
+                   !longitud || !cantidad){
+                    $('#spnbtnGuardarDetPrdC').text('Complete todos los campos obligatorios.');
+                    return;
+                }
+
+                if(idTipoFabricacion == 2 && !numeroPedido){
+                    $('#spnbtnGuardarDetPrdC').text('El número de pedido es obligatorio para el tipo "Por Pedido".');
+                    return;
+                }
+
+                // Obtener textos para mostrar
+                var maquinaText = $('#IdMaquinaC option:selected').text();
+                var tipoMallaText = $('#IdTipoMalla option:selected').text();
+                var tipoFabricacionText = $('#IdTipoFabricacionC option:selected').text();
+
+                // Crear fila con data attributes
+                var row = `<tr data-idmaquina="${idMaquina}"
+                              data-idtipomalla="${idTipoMalla}"
+                              data-mermamallas="${mermaMallas}"
+                              data-idtipofabricacion="${idTipoFabricacion}"
+                              data-numeropedido="${numeroPedido || ''}"
+                              data-longitud="${longitud}"
+                              data-cantidad="${cantidad}">
+                               <td>${maquinaText}</td>
+                               <td>${tipoMallaText}</td>
+                               <td>${mermaMallas}</td>
+                               <td>${tipoFabricacionText}</td>
+                               <td>${numeroPedido || ''}</td>
+                               <td>${longitud}</td>
+                               <td>${cantidad}</td>
+                           </tr>`;
+
+                $('#tblDetalleC > tbody').append(row);
+
+                $('#frmDetPrdC')[0].reset();
+                $('#divNumeroPedidoC').hide();
+                $('#modal-DetalleC').modal('hide');
+            });
+
+            // Envío del formulario principal
+            $('#frmProduccion').submit(function(e){
+                e.preventDefault();
+                var token = $('input[name="__RequestVerificationToken"]').val();
+                
+                // Construir el viewModel
+                var viewModel = { 
+                    IdUsuarios: $('#IdUsuarios').val(), 
+                    Fecha: $('#Fecha').val(),
+                    Observaciones: $('#Observaciones').val(),
+                    DetPrdPchMaquinaAs: [],
+                    DetPrdPchMaquinaBs: [], 
+                    DetPrdPchMaquinaCs: []
+                };
+
+                // Recopilar datos de la tabla A
+                $('#tblDetalleA tbody tr[data-idmaquina]').each(function(){
+                    var $row = $(this);
+                    var detalle = {
+                        IdMaquina: parseInt($row.data('idmaquina')),
+                        HilosTransversalesUn: parseInt($row.data('hilostransversales')),
+                        MermaHilosTransversalesKg: parseFloat($row.data('mermahilos')),
+                        IdTipoFabricacion: parseInt($row.data('idtipofabricacion')),
+                        NumeroPedido: $row.data('numeropedido') ? parseInt($row.data('numeropedido')) : null,
+                        Longitud: parseFloat($row.data('longitud')),
+                        Cantidad: parseInt($row.data('cantidad')),
+                        NumeroAlambreA: parseInt($row.data('numeroalambre')),
+                        PesoAlambreKgA: parseFloat($row.data('pesoalambre'))
+                    };
+                    viewModel.DetPrdPchMaquinaAs.push(detalle);
+                });
+
+                // Recopilar datos de la tabla B
+                $('#tblDetalleB tbody tr[data-idmaquina]').each(function(){
+                    var $row = $(this);
+                    var detalle = {
+                        IdMaquina: parseInt($row.data('idmaquina')),
+                        HilosLongitudinalesUn: parseInt($row.data('hiloslongitudinales')),
+                        MermaHilosLongitudinalesKg: parseFloat($row.data('mermahilos')),
+                        IdTipoFabricacion: parseInt($row.data('idtipofabricacion')),
+                        NumeroPedido: $row.data('numeropedido') ? parseInt($row.data('numeropedido')) : null,
+                        Longitud: parseFloat($row.data('longitud')),
+                        Cantidad: parseInt($row.data('cantidad')),
+                        NumeroAlambreB: parseInt($row.data('numeroalambre')),
+                        PesoAlambreKgB: parseFloat($row.data('pesoalambre'))
+                    };
+                    viewModel.DetPrdPchMaquinaBs.push(detalle);
+                });
+
+                // Recopilar datos de la tabla C
+                $('#tblDetalleC tbody tr[data-idmaquina]').each(function(){
+                    var $row = $(this);
+                    var detalle = {
+                        IdMaquina: parseInt($row.data('idmaquina')),
+                        IdTipoMalla: parseInt($row.data('idtipomalla')),
+                        MermaMallasKg: parseFloat($row.data('mermamallas')),
+                        IdTipoFabricacion: parseInt($row.data('idtipofabricacion')),
+                        NumeroPedido: $row.data('numeropedido') ? parseInt($row.data('numeropedido')) : null,
+                        Longitud: parseFloat($row.data('longitud')),
+                        Cantidad: parseInt($row.data('cantidad'))
+                    };
+                    viewModel.DetPrdPchMaquinaCs.push(detalle);
+                });
+
+                // Validar que haya al menos un detalle
+                if(viewModel.DetPrdPchMaquinaAs.length === 0 && 
+                   viewModel.DetPrdPchMaquinaBs.length === 0 && 
+                   viewModel.DetPrdPchMaquinaCs.length === 0){
+                    alert('Debe agregar al menos un detalle de producción.');
+                    return;
+                }
+
+                // Enviar datos via AJAX
+                $.ajax({
+                    url: '/PrdMallaPch/Create',
+                    type: 'POST',
+                    headers: {'RequestVerificationToken': token},
+                    data: JSON.stringify(viewModel),
+                    contentType: 'application/json; charset=utf-8',
+                    success: function(response){
+                        // Limpiar borrador
+                        localStorage.removeItem(DRAFT_KEY);
+                        // Desactivar el aviso de "Leave site?"
+                        window.removeEventListener('beforeunload', beforeUnloadHandler);
+                        
+                        alert('Producción guardada exitosamente!');
+                        window.location.href = '@Url.Action("Index", "Home")';
+                    },
+                    error: function(xhr, status, error){
+                        console.error('Error:', xhr.responseText);
+                        alert('Error al guardar la producción. Contacte a soporte.');
+                    }
+                });
+            });
+        });
+    </script>
+}

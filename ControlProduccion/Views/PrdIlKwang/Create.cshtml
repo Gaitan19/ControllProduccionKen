@@ -223,6 +223,11 @@
 
                 <h4>Poliol / Isocianato</h4>
                 <div class="form-group">
+                    <label asp-for="MetrosInicialPoliol"></label>
+                    <input asp-for="MetrosInicialPoliol" class="form-control" />
+                    <span asp-validation-for="MetrosInicialPoliol" class="text-danger"></span>
+                </div>
+                <div class="form-group">
                     <label asp-for="CantidadUtilizadaA"></label>
                     <input asp-for="CantidadUtilizadaA" class="form-control" />
                     <span asp-validation-for="CantidadUtilizadaA" class="text-danger"></span>
@@ -257,6 +262,11 @@
                     <label asp-for="VencimientoA"></label>
                     <input asp-for="VencimientoA" class="form-control" />
                     <span asp-validation-for="VencimientoA" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="MetrosInicialIsocianato"></label>
+                    <input asp-for="MetrosInicialIsocianato" class="form-control" />
+                    <span asp-validation-for="MetrosInicialIsocianato" class="text-danger"></span>
                 </div>
                 <div class="form-group">
                     <label asp-for="CantidadUtilizadaB"></label>
@@ -327,7 +337,7 @@
                 </div>
                 <div class="form-group">
                     <label asp-for="CantidadArranques"></label>
-                    <input asp-for="CantidadArranques" class="form-control" />
+                    <input asp-for="CantidadArranques" class="form-control" type="number" step="1" min="0" oninput="validarSoloEnteros(this)" />
                     <span asp-validation-for="CantidadArranques" class="text-danger"></span>
                 </div>
 
@@ -634,6 +644,8 @@
             var vencimientoB = $("#VencimientoB").val();
             var observaciones = $("#Observaciones").val();
             var cantidadArranques = $("#CantidadArranques").val();
+             var MetrosInicialPoliol=$("#MetrosInicialPoliol").val();
+                             var MetrosInicialIsocianato=$("#MetrosInicialIsocianato").val();
 
             // Validaciones requeridas y de formato
             if (!idUsuarios || idUsuarios.length === 0) {
@@ -736,9 +748,17 @@
                 errorMsg = "Ingrese el Vencimiento B.";
             } else if (!observaciones) {
                 errorMsg = "Ingrese las Observaciones.";
-            } else if (!cantidadArranques) {
-                errorMsg = "Ingrese la Cantidad de Arranques.";
-            }
+                    } else if (!cantidadArranques) {
+                        errorMsg = "Ingrese la Cantidad de Arranques.";
+                            }else if(!MetrosInicialPoliol)
+                                    {
+                                errorMsg = "Ingrese Metros inicial Poliol.";
+                                    }
+                                                    else if(!MetrosInicialIsocianato)
+                                            {
+                                                errorMsg = "Ingrese Metros inicial Isocianato.";
+                                            }
+
             if (errorMsg) {
                 $("#spnErrorProduccion").text(errorMsg);
                 return false;
@@ -807,6 +827,8 @@
                 VencimientoB: $("#VencimientoB").val(),
                 Observaciones: $("#Observaciones").val(),
                 CantidadArranques: $("#CantidadArranques").val(),
+                         MetrosInicialPoliol:$("#MetrosInicialPoliol").val(),
+                       MetrosInicialIsocianato:$("#MetrosInicialIsocianato").val(),
                 DetPrdIlKwangs: []
             };
 
@@ -899,7 +921,10 @@
                     validarNumeros("#PesoInicialB", "#PesoFinalB", "El Peso Final B no puede ser mayor que el Peso Inicial B.");
         });
 
-
+                                function validarSoloEnteros(input) {
+                    // Elimina cualquier caracter que no sea un dígito
+                    input.value = input.value.replace(/[^0-9]/g, '');
+                }
     </script>
 
 }

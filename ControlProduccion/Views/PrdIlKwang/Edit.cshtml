@@ -14,6 +14,12 @@
                 @Html.AntiForgeryToken()
                 @Html.ValidationSummary(true, "", new { @class = "text-danger" })
                 <input type="hidden" asp-for="Id" />
+                @if (Model.AprobadoGerencia == true)
+                {
+                    <div class="alert alert-success">
+                        <i class="fa fa-check"></i> Esta producción ha sido aprobada y no puede ser modificada.
+                    </div>
+                }
                 <div class="form-group">
                     <label asp-for="IdUsuarios"></label>
                     <select id="IdUsuarios" multiple name="IdUsuarios" asp-for="IdUsuarios" class="form-control select2" asp-items="Model.Operarios"></select>
@@ -220,6 +226,11 @@
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
+                            <label asp-for="MetrosInicialPoliol"></label>
+                            <input asp-for="MetrosInicialPoliol" class="form-control" />
+                            <span asp-validation-for="MetrosInicialPoliol" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
                             <label asp-for="CantidadUtilizadaA"></label>
                             <input asp-for="CantidadUtilizadaA" class="form-control" />
                             <span asp-validation-for="CantidadUtilizadaA" class="text-danger"></span>
@@ -256,6 +267,11 @@
                         </div>
                     </div>
                     <div class="col-md-6">
+                        <div class="form-group">
+                            <label asp-for="MetrosInicialIsocianato"></label>
+                            <input asp-for="MetrosInicialIsocianato" class="form-control" />
+                            <span asp-validation-for="MetrosInicialIsocianato" class="text-danger"></span>
+                        </div>
                         <div class="form-group">
                             <label asp-for="CantidadUtilizadaB"></label>
                             <input asp-for="CantidadUtilizadaB" class="form-control" />
@@ -336,6 +352,11 @@
                     <label asp-for="Observaciones"></label>
                     <textarea asp-for="Observaciones" class="form-control"></textarea>
                     <span asp-validation-for="Observaciones" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="CantidadArranques"></label>
+                    <input asp-for="CantidadArranques" class="form-control" type="number" step="1" min="0" oninput="validarSoloEnteros(this)" />
+                    <span asp-validation-for="CantidadArranques" class="text-danger"></span>
                 </div>
                 @if (Model.AprobadoGerencia != true )
                 {
@@ -445,8 +466,7 @@
                     if(response.success){
                         alert(response.message);
                         $("#modal-Detalle").modal("hide");
-                        // Clear localStorage when detail is successfully updated
-                        localStorage.removeItem(DRAFT_KEY);
+                       
                         location.reload();
                     } else {
                         alert("Error: " + response.message);
@@ -522,7 +542,7 @@
                     success: function(response) {
                         if (response) {
                             alert("Producción Aprobada exitosamente.");
-                            localStorage.removeItem(DRAFT_KEY);
+                           
                             location.reload();
                         } else {
                             alert("Error al Aprobar la producción, contacte a soporte.");
@@ -537,9 +557,15 @@
 
         // Handle form submission
         $('#frmProduccion').on('submit', function() {
-            localStorage.removeItem(DRAFT_KEY);
+           
             window.removeEventListener('beforeunload', beforeUnloadHandler);
         });
+
+
+                     function validarSoloEnteros(input) {
+            // Elimina cualquier caracter que no sea un dígito
+            input.value = input.value.replace(/[^0-9]/g, '');
+        }
 
     </script>
 }

@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Microsoft.AspNetCore.Identity.IdentityUser>
+﻿@model IEnumerable<ControlProduccion.ViewModel.UserWithRoleViewModel>
 
 
 <div class="col-md-11 offset-md-1">
@@ -8,7 +8,7 @@
         <div class="ibox-title">
             <div class="col-sm-8">
                 <a asp-controller="UserManagement" asp-action="Create" id="btnAdd" class="btn btn-info btn-outline">
-                    <i class="fa fa-plus"></i> Add
+                    <i class="fa fa-plus"></i> Agregar usuario
                 </a>
 
             </div>
@@ -19,23 +19,27 @@
                 <thead>
                     <tr>
                         <th>Usuario</th>
+                        <th>Rol</th>
                         <th>Accion</th>
 
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach(var user in Model)
+                    @foreach(var userWithRole in Model)
                     {
                         <tr>
                             <td>
-                            <a asp-action="Edit" asp-route-id="@user.Id">
-                                @user.UserName
+                            <a asp-action="Edit" asp-route-id="@userWithRole.User.Id">
+                                @userWithRole.User.UserName
                             </a>
                             </td>
                             <td>
-                                <form asp-action="ToggleLockout" asp-route-id="@user.Id" method="post" style="display:inline;">
+                                @userWithRole.Role
+                            </td>
+                            <td>
+                                <form asp-action="ToggleLockout" asp-route-id="@userWithRole.User.Id" method="post" style="display:inline;">
                                     @Html.AntiForgeryToken()
-                                    @if (user.LockoutEnd.HasValue && user.LockoutEnd.Value > DateTime.UtcNow)
+                                    @if (userWithRole.User.LockoutEnd.HasValue && userWithRole.User.LockoutEnd.Value > DateTime.UtcNow)
                                     {
                                         <button type="submit" class="btn btn-warning">Desbloquear</button>
                                     }

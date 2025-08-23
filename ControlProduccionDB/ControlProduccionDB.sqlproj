@@ -111,5 +111,24 @@
     <Build Include="cp\Tables\PrdCorteT.sql" />
     <Build Include="cp\Tables\DetPrdCorteT.sql" />
     <Build Include="cp\Tables\CatLaminas.sql" />
+    <Build Include="cp\Tables\PrdpreExpansion.sql" />
+    <Build Include="cp\Tables\DetPrdpreExpansion.sql" />
+    <Build Include="cp\Tables\PrdOtro.sql" />
+    <Build Include="cp\Tables\PrdCorteP.sql" />
+    <Build Include="cp\Tables\DetPrdOtro.sql" />
+    <Build Include="cp\Tables\DetPrdCorteP.sql" />
+    <Build Include="cp\Tables\CatPantografo.sql" />
+    <Build Include="cp\Tables\PrdMallaPch.sql" />
+    <Build Include="cp\Tables\DetPrdPchMaquinaC.sql" />
+    <Build Include="cp\Tables\DetPrdPchMaquinaB.sql" />
+    <Build Include="cp\Tables\DetPrdPchMaquinaA.sql" />
+    <Build Include="cp\Tables\CatTipoMalla.sql" />
+    <Build Include="cp\Tables\PrdPaneladoraPch.sql" />
+    <Build Include="cp\Tables\DetPrdPaneladoraPch.sql" />
+    <Build Include="cp\Tables\CatalogoPanelesPCH.sql" />
+    <Build Include="cp\Tables\PrdAccesorios.sql" />
+    <Build Include="cp\Tables\DetPrdAccesorios.sql" />
+    <Build Include="cp\Tables\CatalogoAccesorios.sql" />
+    <Build Include="cp\Tables\ErrorLogs.sql" />
   </ItemGroup>
 </Project>

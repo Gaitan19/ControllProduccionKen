@@ -1,0 +1,237 @@
+﻿@using ControlProduccion.ViewModel
+@model PrdPreExpansionViewModel
+@{
+    ViewData["Title"] = "Detalle Pre-Expansión";
+}
+
+<div class="col-md-8 offset-md-2">
+    <div class="ibox ">
+        <div class="ibox-title">
+            <h5>@ViewData["Title"]</h5>
+        </div>
+
+        <div class="ibox-content">
+            <form id="frmProduccion" autocomplete="off">
+                @Html.AntiForgeryToken()
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+                <div class="form-group">
+                    <label asp-for="IdUsuarios"></label>
+                    <select disabled="disabled" id="IdUsuarios" multiple name="IdUsuarios" asp-for="IdUsuarios" class="form-control select2" asp-items="Model.Operarios"></select>
+                    <span asp-validation-for="IdUsuarios" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="IdMaquina"></label>
+                    <select disabled="disabled" id="IdMaquina" name="IdMaquina" asp-for="IdMaquina" class="form-control" asp-items="Model.Maquinas"></select>
+                    <span asp-validation-for="IdMaquina" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Fecha"></label>
+                    <input asp-for="Fecha" readonly="readonly" class="form-control" />
+                    <span asp-validation-for="Fecha" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="HoraInicio"></label>
+                    <input asp-for="HoraInicio" readonly="readonly" class="form-control" />
+                    <span asp-validation-for="HoraInicio" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="HoraFin"></label>
+                    <input asp-for="HoraFin" readonly="readonly" class="form-control" />
+                    <span asp-validation-for="HoraFin" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="TiempoParo"></label>
+                    <input asp-for="TiempoParo" readonly="readonly" class="form-control" />
+                    <span asp-validation-for="TiempoParo" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="PresionCaldera"></label>
+                    <input asp-for="PresionCaldera" readonly="readonly" class="form-control" />
+                    <span asp-validation-for="PresionCaldera" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Lote"></label>
+                    <input asp-for="Lote" readonly="readonly" class="form-control" />
+                    <span asp-validation-for="Lote" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="FechaProduccion"></label>
+                    <input asp-for="FechaProduccion" readonly="readonly" class="form-control" />
+                    <span asp-validation-for="FechaProduccion" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="CodigoSaco"></label>
+                    <input asp-for="CodigoSaco" readonly="readonly" class="form-control" />
+                    <span asp-validation-for="CodigoSaco" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="IdTipoFabricacion"></label>
+                    <select disabled="disabled" id="IdTipoFabricacion" name="IdTipoFabricacion" asp-for="IdTipoFabricacion" class="form-control" asp-items="Model.TiposFabricacion"></select>
+                    <span asp-validation-for="IdTipoFabricacion" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="NumeroPedido"></label>
+                    <input asp-for="NumeroPedido" readonly="readonly" class="form-control" />
+                    <span asp-validation-for="NumeroPedido" class="text-danger"></span>
+                </div>
+
+                <div class="hr-line-dashed"></div>
+
+                <div class="form-group row">
+                    <div class="col-sm-12" style="max-height: 300px; overflow: scroll">
+                        <h4 id="hdrVV">Detalle Producción</h4>
+
+                        <table id="tblProduccion" class="table table-bordered table-hover">
+                            <thead class="table-light">
+                                <tr>
+                                    <th style="display:none;">Id</th>
+                                    <th>No. Batch</th>
+                                    <th>Hora</th>
+                                  
+                                    <th>Dens. Esperada</th>
+                                    <th>Peso Batch (g)</th>
+                                    <th>Densidad</th>
+                                    <th>Kg/Batch</th>
+                                    <th>Presión (psi)</th>
+                                    <th>Tiempo Batch (seg)</th>
+                                    <th>Temperatura (°C)</th>
+                                    <th>Silo</th>
+                                    <th>Paso</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @{
+                                   
+                                    if (Model.DetPrdPreExpansions != null)
+                                    {
+                                        foreach (var detalle in Model.DetPrdPreExpansions)
+                                        {
+                                            <tr>
+                                                <td style="display:none;">@detalle.Id</td>
+                                                <td>@detalle.NoBatch</td>
+                                                <td>@To12HourFormat(detalle.Hora)</td>
+                                            
+                                                <td>@detalle.DensidadEsperada</td>
+                                                <td>@detalle.PesoBatchGr</td>
+                                                <td>@detalle.Densidad</td>
+                                                <td>@detalle.KgPorBatch</td>
+                                                <td>@detalle.PresionPsi</td>
+                                                <td>@detalle.TiempoBatchSeg</td>
+                                                <td>@detalle.TemperaturaC</td>
+                                                <td>@detalle.Silo</td>
+                                                @if (detalle.Paso==1)
+                                                    {
+                                                    <td>Primer Paso</td>
+                                                }
+                                                else
+                                                {
+                                                    <td>Segundo Paso</td>
+                                                }
+                                            </tr>
+                                          
+                                        }
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="hr-line-dashed"></div>
+
+                <div class="form-group">
+                    <label asp-for="Observaciones"></label>
+                    <textarea asp-for="Observaciones" readonly="readonly" class="form-control"></textarea>
+                    <span asp-validation-for="Observaciones" class="text-danger"></span>
+                </div>
+
+                <button type="button" class="btn btn-dark" onclick="location.href='@Url.Action("Index", "PrdPreExpansion")'">Regresar</button>
+
+                @if (User.IsInRole("Supervisor") && Model.AprobadoSupervisor != true)
+                {
+                    <button type="button" class="btn btn-danger" onclick="validar(@Model.Id)">Validar</button>
+                }
+                else
+                {
+                    <button type="button" class="btn btn-success">Validado</button>
+                }
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        // Valida número con máximo 1 decimal
+        function validarUnDecimal(input) {
+            let valor = input.value.replace(/[^0-9.]/g, '');
+            let partes = valor.split('.');
+            if (partes.length > 2) valor = partes[0] + '.' + partes[1];
+            if (valor.includes('.')) {
+                let [entero, decimal] = valor.split('.');
+                decimal = decimal.substring(0, 1);
+                valor = entero + '.' + decimal;
+            }
+            input.value = valor;
+        }
+
+        // select2 (solo para consistencia visual; están deshabilitados)
+        $("#IdUsuarios").select2({
+            placeholder: "- Selecciona los operarios -",
+            allowClear: true
+        });
+
+        $("#IdMaquina").select2({
+            placeholder: "- Seleccione una máquina -",
+            allowClear: true
+        });
+
+        // Validar encabezado (igual que ejemplo, pero en PrdPreExpansion)
+        function validar(id) {
+            if (!confirm("¿Está seguro de que desea validar esta producción?")) return;
+
+            var token = $('input[name="__RequestVerificationToken"]').val();
+
+            $.ajax({
+                url: '@Url.Action("ValidarPrd", "PrdPreExpansion")',
+                type: 'POST',
+                headers: { 'RequestVerificationToken': token },
+                data: { id: id },
+                success: function (response) {
+                    if (response === true || response === "true") {
+                        alert("Producción validada exitosamente.");
+                        location.reload();
+                    } else {
+                        alert("Error al validar la producción, contacte a soporte.");
+                    }
+                },
+                error: function (xhr, status, error) {
+                    alert("Error al procesar la solicitud: " + error);
+                }
+            });
+        }
+    </script>
+}
+@functions {
+    public static string To12HourFormat(TimeSpan hora)
+    {
+        var dateTime = DateTime.Today.Add(hora);
+        return dateTime.ToString("hh:mm tt");
+    }
+}

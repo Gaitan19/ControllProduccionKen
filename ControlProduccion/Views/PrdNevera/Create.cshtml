@@ -321,37 +321,7 @@
 
 
 
-            //    $("#frmProduccion").submit(function (e) {
-            //     e.preventDefault(); // Evita el envío normal
-
-            //     // Obtener el token anti-forgery
-            //     var token = $('input[name="__RequestVerificationToken"]').val();
-            //     // Serializar los datos del formulario a un objeto
-            //     var formData = $(this).serializeArray();
-            //     var data = {};
-            //     $.each(formData, function (index, item) {
-            //         data[item.name] = item.value;
-            //     });
-
-            //     $.ajax({
-            //         url: $(this).attr("action"),
-            //         type: "POST",
-            //         data: $(this).serialize(),
-            //         headers: { "RequestVerificationToken": token },
-            //         success: function (response) {
-            //             if (response.success) {
-            //                 alert(response.message);
-            //                  window.location.href = '@Url.Action("Index", "Home")';
-
-            //             } else {
-            //                 alert("Ocurrió un problema al guardar la producción, Contacte a Soporte.");
-            //             }
-            //         },
-            //         error: function (xhr, status, error) {
-            //             alert("Error al guardar la producción. Contacte a Soporte");
-            //         }
-            //     });
-            // });
+          
 
 
                   $("#btnGuardarDetPrd").click(function () {

@@ -12,6 +12,12 @@
             <form id="frmProduccion" method="post" asp-action="Edit" autocomplete="off">
                 @Html.AntiForgeryToken()
                 <input type="hidden" asp-for="Id" />
+                @if (Model.AprobadoGerencia == true)
+                {
+                    <div class="alert alert-success">
+                        <i class="fa fa-check"></i> Esta producción ha sido aprobada y no puede ser modificada.
+                    </div>
+                }
                 <div class="form-group">
                     <label asp-for="IdUsuarios"></label>
                     <select id="IdUsuarios" multiple asp-for="IdUsuarios" class="form-control select2" asp-items="Model.Operarios"></select>
@@ -318,8 +324,7 @@
                     if(res.success){ 
                         alert(res.message); 
                         $("#modal-Detalle").modal('hide');
-                        // Clear localStorage when detail is successfully updated
-                        localStorage.removeItem(DRAFT_KEY);
+                       
                         location.reload(); 
                     } else { 
                         $("#spnbtnGuardarDetPrd").text('Error: ' + (res.message || 'Error desconocido')); 
@@ -446,8 +451,7 @@
                     if(res.success){ 
                         alert(res.message); 
                         $("#modal-SubDetalle").modal('hide');
-                        // Clear localStorage when subdetail is successfully updated
-                        localStorage.removeItem(DRAFT_KEY);
+                       
                         location.reload(); 
                     } else { 
                         $("#spnSubDet").text('Error: ' + (res.message || 'Error desconocido')); 
@@ -488,7 +492,7 @@
                     success:function(res){ 
                         if(res){ 
                             alert('Producción Aprobada exitosamente'); 
-                            localStorage.removeItem(DRAFT_KEY);
+                           
                             location.reload(); 
                         } else { 
                             alert('Error al aprobar la producción'); 
@@ -503,7 +507,7 @@
 
         // Handle form submission
         $('#frmProduccion').on('submit', function() {
-            localStorage.removeItem(DRAFT_KEY);
+           
             window.removeEventListener('beforeunload', beforeUnloadHandler);
         });
     </script>

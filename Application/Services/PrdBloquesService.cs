@@ -91,7 +91,7 @@ namespace Application.Services
                           
 
                             foreach (var sub in subDetPrdBloques)
-                                sub.CodigoBloque =  sub.Id.ToString()+sub.CodigoBloque;
+                                sub.CodigoBloque =  sub.Id.ToString()+"-"+sub.CodigoBloque;
 
 
                             await _unitOfWork.SubDetPrdBloqueRepository.BulkUpdateAsync(subDetPrdBloques);

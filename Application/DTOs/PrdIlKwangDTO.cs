@@ -89,6 +89,7 @@ namespace Application.DTOs
         public int EspesorFinalCmB { get; set; }
 
         public decimal? ConsumoBobinaKgB { get; set; }
+        public int? MetroInicialPoliol { get; set; }
 
         public decimal PesoInicialA { get; set; }
 
@@ -103,6 +104,7 @@ namespace Application.DTOs
         public string LoteA { get; set; } = null!;
 
         public DateTime VencimientoA { get; set; }
+        public int? MetroInicialIsocianato { get; set; }
 
         public decimal PesoInicialB { get; set; }
 
@@ -149,6 +151,8 @@ namespace Application.DTOs
         public string? IdAprobadoSupervisor { get; set; }
 
         public string? IdAprobadoGerencia { get; set; }
+
+
 
         public List<DetPrdIlKwangDTO>? DetPrdIlKwangs { get; set; }
     }

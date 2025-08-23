@@ -17,5 +17,10 @@ namespace Infrastructure.Repositories.Interfaces
         Task<IEnumerable<PrdOtroReporteDTO>> GetAllPrdOtroWithDetailsAsync(DateTime start, DateTime end);
         Task<IEnumerable<PrdBloquesReporteDTO>> GetAllPrdBloqueWithDetailsAsync(DateTime start, DateTime end);
         Task<IEnumerable<PrdCorteTReporteDTO>> GetAllPrdCorteTWithDetailsAsync(DateTime start, DateTime end);
+        Task<IEnumerable<PrdCortePReporteDTO>> GetAllPrdCortePWithDetailsAsync(DateTime start, DateTime end);
+        Task<IEnumerable<PrdPreExpansionReporteDTO>> GetAllPrdPreExpansionWithDetailsAsync(DateTime start, DateTime end);
+        Task<IEnumerable<PrdMallaPCHReporteDTO>> GetAllPrdMallaPCHWithDetailsAsync(DateTime start, DateTime end);
+        Task<IEnumerable<PrdPaneladoraPchReporteDTO>> GetAllPrdPaneladoraPchWithDetailsAsync(DateTime start, DateTime end);
+        Task<IEnumerable<PrdAccesorioReporteDTO>> GetAllPrdAccesorioWithDetailsAsync(DateTime start, DateTime end);
     }
 }

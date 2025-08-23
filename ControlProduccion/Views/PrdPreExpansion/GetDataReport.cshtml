@@ -1,0 +1,476 @@
+﻿@using Infrastructure.DTO
+@model IEnumerable<PrdPreExpansionReporteDTO>
+
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    ViewData["Title"] = "Reporte Pre-Expansión";
+
+    // Título por paso
+    Func<int?, string> PasoTitulo = p =>
+    {
+        if (p == null || p <= 0) return "Paso sin especificar";
+        switch (p.Value)
+        {
+            case 1: return "Primer Paso";
+            case 2: return "Segundo Paso";
+            case 3: return "Tercer Paso";
+            case 4: return "Cuarto Paso";
+            case 5: return "Quinto Paso";
+            default: return $"Paso {p.Value}";
+        }
+    };
+}
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f6f8fa;
+        margin: 0;
+        padding: 0;
+    }
+
+    .container {
+        width: 90%;
+        max-width: 1200px;
+        margin: 20px auto;
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 6px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    h1 {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+
+    /* Encabezado del reporte */
+    .report-header {
+        border-collapse: collapse;
+        width: 100%;
+        margin-bottom: 25px;
+    }
+
+        .report-header thead th {
+            background-color: #f2f2f2;
+            text-transform: uppercase;
+            font-weight: bold;
+            padding: 10px;
+            text-align: left;
+        }
+
+        .report-header td,
+        .report-header th {
+            border: 1px solid #e1e1e1;
+            padding: 10px;
+        }
+
+    .header-title {
+        font-weight: bold;
+        background-color: #b0f7cc;
+        padding: 12px;
+        margin-bottom: 10px;
+        border-radius: 4px;
+    }
+
+    /* Secciones de Detalles */
+    .section-title {
+        font-weight: bold;
+        padding: 12px;
+        background-color: #d9ecff;
+        margin-top: 20px;
+        margin-bottom: 5px;
+        border-radius: 4px;
+    }
+
+    .details-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 20px;
+    }
+
+        .details-table th {
+            background-color: #f2f2f2;
+            text-transform: uppercase;
+            font-weight: bold;
+            padding: 10px;
+            text-align: left;
+            border: 1px solid #e1e1e1;
+        }
+
+        .details-table td {
+            border: 1px solid #e1e1e1;
+            padding: 10px;
+        }
+
+    /* Sección de firmas */
+    .signatures {
+        margin-top: 40px;
+    }
+
+        .signatures table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .signatures td {
+            padding-top: 40px;
+            text-align: center;
+            vertical-align: bottom;
+        }
+
+    .signature-line {
+        border-top: 1px solid #000;
+        width: 60%; /* Línea un poco más corta */
+        margin: 0 auto 5px auto;
+    }
+
+    .signature-label {
+        display: block;
+        text-align: center;
+        font-weight: bold;
+    }
+
+    .ibox-title {
+        display: flex;
+        align-items: center; /* Alinea verticalmente al centro (opcional) */
+    }
+        /* Opcional: si quieres que cada div ocupe un ancho específico */
+        .ibox-title .col-sm-3 {
+            flex: 0 0 auto; /* No se estira automáticamente */
+            margin-right: 15px; /* Separación entre elementos */
+        }
+</style>
+
+<div class="col-md-15 offset-md-1">
+    @*     <h2 class="text-center"> Reporte Pre-Expansión</h2> *@
+    <div class="ibox">
+        <div class="ibox-title">
+
+            <div class="col-sm-3">
+
+                <input id="datesReport" name="datesReport" runat="server" autocomplete="off" class="form-control" />
+
+            </div>
+            <div class="col-sm-3">  <button id="btnDescargar" class="dt-button buttons-csv buttons-html5 btn btn-outline btn-success btn-xs" tabindex="0" aria-controls="DataTables_Table_0" type="button"><span><i class="fa fa-download"></i> .PDF</span></button></div>
+
+        </div>
+        <div id="divMainReportAll" class="ibox-content table-responsive">
+
+
+            @foreach (var reporte in Model)
+            {
+
+                <div class="report-page">
+                    <!-- Encabezado del Reporte -->
+                    <h1>Reporte de Producción Pre-Expansión</h1>
+                    @*   <div class="header-title">Reporte Id:@reporte.Id</div> *@
+                    <img src="~/logoEcotec.png" alt="Logo Ecotec" style="width:150px; height:50px;">
+                    <br />
+                    <br />
+                    <table class="report-header">
+                        <thead>
+                            <tr>
+                                <th style="width: 30%;">CAMPO</th>
+                                <th style="width: 70%;">VALOR</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                            <tr>
+                                <td>Operarios</td>
+                                <td>@reporte.Operarios</td>
+                            </tr>
+                            <tr>
+                                <td>Fecha</td>
+                                <td>@reporte.Fecha.ToString("yyyy-MM-dd")</td>
+                            </tr>
+                            <tr>
+                                <td>Máquina</td>
+                                <td>@reporte.Maquina</td>
+                            </tr>
+                            <tr>
+                                <td>Hora Inicio</td>
+                                <td>@To12HourFormat(reporte.HoraInicio)</td>
+                            </tr>
+                            <tr>
+                                <td>Hora Fin</td>
+                                <td>@To12HourFormat(reporte.HoraFin)</td>
+                            </tr>
+                            @if (reporte.PresionCaldera.HasValue)
+                            {
+                                <tr>
+                                    <td>Presión Caldera</td>
+                                    <td>@reporte.PresionCaldera.Value</td>
+                                </tr>
+                            }
+                            @if (!string.IsNullOrEmpty(reporte.Lote))
+                            {
+                                <tr>
+                                    <td>Lote</td>
+                                    <td>@reporte.Lote</td>
+                                </tr>
+                            }
+                            @if (reporte.FechaProduccion.HasValue)
+                            {
+                                <tr>
+                                    <td>Fecha Producción</td>
+                                    <td>@reporte.FechaProduccion.Value.ToString("yyyy-MM-dd")</td>
+                                </tr>
+                            }
+                            @if (!string.IsNullOrEmpty(reporte.CodigoSaco))
+                            {
+                                <tr>
+                                    <td>Código Saco</td>
+                                    <td>@reporte.CodigoSaco</td>
+                                </tr>
+                            }
+                            @if (!string.IsNullOrEmpty(reporte.TipoFabricacion))
+                            {
+                                <tr>
+                                    <td>Tipo Fabricación</td>
+                                    <td>@reporte.TipoFabricacion</td>
+                                </tr>
+                            }
+                            @if (reporte.NumeroPedido.HasValue)
+                            {
+                                <tr>
+                                    <td>N° Pedido</td>
+                                    <td>@reporte.NumeroPedido</td>
+                                </tr>
+                            }
+                            <tr>
+                                <td>Observaciones</td>
+                                <td>@reporte.Observaciones</td>
+                            </tr>
+                            @if (reporte.TiempoParo.HasValue)
+                            {
+                                <tr>
+                                    <td>Tiempo Paro (Horas)</td>
+                                    <td>@reporte.TiempoParo</td>
+                                </tr>
+                            }
+                            <tr>
+                                <td>Validador</td>
+                                <td>@reporte.Supervisor</td>
+                            </tr>
+                            <tr>
+                                <td>Jefe Producción</td>
+                                <td>@reporte.JefeProd</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <!-- Detalles de Pre-Expansión -->
+                    <div class="section-title">Detalles de Pre-Expansión</div>
+
+                    @{
+                        var grupos = (reporte.Detalles ?? new List<DetallePreExpansionDto>())
+                        .OrderBy(d => d.Paso ?? int.MaxValue)
+                        .ThenBy(d => d.NoBatch)
+                        .GroupBy(d => d.Paso);
+                    }
+
+                    @foreach (var grupo in grupos)
+                    {
+                        <div class="section-title">@PasoTitulo(grupo.Key)</div>
+                        <table class="details-table">
+                            <thead>
+                                <tr>
+                                    <th>No. Batch</th>
+                                    <th>Hora</th>
+                                    <th>Densidad Esperada</th>
+                                    <th>Peso Batch (gr)</th>
+                                    <th>Densidad</th>
+                                    <th>Kg por Batch</th>
+                                    <th>Presión PSI</th>
+                                    <th>Tiempo Batch (seg)</th>
+                                    <th>Temperatura °C</th>
+                                    <th>Silo</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var detalle in grupo)
+                                {
+                                    <tr>
+                                        <td>@detalle.NoBatch</td>
+                                        <td>@To12HourFormat(detalle.Hora)</td>
+                                        <td>@(detalle.DensidadEsperada?.ToString("F2") ?? "-")</td>
+                                        <td>@(detalle.PesoBatchGr?.ToString("F2") ?? "-")</td>
+                                        <td>@(detalle.Densidad?.ToString("F2") ?? "-")</td>
+                                        <td>@(detalle.KgPorBatch?.ToString("F2") ?? "-")</td>
+                                        <td>@(detalle.PresionPSI?.ToString("F2") ?? "-")</td>
+                                        <td>@(detalle.TiempoBatchSeg?.ToString("F2") ?? "-")</td>
+                                        <td>@(detalle.TemperaturaC?.ToString("F2") ?? "-")</td>
+                                        <td>@(detalle.Silo?.ToString() ?? "-")</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    }
+
+                    @if (reporte == Model.Last())
+                    {
+                        <!-- Sección de Firmas -->
+                        <div class="signatures">
+                            <table>
+                                <tr>
+                                    <td>
+                                        <div class="signature-line"></div>
+                                        <span class="signature-label">Operario</span>
+                                    </td>
+                                    <td>
+                                        <div class="signature-line"></div>
+                                        <span class="signature-label">Supervisor</span>
+                                    </td>
+                                    <td>
+                                        <div class="signature-line"></div>
+                                        <span class="signature-label">Jefe de Producción</span>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    }
+
+                </div>
+            }
+
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+
+        var startParam = ViewContext.HttpContext.Request.Query["start"].ToString();
+        var endParam = ViewContext.HttpContext.Request.Query["end"].ToString();
+
+        var defaultStartDate = string.IsNullOrEmpty(startParam)
+            ? DateTime.Now.AddDays(-1).ToString("MM/dd/yyyy")
+            : startParam;
+
+        var defaultEndDate = string.IsNullOrEmpty(endParam)
+            ? DateTime.Now.ToString("MM/dd/yyyy")
+            : endParam;
+    }
+    <script src="~/js/html2canvas.min.js"></script>
+    <script src="~/js/jspdf.umd.min.js"></script>
+    <script>
+                 $(function () {
+          var start = moment('@defaultStartDate');
+        var end = moment('@defaultEndDate');
+
+            $('#datesReport').daterangepicker({
+                startDate: start,
+                endDate: end,
+                ranges: {
+                    'Hoy': [moment(), moment()],
+                    'Ayer': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                    'Ultimos 7 dias': [moment().subtract(6, 'days'), moment()],
+                    'Ultimos 30 dias': [moment().subtract(29, 'days'), moment()],
+                    'Este Mes': [moment().startOf('month'), moment().endOf('month')],
+                    'Mes pasado': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+                }
+            });
+
+            // Al aplicar un nuevo rango, se redirige a la acción con los parámetros
+            $('#datesReport').on('apply.daterangepicker', function(ev, picker) {
+                window.location.href = '@Url.Action("GetDataReport", "PrdPreExpansion")'
+                    + '?start=' + picker.startDate.format('YYYY-MM-DD')
+                    + '&end=' + picker.endDate.format('YYYY-MM-DD');
+            });
+        });
+
+                 document.getElementById('btnDescargar').addEventListener('click', async function() {
+          // Crear una instancia de jsPDF
+          var pdf = new jspdf.jsPDF('p', 'mm', 'letter');
+          var pageWidth = pdf.internal.pageSize.getWidth();
+          var pageHeight = pdf.internal.pageSize.getHeight();
+
+          // Selecciona todos los contenedores de reporte
+          var reportPages = document.querySelectorAll('.report-page');
+
+                // --- Inicio: Modificación Temporal ---
+        const originalStyles = []; // Para guardar los estilos originales
+        const fixedWidth = '1024px'; // O el ancho que consideres "escritorio" o necesario para ver todo
+
+        reportPages.forEach(page => {
+            originalStyles.push({ element: page, style: page.style.cssText }); // Guarda estilo inline actual
+            page.style.width = fixedWidth;
+            page.style.maxWidth = fixedWidth; // Asegura que no se limite por otras reglas
+            // Podrías necesitar añadir más estilos aquí para forzar la visibilidad
+            // de elementos que se ocultan en móvil, por ejemplo:
+            // page.querySelectorAll('.elemento-oculto-en-movil').forEach(el => el.style.display = 'block');
+        });
+        // --- Fin: Modificación Temporal ---
+
+          // Procesa cada reporte individualmente
+          var isFirstPdfPage = true; // Controla si agregamos nueva página
+          for (var i = 0; i < reportPages.length; i++) {
+            // Renderiza el contenedor actual en un canvas con html2canvas
+                    var canvasOptions = {
+            scale: 2, // Mejora resolución
+            useCORS: true,
+            // Intenta simular un viewport más ancho
+            windowWidth: 1200, // Un ancho típico de escritorio en píxeles
+            // Opcional: Forzar el ancho del canvas resultante (puede escalar, no siempre arregla layout)
+            // width: 1200,
+            scrollX: 0,
+            scrollY: -window.scrollY // Capturar desde la parte superior
+        };
+
+            var canvas = await html2canvas(reportPages[i], canvasOptions);
+
+            // Ajustar la imagen respetando márgenes y múltiples páginas
+            var margin = 10; // margen en mm
+            var canvasWidth = canvas.width;
+            var canvasHeight = canvas.height;
+            var imgWidth = pageWidth - margin * 2;
+            var scale = imgWidth / canvasWidth;
+            var pageHeightAvailable = pageHeight - margin * 2;
+            var sliceHeight = pageHeightAvailable / scale; // Alto en px de cada página
+
+            var pageCanvas = document.createElement('canvas');
+            var pageCtx = pageCanvas.getContext('2d');
+            pageCanvas.width = canvasWidth;
+
+            var renderedHeight = 0;
+            while (renderedHeight < canvasHeight) {
+                var currentHeight = Math.min(sliceHeight, canvasHeight - renderedHeight);
+                pageCanvas.height = currentHeight;
+                pageCtx.clearRect(0, 0, canvasWidth, currentHeight);
+                pageCtx.drawImage(canvas, 0, renderedHeight, canvasWidth, currentHeight, 0, 0, canvasWidth, currentHeight);
+                var imgData = pageCanvas.toDataURL('image/png');
+
+                if (!isFirstPdfPage) {
+                    pdf.addPage();
+                }
+
+                pdf.addImage(imgData, 'PNG', margin, margin, imgWidth, currentHeight * scale);
+                renderedHeight += currentHeight;
+                isFirstPdfPage = false;
+            }
+          }
+
+          // Restaurar estilos originales
+          reportPages.forEach((page, idx) => {
+              page.style.cssText = originalStyles[idx].style;
+          });
+
+          pdf.save('ReporteProduccionPreExpansion.pdf');
+        });
+
+    </script>
+
+}
+
+@functions {
+    public static string To12HourFormat(TimeSpan hora)
+    {
+        var dateTime = DateTime.Today.Add(hora);
+        return dateTime.ToString("hh:mm tt");
+    }
+}

@@ -62,7 +62,24 @@ namespace Infrastructure.UnitOfWork
         IGenericRepository<CatLamina> CatLaminaRepository { get; }
         IGenericRepository<PrdCorteT> PrdCorteTRepository { get; }
         IGenericRepository<DetPrdCorteT> DetPrdCorteTRepository { get; }
+        IGenericRepository<PrdCorteP> PrdCortePRepository { get; }
+        IGenericRepository<DetPrdCorteP> DetPrdCortePRepository { get; }
+        IGenericRepository<PrdpreExpansion> PrdpreExpansionRepository { get; }
+        IGenericRepository<DetPrdpreExpansion> DetPrdpreExpansionRepository { get; }
+        IGenericRepository<CatPantografo> CatPantografoRepository { get; }
 
+        IGenericRepository<CatTipoMalla> CatTipoMallaRepository { get; }
+        IGenericRepository<PrdMallaPch> PrdMallaPchRepository { get; }
+        IGenericRepository<DetPrdPchMaquinaA> DetPrdPchMaquinaARepository { get; }
+        IGenericRepository<DetPrdPchMaquinaB> DetPrdPchMaquinaBRepository { get; }
+        IGenericRepository<DetPrdPchMaquinaC> DetPrdPchMaquinaCRepository { get; }
+        IGenericRepository<CatalogoPanelesPch> CatalogoPanelesPchRepository { get; }
+        IGenericRepository<PrdPaneladoraPch> PrdPaneladoraPchRepository { get; }
+        IGenericRepository<DetPrdPaneladoraPch> DetPrdPaneladoraPchRepository { get; }
+        IGenericRepository<PrdAccesorio> PrdAccesorioRepository { get; }
+        IGenericRepository<DetPrdAccesorio> DetPrdAccesorioRepository { get; }
+        IGenericRepository<CatalogoAccesorio> CatalogoAccesorioRepository { get; }
+        IGenericRepository<ErrorLog> ErrorLogRepository { get; }
         Task<int> SaveChangesAsync();
         Task BeginTransactionAsync();
         Task CommitAsync();

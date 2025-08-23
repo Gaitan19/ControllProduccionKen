@@ -1,0 +1,239 @@
+﻿@using ControlProduccion.ViewModel
+@using Microsoft.AspNetCore.Mvc.Rendering
+@model PrdMallaPchViewModel
+
+@{
+    ViewData["Title"] = "Producción Malla PCH - Detalle";
+}
+
+<div class="col-md-8 offset-md-2">
+    <div class="ibox">
+        <div class="ibox-title">
+            <h5>@ViewData["Title"]</h5>
+        </div>
+        <div class="ibox-content">
+            <form id="frmDetalle" autocomplete="off">
+                @Html.AntiForgeryToken()
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+                <div class="form-group">
+                    <label asp-for="IdUsuarios"></label>
+                    <select disabled="disabled"
+                            id="IdUsuarios"
+                            name="IdUsuarios"
+                            asp-for="IdUsuarios"
+                            class="form-control select2"
+                            asp-items="Model.Operarios">
+                    </select>
+                    <span asp-validation-for="IdUsuarios" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Fecha"></label>
+                    <input asp-for="Fecha" readonly="readonly" class="form-control" />
+                    <span asp-validation-for="Fecha" class="text-danger"></span>
+                </div>
+
+                <div class="hr-line-dashed"></div>
+
+                <div class="form-group row">
+                    <div class="col-sm-12" style="max-height:300px; overflow:auto">
+                        <h4>Detalle Máquina A - Hilos Transversales</h4>
+                        <table class="table table-bordered table-hover">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Máquina</th>
+                                    <th>Hilos Transversales (un)</th>
+                                    <th>Merma Hilos Transversales (kg)</th>
+                                    <th>Tipo Fabricación</th>
+                                    <th>N° Pedido</th>
+                                    <th>Longitud (m)</th>
+                                    <th>Cantidad (un)</th>
+                                    <th>N° Alambre A</th>
+                                    <th>Peso Alambre A (kg)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model.DetPrdPchMaquinaAs != null)
+                                {
+                                    foreach (var det in Model.DetPrdPchMaquinaAs)
+                                    {
+                                        var maqTxt = Model.Maquinas?.FirstOrDefault(x => x.Value == det.IdMaquina.ToString())?.Text ?? det.IdMaquina.ToString();
+                                        var tipoFabTxt = Model.TiposFabricacion?.FirstOrDefault(x => x.Value == det.IdTipoFabricacion.ToString())?.Text ?? det.IdTipoFabricacion.ToString();
+                                        <tr>
+                                            <td>@maqTxt</td>
+                                            <td>@det.HilosTransversalesUn</td>
+                                            <td>@det.MermaHilosTransversalesKg</td>
+                                            <td>@tipoFabTxt</td>
+                                            <td>@(det.NumeroPedido?.ToString() ?? "")</td>
+                                            <td>@det.Longitud</td>
+                                            <td>@det.Cantidad</td>
+                                            <td>@det.NumeroAlambreA</td>
+                                            <td>@det.PesoAlambreKgA</td>
+                                        </tr>
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="hr-line-dashed"></div>
+
+                <div class="form-group row">
+                    <div class="col-sm-12" style="max-height:300px; overflow:auto">
+                        <h4>Detalle Máquina B - Hilos Longitudinales</h4>
+                        <table class="table table-bordered table-hover">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Máquina</th>
+                                    <th>Hilos Longitudinales (un)</th>
+                                    <th>Merma Hilos Longitudinales (kg)</th>
+                                    <th>Tipo Fabricación</th>
+                                    <th>N° Pedido</th>
+                                    <th>Longitud (m)</th>
+                                    <th>Cantidad (un)</th>
+                                    <th>N° Alambre B</th>
+                                    <th>Peso Alambre B (kg)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model.DetPrdPchMaquinaBs != null)
+                                {
+                                    foreach (var det in Model.DetPrdPchMaquinaBs)
+                                    {
+                                        var maqTxt = Model.Maquinas?.FirstOrDefault(x => x.Value == det.IdMaquina.ToString())?.Text ?? det.IdMaquina.ToString();
+                                        var tipoFabTxt = Model.TiposFabricacion?.FirstOrDefault(x => x.Value == det.IdTipoFabricacion.ToString())?.Text ?? det.IdTipoFabricacion.ToString();
+                                        <tr>
+                                            <td>@maqTxt</td>
+                                            <td>@det.HilosLongitudinalesUn</td>
+                                            <td>@det.MermaHilosLongitudinalesKg</td>
+                                            <td>@tipoFabTxt</td>
+                                            <td>@(det.NumeroPedido?.ToString() ?? "")</td>
+                                            <td>@det.Longitud</td>
+                                            <td>@det.Cantidad</td>
+                                            <td>@det.NumeroAlambreB</td>
+                                            <td>@det.PesoAlambreKgB</td>
+                                        </tr>
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="hr-line-dashed"></div>
+
+                <div class="form-group row">
+                    <div class="col-sm-12" style="max-height:300px; overflow:auto">
+                        <h4>Detalle Máquina C - Mallas</h4>
+                        <table class="table table-bordered table-hover">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Máquina</th>
+                                    <th>Tipo Malla</th>
+                                    <th>Merma Mallas (kg)</th>
+                                    <th>Tipo Fabricación</th>
+                                    <th>N° Pedido</th>
+                                    <th>Longitud (m)</th>
+                                    <th>Cantidad (un)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model.DetPrdPchMaquinaCs != null)
+                                {
+                                    foreach (var det in Model.DetPrdPchMaquinaCs)
+                                    {
+                                        var maqTxt = Model.Maquinas?.FirstOrDefault(x => x.Value == det.IdMaquina.ToString())?.Text ?? det.IdMaquina.ToString();
+                                        var tipoMallaTxt = Model.TiposMalla?.FirstOrDefault(x => x.Value == det.IdTipoMalla.ToString())?.Text ?? det.IdTipoMalla.ToString();
+                                        var tipoFabTxt = Model.TiposFabricacion?.FirstOrDefault(x => x.Value == det.IdTipoFabricacion.ToString())?.Text ?? det.IdTipoFabricacion.ToString();
+                                        <tr>
+                                            <td>@maqTxt</td>
+                                            <td>@tipoMallaTxt</td>
+                                            <td>@det.MermaMallasKg</td>
+                                            <td>@tipoFabTxt</td>
+                                            <td>@(det.NumeroPedido?.ToString() ?? "")</td>
+                                            <td>@det.Longitud</td>
+                                            <td>@det.Cantidad</td>
+                                        </tr>
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="hr-line-dashed"></div>
+
+                <div class="form-group">
+                    <label asp-for="Observaciones"></label>
+                    <textarea readonly="readonly" asp-for="Observaciones" class="form-control"></textarea>
+                    <span asp-validation-for="Observaciones" class="text-danger"></span>
+                </div>
+
+                <button type="button"
+                        class="btn btn-dark"
+                        onclick="location.href='@Url.Action("Index", "PrdMallaPch")'">
+                    Regresar
+                </button>
+
+                @if (User.IsInRole("Supervisor") && Model.AprobadoSupervisor != true)
+                {
+                    <button type="button" id="btnValidarPrd" class="btn btn-danger">
+                        <i class="fa fa-check"></i> Validar
+                    </button>
+                }
+                else if (Model.AprobadoSupervisor == true)
+                {
+                    <button type="button" class="btn btn-success" disabled>
+                        <i class="fa fa-check"></i> Validado
+                    </button>
+                }
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        $("#IdUsuarios").select2({
+            placeholder: "- Selecciona los operarios -",
+            allowClear: true
+        });
+
+        // Asegurar solo lectura visual y funcional del select múltiple
+        $("#IdUsuarios").prop("disabled", true);
+
+        // Validar producción
+        $(document).on("click", "#btnValidarPrd", function (e) {
+            e.preventDefault();
+            if (!confirm("¿Está seguro de que desea validar esta producción?")) return;
+
+            var token = $('input[name="__RequestVerificationToken"]').val();
+
+            $.ajax({
+                url: '@Url.Action("ValidarPrd", "PrdMallaPch")',
+                type: 'POST',
+                data: {
+                    __RequestVerificationToken: token,
+                    id: @Model.Id
+                },
+                success: function (response) {
+                    if (response) {
+                        alert("Producción validada exitosamente.");
+                        location.reload();
+                    } else {
+                        alert("Error al validar la producción.");
+                    }
+                },
+                error: function (xhr, status, error) {
+                    alert("Error al procesar la solicitud: " + error);
+                }
+            });
+        });
+    </script>
+}

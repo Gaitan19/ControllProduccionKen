@@ -132,6 +132,8 @@ namespace ControlProduccion.Controllers
                 AprobadoSupervisor = model.AprobadoSupervisor,
                 AprobadoGerencia = model.AprobadoGerencia,
                 Observaciones = model.Observaciones,
+                MetrosInicialIsocianato = model.MetroInicialIsocianato ?? 0,
+                MetrosInicialPoliol= model.MetroInicialPoliol ?? 0,
 
                 // Catalogos
                 Maquinas = dtCat.CatMaquina.Select(m => new SelectListItem { Value = m.Id.ToString(), Text = m.Nombre }),
@@ -334,7 +336,9 @@ namespace ControlProduccion.Controllers
                 FechaCreacion= DateTime.Now,
                 AprobadoGerencia=false,
                 AprobadoSupervisor=false,
-                TiempoParo= model.TiempoParo
+                TiempoParo= model.TiempoParo,
+                MetroInicialIsocianato= model.MetrosInicialIsocianato,
+                MetroInicialPoliol= model.MetrosInicialPoliol
             };
 
             await _prdIlKwangService.CreateAsync(dto);
@@ -406,6 +410,8 @@ namespace ControlProduccion.Controllers
                 LoteB = model.LoteB,
                 VencimientoB = model.VencimientoB,
                 Observaciones = model.Observaciones,
+                MetrosInicialIsocianato = model.MetroInicialIsocianato ?? 0,
+                MetrosInicialPoliol = model.MetroInicialPoliol ?? 0,
                 CantidadArranques = model.CantidadArranques ?? 0,
                 IdUsuarioCreacion = model.IdUsuarioCreacion,
                 FechaCreacion = model.FechaCreacion,
@@ -531,7 +537,9 @@ namespace ControlProduccion.Controllers
                     VencimientoB = model.VencimientoB,
                     Observaciones = model.Observaciones,
                     CantidadArranques = model.CantidadArranques,
-                    IdUsuarioActualizacion = userId
+                    IdUsuarioActualizacion = userId,
+                    MetroInicialPoliol= model.MetrosInicialPoliol,
+                    MetroInicialIsocianato = model.MetrosInicialIsocianato
                 };
 
                 await _prdIlKwangService.UpdateAsync(dto);

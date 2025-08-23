@@ -1,0 +1,560 @@
+﻿
+@using ControlProduccion.ViewModel
+@model PrdPreExpansionViewModel
+@{
+    ViewData["Title"] = "Ingresar Producción Pre-Expansión";
+}
+<div class="col-md-8 offset-md-2">
+    <div class="ibox">
+        <div class="ibox-title">
+            <h5>@ViewData["Title"]</h5>
+        </div>
+        <div class="ibox-content">
+            <form id="frmProduccion" method="post" autocomplete="off">
+                @Html.AntiForgeryToken()
+
+                <div class="form-group">
+                    <label asp-for="IdUsuarios"></label>
+                    <select id="IdUsuarios" multiple asp-for="IdUsuarios" class="form-control select2" asp-items="Model.Operarios"></select>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="IdMaquina"></label>
+                    <select id="IdMaquina" asp-for="IdMaquina" class="form-control select2" asp-items="Model.Maquinas">
+                        <option value="">-- Seleccione Máquina --</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Fecha"></label>
+                    <input asp-for="Fecha" class="form-control" />
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="HoraInicio"></label>
+                    <input asp-for="HoraInicio" type="time"  class="form-control" />
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="HoraFin"></label>
+                    <input asp-for="HoraFin" type="time"  class="form-control" />
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="PresionCaldera"></label>
+                    <input asp-for="PresionCaldera" class="form-control" />
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Lote"></label>
+                    <input asp-for="Lote" class="form-control" />
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="FechaProduccion"></label>
+                    <input asp-for="FechaProduccion" class="form-control" />
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="CodigoSaco"></label>
+                    <input asp-for="CodigoSaco" class="form-control" />
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="IdTipoFabricacion"></label>
+                    <select id="IdTipoFabricacion" asp-for="IdTipoFabricacion" class="form-control select2" asp-items="Model.TiposFabricacion">
+                        <option value="">-- Seleccione Tipo --</option>
+                    </select>
+                </div>
+
+                <div class="form-group" id="divNumeroPedido" style="display:none">
+                    <label asp-for="NumeroPedido"></label>
+                    <input asp-for="NumeroPedido" class="form-control" min="0" step="1" />
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="TiempoParo"></label>
+                    <input asp-for="TiempoParo" class="form-control" min="0" step="0.01" />
+                </div>
+
+    @*             <div class="form-group">
+                    <label asp-for="IdTipoReporte"></label>
+                    <select id="IdTipoReporte" asp-for="IdTipoReporte" class="form-control select2" asp-items="Model.TiposReporte">
+                        <option value="">-- Seleccione Tipo de Reporte --</option>
+                    </select>
+                </div> *@
+
+                <div class="hr-line-dashed"></div>
+                <div class="form-group row">
+                    <div class="col-sm-12 d-flex align-items-center">
+                        <a data-toggle="modal" href="#modal-Detalle" id="btnAgregarDetalle"
+                           class="btn btn-info btn-outline mr-2">
+                            <i class="fa fa-plus"></i> Agregar Detalle
+                        </a>
+
+                        <select id="Paso" name="Paso" class="form-control form-control-sm w-auto">
+                            <option value="1">Primer Paso</option>
+                            <option value="2">Segundo Paso</option>
+                        </select>
+                    </div>
+
+                    <div class="col-sm-12 mt-3" style="max-height:300px; overflow:scroll">
+                        <h4>Detalle Producción</h4>
+                        <table id="tblDetalle" class="table table-bordered table-striped">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>No. Batch</th>
+                                    <th>Hora</th>
+                                 
+                                    <th>Dens. Esperada</th>
+                                    <th>Peso Batch (g)</th>
+                                    <th>Densidad</th>
+                                    <th>Kg/Batch</th>
+                                    <th>Presión (psi)</th>
+                                    <th>Tiempo (seg)</th>
+                                    <th>Temp (°C)</th>
+                                    <th>Silo</th>
+                                    <th>Paso</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Observaciones"></label>
+                    <textarea asp-for="Observaciones" id="Observaciones" class="form-control" rows="3"></textarea>
+                    <span asp-validation-for="Observaciones" class="text-danger"></span>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Guardar</button>
+                <button type="button"
+                        id="btnRegresar"
+                        class="btn btn-dark"
+                        data-url="@Url.Action("Index", "PrdPreExpansion")">
+                    Regresar
+                </button>
+            </form>
+
+            <!-- Modal Detalle -->
+            <div id="modal-Detalle" class="modal fade" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title">Nuevo Detalle de Producción</h4>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+
+                        <div class="modal-body">
+                            <form id="frmDetPrd">
+                                <input type="hidden" name="uid" value="<%=idx%>" />
+                                <div class="form-group">
+                                    <label class="form-label">No. Batch <span class="text-danger">*</span></label>
+                                    <input readonly type="number" id="NoBatch" name="NoBatch" class="form-control" min="0" step="1" />
+                                </div>
+                        
+                                <div class="form-group">
+                                    <label class="form-label">Hora <span class="text-danger">*</span></label>
+                                    <input readonly type="time" id="Hora" name="Hora" class="form-control" />
+                                </div>
+
+                           
+
+                                <div class="form-group">
+                                    <label class="form-label">Densidad Esperada <span class="text-danger">*</span></label>
+                                    <input type="number" id="DensidadEsperada" name="DensidadEsperada" class="form-control" min="0" step="1" />
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">Peso Batch (g) <span class="text-danger">*</span></label>
+                                    <input type="number" id="PesoBatchGr" name="PesoBatchGr" class="form-control" min="0" step="0.01" />
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">Densidad <span class="text-danger">*</span></label>
+                                    <input type="number" id="Densidad" name="Densidad" class="form-control" min="0" step="0.01" />
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">Kg por Batch <span class="text-danger">*</span></label>
+                                    <input type="number" id="KgPorBatch" name="KgPorBatch" class="form-control" min="0" step="1" />
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">Presión (psi) <span class="text-danger">*</span></label>
+                                    <input type="number" id="PresionPsi" name="PresionPsi" class="form-control" min="0" step="1" />
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">Tiempo Batch (seg) <span class="text-danger">*</span></label>
+                                    <input type="number" id="TiempoBatchSeg" name="TiempoBatchSeg" class="form-control" min="0" step="1" />
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">Temperatura (°C) <span class="text-danger">*</span></label>
+                                    <input type="number" id="TemperaturaC" name="TemperaturaC" class="form-control" min="0" step="1" />
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">Silo <span class="text-danger">*</span></label>
+                                    <input type="number" id="Silo" name="Silo" class="form-control"
+                                           min="1" step="1" inputmode="numeric" />
+                                   
+                                </div>
+                            </form>
+                        </div>
+
+                        <div class="modal-footer">
+                            <button id="btnGuardarDetPrd" type="button" class="btn btn-primary">Agregar</button>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                            <div class="w-100">
+                                <p id="spnbtnGuardarDetPrd" class="text-sm text-danger mt-2"></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div> <!-- /Modal -->
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        $(document).ready(function () {
+
+
+
+
+            // ───────── AUTOSAVE / RESTORE / PREVENT EXIT ─────────
+            const DRAFT_KEY = 'draft-prdPreExpansion';
+            var detalleNo = 1;
+
+            function backupForm() {
+                const formArr = $('#frmProduccion').serializeArray();
+                const detalleHtml = $('#tblDetalle tbody').html();
+                localStorage.setItem(DRAFT_KEY, JSON.stringify({
+                    form: formArr,
+                    detalleHtml: detalleHtml
+                }));
+            }
+
+            function restoreIfExists() {
+                const draftStr = localStorage.getItem(DRAFT_KEY);
+                if (!draftStr) return;
+
+                if (confirm('Se encontró un borrador sin guardar. ¿Deseas restaurarlo?')) {
+                    const draft = JSON.parse(draftStr);
+
+                    // Agrupar valores por nombre (maneja selects múltiples)
+                    const formMap = draft.form.reduce((acc, { name, value }) => {
+                        (acc[name] = acc[name] || []).push(value);
+                        return acc;
+                    }, {});
+
+                    Object.entries(formMap).forEach(([name, values]) => {
+                        const $el = $('[name="' + name + '"]');
+                        const valToSet = $el.prop('multiple') ? values : values[0];
+                        if ($el.hasClass('select2-hidden-accessible')) {
+                            $el.val(valToSet).trigger('change');
+                        } else {
+                            $el.val(valToSet);
+                        }
+                    });
+
+                    $('#tblDetalle tbody').html(draft.detalleHtml);
+
+                    // Recalcular No. de detalle
+                    const nos = $('#tblDetalle tbody tr[data-no]').map(function () { return +$(this).data('no'); }).get();
+                    if (nos.length) detalleNo = Math.max.apply(null, nos) + 1;
+
+                    // Re-evaluar visibilidad de Número de Pedido
+                    toggleNumeroPedido();
+                }
+            }
+
+            function beforeUnloadHandler(e) {
+                const hasRows = $('#tblDetalle tbody tr').length > 0;
+                const isDirty = $('#frmProduccion').serialize() !== '';
+                if (hasRows || isDirty) {
+                    e.preventDefault();
+                    e.returnValue = '';
+                }
+            }
+
+            restoreIfExists();
+            setInterval(backupForm, 30000);
+            window.addEventListener('beforeunload', beforeUnloadHandler);
+
+            $('#btnRegresar').off('click').on('click', function () {
+                const url = $(this).data('url');
+                if (confirm('¿Deseas salir sin guardar? Se perderán los datos no guardados.')) {
+                    localStorage.removeItem(DRAFT_KEY);
+                    window.removeEventListener('beforeunload', beforeUnloadHandler);
+                    window.location.href = url;
+                }
+            });
+
+
+                  function convertirHora(hora24) {
+            if (!hora24) {
+                return null; // Retorna null si no hay hora
+            }
+
+            // La lógica de conversión que ya conoces
+            var parts   = hora24.split(':');
+            var h24     = parseInt(parts[0], 10);
+            var m       = parts[1];
+            var ampm    = h24 >= 12 ? 'PM' : 'AM';
+            var h12     = (h24 % 12) || 12;
+
+            var formattedHora12H = ('0' + h12).slice(-2) + ':' + m + ':00 ' + ampm;
+            var formattedHora24H = ('0' + h24).slice(-2) + ':' + m + ':00';
+
+            // Retornamos un objeto con ambos valores
+            return {
+                formato12h: formattedHora12H,
+                formato24h: formattedHora24H
+            };
+        }
+
+
+            // ───────── SELECT2 PRINCIPALES ─────────
+            $("#IdUsuarios").select2({
+                placeholder: "- Selecciona los operarios -",
+                allowClear: true,
+                width: '100%'
+            });
+
+            $("#IdMaquina").select2({
+                placeholder: "- Selecciona la máquina -",
+                allowClear: true,
+                width: '100%'
+            });
+
+            $("#IdTipoFabricacion").select2({
+                placeholder: "- Selecciona el tipo -",
+                allowClear: true,
+                width: '100%'
+            });
+
+          
+
+            // Mostrar/ocultar Número de Pedido (asumiendo valor 2 = "Por Pedido")
+            function toggleNumeroPedido() {
+                var v = $('#IdTipoFabricacion').val();
+                if (v == '2') {
+                    $('#divNumeroPedido').show();
+                } else {
+                    $('#divNumeroPedido').hide();
+                    $('#NumeroPedido').val('');
+                }
+            }
+            $('#IdTipoFabricacion').on('change', toggleNumeroPedido);
+            toggleNumeroPedido();
+
+            // ───────── MODAL DETALLE ─────────
+            $('#modal-Detalle').on('shown.bs.modal', function () {
+                var $modal = $(this);
+                var $modalBody = $modal.find('.modal-body');
+
+        
+
+                // Setear No. consecutivo
+                $modal.find('#No').val(detalleNo);
+                        // Hora actual (HH:mm)
+        var now = new Date();
+        var hh = String(now.getHours()).padStart(2, '0');
+        var mm = String(now.getMinutes()).padStart(2, '0');
+        $modal.find('#Hora').val(hh + ':' + mm);
+
+
+           // Nuevo: NoBatch por Paso seleccionado
+        var pasoActual = parseInt($('#Paso').val(), 10) || 1;
+        var nextBatch = getNextBatchForPaso(pasoActual);
+        $modal.find('#NoBatch').val(nextBatch).trigger('change');
+
+       
+                // Foco inicial
+                $modal.find('#Hora').trigger('focus');
+            });
+
+            // Guardar detalle
+            $('#btnGuardarDetPrd').click(function () {
+                var modalId = '#modal-Detalle';
+                $(modalId + ' #spnbtnGuardarDetPrd').text('');
+
+            
+                var hora = $(modalId + ' #Hora').val();
+               var noBatch = parseInt($(modalId + ' #NoBatch').val(), 10);
+                var densEsp = $(modalId + ' #DensidadEsperada').val();
+                var pesoGr = $(modalId + ' #PesoBatchGr').val();
+                var dens = $(modalId + ' #Densidad').val();
+                var kgBatch = $(modalId + ' #KgPorBatch').val();
+                var psi = $(modalId + ' #PresionPsi').val();
+                var seg = $(modalId + ' #TiempoBatchSeg').val();
+                var tempC = $(modalId + ' #TemperaturaC').val();
+                var silo = $(modalId + ' #Silo').val();
+              var paso = $('#Paso').val();
+              var pasoTxt = $('#Paso option:selected').text();
+                // Validaciones mínimas
+                if (!hora || !noBatch === '' || densEsp === '' || pesoGr === '' || dens === '' ||
+                    kgBatch === '' || psi === '' || seg === '' || tempC === '' || !silo) {
+                    $(modalId + ' #spnbtnGuardarDetPrd').text('Complete todos los campos obligatorios.');
+                    return;
+                }
+
+                // Números válidos
+                var decRegex = /^\d+(\.\d{1,2})?$/;
+                if (!decRegex.test(pesoGr) || !decRegex.test(dens)) {
+                    $(modalId + ' #spnbtnGuardarDetPrd').text('Peso y Densidad deben tener hasta 2 decimales.');
+                    return;
+                }
+
+                        var horaSf = $(modalId + ' #Hora').val();
+
+                       var rawHora = horaSf;            // p.ej. "13:44"
+        var parts   = rawHora.split(':');
+        var h24     = parseInt(parts[0],10), m = parts[1];
+        var ampm    = h24 >= 12 ? 'PM' : 'AM';
+        var h12     = (h24 % 12) || 12;
+        var formattedHora = ('0' + h12).slice(-2) + ':' + m + ':00 ' + ampm;
+         var rawHora24 = ('0'+h24).slice(-2) + ':' + m + ':00'; //formato 24H para el backend
+
+                     var row = `
+                    <tr data-nobatch="${noBatch}"
+                        data-hora="${rawHora24}"
+                        data-densidadesperada="${parseInt(densEsp)}"
+                        data-pesobatchgr="${parseFloat(pesoGr)}"
+                        data-densidad="${parseFloat(dens)}"
+                        data-kgporbatch="${parseInt(kgBatch)}"
+                        data-presionpsi="${parseInt(psi)}"
+                        data-tiempobatchseg="${parseInt(seg)}"
+                        data-temperaturac="${parseInt(tempC)}"
+                        data-silo="${parseInt(silo)}"
+                        data-paso="${parseInt(paso)}">
+                        <td>${noBatch}</td>
+                        <td>${formattedHora}</td>
+                        <td>${densEsp}</td>
+                        <td>${pesoGr}</td>
+                        <td>${dens}</td>
+                        <td>${kgBatch}</td>
+                        <td>${psi}</td>
+                        <td>${seg}</td>
+                        <td>${tempC}</td>
+                        <td>${silo}</td>
+                       <td>${pasoTxt}</td>
+                    </tr>`;
+
+                $('#tblDetalle > tbody').append(row);
+                detalleNo++;
+                $(modalId + ' #frmDetPrd')[0].reset();
+                $(modalId).modal('hide');
+            });
+
+            // Eliminar fila
+            // $(document).on('click', '.btn-delete-row', function () {
+            //     if (confirm('¿Está seguro de eliminar este registro?')) {
+            //         $(this).closest('tr').remove();
+            //     }
+            // });
+
+            // ───────── SUBMIT PRINCIPAL ─────────
+            $('#frmProduccion').submit(function (e) {
+                e.preventDefault();
+                var token = $('input[name="__RequestVerificationToken"]').val();
+
+                        // --- INICIO DE LA MODIFICACIÓN ---
+                var horaInicioVal = $('#HoraInicio').val();
+                var horaFinVal = $('#HoraFin').val();
+
+               var horasConvertidasInicio = convertirHora(horaInicioVal);
+                 var horasConvertidasFin = convertirHora(horaFinVal);
+
+                var vm = {
+                    IdUsuarios: $('#IdUsuarios').val(),
+                    IdMaquina: $('#IdMaquina').val() ? parseInt($('#IdMaquina').val()) : 0,
+                    Fecha: $('#Fecha').val(),
+                    HoraInicio: horasConvertidasInicio.formato24h,
+                    HoraFin: horasConvertidasFin.formato24h,
+                    PresionCaldera: $('#PresionCaldera').val(),
+                    Lote: $('#Lote').val(),
+                    FechaProduccion: $('#FechaProduccion').val(),
+                    CodigoSaco: $('#CodigoSaco').val(),
+                    IdTipoFabricacion: $('#IdTipoFabricacion').val() ? parseInt($('#IdTipoFabricacion').val()) : 0,
+                    NumeroPedido: $('#NumeroPedido').val() ? parseInt($('#NumeroPedido').val()) : null,
+                    Observaciones: $('#Observaciones').val(),
+                    TiempoParo: $('#TiempoParo').val() ? parseFloat($('#TiempoParo').val()) : null,
+                    DetPrdPreExpansions: []
+                };
+
+                       $('#tblDetalle tbody tr[data-nobatch]').each(function () {
+          var $r = $(this);
+          vm.DetPrdPreExpansions.push({
+            Hora: String($r.data('hora')),
+            NoBatch: parseInt($r.data('nobatch')),
+            DensidadEsperada: parseInt($r.data('densidadesperada')),
+            PesoBatchGr: parseFloat($r.data('pesobatchgr')),
+            Densidad: parseFloat($r.data('densidad')),
+            KgPorBatch: parseInt($r.data('kgporbatch')),
+            PresionPsi: parseInt($r.data('presionpsi')),
+            TiempoBatchSeg: parseInt($r.data('tiempobatchseg')),
+            TemperaturaC: parseInt($r.data('temperaturac')),
+            Silo: parseInt($r.data('silo')),
+            Paso: parseInt($r.data('paso'))
+          });
+        });
+
+                if (vm.DetPrdPreExpansions.length === 0) {
+                    alert('Debe agregar al menos un detalle de producción.');
+                    return;
+                }
+
+                $.ajax({
+                    url: '/PrdPreExpansion/Create',
+                    type: 'POST',
+                    headers: { 'RequestVerificationToken': token },
+                    data: JSON.stringify(vm),
+                    contentType: 'application/json; charset=utf-8',
+                    success: function (response) {
+                        localStorage.removeItem(DRAFT_KEY);
+                        window.removeEventListener('beforeunload', beforeUnloadHandler);
+                        alert('Producción guardada exitosamente.');
+                        window.location.href = '@Url.Action("Index", "Home")';
+                    },
+                    error: function (xhr) {
+                        console.error('Error:', xhr.responseText);
+                        alert('Error al guardar la producción. Contacte a soporte.');
+                    }
+                });
+            });
+        });
+
+                // Helper: next NoBatch por Paso
+        function getNextBatchForPaso(pasoNum) {
+          var maxNb = 0;
+          $('#tblDetalle tbody tr').each(function () {
+            var rPaso = parseInt($(this).data('paso'), 10);
+            if (rPaso === pasoNum) {
+              var nb = parseInt($(this).data('nobatch'), 10);
+              if (!isNaN(nb) && nb > maxNb) maxNb = nb;
+            }
+          });
+          return maxNb + 1; // si no hay, arranca en 1
+        }
+    </script>
+}
+
+@functions {
+    public static string To12HourFormat(TimeSpan hora)
+    {
+        var dateTime = DateTime.Today.Add(hora);
+        return dateTime.ToString("hh:mm tt");
+    }
+}
+

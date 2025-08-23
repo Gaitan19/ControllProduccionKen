@@ -146,12 +146,13 @@
 
 
 
-            <h1>Reporte de Producción IlKwang</h1>
+           
             @foreach (var reporte in Model)
             {
 
                 <div class="report-page">
                     <!-- Encabezado del Reporte -->
+                    <h1>Reporte de Producción IlKwang</h1>
                     @*   <div class="header-title">Reporte Id:@reporte.Id</div> *@
                     <img src="~/logoEcotec.png" alt="Logo Ecotec" style="width:150px; height:50px;">
                     <br />
@@ -213,6 +214,10 @@
                             <tr>
                                 <td>Observaciones</td>
                                 <td>@reporte.Observaciones</td>
+                            </tr>
+                            <tr>
+                                <td>Cantidad de arranques</td>
+                                <td>@reporte.CantidadArranques</td>
                             </tr>
                             <tr>
                                 <td>Validador</td>
@@ -312,13 +317,14 @@
                         </thead>
                         <tbody>
                             <tr>
+                                <td>Metros iniciales Poliol:</td>
+                                <td>@reporte.MetroInicialPoliol</td>
+                            </tr>
+                            <tr>
                                 <td>Lote "A":</td>
                                 <td>@reporte.LoteA</td>
                             </tr>
-                            <tr>
-                                <td>Metros iniciales:</td>
-                                <td>@reporte.MetrosInicialA</td>
-                            </tr>
+                           
                             <tr>
                                 <td>Peso Inicial ± Kg</td>
                                 <td>@reporte.PesoInicialA</td>
@@ -373,13 +379,14 @@
                         </thead>
                         <tbody>
                             <tr>
+                                <td>Metros iniciales Isocianato:</td>
+                                <td>@reporte.MetroInicialIsocianato</td>
+                            </tr>
+                            <tr>
                                 <td>Lote "B":</td>
                                 <td>@reporte.LoteB</td>
                             </tr>
-                            <tr>
-                                <td>Metros iniciales:</td>
-                                <td>@reporte.MetrosInicialB</td>
-                            </tr>
+                            
                             <tr>
                                 <td>Peso Inicial ± Kg</td>
                                 <td>@reporte.PesoInicialB</td>
@@ -465,7 +472,7 @@
                         <thead>
                             <tr>
                                 <th>Total de metros de Producción:</th>
-                                <th>Total metros con defecto de pegamento:</th>
+                                <th>Total metros con defecto:</th>
                                 <th>Merma:</th>
                                 <th>Total metros adicionales</th>
                                 <th>% Merma:</th>
@@ -525,13 +532,32 @@
         var startParam = ViewContext.HttpContext.Request.Query["start"].ToString();
         var endParam = ViewContext.HttpContext.Request.Query["end"].ToString();
 
-        var defaultStartDate = string.IsNullOrEmpty(startParam)
-            ? DateTime.Now.AddDays(-1).ToString("MM/dd/yyyy")
-            : startParam;
+        // var defaultStartDate = string.IsNullOrEmpty(startParam)
+        //     ? DateTime.Now.AddDays(-1).ToString("MM/dd/yyyy")
+        //     : startParam;
 
-        var defaultEndDate = string.IsNullOrEmpty(endParam)
-            ? DateTime.Now.ToString("MM/dd/yyyy")
-            : endParam;
+        // var defaultEndDate = string.IsNullOrEmpty(endParam)
+        //     ? DateTime.Now.ToString("MM/dd/yyyy")
+        //     : endParam;
+
+
+
+        // Parse and validate date parameters
+
+        DateTime startDate, endDate;
+
+        if (!DateTime.TryParse(startParam, out startDate) || startDate < new DateTime(1753, 1, 1))
+        {
+            startDate = DateTime.Now.AddDays(-1);
+        }
+
+        if (!DateTime.TryParse(endParam, out endDate) || endDate < new DateTime(1753, 1, 1))
+        {
+            endDate = DateTime.Now;
+        }
+
+        var defaultStartDate = startDate.ToString("MM/dd/yyyy");
+        var defaultEndDate = endDate.ToString("MM/dd/yyyy");
     }
     <script src="~/js/html2canvas.min.js"></script>
     <script src="~/js/jspdf.umd.min.js"></script>

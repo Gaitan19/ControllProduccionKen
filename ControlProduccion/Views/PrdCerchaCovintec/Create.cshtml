@@ -36,12 +36,12 @@
                 </div>
                 <div class="form-group">
                     <label asp-for="ConteoInicial"></label>
-                    <input asp-for="ConteoInicial" class="form-control" />
+                    <input asp-for="ConteoInicial" class="form-control" type="number" step="1" min="0" oninput="validarSoloEnteros(this)" />
                     <span asp-validation-for="ConteoInicial" class="text-danger"></span>
                 </div>
                 <div class="form-group">
                     <label asp-for="ConteoFinal"></label>
-                    <input asp-for="ConteoFinal" class="form-control" />
+                    <input asp-for="ConteoFinal" class="form-control" type="number" step="1" min="0" oninput="validarSoloEnteros(this)" />
                     <span asp-validation-for="ConteoFinal" class="text-danger"></span>
                 </div>
                 <div class="form-group">
@@ -347,6 +347,19 @@
 
           input.value = valor;
         }
+
+                function validarSoloEnteros(input) {
+            // Elimina cualquier caracter que no sea un dígito
+            input.value = input.value.replace(/[^0-9]/g, '');
+        }
+
+             $('#ConteoInicial').on('input', function() {
+            validarSoloEnteros(this);
+        });
+
+        $('#ConteoFinal').on('input', function() {
+            validarSoloEnteros(this);
+        });
 
                 $('#modal-Detalle').on('shown.bs.modal', function () {
                   

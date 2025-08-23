@@ -149,7 +149,9 @@ namespace Application.Services
                     IdUsuarioCreacion = dto.IdUsuarioCreacion,
                     FechaCreacion = DateTime.Now,
                     AprobadoGerencia = false,
-                    AprobadoSupervisor = false
+                    AprobadoSupervisor = false,
+                    MetroInicialIsocianato = dto.MetroInicialIsocianato,
+                    MetroInicialPoliol = dto.MetroInicialPoliol
                 };
 
                 await _unitOfWork.PrdIlKwangRepository.AddAsync(prdIlKwans);
@@ -311,7 +313,9 @@ namespace Application.Services
                 AprobadoSupervisor = prd.AprobadoSupervisor,
                 AprobadoGerencia = prd.AprobadoGerencia,
                 IdAprobadoSupervisor = prd.IdAprobadoSupervisor,
-                IdAprobadoGerencia = prd.IdAprobadoGerencia
+                IdAprobadoGerencia = prd.IdAprobadoGerencia,
+                MetroInicialIsocianato = prd.MetroInicialIsocianato,
+                MetroInicialPoliol = prd.MetroInicialPoliol
             };
 
             // Mapeo manual de los detalles
@@ -466,6 +470,8 @@ namespace Application.Services
             prd.MetrosAdicionales = metrosAdicionales;
             prd.PorcentajeMerma = porcentajeMerma;
             prd.PorcentajeDefecto = porcentajeDefecto;
+            prd.MetroInicialIsocianato = dto.MetroInicialIsocianato;
+            prd.MetroInicialPoliol = dto.MetroInicialPoliol;
 
             _unitOfWork.PrdIlKwangRepository.Update(prd);
             await _unitOfWork.SaveChangesAsync();

@@ -1,0 +1,14 @@
+using Application.DTOs;
+using System.Threading.Tasks;
+
+namespace Application.Interfaces
+{
+    public interface IErrorLogService
+    {
+<<<<<<< HEAD
+        Task LogAsync(ErrorLogDTO error);
+=======
+        Task LogAsync(ErrorLogDTO dto);
+>>>>>>> origin/codex/add-ierrorlogservice-implementation
+    }
+}

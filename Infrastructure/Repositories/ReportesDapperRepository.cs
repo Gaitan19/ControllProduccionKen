@@ -66,8 +66,8 @@ SELECT
     dbo.GetUserNamesFromIDs(PrdCMain.IdAprobadoSupervisor) AS Supervisor,
     dbo.GetUserNamesFromIDs(PrdCMain.IdAprobadoGerencia)   AS JefeProd
 FROM cp.PrdCerchaCovintec PrdCMain
-INNER JOIN cp.DetPrdCerchaCovintec DetCPC       ON DetCPC.IdCercha = PrdCMain.Id
-INNER JOIN cp.DetAlambrePrdCerchaCovintec DetAl ON DetAl.IdCercha  = PrdCMain.Id
+LEFT JOIN cp.DetPrdCerchaCovintec DetCPC       ON DetCPC.IdCercha = PrdCMain.Id
+LEFT JOIN cp.DetAlambrePrdCerchaCovintec DetAl ON DetAl.IdCercha  = PrdCMain.Id
 INNER JOIN cp.Maquinas M                       ON M.Id = PrdCMain.IdMaquina
 
 WHERE CAST(PrdCMain.Fecha AS DATE) BETWEEN CAST(@start AS DATE) AND CAST(@end AS DATE) AND 
@@ -95,7 +95,7 @@ SELECT
     ISNULL(DPC.NumeroPedido, '') AS NumeroPedido,
     DPC.ProduccionDia
 FROM cp.DetPrdCerchaCovintec DPC
-INNER JOIN cp.TipoFabricacion TF ON TF.Id = DPC.IdTipoFabricacion
+LEFT JOIN cp.TipoFabricacion TF ON TF.Id = DPC.IdTipoFabricacion
 INNER JOIN cp.CatalogoCercha     PC ON PC.Id = DPC.IdArticulo;
 
 -- Detalle 2: datos de alambre de cerchas
@@ -154,8 +154,8 @@ SELECT
     dbo.GetUserNamesFromIDs(P.IdAprobadoSupervisor) AS Supervisor,
     dbo.GetUserNamesFromIDs(P.IdAprobadoGerencia)   AS JefeProd
 FROM cp.PrdMallaCovintec P
-INNER JOIN cp.DetPrdMallaCovintec D   ON D.IdMalla = P.Id
-INNER JOIN cp.DetAlambrePrdMallaCovintec A ON A.IdMalla = P.Id
+LEFT JOIN cp.DetPrdMallaCovintec D   ON D.IdMalla = P.Id
+LEFT JOIN cp.DetAlambrePrdMallaCovintec A ON A.IdMalla = P.Id
 INNER JOIN cp.Maquinas M              ON M.Id = P.IdMaquina
 WHERE CAST(P.Fecha AS DATE) BETWEEN CAST(@start AS DATE) AND CAST(@end AS DATE) AND 
       P.AprobadoGerencia = 1
@@ -173,7 +173,7 @@ SELECT
     ISNULL(D.NumeroPedido, '') AS NumeroPedido,
     D.ProduccionDia
 FROM cp.DetPrdMallaCovintec D
-INNER JOIN cp.TipoFabricacion TF    ON TF.Id = D.IdTipoFabricacion
+LEFT JOIN cp.TipoFabricacion TF    ON TF.Id = D.IdTipoFabricacion
 INNER JOIN cp.CatalogoMallasCovintec C ON C.Id = D.IdArticulo
 
 -- Detalle de Alambre
@@ -222,8 +222,8 @@ FROM cp.DetAlambrePrdMallaCovintec A;
 -- Encabezado: Se recupera la lista de paneles (se usa DISTINCT para evitar duplicados)
 select PrdPCMain.Id,dbo.GetUserNamesFromIDs(PrdPCMain.IdUsuarios) as Operarios,PrdPCMain.Fecha,M.Nombre as Maquina, PrdPCMain.Observaciones,PrdPCMain.MermaAlambre ,PrdPCMain.TiempoParo,
 dbo.GetUserNamesFromIDs(PrdPCMain.IdAprobadoSupervisor) as Supervisor,dbo.GetUserNamesFromIDs(PrdPCMain.IdAprobadoGerencia) as JefeProd from cp.PrdPanelesCovintec PrdPCMain 
-INNER JOIN cp.DetPrdPanelesCovintec DetPrdPC on DetPrdPC.IdPanel=PrdPCMain.Id
-INNER JOIN cp.DetAlambrePrdPanelesCovintec DetAlamPC on DetAlamPC.IdPanel=PrdPCMain.Id
+LEFT JOIN cp.DetPrdPanelesCovintec DetPrdPC on DetPrdPC.IdPanel=PrdPCMain.Id
+LEFT JOIN cp.DetAlambrePrdPanelesCovintec DetAlamPC on DetAlamPC.IdPanel=PrdPCMain.Id
 INNER JOIN CP.Maquinas M ON M.Id=PrdPCMain.IdMaquina
 WHERE CAST(PrdPCMain.Fecha AS DATE) BETWEEN CAST(@start AS DATE)  AND CAST(@end AS DATE) AND 
       PrdPCMain.AprobadoGerencia = 1
@@ -239,7 +239,7 @@ SELECT
     ISNULL(DPC.NumeroPedido, '') AS NumeroPedido,
     DPC.ProduccionDia
 FROM cp.DetPrdPanelesCovintec DPC
-INNER JOIN CP.TipoFabricacion TF ON TF.Id = DPC.IdTipoFabricacion
+LEFT JOIN CP.TipoFabricacion TF ON TF.Id = DPC.IdTipoFabricacion
 INNER JOIN cp.CatalogoPanelesCovintec PC ON PC.Id = DPC.IdArticulo
 
 -- Detalle 2: Alambre
@@ -328,7 +328,7 @@ FROM cp.SubDetPrdBloques S
 INNER JOIN cp.CatalogoBloques CB    ON CB.Id = S.IdArticulo
 INNER JOIN cp.MaestroCatalogo MC    ON MC.Id = S.IdDensidad
 INNER JOIN cp.MaestroCatalogo TB    ON TB.Id = S.IdTipoBloque
-INNER JOIN cp.TipoFabricacion TF    ON TF.Id = S.IdTipoFabricacion
+LEFT JOIN cp.TipoFabricacion TF    ON TF.Id = S.IdTipoFabricacion
 WHERE S.DetPrdBloquesId IN (
     SELECT D.Id
     FROM cp.DetPrdBloques D
@@ -419,7 +419,7 @@ SELECT
     D.Nota
 FROM cp.DetPrdCorteT D
 INNER JOIN cp.MaestroCatalogo   MCA ON MCA.Id = D.IdArticulo
-INNER JOIN cp.TipoFabricacion   TF  ON TF.Id  = D.IdTipoFabricacion
+LEFT JOIN cp.TipoFabricacion   TF  ON TF.Id  = D.IdTipoFabricacion
 INNER JOIN cp.MaestroCatalogo   MC  ON MC.Id  = D.IdDensidad
 INNER JOIN cp.MaestroCatalogo   TB  ON TB.Id  = D.IdTipoBloque
 WHERE D.PrdCorteTId IN (
@@ -438,6 +438,86 @@ WHERE D.PrdCorteTId IN (
                     foreach (var header in headers)
                     {
                         header.Detalles = detalles.Where(d => d.IdCorteT == header.Id).ToList();
+                    }
+
+                    return headers;
+                }
+            }
+        }
+
+        public async Task<IEnumerable<PrdCortePReporteDTO>> GetAllPrdCortePWithDetailsAsync(DateTime start, DateTime end)
+        {
+            // Validate DateTime parameters to ensure they're within SQL Server range
+            start = ValidateSqlDateTime(start);
+            end = ValidateSqlDateTime(end);
+
+            using (var connection = _context.Database.GetDbConnection())
+            {
+                if (connection.State == ConnectionState.Closed)
+                    connection.Open();
+
+                var sql = @"
+-- 1) Encabezados de Corte P
+SELECT
+    P.Id,
+    P.TiempoParo,
+    P.IdTipoReporte,
+    P.IdUsuarios,
+    dbo.GetUserNamesFromIDs(P.IdUsuarios)           AS Operarios,
+    P.IdMaquina,
+    M.Nombre                                        AS Maquina,
+    P.Fecha,
+    P.Observaciones,
+    P.IdUsuarioCreacion,
+    P.FechaCreacion,
+    P.IdUsuarioActualizacion,
+    P.FechaActualizacion,
+    P.AprobadoSupervisor,
+    P.AprobadoGerencia,
+    P.IdAprobadoSupervisor,
+    P.IdAprobadoGerencia,
+    dbo.GetUserNamesFromIDs(P.IdAprobadoSupervisor) AS Supervisor,
+    dbo.GetUserNamesFromIDs(P.IdAprobadoGerencia)   AS JefeProd
+FROM cp.PrdCorteP P
+INNER JOIN cp.Maquinas M ON M.Id = P.IdMaquina
+WHERE CAST(P.Fecha AS DATE) BETWEEN CAST(@start AS DATE) AND CAST(@end AS DATE)
+  AND P.AprobadoGerencia = 1;
+
+-- 2) Detalles de Corte P
+SELECT
+    D.Id,
+    D.PrdCortePId              AS IdCorteP,
+    D.No,
+    CP.DescripcionArticulo     AS Articulo,
+    TF.Descripcion             AS TipoFabricacion,
+    D.NumeroPedido,
+    D.PrdCodigoBloque,
+    MC.Descripcion             AS Densidad,
+    TB.Descripcion             AS TipoBloque,
+    D.CantidadPiezasConformes  AS CantidadConforme,
+    D.CantidadPiezasNoConformes AS CantidadNoConforme,
+    D.Nota
+FROM cp.DetPrdCorteP D
+INNER JOIN cp.CatPantografo     CP  ON CP.Id = D.IdArticulo
+LEFT JOIN cp.TipoFabricacion   TF  ON TF.Id  = D.IdTipoFabricacion
+INNER JOIN cp.MaestroCatalogo   MC  ON MC.Id  = D.IdDensidad
+INNER JOIN cp.MaestroCatalogo   TB  ON TB.Id  = D.IdTipoBloque
+WHERE D.PrdCortePId IN (
+    SELECT P.Id
+    FROM cp.PrdCorteP P
+    WHERE CAST(P.Fecha AS DATE) BETWEEN CAST(@start AS DATE) AND CAST(@end AS DATE)
+      AND P.AprobadoGerencia = 1
+);
+";
+
+                using (var multi = await connection.QueryMultipleAsync(sql, new { start, end }))
+                {
+                    var headers = (await multi.ReadAsync<PrdCortePReporteDTO>()).ToList();
+                    var detalles = (await multi.ReadAsync<DetalleCortePDto>()).ToList();
+
+                    foreach (var header in headers)
+                    {
+                        header.Detalles = detalles.Where(d => d.IdCorteP == header.Id).ToList();
                     }
 
                     return headers;
@@ -531,11 +611,14 @@ SELECT
     P.MetrosAdicionales,
     P.PorcentajeMerma,
     P.PorcentajeDefecto,
-    P.CantidadArranques
+    P.CantidadArranques,
+P.MetroInicialPoliol,
+    P.MetroInicialIsocianato
+  
 
 FROM cp.PrdIlKwang P
 INNER JOIN cp.Maquinas            M  ON M.Id  = P.IdMaquina
-INNER JOIN cp.TipoFabricacion     TF ON TF.Id = P.IdTipoFabricacion
+LEFT JOIN cp.TipoFabricacion     TF ON TF.Id = P.IdTipoFabricacion
 INNER JOIN cp.UbicacionBobina     UBA ON UBA.Id = P.IdUbicacionBobinaA
 INNER JOIN cp.ColoresBobinas      CBA ON CBA.Id = P.IdColorBobinaA
 LEFT  JOIN cp.UbicacionBobina     UBB ON UBB.Id = P.IdUbicacionBobinaB
@@ -635,7 +718,7 @@ SELECT
     D.NumeroPedido
 FROM cp.DetPrdNevera D
 INNER JOIN cp.MaestroCatalogo   MC ON MC.Id = D.IdArticulo
-INNER JOIN cp.TipoFabricacion   TF ON TF.Id = D.IdTipoFabricacion
+LEFT JOIN cp.TipoFabricacion   TF ON TF.Id = D.IdTipoFabricacion
 WHERE  D.PrdNeveraId IN (
     SELECT P.Id 
     FROM cp.PrdNevera P 
@@ -711,7 +794,7 @@ SELECT
     D.HoraInicio,
     D.HoraFin
 FROM cp.DetPrdOtro D
-INNER JOIN cp.TipoFabricacion   TF ON TF.Id = D.IdTipoFabricacion
+LEFT JOIN cp.TipoFabricacion   TF ON TF.Id = D.IdTipoFabricacion
 WHERE  D.PrdOtroId IN (
     SELECT P.Id 
     FROM cp.PrdOtro P 
@@ -740,5 +823,409 @@ WHERE  D.PrdOtroId IN (
                 }
             }
         }
+
+        public async Task<IEnumerable<PrdPreExpansionReporteDTO>> GetAllPrdPreExpansionWithDetailsAsync(DateTime start, DateTime end)
+        {
+            using (var connection = _context.Database.GetDbConnection())
+            {
+                if (connection.State == ConnectionState.Closed)
+                    connection.Open();
+
+                var sql = @"
+-- 1) Encabezados de pre-expansión
+SELECT
+    PE.Id,
+    PE.TiempoParo,
+    PE.IdTipoReporte,
+    PE.IdUsuarios,
+    dbo.GetUserNamesFromIDs(PE.IdUsuarios)           AS Operarios,
+    PE.IdMaquina,
+    M.Nombre                                          AS Maquina,
+    PE.Fecha,
+    PE.HoraInicio,
+    PE.HoraFin,
+    PE.PresionCaldera,
+    PE.Lote,
+    PE.FechaProduccion,
+    PE.CodigoSaco,
+    PE.IdTipoFabricacion,
+    TF.Descripcion                                    AS TipoFabricacion,
+    PE.NumeroPedido,
+    PE.Observaciones,
+    PE.IdUsuarioCreacion,
+    PE.FechaCreacion,
+    PE.IdUsuarioActualizacion,
+    PE.FechaActualizacion,
+    PE.AprobadoSupervisor,
+    PE.AprobadoGerencia,
+    PE.IdAprobadoSupervisor,
+    PE.IdAprobadoGerencia,
+    dbo.GetUserNamesFromIDs(PE.IdAprobadoSupervisor)  AS Supervisor,
+    dbo.GetUserNamesFromIDs(PE.IdAprobadoGerencia)    AS JefeProd
+FROM cp.PrdpreExpansion PE
+INNER JOIN cp.Maquinas M        ON M.Id  = PE.IdMaquina
+LEFT  JOIN cp.TipoFabricacion TF ON TF.Id = PE.IdTipoFabricacion
+WHERE CAST(PE.Fecha AS DATE) BETWEEN CAST(@start AS DATE) AND CAST(@end AS DATE)
+  AND PE.AprobadoGerencia = 1;
+
+-- 2) Detalles de pre-expansión
+SELECT
+    D.Id,
+    D.PrdpreExpansionId AS IdPreExpansion,
+    D.Hora,
+    D.NoBatch,
+    D.DensidadEsperada,
+    D.PesoBatchGr,
+    D.Densidad,
+    D.KgPorBatch,
+    D.PresionPSI,
+    D.TiempoBatchSeg,
+    D.TemperaturaC,
+    D.Silo,
+    D.Paso,
+    D.IdUsuarioCreacion,
+    D.FechaCreacion,
+    D.IdUsuarioActualizacion,
+    D.FechaActualizacion
+FROM cp.DetPrdpreExpansion D
+WHERE D.PrdpreExpansionId IN (
+    SELECT PE.Id
+    FROM cp.PrdpreExpansion PE
+    WHERE CAST(PE.Fecha AS DATE) BETWEEN CAST(@start AS DATE) AND CAST(@end AS DATE)
+      AND PE.AprobadoGerencia = 1
+);
+";
+
+                using (var multi = await connection.QueryMultipleAsync(sql, new { start, end }))
+                {
+                    var headers = (await multi.ReadAsync<PrdPreExpansionReporteDTO>()).ToList();
+                    var detalles = (await multi.ReadAsync<DetallePreExpansionDto>()).ToList();
+
+                    foreach (var h in headers)
+                        h.Detalles = detalles.Where(d => d.IdPreExpansion == h.Id).ToList();
+
+                    return headers;
+                }
+            }
+        }
+
+     
+public async Task<IEnumerable<PrdMallaPCHReporteDTO>> GetAllPrdMallaPCHWithDetailsAsync(DateTime start, DateTime end)
+        {
+            // Validar rango compatible con SQL Server
+            start = ValidateSqlDateTime(start);
+            end = ValidateSqlDateTime(end);
+
+            using (var connection = _context.Database.GetDbConnection())
+            {
+                if (connection.State == ConnectionState.Closed)
+                    connection.Open();
+
+                var sql = @"
+-- 1) Encabezados de Malla PCH
+SELECT
+    P.Id,
+    P.IdUsuarios,
+    dbo.GetUserNamesFromIDs(P.IdUsuarios)            AS Operarios,
+    P.Fecha,
+    P.ProduccionDia,
+    P.Observaciones,
+    P.IdUsuarioCreacion,
+    P.FechaCreacion,
+    P.IdUsuarioActualizacion,
+    P.FechaActualizacion,
+    P.AprobadoSupervisor,
+    P.AprobadoGerencia,
+    P.IdAprobadoSupervisor,
+    P.IdAprobadoGerencia,
+    dbo.GetUserNamesFromIDs(P.IdAprobadoSupervisor)  AS Supervisor,
+    dbo.GetUserNamesFromIDs(P.IdAprobadoGerencia)    AS JefeProd
+FROM cp.PrdMallaPch P
+WHERE CAST(P.Fecha AS DATE) BETWEEN CAST(@start AS DATE) AND CAST(@end AS DATE)
+  AND P.AprobadoGerencia = 1;
+
+-- 2) Detalles de Malla PCH - Maquina A
+SELECT
+    D.PrdMallaPchId                 AS IdMallaPch,
+    D.IdMaquina,
+    M.Nombre                        AS Maquina,
+    D.HilosTransversalesUN,
+    D.MermaHilosTransversalesKg,
+    D.IdTipoFabricacion,
+    TF.Descripcion                  AS TipoFabricacion,
+    D.NumeroPedido,
+    D.Longitud,
+    D.Cantidad,
+    D.Produccion,
+    CAST(D.NumeroAlambreA AS nvarchar(20)) AS NumeroAlambreA, -- mapeo a string en el DTO
+    D.PesoAlambreKgA,
+    D.IdUsuarioCreacion,
+    D.FechaCreacion,
+    D.IdUsuarioActualizacion,
+    D.FechaActualizacion
+FROM cp.DetPrdPchMaquinaA D
+INNER JOIN cp.Maquinas        M  ON M.Id  = D.IdMaquina
+LEFT JOIN cp.TipoFabricacion TF ON TF.Id = D.IdTipoFabricacion
+WHERE D.PrdMallaPchId IN (
+    SELECT P.Id
+    FROM cp.PrdMallaPch P
+    WHERE CAST(P.Fecha AS DATE) BETWEEN CAST(@start AS DATE) AND CAST(@end AS DATE)
+      AND P.AprobadoGerencia = 1
+);
+
+-- 3) Detalles de Malla PCH - Maquina B
+SELECT
+    D.PrdMallaPchId                 AS IdMallaPch,
+    D.IdMaquina,
+    M.Nombre                        AS Maquina,
+    D.HilosLongitudinalesUN,
+    D.MermaHilosLongitudinalesKg,
+    D.IdTipoFabricacion,
+    TF.Descripcion                  AS TipoFabricacion,
+    D.NumeroPedido,
+    D.Longitud,
+    D.Cantidad,
+    D.Produccion,
+    CAST(D.NumeroAlambreB AS nvarchar(20)) AS NumeroAlambreB, -- mapeo a string en el DTO
+    D.PesoAlambreKgB,
+    D.IdUsuarioCreacion,
+    D.FechaCreacion,
+    D.IdUsuarioActualizacion,
+    D.FechaActualizacion
+FROM cp.DetPrdPchMaquinaB D
+INNER JOIN cp.Maquinas        M  ON M.Id  = D.IdMaquina
+LEFT JOIN cp.TipoFabricacion TF ON TF.Id = D.IdTipoFabricacion
+WHERE D.PrdMallaPchId IN (
+    SELECT P.Id
+    FROM cp.PrdMallaPch P
+    WHERE CAST(P.Fecha AS DATE) BETWEEN CAST(@start AS DATE) AND CAST(@end AS DATE)
+      AND P.AprobadoGerencia = 1
+);
+
+-- 4) Detalles de Malla PCH - Maquina C
+SELECT
+    D.PrdMallaPchId       AS IdMallaPch,
+    D.IdMaquina,
+    M.Nombre              AS Maquina,
+    D.IdTipoMalla,
+    TM.Cuadricula         AS TipoMalla,
+    TM.PesoPorMts2        AS PesoMallaM2,
+    D.MermaMallasKg,
+    D.IdTipoFabricacion,
+    TF.Descripcion        AS TipoFabricacion,
+    D.NumeroPedido,
+    D.Longitud,
+    D.Cantidad,
+    D.Produccion,
+    D.IdUsuarioCreacion,
+    D.FechaCreacion,
+    D.IdUsuarioActualizacion,
+    D.FechaActualizacion
+FROM cp.DetPrdPchMaquinaC D
+INNER JOIN cp.Maquinas        M  ON M.Id  = D.IdMaquina
+LEFT JOIN cp.TipoFabricacion TF ON TF.Id = D.IdTipoFabricacion
+INNER JOIN cp.CatTipoMalla    TM ON TM.Id = D.IdTipoMalla
+WHERE D.PrdMallaPchId IN (
+    SELECT P.Id
+    FROM cp.PrdMallaPch P
+    WHERE CAST(P.Fecha AS DATE) BETWEEN CAST(@start AS DATE) AND CAST(@end AS DATE)
+      AND P.AprobadoGerencia = 1
+);
+";
+
+                using (var multi = await connection.QueryMultipleAsync(sql, new { start, end }))
+                {
+                    // 1) Encabezados
+                    var headers = (await multi.ReadAsync<PrdMallaPCHReporteDTO>()).ToList();
+
+                    // 2) Detalles A
+                    var detA = (await multi.ReadAsync<DetallePchMaquinaADto>()).ToList();
+                    // 3) Detalles B
+                    var detB = (await multi.ReadAsync<DetallePchMaquinaBDto>()).ToList();
+                    // 4) Detalles C
+                    var detC = (await multi.ReadAsync<DetallePchMaquinaCDto>()).ToList();
+
+                    // Asociar por Id de cabecera
+                    var grpA = detA.GroupBy(x => x.IdMallaPch).ToDictionary(g => g.Key, g => g.ToList());
+                    var grpB = detB.GroupBy(x => x.IdMallaPch).ToDictionary(g => g.Key, g => g.ToList());
+                    var grpC = detC.GroupBy(x => x.IdMallaPch).ToDictionary(g => g.Key, g => g.ToList());
+
+                    foreach (var h in headers)
+                    {
+                        if (grpA.TryGetValue(h.Id, out var la)) h.MaquinaA = la; else h.MaquinaA = new List<DetallePchMaquinaADto>();
+                        if (grpB.TryGetValue(h.Id, out var lb)) h.MaquinaB = lb; else h.MaquinaB = new List<DetallePchMaquinaBDto>();
+                        if (grpC.TryGetValue(h.Id, out var lc)) h.MaquinaC = lc; else h.MaquinaC = new List<DetallePchMaquinaCDto>();
+                    }
+
+                    return headers;
+                }
+            }
+        }
+
+        public async Task<IEnumerable<PrdPaneladoraPchReporteDTO>> GetAllPrdPaneladoraPchWithDetailsAsync(DateTime start, DateTime end)
+        {
+            // Validate DateTime parameters to ensure they're within SQL Server range
+            start = ValidateSqlDateTime(start);
+            end = ValidateSqlDateTime(end);
+
+            using (var connection = _context.Database.GetDbConnection())
+            {
+                if (connection.State == ConnectionState.Closed)
+                    connection.Open();
+
+                var sql = @"
+-- 1) Encabezados de PrdPaneladoraPch
+SELECT
+    P.Id,
+    P.TiempoParo,
+    P.ProduccionDia,
+    P.IdUsuarios,
+    dbo.GetUserNamesFromIDs(P.IdUsuarios)           AS Operarios,
+    P.IdMaquina,
+    M.Nombre                                        AS Maquina,
+    P.Fecha,
+    P.Observaciones,
+    P.IdUsuarioCreacion,
+    P.FechaCreacion,
+    P.IdUsuarioActualizacion,
+    P.FechaActualizacion,
+    P.AprobadoSupervisor,
+    P.AprobadoGerencia,
+    P.IdAprobadoSupervisor,
+    P.IdAprobadoGerencia,
+    dbo.GetUserNamesFromIDs(P.IdAprobadoSupervisor) AS Supervisor,
+    dbo.GetUserNamesFromIDs(P.IdAprobadoGerencia)   AS JefeProd
+FROM cp.PrdPaneladoraPch P
+INNER JOIN cp.Maquinas M ON M.Id = P.IdMaquina
+WHERE CAST(P.Fecha AS DATE) BETWEEN CAST(@start AS DATE) AND CAST(@end AS DATE)
+  AND P.AprobadoGerencia = 1;
+
+-- 2) Detalles de PrdPaneladoraPch
+SELECT
+    D.Id,
+    D.PrdPaneladoraPchId      AS IdPaneladoraPch,
+    COALESCE(CPch.DescripcionArticulo, CCov.DescripcionArticulo) AS Articulo,
+    D.Longitud,
+    D.CantidadProducida,
+    D.CantidadNoConforme,
+    D.Mts2PorPanel,
+    TF.Descripcion           AS TipoFabricacion,
+    D.NumeroPedido,
+    D.NumeroAlambre,
+    D.PesoAlambreKg,
+    D.MermaAlambreKg
+FROM cp.DetPrdPaneladoraPch D
+LEFT JOIN cp.TipoFabricacion   TF   ON TF.Id  = D.IdTipoFabricacion
+LEFT JOIN cp.CatalogoPanelesPCH CPch ON CPch.Id = D.IdArticulo
+LEFT JOIN cp.CatalogoPanelesCovintec CCov ON CCov.Id = D.IdArticulo
+WHERE D.PrdPaneladoraPchId IN (
+    SELECT P.Id
+    FROM cp.PrdPaneladoraPch P
+    WHERE CAST(P.Fecha AS DATE) BETWEEN CAST(@start AS DATE) AND CAST(@end AS DATE)
+      AND P.AprobadoGerencia = 1
+);
+";
+
+                using (var multi = await connection.QueryMultipleAsync(sql, new { start, end }))
+                {
+                    var headers = (await multi.ReadAsync<PrdPaneladoraPchReporteDTO>()).ToList();
+                    var detalles = (await multi.ReadAsync<DetallePaneladoraPchDto>()).ToList();
+
+                    foreach (var header in headers)
+                    {
+                        header.Detalles = detalles.Where(d => d.IdPaneladoraPch == header.Id).ToList();
+                    }
+
+                    return headers;
+                }
+            }
+        }
+
+        public async Task<IEnumerable<PrdAccesorioReporteDTO>> GetAllPrdAccesorioWithDetailsAsync(DateTime start, DateTime end)
+        {
+            // Asegurar rangos válidos para SQL Server (mismo patrón que los otros métodos)
+            start = ValidateSqlDateTime(start);
+            end = ValidateSqlDateTime(end);
+
+            using (var connection = _context.Database.GetDbConnection())
+            {
+                if (connection.State == ConnectionState.Closed)
+                    connection.Open();
+
+                var sql = @"
+-- 1) Encabezados de PrdAccesorios
+SELECT
+    A.Id,
+    A.IdUsuarios,
+    dbo.GetUserNamesFromIDs(A.IdUsuarios)           AS Operarios,
+    A.IdMaquina,
+    M.Nombre                                        AS Maquina,
+    A.Fecha,
+    A.Observaciones,
+    A.MermaMallaCovintecKg,
+    A.MermaMallaPchKg,
+    A.MermaBobinasKg,
+    A.MermaLitewallKg,
+    A.IdUsuarioCreacion,
+    A.FechaCreacion,
+    A.IdUsuarioActualizacion,
+    A.FechaActualizacion,
+    A.AprobadoSupervisor,
+    A.AprobadoGerencia,
+    A.IdAprobadoSupervisor,
+    A.IdAprobadoGerencia,
+    dbo.GetUserNamesFromIDs(A.IdAprobadoSupervisor) AS Supervisor,
+    dbo.GetUserNamesFromIDs(A.IdAprobadoGerencia)   AS JefeProd
+FROM cp.PrdAccesorios A
+INNER JOIN cp.Maquinas M ON M.Id = A.IdMaquina
+WHERE CAST(A.Fecha AS DATE) BETWEEN CAST(@start AS DATE) AND CAST(@end AS DATE)
+  AND A.AprobadoGerencia = 1;
+
+-- 2) Detalles de PrdAccesorios
+SELECT
+    D.PrdAccesoriosId                                AS IdAccesorio,
+    ROW_NUMBER() OVER (PARTITION BY D.PrdAccesoriosId ORDER BY D.Id) AS [No],
+    COALESCE(MCTipo.Descripcion, CT.Descripcion)     AS TipoArticulo,
+    CA.DescripcionArticulo                           AS Articulo,
+    TF.Descripcion                                   AS TipoFabricacion,
+    D.NumeroPedido,
+    CMC.DescripcionArticulo                          AS MallaCovintec,
+    D.CantidadMallaUn,
+    TM.Cuadricula                                    AS TipoMallaPch,
+    D.CantidadPchKg,
+    CAST(AB.Valor AS NVARCHAR(10))                   AS AnchoBobina,
+    D.CantidadBobinaKg,
+    MC.Descripcion                                   AS Calibre,
+    D.CantidadCalibreKg
+FROM cp.DetPrdAccesorios D
+LEFT JOIN cp.CatalogoAccesorios   CA    ON CA.Id    = D.IdArticulo
+LEFT JOIN cp.TipoFabricacion      TF    ON TF.Id    = D.IdTipoFabricacion
+LEFT JOIN cp.CatalogoMallasCovintec CMC ON CMC.Id   = D.IdMallaCovintec
+LEFT JOIN cp.CatTipoMalla         TM    ON TM.Id    = D.IdTipoMallaPCH
+LEFT JOIN cp.AnchoBobina          AB    ON AB.Id    = D.IdAnchoBobina
+LEFT JOIN cp.MaestroCatalogo      MC    ON MC.Id    = D.IdCalibre
+LEFT JOIN cp.MaestroCatalogo      MCTipo ON MCTipo.Id = D.IdTipoArticulo
+LEFT JOIN cp.CatalogoTipo         CT    ON CT.Id    = D.IdTipoArticulo
+WHERE D.PrdAccesoriosId IN (
+    SELECT A.Id
+    FROM cp.PrdAccesorios A
+    WHERE CAST(A.Fecha AS DATE) BETWEEN CAST(@start AS DATE) AND CAST(@end AS DATE)
+      AND A.AprobadoGerencia = 1
+);
+";
+
+                using (var multi = await connection.QueryMultipleAsync(sql, new { start, end }))
+                {
+                    var headers = (await multi.ReadAsync<PrdAccesorioReporteDTO>()).ToList();
+                    var detalles = (await multi.ReadAsync<DetPrdAccesorioReporteDTO>()).ToList();
+
+                    foreach (var h in headers)
+                        h.Detalles = detalles.Where(d => d.IdAccesorio == h.Id).ToList();
+
+                    return headers;
+                }
+            }
+        }
+
     }
 }

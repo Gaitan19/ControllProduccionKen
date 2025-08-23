@@ -13,7 +13,8 @@
                 @Html.AntiForgeryToken()
                 <div class="form-group">
                     <label asp-for="IdUsuarios"></label>
-                    <select id="IdUsuarios" multiple asp-for="IdUsuarios" class="form-control select2" asp-items="Model.Operarios"></select>
+                    <select id="IdUsuarios" multiple asp-for="IdUsuarios" class="form-control select2"
+                        asp-items="Model.Operarios"></select>
                 </div>
                 <div class="form-group">
                     <label asp-for="Fecha"></label>
@@ -32,7 +33,7 @@
                                     <th>Posición</th>
                                     <th>Máquina</th>
                                     <th>Bloque</th>
-                                   
+
                                     <th></th>
                                 </tr>
                             </thead>
@@ -42,10 +43,8 @@
                     </div>
                 </div>
                 <button type="submit" class="btn btn-primary">Guardar</button>
-                <button type="button"
-                        id="btnRegresar"
-                        class="btn btn-dark"
-                        data-url="@Url.Action("Index", "Home")">
+                <button type="button" id="btnRegresar" class="btn btn-dark"
+                    data-url="@Url.Action("Index", "Home")">
                     Regresar
                 </button>
             </form>
@@ -93,11 +92,11 @@
                                 </div>
                                 <div class="mb-3">
                                     <label class="form-label">No.</label>
-                                    <input readonly  type="number" min="1" id="No" class="form-control" />
+                                    <input readonly type="number" min="1" id="No" class="form-control" />
                                 </div>
                                 <div class="mb-3">
                                     <label class="form-label">Hora</label>
-                                    <input step="1" type="time"  readonly  id="Hora" class="form-control" />
+                                    <input step="1" type="time" readonly id="Hora" class="form-control" />
                                 </div>
                                 <div class="mb-3">
                                     <label class="form-label">Silo</label>
@@ -129,10 +128,6 @@
                                     <label class="form-label">Número Pedido</label>
                                     <input type="number" id="NumeroPedido" class="form-control" />
                                 </div>
-                            @*     <div class="mb-3">
-                                    <label class="form-label">Código Bloque</label>
-                                    <input id="CodigoBloque" class="form-control" />
-                                </div> *@
                                 <div class="mb-3">
                                     <label class="form-label">Observaciones</label>
                                     <textarea id="Observaciones" class="form-control"></textarea>
@@ -153,91 +148,154 @@
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
     <script>
-        $(document).ready(function() {
-        // ─────────── AUTOSAVE / RESTORE /PREVENT EXIT───────────
-        const DRAFT_KEY = 'draft-prdBloque';
+        $(document).ready(function () {
+            // ─────────── AUTOSAVE / RESTORE /PREVENT EXIT───────────
+            const DRAFT_KEY = 'draft-prdBloque';
 
-        function backupForm() {
-          const formArr     = $('#frmProduccion').serializeArray();
-          const detalleHtml = $('#tblDetalle tbody').html();
-          localStorage.setItem(DRAFT_KEY,
-            JSON.stringify({ form: formArr, detalleHtml: detalleHtml })
-          );
-        }
+            function backupForm() {
+                const formArr = $('#frmProduccion').serializeArray();
+                const detalleHtml = $('#tblDetalle tbody').html();
+                localStorage.setItem(DRAFT_KEY,
+                    JSON.stringify({ form: formArr, detalleHtml: detalleHtml })
+                );
+            }
 
-                function restoreIfExists() {
-          const draftStr = localStorage.getItem(DRAFT_KEY);
-          if (!draftStr) return;
+            function restoreIfExists() {
+                const draftStr = localStorage.getItem(DRAFT_KEY);
+                if (!draftStr) return;
 
-          if (confirm('Se encontró un borrador sin guardar. ¿Deseas restaurarlo?')) {
-            const draft = JSON.parse(draftStr);
+                if (confirm('Se encontró un borrador sin guardar. ¿Deseas restaurarlo?')) {
+                    const draft = JSON.parse(draftStr);
 
-            // 1) Agrupar valores por nombre de campo
-            const formMap = draft.form.reduce((acc, { name, value }) => {
-              acc[name] = acc[name] || [];
-              acc[name].push(value);
-              return acc;
-            }, {});
+                    // 1) Agrupar valores por nombre de campo
+                    const formMap = draft.form.reduce((acc, { name, value }) => {
+                        acc[name] = acc[name] || [];
+                        acc[name].push(value);
+                        return acc;
+                    }, {});
 
-            // 2) Restaurar cada campo, usando array para selects múltiples
-            Object.entries(formMap).forEach(([name, values]) => {
-              const $el = $('[name="' + name + '"]');
-              const valToSet = $el.prop('multiple') ? values : values[0];
-              if ($el.hasClass('select2-hidden-accessible')) {
-                $el.val(valToSet).trigger('change');
-              } else {
-                $el.val(valToSet);
-              }
+                    // 2) Restaurar cada campo, usando array para selects múltiples
+                    Object.entries(formMap).forEach(([name, values]) => {
+                        const $el = $('[name="' + name + '"]');
+                        const valToSet = $el.prop('multiple') ? values : values[0];
+                        if ($el.hasClass('select2-hidden-accessible')) {
+                            $el.val(valToSet).trigger('change');
+                        } else {
+                            $el.val(valToSet);
+                        }
+                    });
+
+                    // 3) Restaurar detalle HTML
+                    $('#tblDetalle tbody').html(draft.detalleHtml);
+
+                    // 4) Corregir índices duplicados después de restaurar
+                    var newIndex = 0;
+                    $('#tblDetalle tbody tr[data-index]').each(function () {
+                        var $row = $(this);
+                        $row.attr('data-index', newIndex);
+                        $row.find('.addSub').attr('data-index', newIndex);
+                        $row.find('td:first').text(newIndex + 1);
+                        $row.next('tr[data-parent]').attr('data-parent', newIndex);
+                        newIndex++;
+                    });
+
+                    detalleIndex = newIndex;
+                }
+            }
+
+            // Restaura al cargar y luego auto‑respalda cada 30s
+            restoreIfExists();
+            setInterval(backupForm, 30000);
+
+            // ───────── PREVENT UNLOAD ─────────
+            function beforeUnloadHandler(e) {
+                const hasRows = $('#tblDetalle tbody tr').length > 0;
+                const isDirty = $('#frmProduccion').serialize() !== '';
+                if (hasRows || isDirty) {
+                    e.preventDefault();
+                    e.returnValue = '';
+                }
+            }
+            window.addEventListener('beforeunload', beforeUnloadHandler);
+
+            $('#btnRegresar').off('click').on('click', function () {
+                const url = $(this).data('url');
+                if (confirm('¿Deseas salir sin guardar? Se perderán los datos .')) {
+                    localStorage.removeItem(DRAFT_KEY);
+                    window.removeEventListener('beforeunload', beforeUnloadHandler);
+                    window.location.href = url;
+                }
             });
 
-            // 3) Restaurar detalle HTML
-            $('#tblDetalle tbody').html(draft.detalleHtml);
+            // Variable global para almacenar todas las opciones originales de CatalogoBloques
+            var originalBloqueOptions = [];
 
-            // 4) Ajustar contador según índice
-            const indices = $('#tblDetalle tbody tr[data-index]')
-              .map(function() { return +$(this).data('index'); })
-              .get();
-            if (indices.length) detalleIndex = Math.max(...indices) + 1;
-          }
-        }
+            // Función para filtrar las opciones del select IdCatBloque
+            function filtrarOpcionesBloques(idMaquinaSeleccionada) {
+                var $selectBloque = $('#IdCatBloque');
+                $selectBloque.empty();
+                $selectBloque.append('<option value="">-- Seleccione Bloque --</option>');
 
+                if (idMaquinaSeleccionada == '11') {
+                    var opcion1 = originalBloqueOptions.find(opt => opt.value === '1');
+                    if (opcion1) {
+                        $selectBloque.append(`<option value="${opcion1.value}">${opcion1.text}</option>`);
+                        $selectBloque.val('1');
+                    }
+                } else if (idMaquinaSeleccionada == '12') {
+                    var opcion2 = originalBloqueOptions.find(opt => opt.value === '2');
+                    var opcion3 = originalBloqueOptions.find(opt => opt.value === '3');
 
-        // Restaura al cargar y luego auto‑respalda cada 30s
-        restoreIfExists();
-        setInterval(backupForm, 30000);
+                    if (opcion2) {
+                        $selectBloque.append(`<option value="${opcion2.value}">${opcion2.text}</option>`);
+                    }
+                    if (opcion3) {
+                        $selectBloque.append(`<option value="${opcion3.value}">${opcion3.text}</option>`);
+                    }
+                } else {
+                    originalBloqueOptions.forEach(function (opcion) {
+                        $selectBloque.append(`<option value="${opcion.value}">${opcion.text}</option>`);
+                    });
+                }
 
-        // ───────── PREVENT UNLOAD ─────────
-        function beforeUnloadHandler(e) {
-          const hasRows = $('#tblDetalle tbody tr').length > 0;
-          const isDirty = $('#frmProduccion').serialize() !== '';
-          if (hasRows || isDirty) {
-            e.preventDefault();
-            e.returnValue = '';
-          }
-        }
-        window.addEventListener('beforeunload', beforeUnloadHandler);
-
-                $('#btnRegresar').off('click').on('click', function() {
-          const url = $(this).data('url');
-          if (confirm('¿Deseas salir sin guardar? Se perderán los datos .')) {
-            // 1) Borra el draft
-            localStorage.removeItem(DRAFT_KEY);
-            // 2) Quita el beforeunload para no volver a pedir confirm
-            window.removeEventListener('beforeunload', beforeUnloadHandler);
-            // 3) Navega
-            window.location.href = url;
-          }
-          // si cancela, no pasa nada y conserva el borrador
-        });
-
-        // ──────────END AUTOSAVE / RESTORE /PREVENT EXIT───────────
-
-
-
+                if ($selectBloque.hasClass('select2-hidden-accessible')) {
+                    $selectBloque.trigger('change');
+                }
+            }
 
             var detalleIndex = 0;
             var currentDetalle = null;
-            
+
+            // FUNCIÓN AUXILIAR: Buscar idBloque de manera más robusta
+            function findIdBloqueInRow($row) {
+                // Método 1: Buscar por posición esperada (columna 5)
+                var idBloque = $row.find('td:eq(5)').text().trim();
+                if (idBloque && /^\d+$/.test(idBloque)) {
+                    return idBloque;
+                }
+                
+                // Método 2: Buscar la segunda celda oculta con números
+                var hiddenCells = [];
+                $row.find('td').each(function () {
+                    var $cell = $(this);
+                    var text = $cell.text().trim();
+                    var isHidden = $cell.css('display') === 'none' || ($cell.attr('style') && $cell.attr('style').includes('display:none'));
+                    
+                    if (isHidden && /^\d+$/.test(text)) {
+                        hiddenCells.push({ index: $(this).index(), value: text });
+                    }
+                });
+                
+                if (hiddenCells.length >= 2) {
+                    return hiddenCells[1].value;
+                }
+                
+                if (hiddenCells.length === 1) {
+                    return hiddenCells[0].value;
+                }
+                
+                return null;
+            }
 
             // --- INICIALIZACIÓN SELECT2 EN LA PÁGINA PRINCIPAL ---
             $("#IdUsuarios").select2({
@@ -247,13 +305,25 @@
             });
 
             // --- MANEJO DEL MODAL #1: Detalle ---
-            $('#modal-Detalle').on('shown.bs.modal', function() {
+            $('#modal-Detalle').on('shown.bs.modal', function () {
                 // Se ejecuta CADA VEZ que el modal se muestra completamente.
                 // Usamos $(this) para referirnos a este modal y evitar conflictos.
                 var $selects = $(this).find('#IdMaquinaDet, #IdCatBloque');
 
                 if ($selects.hasClass("select2-hidden-accessible")) {
                     $selects.select2('destroy');
+                }
+
+                // NUEVO: Capturar las opciones originales de CatalogoBloques al abrir el modal
+                if (originalBloqueOptions.length === 0) {
+                    $('#IdCatBloque option').each(function () {
+                        if ($(this).val() !== '') { // Excluir la opción vacía por defecto
+                            originalBloqueOptions.push({
+                                value: $(this).val(),
+                                text: $(this).text()
+                            });
+                        }
+                    });
                 }
 
                 $selects.select2({
@@ -263,59 +333,110 @@
                 });
             });
 
-                  $('#modal-SubDetalle').on('shown.bs.modal', function () {
-                       var $modal = $(this);
-            const $modalBody = $(this).find('.modal-body');
-            const $selects = $modalBody.find('#IdArticulo, #IdDensidad, #IdTipoBloque, #IdTipoFabricacion');
-
-            // Destruye solo si ya estaba inicializado
-            $selects.each(function () {
-                if ($(this).data('select2')) { $(this).select2('destroy'); }
+            // NUEVO: Agregar evento change para IdMaquinaDet
+            $('#IdMaquinaDet').off('change.bloqueFilter').on('change.bloqueFilter', function () {
+                var idMaquinaSeleccionada = $(this).val();
+                filtrarOpcionesBloques(idMaquinaSeleccionada);
             });
 
-            // Vuelve a crear
-            $selects.select2({
-                dropdownParent: $modalBody,   // ⬅️  CAMBIO CLAVE
-                allowClear: true,
-                width: '100%'                 // evita anchos erráticos
+            $('#modal-SubDetalle').on('shown.bs.modal', function () {
+                var $modal = $(this);
+                const $modalBody = $(this).find('.modal-body');
+                const $selects = $modalBody.find('#IdArticulo, #IdDensidad, #IdTipoBloque, #IdTipoFabricacion');
+
+                // Destruye solo si ya estaba inicializado
+                $selects.each(function () {
+                    if ($(this).data('select2')) { $(this).select2('destroy'); }
+                });
+
+                // Vuelve a crear
+                $selects.select2({
+                    dropdownParent: $modalBody,
+                    allowClear: true,
+                    width: '100%'
+                });
+
+                // Configurar IdArticulo basado en idBloque capturado
+                var idBloque = $modal.data('idBloque');
+                if (idBloque && idBloque.trim() !== '') {
+                    var $idArticulo = $modal.find('#IdArticulo');
+                    $idArticulo.val(idBloque);
+                    $idArticulo.prop('disabled', true);
+
+                    if ($idArticulo.hasClass('select2-hidden-accessible')) {
+                        $idArticulo.trigger('change');
+                        $idArticulo.select2('enable', false);
+                    }
+                } else {
+                    var $idArticulo = $modal.find('#IdArticulo');
+                    $idArticulo.prop('disabled', false);
+                    if ($idArticulo.hasClass('select2-hidden-accessible')) {
+                        $idArticulo.select2('enable', true);
+                    }
+                }
+
+                // CORREGIDO: Verificar que currentDetalle esté definido antes de proceder
+                if (currentDetalle === null || currentDetalle === undefined) {
+                    console.warn('currentDetalle no está definido. Usando valores por defecto.');
+                    $modal.find('#No').val(1);
+                    $modal.find('#Silo').val(1);
+                } else {
+                    // Buscar específicamente la tabla correspondiente al currentDetalle
+                    var $specificSubTable = $("tr[data-parent='" + currentDetalle + "']").find('table.subTable tbody');
+                    
+                    // CORREGIDO: Verificar que se encontró la tabla antes de continuar
+                    if ($specificSubTable.length === 0) {
+                        console.warn('No se encontró la subtabla para currentDetalle:', currentDetalle);
+                        $modal.find('#No').val(1);
+                        $modal.find('#Silo').val(1);
+                    } else {
+                        // Calcular el siguiente "No." basado en cuántas filas ya hay EN ESA TABLA ESPECÍFICA
+                        var subCount = $specificSubTable.find('tr').length;
+                        $modal.find('#No').val(subCount + 1);
+
+                        // CORREGIDO: Calcular el siguiente Silo basado en ESA TABLA ESPECÍFICA
+                        var nextSilo = 1;
+                        if (subCount > 0) {
+                            var $lastRow = $specificSubTable.find('tr').last();
+                            // Verificar que la fila tenga suficientes columnas antes de acceder a td:eq(3)
+                            if ($lastRow.find('td').length > 3) {
+                                var lastSilo = parseInt($lastRow.find('td:eq(3)').text(), 10);
+                                if (!isNaN(lastSilo)) {
+                                    nextSilo = lastSilo + 1;
+                                }
+                            }
+                        }
+                        $modal.find('#Silo').val(nextSilo);
+                    }
+                }
+                
+                // Fijar la hora actual en formato HH:mm
+                var now = new Date();
+                var hh = String(now.getHours()).padStart(2, '0');
+                var mm = String(now.getMinutes()).padStart(2, '0');
+                $modal.find('#Hora').val(hh + ':' + mm);
             });
 
-              // 2.a) Calcular el siguiente "No." basado en cuántas filas ya hay
-            var subCount = $("tr[data-parent='" + currentDetalle + "']")
-                               .find('table.subTable tbody tr').length;
-            $modal.find('#No').val(subCount + 1);
-
-
-
-             var $subs = $("tr[data-parent='" + currentDetalle + "']")
-                    .find('table.subTable tbody tr');
-            var nextSilo = 1;
-        if ($subs.length > 0) {
-            var last = parseInt($subs.last().find('td:eq(3)').text(), 10);
-            if (!isNaN(last)) nextSilo = last + 1;
-        }
-
-        $modal.find('#Silo').val(nextSilo);
-            // 2.b) Fijar la hora actual en formato HH:mm
-            var now = new Date();
-            var hh  = String(now.getHours()).padStart(2,'0');
-            var mm  = String(now.getMinutes()).padStart(2,'0');
-            $modal.find('#Hora').val(hh + ':' + mm);
-
-         
-            
-            
-        });
-
-             
-
-            // --- MANEJO DE EVENTOS (CON SELECTORES CORREGIDOS) ---
+            // NUEVO: Evento para limpiar cuando se cierra el modal
+            $('#modal-SubDetalle').on('hidden.bs.modal', function () {
+                var $modal = $(this);
+                var $idArticulo = $modal.find('#IdArticulo');
+                
+                $idArticulo.prop('disabled', false);
+                $idArticulo.val('');
+                
+                if ($idArticulo.hasClass('select2-hidden-accessible')) {
+                    $idArticulo.select2('enable', true);
+                    $idArticulo.trigger('change');
+                }
+                
+                $modal.removeData('idBloque');
+            });
 
             // Evento 'change' para TipoFabricacion dentro del modal
-            // Usamos delegación de eventos para asegurarnos que funcione siempre.
-            $(document).on('change', '#modal-SubDetalle #IdTipoFabricacion', function(){
+            $(document).on('change', '#modal-SubDetalle #IdTipoFabricacion', function () {
                 var modalId = '#modal-SubDetalle';
-                if($(this).val() == 2){
+                if ($(this).val() == 2) {
                     $(modalId + ' #divNumeroPedido').show();
                 } else {
                     $(modalId + ' #divNumeroPedido').hide();
@@ -323,14 +444,14 @@
             });
 
             // Botón Guardar del primer modal
-            $('#btnGuardarDetPrd').click(function(){
-                     var modalId = '#modal-Detalle';
+            $('#btnGuardarDetPrd').click(function () {
+                var modalId = '#modal-Detalle';
                 $(modalId + ' #spnbtnGuardarDetPrd').text('');
 
                 var idMaquina = $(modalId + ' #IdMaquinaDet').val();
                 var idBloque = $(modalId + ' #IdCatBloque').val();
 
-                if(!idMaquina || !idBloque){
+                if (!idMaquina || !idBloque) {
                     $(modalId + ' #spnbtnGuardarDetPrd').text('Complete la información.');
                     return;
                 }
@@ -338,20 +459,20 @@
                 var maquinaText = $(modalId + ' #IdMaquinaDet option:selected').text();
                 var bloqueText = $(modalId + ' #IdCatBloque option:selected').text();
 
-                // AQUÍ LA CORRECCIÓN DE COLSPAN
                 var row = `<tr data-index="${detalleIndex}">
-                                <td>${detalleIndex+1}</td>
-                                <td>${maquinaText}</td>
-                                <td>${bloqueText}</td>
-                                <td><a href="#" class="btn btn-sm btn-outline-primary addSub" data-index="${detalleIndex}">Agregar Sub</a></td>
-                                <td style='display:none'>${idMaquina}</td>
-                                <td style='display:none'>${idBloque}</td>
-                               </tr>
-                               <tr data-parent="${detalleIndex}"><td colspan="6"><table class='table table-sm table-bordered subTable'>
-                                 <thead><tr><th>Artículo</th><th>No.</th><th>Hora</th><th>Silo</th><th>Densidad</th><th>Tipo Bloque</th><th>Peso</th><th>Tipo Fab.</th><th>No.Pedido</th><th>Código</th><th>Obs.</th><th style='display:none'>IdArt</th><th style='display:none'>IdDen</th><th style='display:none'>IdTipoB</th><th style='display:none'>IdTipoF</th></tr></thead>
-                                 <tbody></tbody></table></td></tr>`;
+                            <td>${detalleIndex + 1}</td>
+                            <td>${maquinaText}</td>
+                            <td>${bloqueText}</td>
+                            <td><a href="#" class="btn btn-sm btn-outline-primary addSub" data-index="${detalleIndex}">Agregar Sub</a>
+                            </td>
+                            <td style='display:none'>${idMaquina}</td>
+                            <td style='display:none'>${idBloque}</td>
+                           </tr>
+                           <tr data-parent="${detalleIndex}"><td colspan="6"><table class='table table-sm table-bordered subTable'>
+                             <thead><tr><th>Artículo</th><th>No.</th><th>Hora</th><th>Silo</th><th>Densidad</th><th>Tipo Bloque</th><th>Peso</th><th>Tipo Fab.</th><th>No.Pedido</th><th>Código</th><th>Obs.</th><th style='display:none'>IdArt</th><th style='display:none'>IdDen</th><th style='display:none'>IdTipoB</th><th style='display:none'>IdTipoF</th></tr></thead>
+                             <tbody></tbody></table></td></tr>`;
 
-              
+
                 $('#tblDetalle > tbody').append(row);
 
                 detalleIndex++;
@@ -359,19 +480,30 @@
                 $(modalId).modal('hide');
             });
 
-            // Abrir el modal de sub-detalle (esto ya estaba bien)
-            $(document).on('click','.addSub',function(e){
+            // Abrir el modal de sub-detalle - CORREGIDO
+            $(document).on('click', '.addSub', function (e) {
                 e.preventDefault();
-                currentDetalle = $(this).data('index');
+
+                var $clickedButton = $(this);
+                currentDetalle = $clickedButton.data('index'); // CORREGIDO: Actualizar currentDetalle aquí
+                
+                var $currentRow = $clickedButton.closest('tr[data-index]');
+                
+                if ($currentRow.length === 0) {
+                    return;
+                }
+                
+                var idBloque = findIdBloqueInRow($currentRow);
+
+                $('#modal-SubDetalle').data('idBloque', idBloque);
                 $('#modal-SubDetalle').modal('show');
             });
 
             // Botón Guardar del segundo modal
-            $('#btnGuardarSubDetPrd').click(function(){
-                var modalId = '#modal-SubDetalle'; // Definimos el scope
+            $('#btnGuardarSubDetPrd').click(function () {
+                var modalId = '#modal-SubDetalle';
                 $(modalId + ' #spnSubDet').text('');
 
-                // CORREGIDO: Buscamos CADA ID dentro del modal para evitar errores
                 var idArt = $(modalId + ' #IdArticulo').val();
                 var no = $(modalId + ' #No').val();
                 var hora = $(modalId + ' #Hora').val();
@@ -381,99 +513,110 @@
                 var peso = $(modalId + ' #Peso').val();
                 var idTipoF = $(modalId + ' #IdTipoFabricacion').val();
                 var numPed = $(modalId + ' #NumeroPedido').val();
-              
                 var obs = $(modalId + ' #Observaciones').val();
 
+                // Convertir "hora" (24h) a formato "hh:mm:00 AM/PM"
+                var rawHora = hora;
+                var parts = rawHora.split(':');
+                var h24 = parseInt(parts[0], 10), m = parts[1];
+                var ampm = h24 >= 12 ? 'PM' : 'AM';
+                var h12 = (h24 % 12) || 12;
+                var formattedHora = ('0' + h12).slice(-2) + ':' + m + ':00 ' + ampm;
+                var rawHora24 = ('0' + h24).slice(-2) + ':' + m + ':00';
 
-                        // ——— NUEVO: convertir “hora” (24h) a formato “hh:mm:00 AM/PM” ———
-        var rawHora = hora;            // p.ej. "13:44"
-        var parts   = rawHora.split(':');
-        var h24     = parseInt(parts[0],10), m = parts[1];
-        var ampm    = h24 >= 12 ? 'PM' : 'AM';
-        var h12     = (h24 % 12) || 12;
-        var formattedHora = ('0' + h12).slice(-2) + ':' + m + ':00 ' + ampm;
-         var rawHora24 = ('0'+h24).slice(-2) + ':' + m + ':00'; //formato 24H para el backend
-        // ————————————————————————————————————————————————————————
+                if (!idArt || !no || !hora || !silo || !idDen || !idTipoB || !peso || !idTipoF) {
+                    $(modalId + ' #spnSubDet').text('Complete la información');
+                    return;
+                }
 
-                if(!idArt || !no || !hora || !silo || !idDen || !idTipoB || !peso || !idTipoF ){ $(modalId + ' #spnSubDet').text('Complete la información'); return; }
-
-
-                        var pesoRegex = /^\d+(\.\d{1})?$/;
-        if(!pesoRegex.test(peso)){
-            $(modalId + ' #spnSubDet').text('El peso debe tener máximo un decimal, p. ej.: 72 o 72.5');
-            return;
-        }
+                var pesoRegex = /^\d+(\.\d{1})?$/;
+                if (!pesoRegex.test(peso)) {
+                    $(modalId + ' #spnSubDet').text('El peso debe tener máximo un decimal, p. ej.: 72 o 72.5');
+                    return;
+                }
 
                 var artText = $(modalId + ' #IdArticulo option:selected').text();
                 var denText = $(modalId + ' #IdDensidad option:selected').text();
                 var tipoBText = $(modalId + ' #IdTipoBloque option:selected').text();
                 var tipoFText = $(modalId + ' #IdTipoFabricacion option:selected').text();
 
-
-
-                   var silo = $(modalId + ' #Silo').val();
-
-            // ————— AÑADIDO —————
-            // 3) Actualizar lastSilo para la próxima vez
-             lastSilo = parseInt(silo)+1;
-            
+                var fechaT = $('#Fecha').val();
                 var row = `<tr>
-                                <td>${artText}</td>
-                                <td>${no}</td>
-                               <td data-hora="${rawHora24}">${formattedHora}</td>
-                                <td>${silo}</td>
-                                <td>${denText}</td>
-                                <td>${tipoBText}</td>
-                                <td>${peso}</td>
-                                <td>${tipoFText}</td>
-                                <td>${numPed||''}</td>
-                                <td></td>
-                                <td>${obs||''}</td>
-                                <td style='display:none'>${idArt}</td>
-                                <td style='display:none'>${idDen}</td>
-                                <td style='display:none'>${idTipoB}</td>
-                                <td style='display:none'>${idTipoF}</td>
-                           </tr>`;
-                var $subTable = $("tr[data-parent='"+currentDetalle+"']").find('table.subTable tbody');
-                $subTable.append(row);
+                            <td>${artText}</td>
+                            <td>${no}</td>
+                            <td data-hora="${rawHora24}">${formattedHora}</td>
+                            <td>${silo}</td>
+                            <td>${denText}</td>
+                            <td>${tipoBText}</td>
+                            <td>${peso}</td>
+                            <td>${tipoFText}</td>
+                            <td>${numPed || ''}</td>
+                            <td>${no + fechaT + denText + tipoBText + peso}</td>
+                            <td>${obs || ''}</td>
+                            <td style='display:none'>${idArt}</td>
+                            <td style='display:none'>${idDen}</td>
+                            <td style='display:none'>${idTipoB}</td>
+                            <td style='display:none'>${idTipoF}</td>
+                       </tr>`;
+                       
+                // CORREGIDO: Buscar específicamente la tabla correspondiente al currentDetalle
+                var $targetSubTable = $("tr[data-parent='" + currentDetalle + "']").find('table.subTable tbody');
+                
+                // Verificar que se encontró la tabla correcta
+                if ($targetSubTable.length === 0) {
+                    $(modalId + ' #spnSubDet').text('Error: No se pudo encontrar la tabla destino');
+                    return;
+                }
+                
+                // Agregar la fila SOLO a la tabla específica
+                $targetSubTable.append(row);
 
+                // CORREGIDO: Calcular total solo de ESA tabla específica
                 var total = 0;
-                $subTable.find('tr').each(function(){ total += parseFloat($(this).find('td:eq(6)').text()) || 0; });
-                $("tr[data-index='"+currentDetalle+"']").find('.prodDia').text(total.toFixed(2));
+                $targetSubTable.find('tr').each(function () {
+                    total += parseFloat($(this).find('td:eq(6)').text()) || 0;
+                });
+                
+                // Actualizar el total en la fila principal correspondiente (si existe una columna de total)
+                $("tr[data-index='" + currentDetalle + "']").find('.prodDia').text(total.toFixed(2));
 
                 $(modalId + ' #frmSubDetPrd')[0].reset();
                 $(modalId + ' #divNumeroPedido').hide();
                 $(modalId).modal('hide');
             });
 
-            $('#frmProduccion').submit(function(e){
+            $('#frmProduccion').submit(function (e) {
                 e.preventDefault();
                 var token = $('input[name="__RequestVerificationToken"]').val();
                 var viewModel = { IdUsuarios: $('#IdUsuarios').val(), Fecha: $('#Fecha').val(), DetPrdBloques: [] };
-                $('#tblDetalle tbody tr[data-index]').each(function(){
+                
+                $('#tblDetalle tbody tr[data-index]').each(function () {
                     var idx = $(this).data('index');
-                    var det = { IdMaquina: parseInt($(this).find('td:eq(4)').text()), IdCatBloque: parseInt($(this).find('td:eq(5)').text()), SubDetPrdBloques: [] };
-                    $("tr[data-parent='"+idx+"'] table.subTable tbody tr").each(function(){
-                             // ——— NUEVO: generar CodigoBloque a partir de No + Fecha + Densidad + Tipo Bloque + Peso
-                        var noText          = $(this).find('td:eq(1)').text();
-                        var fechaText       = $('#Fecha').val();
-                        var densText        = $(this).find('td:eq(4)').text();
-                        var tipoBloqueText  = $(this).find('td:eq(5)').text();
-                        var pesoText        = $(this).find('td:eq(6)').text();
-                        var codigoBloque    = noText + fechaText + densText + tipoBloqueText + pesoText;
-        // ————————————————————————————————————————————————————————————————
-                        
+                    var det = { 
+                        IdMaquina: parseInt($(this).find('td:eq(4)').text()), 
+                        IdCatBloque: parseInt($(this).find('td:eq(5)').text()), 
+                        SubDetPrdBloques: [] 
+                    };
+                    
+                    $("tr[data-parent='" + idx + "'] table.subTable tbody tr").each(function () {
+                        var noText = $(this).find('td:eq(1)').text();
+                        var fechaText = $('#Fecha').val();
+                        var densText = $(this).find('td:eq(4)').text();
+                        var tipoBloqueText = $(this).find('td:eq(5)').text();
+                        var pesoText = $(this).find('td:eq(6)').text();
+                        var codigoBloque = noText + fechaText + densText + tipoBloqueText + pesoText;
+
                         var sd = {
                             IdArticulo: parseInt($(this).find('td:eq(11)').text()),
                             No: parseInt($(this).find('td:eq(1)').text()),
-                            Hora:  $(this).find('td:eq(2)').data('hora'),
+                            Hora: $(this).find('td:eq(2)').data('hora'),
                             Silo: parseInt($(this).find('td:eq(3)').text()),
                             IdDensidad: parseInt($(this).find('td:eq(12)').text()),
                             IdTipoBloque: parseInt($(this).find('td:eq(13)').text()),
                             Peso: parseFloat($(this).find('td:eq(6)').text()),
                             IdTipoFabricacion: parseInt($(this).find('td:eq(14)').text()),
                             NumeroPedido: $(this).find('td:eq(8)').text() !== '' ? parseInt($(this).find('td:eq(8)').text()) : null,
-                            CodigoBloque:codigoBloque,
+                            CodigoBloque: codigoBloque,
                             Observaciones: $(this).find('td:eq(10)').text()
                         };
                         det.SubDetPrdBloques.push(sd);
@@ -481,23 +624,19 @@
                     viewModel.DetPrdBloques.push(det);
                 });
 
-              //  console.log(JSON.stringify(viewModel));
                 $.ajax({
-                    url:'/PrdBloques/Create',
-                    type:'POST',
-                    headers:{'RequestVerificationToken':token},
+                    url: '/PrdBloques/Create',
+                    type: 'POST',
+                    headers: { 'RequestVerificationToken': token },
                     data: JSON.stringify(viewModel),
-                    contentType:'application/json; charset=utf-8',
-                    success:function(){
-                         // ══════════════ LIMPIAR BORRADOR ══════════════
-                    localStorage.removeItem(DRAFT_KEY);
-                           // ——— NUEVO: desactivar el aviso de "Leave site?" al salir ———
-                     window.removeEventListener('beforeunload', beforeUnloadHandler);
-                    // ════════════════════════════════════════════
+                    contentType: 'application/json; charset=utf-8',
+                    success: function () {
+                        localStorage.removeItem(DRAFT_KEY);
+                        window.removeEventListener('beforeunload', beforeUnloadHandler);
                         alert('Producción Guardada!');
-                        window.location.href='@Url.Action("Index", "Home")';
+                        window.location.href = '@Url.Action("Index", "Home")';
                     },
-                    error:function(){
+                    error: function () {
                         alert('Error , Contacte a soporte!');
                     }
                 });

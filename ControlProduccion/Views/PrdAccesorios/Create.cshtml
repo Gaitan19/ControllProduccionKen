@@ -1,0 +1,648 @@
+@using ControlProduccion.ViewModel;
+@model PrdAccesorioViewModel
+@{
+    ViewData["Title"] = "Ingresar Producción Accesorios";
+}
+<div class="col-md-8 offset-md-2">
+    <div class="ibox ">
+        <div class="ibox-title">
+            <h5>@ViewData["Title"]</h5>
+        </div>
+        <div class="ibox-content">
+            <form id="frmProduccion" method="post" autocomplete="off">
+                @Html.AntiForgeryToken()
+            
+                <div class="form-group">
+                    <label asp-for="IdUsuarios"></label>
+                    <select id="IdUsuarios" multiple asp-for="IdUsuarios" class="form-control select2" asp-items="Model.Operarios"></select>
+                </div>
+                <div class="form-group">
+                    <label asp-for="IdMaquina"></label>
+                    <select id="IdMaquina" asp-for="IdMaquina" class="form-control select2" asp-items="Model.Maquinas">
+                        <option value="">-- Seleccione Máquina --</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Fecha"></label>
+                    <input asp-for="Fecha" class="form-control" />
+                </div>
+
+                <!-- Campos de Merma -->
+                <div class="hr-line-dashed"></div>
+                <h4>Mermas</h4>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label asp-for="MermaMallaCovintecKg"></label>
+                            <input asp-for="MermaMallaCovintecKg" class="form-control validarUnDecimal" />
+                            <span asp-validation-for="MermaMallaCovintecKg" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label asp-for="MermaMallaPchKg"></label>
+                            <input asp-for="MermaMallaPchKg" class="form-control validarUnDecimal" />
+                            <span asp-validation-for="MermaMallaPchKg" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label asp-for="MermaBobinasKg"></label>
+                            <input asp-for="MermaBobinasKg" class="form-control validarUnDecimal" />
+                            <span asp-validation-for="MermaBobinasKg" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label asp-for="MermaLitewallKg"></label>
+                            <input asp-for="MermaLitewallKg" class="form-control validarUnDecimal" />
+                            <span asp-validation-for="MermaLitewallKg" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="hr-line-dashed"></div>
+                <div class="form-group row">
+                    <div class="col-sm-12">
+                        <a data-toggle='modal' href='#modal-Detalle' id="btnAgregarDetalle" class="btn btn-info btn-outline">
+                            <i class="fa fa-plus"></i> Agregar Detalle
+                        </a>
+                    </div>
+                    <div class="col-sm-12 mt-3" style="max-height: 300px; overflow: scroll">
+                        <h4>Detalle Producción</h4>
+                        <table id="tblDetalle" class="table table-bordered table-striped">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Tipo Artículo</th>
+                                    <th>Artículo</th>
+                                    <th>Tipo Fabricación</th>
+                                    <th>No. Pedido</th>
+                                    <th>Malla Covintec</th>
+                                    <th>Cant. Malla (Un)</th>
+                                    <th>Tipo Malla PCH</th>
+                                    <th>Cant. PCH (Kg)</th>
+                                    <th>Ancho Bobina</th>
+                                    <th>Cant. Bobina (Kg)</th>
+                                    <th>Calibre</th>
+                                    <th>Cant. Calibre (Kg)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+             
+                <div class="form-group">
+                    <label asp-for="Observaciones"></label>
+                    <textarea asp-for="Observaciones" id="Observaciones" class="form-control" rows="3"></textarea>
+                    <span asp-validation-for="Observaciones" class="text-danger"></span>
+                </div>
+              
+                <button type="submit" class="btn btn-primary">
+                    Guardar
+                </button>
+                <button type="button"
+                        id="btnRegresar"
+                        class="btn btn-dark"
+                        data-url="@Url.Action("Index", "Home")">
+                    Regresar
+                </button>
+            </form>
+            
+            <!-- Modal Detalle -->
+            <div id="modal-Detalle" class="modal fade" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title">Nuevo Detalle de Producción</h4>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="frmDetPrd">
+                                <input type="hidden" name="uid" value="<%=idx%>" />
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="form-label">Tipo de Artículo <span class="text-danger">*</span></label>
+                                            <select id="IdTipoArticulo" name="IdTipoArticulo" class="form-control select2" asp-items="Model.TiposArticulo">
+                                                <option value="">-- Seleccione --</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="form-label">Artículo <span class="text-danger">*</span></label>
+                                            <select id="IdArticulo" name="IdArticulo" class="form-control select2" asp-items="Model.Articulos">
+                                                <option value="">-- Seleccione --</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="form-label">Tipo de Fabricación <span class="text-danger">*</span></label>
+                                            <select id="IdTipoFabricacion" name="IdTipoFabricacion" class="form-control select2" asp-items="Model.TiposFabricacion">
+                                                <option value="">-- Seleccione --</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group" id="divNumeroPedido" style="display:none">
+                                            <label class="form-label">Número de Pedido</label>
+                                            <input type="number" min="0" id="NumeroPedido" name="NumeroPedido" class="form-control" />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="form-label">Malla Covintec</label>
+                                            <select id="IdMallaCovintec" name="IdMallaCovintec" class="form-control select2" asp-items="Model.MallasCovintec">
+                                                <option value="">-- Seleccione --</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="form-label">Cantidad Malla (Un)</label>
+                                            <input type="number" min="0" id="CantidadMallaUn" name="CantidadMallaUn" class="form-control" />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="form-label">Tipo Malla PCH</label>
+                                            <select id="IdTipoMallaPch" name="IdTipoMallaPch" class="form-control select2" asp-items="Model.TiposMallaPch">
+                                                <option value="">-- Seleccione --</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="form-label">Cantidad PCH (Kg)</label>
+                                            <input type="text" id="CantidadPchKg" name="CantidadPchKg" class="form-control validarUnDecimal" />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="form-label">Ancho Bobina</label>
+                                            <select id="IdAnchoBobina" name="IdAnchoBobina" class="form-control select2" asp-items="Model.AnchosBobina">
+                                                <option value="">-- Seleccione --</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="form-label">Cantidad Bobina (Kg)</label>
+                                            <input type="text" id="CantidadBobinaKg" name="CantidadBobinaKg" class="form-control validarUnDecimal" />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="form-label">Calibre</label>
+                                            <select id="IdCalibre" name="IdCalibre" class="form-control select2" asp-items="Model.Calibres">
+                                                <option value="">-- Seleccione --</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="form-label">Cantidad Calibre (Kg)</label>
+                                            <input type="text" id="CantidadCalibreKg" name="CantidadCalibreKg" class="form-control validarUnDecimal" />
+                                        </div>
+                                    </div>
+                                </div>
+
+                            
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-white" data-dismiss="modal">Cerrar</button>
+                            <button type="button" class="btn btn-primary" id="btnAgregarDetalleModal">Agregar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        $(document).ready(function(){
+            var detalleNo = 1;
+            var draftKey = 'draft-prdAccesorios';
+            var modalId = '#modal-Detalle';
+
+            // Inicializar select2
+            $('.select2').select2();
+
+            // Borrador auto-save
+            function saveDraft() {
+                var data = {
+                    IdUsuarios: $('#IdUsuarios').val(),
+                    IdMaquina: $('#IdMaquina').val(),
+                    Fecha: $('#Fecha').val(),
+                    MermaMallaCovintecKg: $('#MermaMallaCovintecKg').val(),
+                    MermaMallaPchKg: $('#MermaMallaPchKg').val(),
+                    MermaBobinasKg: $('#MermaBobinasKg').val(),
+                    MermaLitewallKg: $('#MermaLitewallKg').val(),
+                    Observaciones: $('#Observaciones').val(),
+                    detalles: []
+                };
+                
+                $('#tblDetalle tbody tr').each(function(){
+                    var $row = $(this);
+                    if($row.attr('data-idtipoarticulo')) {
+                        data.detalles.push({
+                            IdTipoArticulo: $row.data('idtipoarticulo'),
+                            IdArticulo: $row.data('idarticulo'),
+                            IdTipoFabricacion: $row.data('idtipofabricacion'),
+                            NumeroPedido: $row.data('numeropedido'),
+                            IdMallaCovintec: $row.data('idmallacovintec'),
+                            CantidadMallaUn: $row.data('cantidadmallaun'),
+                            IdTipoMallaPch: $row.data('idtipomallapch'),
+                            CantidadPchKg: $row.data('cantidadpchkg'),
+                            IdAnchoBobina: $row.data('idanchobobina'),
+                            CantidadBobinaKg: $row.data('cantidadbobinakg'),
+                            IdCalibre: $row.data('idcalibre'),
+                            CantidadCalibreKg: $row.data('cantidadcalibrekg')
+                          
+                        });
+                    }
+                });
+                localStorage.setItem(draftKey, JSON.stringify(data));
+            }
+
+            function loadDraft() {
+                var draft = localStorage.getItem(draftKey);
+                if(draft) {
+                    var data = JSON.parse(draft);
+                    if(confirm('Se encontró un borrador guardado. ¿Desea restaurarlo?')) {
+                        $('#IdUsuarios').val(data.IdUsuarios).trigger('change');
+                        $('#IdMaquina').val(data.IdMaquina).trigger('change');
+                        $('#Fecha').val(data.Fecha);
+                        $('#MermaMallaCovintecKg').val(data.MermaMallaCovintecKg);
+                        $('#MermaMallaPchKg').val(data.MermaMallaPchKg);
+                        $('#MermaBobinasKg').val(data.MermaBobinasKg);
+                        $('#MermaLitewallKg').val(data.MermaLitewallKg);
+                        $('#Observaciones').val(data.Observaciones);
+                        
+                        data.detalles.forEach(function(detalle) {
+                            addDetalleToTable(detalle);
+                        });
+                    } else {
+                        localStorage.removeItem(draftKey);
+                    }
+                }
+            }
+
+            // Auto-save cada 30 segundos
+            setInterval(saveDraft, 30000);
+        // ───────── PREVENT UNLOAD ─────────
+        function beforeUnloadHandler(e) {
+          const hasRows = $('#tblDetalle tbody tr').length > 0;
+          const isDirty = $('#frmProduccion').serialize() !== '';
+          if (hasRows || isDirty) {
+            e.preventDefault();
+            e.returnValue = '';
+          }
+        }
+        window.addEventListener('beforeunload', beforeUnloadHandler);
+
+            // Cargar borrador al inicio
+            loadDraft();
+
+            // Mostrar/ocultar número de pedido según tipo de fabricación
+        $(document).on('change', '#modal-Detalle #IdTipoFabricacion', function(){
+                var modalId = '#modal-Detalle';
+                if($(this).val() == 2){ // Asumiendo que 2 es "Por Pedido"
+                    $(modalId + ' #divNumeroPedido').show();
+                } else {
+                    $(modalId + ' #divNumeroPedido').hide();
+                    $(modalId + ' #NumeroPedido').val('');
+                }
+            });
+
+            // Limpiar modal al abrir
+            $('#btnAgregarDetalle').click(function(){
+                $(modalId + ' #frmDetPrd')[0].reset();
+                $(modalId + ' .select2').val(null).trigger('change');
+                $(modalId + ' #divNumeroPedido').hide();
+            });
+        function addDetalleToTable(data) {
+            var tipoArticuloText = $('#IdTipoArticulo option[value="' + data.IdTipoArticulo + '"]').text();
+            var articuloText = $('#IdArticulo option[value="' + data.IdArticulo + '"]').text();
+            var tipoFabricacionText = $('#IdTipoFabricacion option[value="' + data.IdTipoFabricacion + '"]').text();
+            var mallaCovintecText = data.IdMallaCovintec ? $('#IdMallaCovintec option[value="' + data.IdMallaCovintec + '"]').text() : '';
+            var tipoMallaPchText = data.IdTipoMallaPch ? $('#IdTipoMallaPch option[value="' + data.IdTipoMallaPch + '"]').text() : '';
+            var anchoBobinaText = data.IdAnchoBobina ? $('#IdAnchoBobina option[value="' + data.IdAnchoBobina + '"]').text() : '';
+            var calibreText = data.IdCalibre ? $('#IdCalibre option[value="' + data.IdCalibre + '"]').text() : '';
+
+            var row =
+                '<tr data-idtipoarticulo="' + data.IdTipoArticulo + '"' +
+                ' data-idarticulo="' + data.IdArticulo + '"' +
+                ' data-idtipofabricacion="' + data.IdTipoFabricacion + '"' +
+                ' data-numeropedido="' + (data.NumeroPedido || '') + '"' +
+                ' data-idmallacovintec="' + (data.IdMallaCovintec || '') + '"' +
+                ' data-cantidadmallaun="' + (data.CantidadMallaUn || '') + '"' +
+                ' data-idtipomallapch="' + (data.IdTipoMallaPch || '') + '"' + // normalizado a minúsculas
+                ' data-cantidadpchkg="' + (data.CantidadPchKg || '') + '"' +
+                ' data-idanchobobina="' + (data.IdAnchoBobina || '') + '"' +
+                ' data-cantidadbobinakg="' + (data.CantidadBobinaKg || '') + '"' +
+                ' data-idcalibre="' + (data.IdCalibre || '') + '"' +
+                ' data-cantidadcalibrekg="' + (data.CantidadCalibreKg || '') + '">' + // AQUÍ va el '>'
+                '<td>' + tipoArticuloText + '</td>' +
+                '<td>' + articuloText + '</td>' +
+                '<td>' + tipoFabricacionText + '</td>' +
+                '<td>' + (data.NumeroPedido || '') + '</td>' +
+                '<td>' + mallaCovintecText + '</td>' +
+                '<td>' + (data.CantidadMallaUn || '') + '</td>' +
+                '<td>' + tipoMallaPchText + '</td>' +
+                '<td>' + (data.CantidadPchKg || '') + '</td>' +
+                '<td>' + anchoBobinaText + '</td>' +
+                '<td>' + (data.CantidadBobinaKg || '') + '</td>' +
+                '<td>' + calibreText + '</td>' +
+                '<td>' + (data.CantidadCalibreKg || '') + '</td>' +
+                '</tr>';
+
+            $('#tblDetalle > tbody').append(row);
+        }
+
+
+            // Agregar detalle desde modal
+            $('#btnAgregarDetalleModal').click(function(){
+                var form = $(modalId + ' #frmDetPrd')[0];
+                if(!form.checkValidity()) {
+                    form.reportValidity();
+                    return;
+                }
+
+                var data = {
+                    IdTipoArticulo: $(modalId + ' #IdTipoArticulo').val(),
+                    IdArticulo: $(modalId + ' #IdArticulo').val(),
+                    IdTipoFabricacion: $(modalId + ' #IdTipoFabricacion').val(),
+                    NumeroPedido: $(modalId + ' #NumeroPedido').val(),
+                    IdMallaCovintec: $(modalId + ' #IdMallaCovintec').val(),
+                    CantidadMallaUn: $(modalId + ' #CantidadMallaUn').val(),
+                    IdTipoMallaPch: $(modalId + ' #IdTipoMallaPch').val(),
+                    CantidadPchKg: $(modalId + ' #CantidadPchKg').val(),
+                    IdAnchoBobina: $(modalId + ' #IdAnchoBobina').val(),
+                    CantidadBobinaKg: $(modalId + ' #CantidadBobinaKg').val(),
+                    IdCalibre: $(modalId + ' #IdCalibre').val(),
+                    CantidadCalibreKg: $(modalId + ' #CantidadCalibreKg').val()
+               
+                };
+
+                if(!data.IdTipoArticulo || !data.IdArticulo || !data.IdTipoFabricacion) {
+                    alert('Los campos Tipo de Artículo, Artículo y Tipo de Fabricación son obligatorios.');
+                    return;
+                }
+
+                addDetalleToTable(data);
+
+                $(modalId + ' #frmDetPrd')[0].reset();
+                $(modalId + ' .select2').val(null).trigger('change');
+                $(modalId + ' #divNumeroPedido').hide();
+                $(modalId).modal('hide');
+            });
+
+
+            // Envío del formulario principal
+            $('#frmProduccion').submit(function(e){
+                e.preventDefault();
+                var token = $('input[name="__RequestVerificationToken"]').val();
+                
+                // Construir el viewModel
+                var viewModel = { 
+                    IdUsuarios: $('#IdUsuarios').val(), 
+                    IdMaquina: parseInt($('#IdMaquina').val()),
+                    Fecha: $('#Fecha').val(),
+                    MermaMallaCovintecKg: $('#MermaMallaCovintecKg').val() ? parseFloat($('#MermaMallaCovintecKg').val()) : null,
+                    MermaMallaPchKg: $('#MermaMallaPchKg').val() ? parseFloat($('#MermaMallaPchKg').val()) : null,
+                    MermaBobinasKg: $('#MermaBobinasKg').val() ? parseFloat($('#MermaBobinasKg').val()) : null,
+                    MermaLitewallKg: $('#MermaLitewallKg').val() ? parseFloat($('#MermaLitewallKg').val()) : null,
+                    Observaciones: $('#Observaciones').val(),
+                    DetPrdAccesorios: [] 
+                };
+
+                // Recopilar datos de la tabla usando data attributes
+                $('#tblDetalle tbody tr[data-idtipoarticulo]').each(function(){
+                    var $row = $(this);
+                    var detalle = {
+                        IdTipoArticulo: parseInt($row.data('idtipoarticulo')),
+                        IdArticulo: parseInt($row.data('idarticulo')),
+                        IdTipoFabricacion: parseInt($row.data('idtipofabricacion')),
+                        NumeroPedido: $row.data('numeropedido') ? parseInt($row.data('numeropedido')) : null,
+                        IdMallaCovintec: $row.data('idmallacovintec') ? parseInt($row.data('idmallacovintec')) : null,
+                        CantidadMallaUn: $row.data('cantidadmallaun') ? parseInt($row.data('cantidadmallaun')) : null,
+                        IdTipoMallaPch: $row.data('idtipomallapch') ? parseInt($row.data('idtipomallapch')) : null,
+                        CantidadPchKg: $row.data('cantidadpchkg') ? parseFloat($row.data('cantidadpchkg')) : null,
+                        IdAnchoBobina: $row.data('idanchobobina') ? parseInt($row.data('idanchobobina')) : null,
+                        CantidadBobinaKg: $row.data('cantidadbobinakg') ? parseFloat($row.data('cantidadbobinakg')) : null,
+                        IdCalibre: $row.data('idcalibre') ? parseInt($row.data('idcalibre')) : null,
+                        CantidadCalibreKg: $row.data('cantidadcalibrekg') ? parseFloat($row.data('cantidadcalibrekg')) : null
+            
+                    };
+                    viewModel.DetPrdAccesorios.push(detalle);
+                });
+
+                // Validar que haya al menos un detalle
+                if(viewModel.DetPrdAccesorios.length === 0){
+                    alert('Debe agregar al menos un detalle de producción.');
+                    return;
+                }
+                
+                // Enviar por AJAX
+                $.ajax({
+                    url: '@Url.Action("Create", "PrdAccesorios")',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(viewModel),
+                    headers: {
+                        'RequestVerificationToken': token
+                    },
+                    success: function(response) {
+                        if(response.success) {
+                            localStorage.removeItem(draftKey);
+                                         window.removeEventListener('beforeunload', beforeUnloadHandler);
+                            alert(response.message);
+                            window.location.href = '@Url.Action("Index", "Home")';
+                        } else {
+                            alert('Error: ' + (response.message || 'Error desconocido'));
+                        }
+                    },
+                    error: function(xhr) {
+                        if(xhr.status === 400 && xhr.responseJSON && xhr.responseJSON.errors) {
+                            var errors = xhr.responseJSON.errors;
+                            var errorMessage = 'Errores de validación:\n';
+                            for(var field in errors) {
+                                errorMessage += '- ' + errors[field].join(', ') + '\n';
+                            }
+                            alert(errorMessage);
+                        } else {
+                            alert('Error al guardar la producción');
+                        }
+                    }
+                });
+            });
+
+            // Validación de decimales
+            $('.validarUnDecimal').on('input', function() {
+                var regex = /^\d+(\.\d{0,2})?$/;
+                var valor = $(this).val();
+                if (valor && !regex.test(valor)) {
+                    $(this).val(valor.slice(0, -1));
+                }
+            });
+
+            // Botón regresar
+      
+
+
+
+                 $('#btnRegresar').off('click').on('click', function() {
+                const url = '@Url.Action("Index", "Home")';
+                if (confirm('¿Deseas salir sin guardar? Se perderán los datos .')) {
+                    // 1) Borra el draft
+                    localStorage.removeItem(draftKey);
+                    // 2) Quita el beforeunload para no volver a pedir confirm
+                    window.removeEventListener('beforeunload', beforeUnloadHandler);
+                    // 3) Navega
+                    window.location.href = url;
+                }
+                // si cancela, no pasa nada y conserva el borrador
+            });
+
+        });
+
+         $(document).on('change', '#IdTipoArticulo', function () {
+            var tipoId = $(this).val();
+            $('#IdArticulo').empty().append('<option value="">-- Seleccione --</option>');
+            if (!tipoId) return;
+
+            $.getJSON('@Url.Action("GetArticulosByTipo", "PrdAccesorios")', { idTipoArticulo: tipoId })
+             .done(function (data) {
+                 $.each(data, function (i, item) {
+                     $('#IdArticulo').append($('<option>', {
+                         value: item.id,
+                         text: item.texto
+                     }));
+                 });
+                 $('#IdArticulo').trigger('change'); // si se usa Select2
+             });
+        });
+    </script>
+    <script>
+        // Mostrar/Ocultar campos por Tipo de Artículo (PCH / COVINTEC / ISOPANEL-TERMOPANEL / LITEWALL)
+        // Pegar tal cual. No interfiere con tu código existente.
+
+        $(function () {
+          const modalId = '#modal-Detalle';
+
+          const TIPO_ART = {
+            PCH: '25',
+            COVINTEC: '26',
+            ISO: '27',       // ISOPANEL-TERMOPANEL
+            LITEWALL: '28'
+          };
+
+          function rowOf(sel) { return $(modalId + ' ' + sel).closest('.row'); }
+
+          // Cada "row" contiene el par de campos
+          const rowCovintec = rowOf('#IdMallaCovintec');   // + #CantidadMallaUn
+          const rowPch      = rowOf('#IdTipoMallaPch');    // + #CantidadPchKg
+          const rowIso      = rowOf('#IdAnchoBobina');     // + #CantidadBobinaKg
+          const rowLitewall = rowOf('#IdCalibre');         // + #CantidadCalibreKg
+
+          function clearRow($row) {
+            $row.find('input[type="text"], input[type="number"]').val('');
+            $row.find('select').val(null).trigger('change'); // seguro con select2
+          }
+
+          function setRequired($row, required) {
+            if (required) $row.find('select, input').attr('required', 'required');
+            else $row.find('select, input').removeAttr('required');
+          }
+
+          function hideAllTipoRows() {
+            [rowCovintec, rowPch, rowIso, rowLitewall].forEach($r => {
+              clearRow($r);
+              setRequired($r, false);
+              $r.hide();
+            });
+          }
+
+          function showOnlyRow($row) {
+            hideAllTipoRows();
+            setRequired($row, true); // si no quieres requeridos, quita esta línea
+            $row.show();
+          }
+
+          function applyTipoArticulo(tipoVal) {
+            switch (tipoVal) {
+              case TIPO_ART.COVINTEC:
+                showOnlyRow(rowCovintec);
+                break;
+              case TIPO_ART.PCH:
+                showOnlyRow(rowPch);
+                break;
+              case TIPO_ART.ISO:
+                showOnlyRow(rowIso);
+                break;
+              case TIPO_ART.LITEWALL:
+                showOnlyRow(rowLitewall);
+                break;
+              default:
+                hideAllTipoRows();
+            }
+          }
+
+          // Al abrir el modal (sea por botón o programático), deja todo oculto y aplica si viene preseleccionado
+          $(modalId).on('shown.bs.modal', function () {
+            hideAllTipoRows();
+            applyTipoArticulo($(modalId + ' #IdTipoArticulo').val());
+          });
+
+          // Si usas el botón existente para abrir el modal, refuerza el estado inicial
+          $('#btnAgregarDetalle').on('click', function () {
+            hideAllTipoRows();
+            applyTipoArticulo($(modalId + ' #IdTipoArticulo').val());
+          });
+
+          // Reacciona cuando cambien el tipo en el modal
+          $(document).on('change', modalId + ' #IdTipoArticulo', function () {
+            applyTipoArticulo($(this).val());
+          });
+
+          // Garantiza oculto desde el inicio (por si el modal está en DOM desde carga)
+          hideAllTipoRows();
+        });
+
+
+               
+
+    </script>
+
+}

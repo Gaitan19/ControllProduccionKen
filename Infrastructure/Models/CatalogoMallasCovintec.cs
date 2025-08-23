@@ -17,5 +17,7 @@ public partial class CatalogoMallasCovintec
 
     public bool? Activo { get; set; }
 
+    public virtual ICollection<DetPrdAccesorio> DetPrdAccesorios { get; set; } = new List<DetPrdAccesorio>();
+
     public virtual LineaProduccion IdLineaProduccionNavigation { get; set; } = null!;
 }

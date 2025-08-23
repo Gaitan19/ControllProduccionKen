@@ -10,7 +10,7 @@ namespace ControlProduccion.Controllers
     {
         private IGestionCatalogosService _gestionCatalogosService;
 
-        public GestionCatalogosController( IGestionCatalogosService gestionCatalogosService)
+        public GestionCatalogosController(IGestionCatalogosService gestionCatalogosService)
         {
             _gestionCatalogosService = gestionCatalogosService;
         }
@@ -18,21 +18,18 @@ namespace ControlProduccion.Controllers
         public async Task<ActionResult> IndexAnchoBobina()
         {
             var dto = await _gestionCatalogosService.GetAllAnchoBobinaAsync();
-            List<AnchoBobinaViewModel> anchoBobinas = new List<AnchoBobinaViewModel>(); 
-            foreach(var d in dto)
+            List<AnchoBobinaViewModel> anchoBobinas = new List<AnchoBobinaViewModel>();
+            foreach (var d in dto)
             {
                 AnchoBobinaViewModel ab = new AnchoBobinaViewModel();
                 ab.Id = d.Id;
                 ab.Valor = d.Valor;
-                ab.Activo = (bool) d.Activo;
+                ab.Activo = (bool)d.Activo;
                 anchoBobinas.Add(ab);
-
             }
 
             return View(anchoBobinas);
         }
-
-
 
         // GET: GestionCatalogosController
         public async Task<ActionResult> IndexColorBobina()
@@ -52,7 +49,6 @@ namespace ControlProduccion.Controllers
                 coloresBobinaViewModels.Add(viewModel);
             }
 
-           
             return View(coloresBobinaViewModels);
         }
 
@@ -76,10 +72,9 @@ namespace ControlProduccion.Controllers
                 var dto = new AnchoBobinaDTO
                 {
                     Valor = model.Valor,
-                   
                     Activo = (bool)model.Activo
                 };
-                await  _gestionCatalogosService.CreateAnchoBobinaAsync(dto);
+                await _gestionCatalogosService.CreateAnchoBobinaAsync(dto);
                 return RedirectToAction(nameof(IndexAnchoBobina));
             }
 
@@ -119,7 +114,7 @@ namespace ControlProduccion.Controllers
             {
                 return NotFound();
             }
-            
+
             var viewModel = new AnchoBobinaViewModel
             {
                 Id = model.Id,
@@ -159,9 +154,14 @@ namespace ControlProduccion.Controllers
         }
 
         // GET: GestionCatalogosController/Edit/5
-        public ActionResult EditColoresBobina(int id)
+        public async Task<ActionResult> EditColoresBobina(int id)
         {
-            var model = _gestionCatalogosService.GetByIdAsync(id).Result;
+            var model = await _gestionCatalogosService.GetByIdAsync(id);
+            if (model == null)
+            {
+                return NotFound();
+            }
+
             var viewModel = new ColoresBobinaViewModel
             {
                 Id = model.Id,
@@ -175,8 +175,13 @@ namespace ControlProduccion.Controllers
         // POST: GestionCatalogosController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult EditColoresBobina(int id, ColoresBobinaViewModel model)
+        public async Task<ActionResult> EditColoresBobina(int id, ColoresBobinaViewModel model)
         {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
             try
             {
                 var dto = new ColoresBobinaDTO
@@ -187,12 +192,14 @@ namespace ControlProduccion.Controllers
                     Activo = model.Activo
                 };
 
-                 _gestionCatalogosService.UpdateAsync(dto);
+                await _gestionCatalogosService.UpdateAsync(dto);
                 return RedirectToAction(nameof(IndexColorBobina));
             }
-            catch
+            catch (Exception ex)
             {
-                return View();
+                // Log the exception if logging is available
+                ModelState.AddModelError("", "Ocurrió un error al actualizar el registro.");
+                return View(model);
             }
         }
 
@@ -217,12 +224,10 @@ namespace ControlProduccion.Controllers
             }
         }
 
-
         // CatalogoCercha
-
-        public ActionResult IndexCatalogoCercha()
+        public async Task<ActionResult> IndexCatalogoCercha()
         {
-            var dto = _gestionCatalogosService.GetAllCatalogoCerchaAsync().Result;
+            var dto = await _gestionCatalogosService.GetAllCatalogoCerchaAsync();
             List<CatalogoCerchaViewModel> catalogoCerchas = new List<CatalogoCerchaViewModel>();
             foreach (var d in dto)
             {
@@ -235,7 +240,6 @@ namespace ControlProduccion.Controllers
                 ab.Activo = (bool)d.Activo;
 
                 catalogoCerchas.Add(ab);
-
             }
 
             return View(catalogoCerchas);
@@ -265,7 +269,7 @@ namespace ControlProduccion.Controllers
                         Activo = model.Activo
                     };
 
-                    await _gestionCatalogosService.CreateCatalogoCerchaAsync(dto); 
+                    await _gestionCatalogosService.CreateCatalogoCerchaAsync(dto);
 
                     return RedirectToAction(nameof(IndexCatalogoCercha));
                 }
@@ -278,11 +282,15 @@ namespace ControlProduccion.Controllers
             return View(model);
         }
 
-
         // GET: GestionCatalogosController/Edit/5
-        public ActionResult EditCatalogoCercha(int id)
+        public async Task<ActionResult> EditCatalogoCercha(int id)
         {
-            var model = _gestionCatalogosService.GetByCatalogoCerchaIdAsync(id).Result;
+            var model = await _gestionCatalogosService.GetByCatalogoCerchaIdAsync(id);
+            if (model == null)
+            {
+                return NotFound();
+            }
+
             var viewModel = new CatalogoCerchaViewModel
             {
                 Id = model.Id,
@@ -290,7 +298,7 @@ namespace ControlProduccion.Controllers
                 CodigoArticulo = model.CodigoArticulo,
                 DescripcionArticulo = model.DescripcionArticulo,
                 LongitudMetros = model.LongitudMetros,
-                Activo = (bool) model.Activo
+                Activo = (bool)model.Activo
             };
             return View(viewModel);
         }
@@ -298,8 +306,13 @@ namespace ControlProduccion.Controllers
         // POST: GestionCatalogosController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult EditCatalogoCercha(int id, CatalogoCerchaViewModel model)
+        public async Task<ActionResult> EditCatalogoCercha(int id, CatalogoCerchaViewModel model)
         {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
             try
             {
                 var dto = new CatalogoCerchaDTO
@@ -312,20 +325,20 @@ namespace ControlProduccion.Controllers
                     Activo = model.Activo
                 };
 
-                _gestionCatalogosService.UpdateCatalogoCerchaAsync(dto);
+                await _gestionCatalogosService.UpdateCatalogoCerchaAsync(dto);
                 return RedirectToAction(nameof(IndexCatalogoCercha));
             }
-            catch
+            catch (Exception ex)
             {
-                return View();
+                ModelState.AddModelError("", "Ocurrió un error al actualizar el registro.");
+                return View(model);
             }
         }
 
         // catalogoMallasCovintec
-
-        public ActionResult IndexCatalogoMallasCovintec()
+        public async Task<ActionResult> IndexCatalogoMallasCovintec()
         {
-            var dto = _gestionCatalogosService.GetAllCatalogoMallasCovintecAsync().Result;
+            var dto = await _gestionCatalogosService.GetAllCatalogoMallasCovintecAsync();
             List<CatalogoMallasCovintecViewModel> catalogoMallasCovintecs = new List<CatalogoMallasCovintecViewModel>();
             foreach (var d in dto)
             {
@@ -338,7 +351,6 @@ namespace ControlProduccion.Controllers
                 ab.Activo = (bool)d.Activo;
 
                 catalogoMallasCovintecs.Add(ab);
-
             }
 
             return View(catalogoMallasCovintecs);
@@ -357,7 +369,8 @@ namespace ControlProduccion.Controllers
         {
             if (ModelState.IsValid)
             {
-                try {
+                try
+                {
                     var dto = new CatalogoMallasCovintecDTO
                     {
                         CodigoArticulo = model.CodigoArticulo,
@@ -366,7 +379,7 @@ namespace ControlProduccion.Controllers
                         LongitudCentimetros = model.LongitudCentimetros,
                         Activo = model.Activo
                     };
-                  await  _gestionCatalogosService.CreateCatalogoMallasCovintecAsync(dto);
+                    await _gestionCatalogosService.CreateCatalogoMallasCovintecAsync(dto);
                     return RedirectToAction(nameof(IndexCatalogoMallasCovintec));
                 }
                 catch (InvalidOperationException ex)
@@ -379,10 +392,14 @@ namespace ControlProduccion.Controllers
         }
 
         // GET: GestionCatalogosController/Edit/5
-
-        public ActionResult EditCatalogoMallasCovintec(int id)
+        public async Task<ActionResult> EditCatalogoMallasCovintec(int id)
         {
-            var model = _gestionCatalogosService.GetByCatalogoMallasCovintecIdAsync(id).Result;
+            var model = await _gestionCatalogosService.GetByCatalogoMallasCovintecIdAsync(id);
+            if (model == null)
+            {
+                return NotFound();
+            }
+
             var viewModel = new CatalogoMallasCovintecViewModel
             {
                 Id = model.Id,
@@ -398,8 +415,13 @@ namespace ControlProduccion.Controllers
         // POST: GestionCatalogosController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult EditCatalogoMallasCovintec(int id, CatalogoMallasCovintecViewModel model)
+        public async Task<ActionResult> EditCatalogoMallasCovintec(int id, CatalogoMallasCovintecViewModel model)
         {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
             try
             {
                 var dto = new CatalogoMallasCovintecDTO
@@ -412,21 +434,20 @@ namespace ControlProduccion.Controllers
                     Activo = model.Activo
                 };
 
-                _gestionCatalogosService.UpdateCatalogoMallasCovintecAsync(dto);
+                await _gestionCatalogosService.UpdateCatalogoMallasCovintecAsync(dto);
                 return RedirectToAction(nameof(IndexCatalogoMallasCovintec));
             }
-            catch
+            catch (Exception ex)
             {
-                return View();
+                ModelState.AddModelError("", "Ocurrió un error al actualizar el registro.");
+                return View(model);
             }
         }
 
         // catalogoPanelesCovintec
-
-
-        public IActionResult IndexCatalogoPanelesCovintec()
+        public async Task<IActionResult> IndexCatalogoPanelesCovintec()
         {
-            var dto = _gestionCatalogosService.GetAllCatalogoPanelesCovintecAsync().Result;
+            var dto = await _gestionCatalogosService.GetAllCatalogoPanelesCovintecAsync();
             List<CatalogoPanelesCovintecViewModel> catalogoPanelesCovintecs = new List<CatalogoPanelesCovintecViewModel>();
             foreach (var d in dto)
             {
@@ -439,7 +460,6 @@ namespace ControlProduccion.Controllers
                 ab.Activo = (bool)d.Activo;
 
                 catalogoPanelesCovintecs.Add(ab);
-
             }
 
             return View(catalogoPanelesCovintecs);
@@ -458,10 +478,10 @@ namespace ControlProduccion.Controllers
         {
             if (ModelState.IsValid)
             {
-                try {
+                try
+                {
                     var dto = new CatalogoPanelesCovintecDTO
                     {
-                        Id = model.Id,
                         CodigoArticulo = model.CodigoArticulo,
                         DescripcionArticulo = model.DescripcionArticulo,
                         IdLineaProduccion = model.IdLineaProduccion,
@@ -469,7 +489,7 @@ namespace ControlProduccion.Controllers
                         Activo = model.Activo
                     };
                     await _gestionCatalogosService.CreateCatalogoPanelesCovintecAsync(dto);
-                    
+
                     return RedirectToAction(nameof(IndexCatalogoPanelesCovintec));
                 }
                 catch (InvalidOperationException ex)
@@ -482,9 +502,14 @@ namespace ControlProduccion.Controllers
         }
 
         // GET: GestionCatalogosController/Edit/5
-        public ActionResult EditCatalogoPanelesCovintec(int id)
+        public async Task<ActionResult> EditCatalogoPanelesCovintec(int id)
         {
-            var model = _gestionCatalogosService.GetByCatalogoPanelesCovintecIdAsync(id).Result;
+            var model = await _gestionCatalogosService.GetByCatalogoPanelesCovintecIdAsync(id);
+            if (model == null)
+            {
+                return NotFound();
+            }
+
             var viewModel = new CatalogoPanelesCovintecViewModel
             {
                 Id = model.Id,
@@ -500,8 +525,13 @@ namespace ControlProduccion.Controllers
         // POST: GestionCatalogosController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult EditCatalogoPanelesCovintec(int id, CatalogoPanelesCovintecViewModel model)
+        public async Task<ActionResult> EditCatalogoPanelesCovintec(int id, CatalogoPanelesCovintecViewModel model)
         {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
             try
             {
                 var dto = new CatalogoPanelesCovintecDTO
@@ -514,20 +544,20 @@ namespace ControlProduccion.Controllers
                     Activo = model.Activo
                 };
 
-                _gestionCatalogosService.UpdateCatalogoPanelesCovintecAsync(dto);
+                await _gestionCatalogosService.UpdateCatalogoPanelesCovintecAsync(dto);
                 return RedirectToAction(nameof(IndexCatalogoPanelesCovintec));
             }
-            catch
+            catch (Exception ex)
             {
-                return View();
+                ModelState.AddModelError("", "Ocurrió un error al actualizar el registro.");
+                return View(model);
             }
         }
 
         // catalogo status
-
-        public IActionResult IndexCatalogoStatus()
+        public async Task<IActionResult> IndexCatalogoStatus()
         {
-            var dto = _gestionCatalogosService.GetAllCatalogoStatusAsync().Result;
+            var dto = await _gestionCatalogosService.GetAllCatalogoStatusAsync();
             List<CatalogoStatusViewModel> catalogoStatus = new List<CatalogoStatusViewModel>();
             foreach (var d in dto)
             {
@@ -537,14 +567,12 @@ namespace ControlProduccion.Controllers
                 ab.Activo = (bool)d.Activo;
 
                 catalogoStatus.Add(ab);
-
             }
 
             return View(catalogoStatus);
         }
 
         // GET: GestionCatalogosController/Create
-
         public ActionResult CreateCatalogoStatus()
         {
             return View();
@@ -553,27 +581,40 @@ namespace ControlProduccion.Controllers
         // POST: GestionCatalogosController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult CreateCatalogoStatus(CatalogoStatusViewModel model)
+        public async Task<ActionResult> CreateCatalogoStatus(CatalogoStatusViewModel model)
         {
             if (ModelState.IsValid)
             {
-                var dto = new CatalogoStatusDTO
+                try
                 {
-                    Id = model.Id,
-                    Descripcion = model.Descripcion,
-                    Activo = model.Activo
-                };
-                _gestionCatalogosService.CreateCatalogoStatusAsync(dto);
-                return RedirectToAction(nameof(IndexCatalogoStatus));
+                    var dto = new CatalogoStatusDTO
+                    {
+                        Id = model.Id,
+                        Descripcion = model.Descripcion,
+                        Activo = model.Activo
+                    };
+                    await _gestionCatalogosService.CreateCatalogoStatusAsync(dto);
+                    return RedirectToAction(nameof(IndexCatalogoStatus));
+                }
+                catch (Exception ex)
+                {
+                    ModelState.AddModelError("", "Ocurrió un error al crear el registro.");
+                    return View(model);
+                }
             }
 
             return View(model);
         }
 
         // GET: GestionCatalogosController/Edit/5
-        public ActionResult EditCatalogoStatus(int id)
+        public async Task<ActionResult> EditCatalogoStatus(int id)
         {
-            var model = _gestionCatalogosService.GetByCatalogoStatusIdAsync(id).Result;
+            var model = await _gestionCatalogosService.GetByCatalogoStatusIdAsync(id);
+            if (model == null)
+            {
+                return NotFound();
+            }
+
             var viewModel = new CatalogoStatusViewModel
             {
                 Id = model.Id,
@@ -586,8 +627,13 @@ namespace ControlProduccion.Controllers
         // POST: GestionCatalogosController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult EditCatalogoStatus(int id, CatalogoStatusViewModel model)
+        public async Task<ActionResult> EditCatalogoStatus(int id, CatalogoStatusViewModel model)
         {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
             try
             {
                 var dto = new CatalogoStatusDTO
@@ -597,20 +643,20 @@ namespace ControlProduccion.Controllers
                     Activo = model.Activo
                 };
 
-                _gestionCatalogosService.UpdateCatalogoStatusAsync(dto);
+                await _gestionCatalogosService.UpdateCatalogoStatusAsync(dto);
                 return RedirectToAction(nameof(IndexCatalogoStatus));
             }
-            catch
+            catch (Exception ex)
             {
-                return View();
+                ModelState.AddModelError("", "Ocurrió un error al actualizar el registro.");
+                return View(model);
             }
         }
 
         // catalogo tipo
-
-        public IActionResult IndexCatalogoTipo()
+        public async Task<IActionResult> IndexCatalogoTipo()
         {
-            var dto = _gestionCatalogosService.GetAllCatalogoTipoAsync().Result;
+            var dto = await _gestionCatalogosService.GetAllCatalogoTipoAsync();
             List<CatalogoTipoViewModel> catalogoTipos = new List<CatalogoTipoViewModel>();
             foreach (var d in dto)
             {
@@ -620,7 +666,6 @@ namespace ControlProduccion.Controllers
                 ab.Activo = (bool)d.Activo;
 
                 catalogoTipos.Add(ab);
-
             }
 
             return View(catalogoTipos);
@@ -635,28 +680,40 @@ namespace ControlProduccion.Controllers
         // POST: GestionCatalogosController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult CreateCatalogoTipo(CatalogoTipoViewModel model)
+        public async Task<ActionResult> CreateCatalogoTipo(CatalogoTipoViewModel model)
         {
             if (ModelState.IsValid)
             {
-                var dto = new CatalogoTipoDTO
+                try
                 {
-                    Id = model.Id,
-                    Descripcion = model.Descripcion,
-                    Activo = model.Activo
-                };
-                _gestionCatalogosService.CreateCatalogoTipoAsync(dto);
-                return RedirectToAction(nameof(IndexCatalogoTipo));
+                    var dto = new CatalogoTipoDTO
+                    {
+                        Id = model.Id,
+                        Descripcion = model.Descripcion,
+                        Activo = model.Activo
+                    };
+                    await _gestionCatalogosService.CreateCatalogoTipoAsync(dto);
+                    return RedirectToAction(nameof(IndexCatalogoTipo));
+                }
+                catch (Exception ex)
+                {
+                    ModelState.AddModelError("", "Ocurrió un error al crear el registro.");
+                    return View(model);
+                }
             }
 
             return View(model);
         }
 
         // GET: GestionCatalogosController/Edit/5
-        
-        public ActionResult EditCatalogoTipo(int id)
+        public async Task<ActionResult> EditCatalogoTipo(int id)
         {
-            var model = _gestionCatalogosService.GetByCatalogoTipoIdAsync(id).Result;
+            var model = await _gestionCatalogosService.GetByCatalogoTipoIdAsync(id);
+            if (model == null)
+            {
+                return NotFound();
+            }
+
             var viewModel = new CatalogoTipoViewModel
             {
                 Id = model.Id,
@@ -667,11 +724,15 @@ namespace ControlProduccion.Controllers
         }
 
         // POST: GestionCatalogosController/Edit/5
-
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult EditCatalogoTipo(int id, CatalogoTipoViewModel model)
+        public async Task<ActionResult> EditCatalogoTipo(int id, CatalogoTipoViewModel model)
         {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
             try
             {
                 var dto = new CatalogoTipoDTO
@@ -681,20 +742,20 @@ namespace ControlProduccion.Controllers
                     Activo = model.Activo
                 };
 
-                _gestionCatalogosService.UpdateCatalogoTipoAsync(dto);
+                await _gestionCatalogosService.UpdateCatalogoTipoAsync(dto);
                 return RedirectToAction(nameof(IndexCatalogoTipo));
             }
-            catch
+            catch (Exception ex)
             {
-                return View();
+                ModelState.AddModelError("", "Ocurrió un error al actualizar el registro.");
+                return View(model);
             }
         }
 
         // catalogo Linea Produccion
-
-        public IActionResult IndexLineaProduccion()
+        public async Task<IActionResult> IndexLineaProduccion()
         {
-            var dto = _gestionCatalogosService.GetAllLineaProduccionAsync().Result;
+            var dto = await _gestionCatalogosService.GetAllLineaProduccionAsync();
             List<LineaProduccionViewModel> lineaProduccions = new List<LineaProduccionViewModel>();
             foreach (var d in dto)
             {
@@ -704,7 +765,6 @@ namespace ControlProduccion.Controllers
                 ab.Activo = (bool)d.Activo;
 
                 lineaProduccions.Add(ab);
-
             }
 
             return View(lineaProduccions);
@@ -719,27 +779,40 @@ namespace ControlProduccion.Controllers
         // POST: GestionCatalogosController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult CreateLineaProduccion(LineaProduccionViewModel model)
+        public async Task<ActionResult> CreateLineaProduccion(LineaProduccionViewModel model)
         {
             if (ModelState.IsValid)
             {
-                var dto = new LineaProduccionDTO
+                try
                 {
-                    Id = model.Id,
-                    Nombre = model.Nombre,
-                    Activo = model.Activo
-                };
-                _gestionCatalogosService.CreateLineaProduccionAsync(dto);
-                return RedirectToAction(nameof(IndexLineaProduccion));
+                    var dto = new LineaProduccionDTO
+                    {
+                        Id = model.Id,
+                        Nombre = model.Nombre,
+                        Activo = model.Activo
+                    };
+                    await _gestionCatalogosService.CreateLineaProduccionAsync(dto);
+                    return RedirectToAction(nameof(IndexLineaProduccion));
+                }
+                catch (Exception ex)
+                {
+                    ModelState.AddModelError("", "Ocurrió un error al crear el registro.");
+                    return View(model);
+                }
             }
 
             return View(model);
         }
 
         // GET: GestionCatalogosController/Edit/5
-        public ActionResult EditLineaProduccion(int id)
+        public async Task<ActionResult> EditLineaProduccion(int id)
         {
-            var model = _gestionCatalogosService.GetByLineaProduccionIdAsync(id).Result;
+            var model = await _gestionCatalogosService.GetByLineaProduccionIdAsync(id);
+            if (model == null)
+            {
+                return NotFound();
+            }
+
             var viewModel = new LineaProduccionViewModel
             {
                 Id = model.Id,
@@ -752,8 +825,13 @@ namespace ControlProduccion.Controllers
         // POST: GestionCatalogosController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult EditLineaProduccion(int id, LineaProduccionViewModel model)
+        public async Task<ActionResult> EditLineaProduccion(int id, LineaProduccionViewModel model)
         {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
             try
             {
                 var dto = new LineaProduccionDTO
@@ -763,20 +841,20 @@ namespace ControlProduccion.Controllers
                     Activo = model.Activo
                 };
 
-                _gestionCatalogosService.UpdateLineaProduccionAsync(dto);
+                await _gestionCatalogosService.UpdateLineaProduccionAsync(dto);
                 return RedirectToAction(nameof(IndexLineaProduccion));
             }
-            catch
+            catch (Exception ex)
             {
-                return View();
+                ModelState.AddModelError("", "Ocurrió un error al actualizar el registro.");
+                return View(model);
             }
         }
 
         // maquina
-
-        public IActionResult IndexMaquina()
+        public async Task<IActionResult> IndexMaquina()
         {
-            var dto = _gestionCatalogosService.GetAllMaquinaAsync().Result;
+            var dto = await _gestionCatalogosService.GetAllMaquinaAsync();
             List<MaquinaViewModel> maquinas = new List<MaquinaViewModel>();
             foreach (var d in dto)
             {
@@ -786,7 +864,6 @@ namespace ControlProduccion.Controllers
                 ab.Activo = (bool)d.Activo;
 
                 maquinas.Add(ab);
-
             }
 
             return View(maquinas);
@@ -801,27 +878,40 @@ namespace ControlProduccion.Controllers
         // POST: GestionCatalogosController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult CreateMaquina(MaquinaViewModel model)
+        public async Task<ActionResult> CreateMaquina(MaquinaViewModel model)
         {
             if (ModelState.IsValid)
             {
-                var dto = new MaquinaDto
+                try
                 {
-                    Id = model.Id,
-                    Nombre = model.Nombre,
-                    Activo = model.Activo
-                };
-                _gestionCatalogosService.CreateMaquinaAsync(dto);
-                return RedirectToAction(nameof(IndexMaquina));
+                    var dto = new MaquinaDto
+                    {
+                        Id = model.Id,
+                        Nombre = model.Nombre,
+                        Activo = model.Activo
+                    };
+                    await _gestionCatalogosService.CreateMaquinaAsync(dto);
+                    return RedirectToAction(nameof(IndexMaquina));
+                }
+                catch (Exception ex)
+                {
+                    ModelState.AddModelError("", "Ocurrió un error al crear el registro.");
+                    return View(model);
+                }
             }
 
             return View(model);
         }
 
         // GET: GestionCatalogosController/Edit/5
-        public ActionResult EditMaquina(int id)
+        public async Task<ActionResult> EditMaquina(int id)
         {
-            var model = _gestionCatalogosService.GetByMaquinaIdAsync(id).Result;
+            var model = await _gestionCatalogosService.GetByMaquinaIdAsync(id);
+            if (model == null)
+            {
+                return NotFound();
+            }
+
             var viewModel = new MaquinaViewModel
             {
                 Id = model.Id,
@@ -834,8 +924,13 @@ namespace ControlProduccion.Controllers
         // POST: GestionCatalogosController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult EditMaquina(int id, MaquinaViewModel model)
+        public async Task<ActionResult> EditMaquina(int id, MaquinaViewModel model)
         {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
             try
             {
                 var dto = new MaquinaDto
@@ -845,19 +940,20 @@ namespace ControlProduccion.Controllers
                     Activo = model.Activo
                 };
 
-                _gestionCatalogosService.UpdateMaquinaAsync(dto);
+                await _gestionCatalogosService.UpdateMaquinaAsync(dto);
                 return RedirectToAction(nameof(IndexMaquina));
             }
-            catch
+            catch (Exception ex)
             {
-                return View();
+                ModelState.AddModelError("", "Ocurrió un error al actualizar el registro.");
+                return View(model);
             }
         }
 
         // tipo fabricacion
-        public IActionResult IndexTipoFabricacion()
+        public async Task<IActionResult> IndexTipoFabricacion()
         {
-            var dto = _gestionCatalogosService.GetAllTipoFabricacionAsync().Result;
+            var dto = await _gestionCatalogosService.GetAllTipoFabricacionAsync();
             List<TipoFabricacionViewModel> tipoFabricacions = new List<TipoFabricacionViewModel>();
             foreach (var d in dto)
             {
@@ -867,7 +963,6 @@ namespace ControlProduccion.Controllers
                 ab.Activo = (bool)d.Activo;
 
                 tipoFabricacions.Add(ab);
-
             }
 
             return View(tipoFabricacions);
@@ -882,27 +977,40 @@ namespace ControlProduccion.Controllers
         // POST: GestionCatalogosController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult CreateTipoFabricacion(TipoFabricacionViewModel model)
+        public async Task<ActionResult> CreateTipoFabricacion(TipoFabricacionViewModel model)
         {
             if (ModelState.IsValid)
             {
-                var dto = new TipoFabricacionDto
+                try
                 {
-                    Id = model.Id,
-                    Descripcion = model.Descripcion,
-                    Activo = model.Activo
-                };
-                _gestionCatalogosService.CreateTipoFabricacionAsync(dto);
-                return RedirectToAction(nameof(IndexTipoFabricacion));
+                    var dto = new TipoFabricacionDto
+                    {
+                        Id = model.Id,
+                        Descripcion = model.Descripcion,
+                        Activo = model.Activo
+                    };
+                    await _gestionCatalogosService.CreateTipoFabricacionAsync(dto);
+                    return RedirectToAction(nameof(IndexTipoFabricacion));
+                }
+                catch (Exception ex)
+                {
+                    ModelState.AddModelError("", "Ocurrió un error al crear el registro.");
+                    return View(model);
+                }
             }
 
             return View(model);
         }
 
         // GET: GestionCatalogosController/Edit/5
-        public ActionResult EditTipoFabricacion(int id)
+        public async Task<ActionResult> EditTipoFabricacion(int id)
         {
-            var model = _gestionCatalogosService.GetByTipoFabricacionIdAsync(id).Result;
+            var model = await _gestionCatalogosService.GetByTipoFabricacionIdAsync(id);
+            if (model == null)
+            {
+                return NotFound();
+            }
+
             var viewModel = new TipoFabricacionViewModel
             {
                 Id = model.Id,
@@ -915,8 +1023,13 @@ namespace ControlProduccion.Controllers
         // POST: GestionCatalogosController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult EditTipoFabricacion(int id, TipoFabricacionViewModel model)
+        public async Task<ActionResult> EditTipoFabricacion(int id, TipoFabricacionViewModel model)
         {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
             try
             {
                 var dto = new TipoFabricacionDto
@@ -926,20 +1039,20 @@ namespace ControlProduccion.Controllers
                     Activo = model.Activo
                 };
 
-                _gestionCatalogosService.UpdateTipoFabricacionAsync(dto);
+                await _gestionCatalogosService.UpdateTipoFabricacionAsync(dto);
                 return RedirectToAction(nameof(IndexTipoFabricacion));
             }
-            catch
+            catch (Exception ex)
             {
-                return View();
+                ModelState.AddModelError("", "Ocurrió un error al actualizar el registro.");
+                return View(model);
             }
         }
 
         // ubicacion bobina
-
-        public IActionResult IndexUbicacionBobina()
+        public async Task<IActionResult> IndexUbicacionBobina()
         {
-            var dto = _gestionCatalogosService.GetAllUbicacionBobinaAsync().Result;
+            var dto = await _gestionCatalogosService.GetAllUbicacionBobinaAsync();
             List<UbicacionBobinaViewModel> ubicacionBobinas = new List<UbicacionBobinaViewModel>();
             foreach (var d in dto)
             {
@@ -949,7 +1062,6 @@ namespace ControlProduccion.Controllers
                 ab.Activo = (bool)d.Activo;
 
                 ubicacionBobinas.Add(ab);
-
             }
 
             return View(ubicacionBobinas);
@@ -964,27 +1076,40 @@ namespace ControlProduccion.Controllers
         // POST: GestionCatalogosController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult CreateUbicacionBobina(UbicacionBobinaViewModel model)
+        public async Task<ActionResult> CreateUbicacionBobina(UbicacionBobinaViewModel model)
         {
             if (ModelState.IsValid)
             {
-                var dto = new UbicacionBobinaDTO
+                try
                 {
-                    Id = model.Id,
-                    Descripcion = model.Descripcion,
-                    Activo = model.Activo
-                };
-                _gestionCatalogosService.CreateUbicacionBobinaAsync(dto);
-                return RedirectToAction(nameof(IndexUbicacionBobina));
+                    var dto = new UbicacionBobinaDTO
+                    {
+                        Id = model.Id,
+                        Descripcion = model.Descripcion,
+                        Activo = model.Activo
+                    };
+                    await _gestionCatalogosService.CreateUbicacionBobinaAsync(dto);
+                    return RedirectToAction(nameof(IndexUbicacionBobina));
+                }
+                catch (Exception ex)
+                {
+                    ModelState.AddModelError("", "Ocurrió un error al crear el registro.");
+                    return View(model);
+                }
             }
 
             return View(model);
         }
 
         // GET: GestionCatalogosController/Edit/5
-        public ActionResult EditUbicacionBobina(int id)
+        public async Task<ActionResult> EditUbicacionBobina(int id)
         {
-            var model = _gestionCatalogosService.GetByUbicacionBobinaIdAsync(id).Result;
+            var model = await _gestionCatalogosService.GetByUbicacionBobinaIdAsync(id);
+            if (model == null)
+            {
+                return NotFound();
+            }
+
             var viewModel = new UbicacionBobinaViewModel
             {
                 Id = model.Id,
@@ -997,8 +1122,13 @@ namespace ControlProduccion.Controllers
         // POST: GestionCatalogosController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult EditUbicacionBobina(int id, UbicacionBobinaViewModel model)
+        public async Task<ActionResult> EditUbicacionBobina(int id, UbicacionBobinaViewModel model)
         {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
             try
             {
                 var dto = new UbicacionBobinaDTO
@@ -1008,15 +1138,14 @@ namespace ControlProduccion.Controllers
                     Activo = model.Activo
                 };
 
-                _gestionCatalogosService.UpdateUbicacionBobinaAsync(dto);
+                await _gestionCatalogosService.UpdateUbicacionBobinaAsync(dto);
                 return RedirectToAction(nameof(IndexUbicacionBobina));
             }
-            catch
+            catch (Exception ex)
             {
-                return View();
+                ModelState.AddModelError("", "Ocurrió un error al actualizar el registro.");
+                return View(model);
             }
         }
-
-
     }
 }

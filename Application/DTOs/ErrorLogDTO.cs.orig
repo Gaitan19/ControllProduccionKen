@@ -1,0 +1,23 @@
+<<<<<<< HEAD
+using System.Collections.Generic;
+
+=======
+>>>>>>> origin/codex/add-ierrorlogservice-implementation
+namespace Application.DTOs
+{
+    public class ErrorLogDTO
+    {
+<<<<<<< HEAD
+        public string Path { get; set; } = string.Empty;
+        public string Method { get; set; } = string.Empty;
+        public string? User { get; set; }
+        public string Body { get; set; } = string.Empty;
+        public Dictionary<string, string> Headers { get; set; } = new();
+        public string TraceIdentifier { get; set; } = string.Empty;
+        public string Exception { get; set; } = string.Empty;
+=======
+        public string Message { get; set; }
+        public string? StackTrace { get; set; }
+>>>>>>> origin/codex/add-ierrorlogservice-implementation
+    }
+}

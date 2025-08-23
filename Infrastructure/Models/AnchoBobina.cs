@@ -11,6 +11,8 @@ public partial class AnchoBobina
 
     public bool? Activo { get; set; }
 
+    public virtual ICollection<DetPrdAccesorio> DetPrdAccesorios { get; set; } = new List<DetPrdAccesorio>();
+
     public virtual ICollection<PrdIlKwang> PrdIlKwangIdAnchoBobinaANavigations { get; set; } = new List<PrdIlKwang>();
 
     public virtual ICollection<PrdIlKwang> PrdIlKwangIdAnchoBobinaBNavigations { get; set; } = new List<PrdIlKwang>();

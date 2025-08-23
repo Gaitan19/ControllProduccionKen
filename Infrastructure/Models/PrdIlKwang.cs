@@ -87,6 +87,8 @@ public partial class PrdIlKwang
 
     public decimal? ConsumoBobinaKgB { get; set; }
 
+    public int? MetroInicialPoliol { get; set; }
+
     public decimal PesoInicialA { get; set; }
 
     public decimal CantidadUtilizadaA { get; set; }
@@ -100,6 +102,8 @@ public partial class PrdIlKwang
     public string LoteA { get; set; } = null!;
 
     public DateTime VencimientoA { get; set; }
+
+    public int? MetroInicialIsocianato { get; set; }
 
     public decimal PesoInicialB { get; set; }
 

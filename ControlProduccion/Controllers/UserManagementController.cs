@@ -19,12 +19,24 @@ namespace ControlProduccion.Controllers
 
         //create a view to get all users and their roles
         [HttpGet]
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
             var users = _userManager.Users.ToList();
-            
+            var usersWithRoles = new List<UserWithRoleViewModel>();
 
-            return View(users);
+            foreach (var user in users)
+            {
+                var roles = await _userManager.GetRolesAsync(user);
+                var role = roles.FirstOrDefault() ?? "Sin Rol";
+                
+                usersWithRoles.Add(new UserWithRoleViewModel
+                {
+                    User = user,
+                    Role = role
+                });
+            }
+
+            return View(usersWithRoles);
         }
 
         [HttpPost]

@@ -16,6 +16,12 @@
                 @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
                 <input type="hidden" asp-for="Id"/>
+                @if (Model.AprobadoGerencia == true)
+                {
+                    <div class="alert alert-success">
+                        <i class="fa fa-check"></i> Esta producción ha sido aprobada y no puede ser modificada.
+                    </div>
+                }
                 <div class="form-group">
                     <label asp-for="IdUsuarios"></label>
                     <select  id="IdUsuarios" multiple name="IdUsuarios" asp-for="IdUsuarios" class="form-control select2" asp-items="Model.Operarios">
@@ -582,8 +588,7 @@
                 // Muestra el mensaje de éxito, cierra el modal y puedes agregar lógica adicional si es necesario
                 alert(response.message);
                 $("#modal-Detalle").modal("hide");
-                // Clear localStorage when detail is successfully updated
-                localStorage.removeItem(DRAFT_KEY);
+               
                  location.reload();
               } else {
                 alert("Error: " + response.message);
@@ -649,8 +654,7 @@
                 alert(response.message);
                 // Oculta el modal
                 $("#modal-DetalleAlambre").modal("hide");
-                // Clear localStorage when alambre detail is successfully updated
-                localStorage.removeItem(DRAFT_KEY);
+               
                 // Recarga la página
                 location.reload();
               } else {
@@ -673,7 +677,7 @@
                     success: function(response) {
                         if (response) {
                             alert("Producción Aprobada exitosamente.");
-                            localStorage.removeItem(DRAFT_KEY);
+                           
                             location.reload();
                         } else {
                             alert("Error al Aprobar la producción, contacte a soporte.");
@@ -688,7 +692,7 @@
 
         // Handle form submission
         $('#frmProduccion').on('submit', function() {
-            localStorage.removeItem(DRAFT_KEY);
+           
             window.removeEventListener('beforeunload', beforeUnloadHandler);
         });
 

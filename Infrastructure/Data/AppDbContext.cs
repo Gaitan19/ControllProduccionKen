@@ -26,6 +26,10 @@ public partial class AppDbContext : DbContext
 
     public virtual DbSet<CatProdTermoIsoPanel> CatProdTermoIsoPanels { get; set; }
 
+    public virtual DbSet<CatTipoMalla> CatTipoMallas { get; set; }
+
+    public virtual DbSet<CatalogoAccesorio> CatalogoAccesorios { get; set; }
+
     public virtual DbSet<CatalogoBloque> CatalogoBloques { get; set; }
 
     public virtual DbSet<CatalogoCercha> CatalogoCerchas { get; set; }
@@ -33,6 +37,8 @@ public partial class AppDbContext : DbContext
     public virtual DbSet<CatalogoMallasCovintec> CatalogoMallasCovintecs { get; set; }
 
     public virtual DbSet<CatalogoPanelesCovintec> CatalogoPanelesCovintecs { get; set; }
+
+    public virtual DbSet<CatalogoPanelesPch> CatalogoPanelesPches { get; set; }
 
     public virtual DbSet<CatalogoStatus> CatalogoStatuses { get; set; }
 
@@ -47,6 +53,8 @@ public partial class AppDbContext : DbContext
     public virtual DbSet<DetAlambrePrdMallaCovintec> DetAlambrePrdMallaCovintecs { get; set; }
 
     public virtual DbSet<DetAlambrePrdPanelesCovintec> DetAlambrePrdPanelesCovintecs { get; set; }
+
+    public virtual DbSet<DetPrdAccesorio> DetPrdAccesorios { get; set; }
 
     public virtual DbSet<DetPrdBloque> DetPrdBloques { get; set; }
 
@@ -64,13 +72,27 @@ public partial class AppDbContext : DbContext
 
     public virtual DbSet<DetPrdOtro> DetPrdOtros { get; set; }
 
+    public virtual DbSet<DetPrdPaneladoraPch> DetPrdPaneladoraPches { get; set; }
+
     public virtual DbSet<DetPrdPanelesCovintec> DetPrdPanelesCovintecs { get; set; }
+
+    public virtual DbSet<DetPrdPchMaquinaA> DetPrdPchMaquinaAs { get; set; }
+
+    public virtual DbSet<DetPrdPchMaquinaB> DetPrdPchMaquinaBs { get; set; }
+
+    public virtual DbSet<DetPrdPchMaquinaC> DetPrdPchMaquinaCs { get; set; }
+
+    public virtual DbSet<DetPrdpreExpansion> DetPrdpreExpansions { get; set; }
+
+    public virtual DbSet<ErrorLog> ErrorLogs { get; set; }
 
     public virtual DbSet<LineaProduccion> LineaProduccions { get; set; }
 
     public virtual DbSet<MaestroCatalogo> MaestroCatalogos { get; set; }
 
     public virtual DbSet<Maquina> Maquinas { get; set; }
+
+    public virtual DbSet<PrdAccesorio> PrdAccesorios { get; set; }
 
     public virtual DbSet<PrdBloque> PrdBloques { get; set; }
 
@@ -84,11 +106,17 @@ public partial class AppDbContext : DbContext
 
     public virtual DbSet<PrdMallaCovintec> PrdMallaCovintecs { get; set; }
 
+    public virtual DbSet<PrdMallaPch> PrdMallaPches { get; set; }
+
     public virtual DbSet<PrdNevera> PrdNeveras { get; set; }
 
     public virtual DbSet<PrdOtro> PrdOtros { get; set; }
 
+    public virtual DbSet<PrdPaneladoraPch> PrdPaneladoraPches { get; set; }
+
     public virtual DbSet<PrdPanelesCovintec> PrdPanelesCovintecs { get; set; }
+
+    public virtual DbSet<PrdpreExpansion> PrdpreExpansions { get; set; }
 
     public virtual DbSet<Reporte> Reportes { get; set; }
 
@@ -164,6 +192,41 @@ public partial class AppDbContext : DbContext
             entity.Property(e => e.DescripcionArticulo)
                 .HasMaxLength(200)
                 .IsUnicode(false);
+        });
+
+        modelBuilder.Entity<CatTipoMalla>(entity =>
+        {
+            entity.ToTable("CatTipoMalla", "cp");
+
+            entity.HasIndex(e => e.Cuadricula, "UQ_CatTipoMalla_Cuadricula").IsUnique();
+
+            entity.Property(e => e.Activo)
+                .IsRequired()
+                .HasDefaultValueSql("((1))");
+            entity.Property(e => e.Cuadricula).HasMaxLength(100);
+            entity.Property(e => e.PesoPorMts2).HasMaxLength(50);
+        });
+
+        modelBuilder.Entity<CatalogoAccesorio>(entity =>
+        {
+            entity.ToTable("CatalogoAccesorios", "cp");
+
+            entity.Property(e => e.Activo)
+                .IsRequired()
+                .HasDefaultValueSql("((1))");
+            entity.Property(e => e.CodigoArticulo)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.DescripcionArticulo)
+                .HasMaxLength(200)
+                .IsUnicode(false);
+            entity.Property(e => e.FamiliaProductos)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+
+            entity.HasOne(d => d.IdTipoNavigation).WithMany(p => p.CatalogoAccesorios)
+                .HasForeignKey(d => d.IdTipo)
+                .OnDelete(DeleteBehavior.ClientSetNull);
         });
 
         modelBuilder.Entity<CatalogoBloque>(entity =>
@@ -253,6 +316,24 @@ public partial class AppDbContext : DbContext
                 .HasForeignKey(d => d.IdLineaProduccion)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_CatalogoPanelesCovintec_LineaProduccion");
+        });
+
+        modelBuilder.Entity<CatalogoPanelesPch>(entity =>
+        {
+            entity.ToTable("CatalogoPanelesPCH", "cp");
+
+            entity.Property(e => e.Activo)
+                .IsRequired()
+                .HasDefaultValueSql("((1))");
+            entity.Property(e => e.CodigoArticulo)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.DescripcionArticulo)
+                .HasMaxLength(200)
+                .IsUnicode(false);
+            entity.Property(e => e.FamiliaProducto)
+                .HasMaxLength(20)
+                .IsUnicode(false);
         });
 
         modelBuilder.Entity<CatalogoStatus>(entity =>
@@ -366,6 +447,61 @@ public partial class AppDbContext : DbContext
                 .HasForeignKey(d => d.IdPanel)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_DetAlambrePrdPanelesCovintec_Principal");
+        });
+
+        modelBuilder.Entity<DetPrdAccesorio>(entity =>
+        {
+            entity.ToTable("DetPrdAccesorios", "cp");
+
+            entity.HasIndex(e => e.IdAnchoBobina, "IX_DetPrdAcc_IdAnchoBobina").HasFilter("([IdAnchoBobina] IS NOT NULL)");
+
+            entity.HasIndex(e => e.IdCalibre, "IX_DetPrdAcc_IdCalibre").HasFilter("([IdCalibre] IS NOT NULL)");
+
+            entity.HasIndex(e => e.IdMallaCovintec, "IX_DetPrdAcc_IdMallaCovintec").HasFilter("([IdMallaCovintec] IS NOT NULL)");
+
+            entity.HasIndex(e => e.IdTipoMallaPch, "IX_DetPrdAcc_IdTipoMallaPCH").HasFilter("([IdTipoMallaPCH] IS NOT NULL)");
+
+            entity.HasIndex(e => e.PrdAccesoriosId, "IX_DetPrdAcc_PrdAccesoriosId");
+
+            entity.Property(e => e.CantidadBobinaKg).HasColumnType("decimal(10, 1)");
+            entity.Property(e => e.CantidadCalibreKg).HasColumnType("decimal(10, 1)");
+            entity.Property(e => e.CantidadPchKg).HasColumnType("decimal(10, 1)");
+            entity.Property(e => e.FechaActualizacion).HasColumnType("datetime");
+            entity.Property(e => e.FechaCreacion).HasColumnType("datetime");
+            entity.Property(e => e.IdTipoMallaPch).HasColumnName("IdTipoMallaPCH");
+            entity.Property(e => e.IdUsuarioActualizacion).HasMaxLength(450);
+            entity.Property(e => e.IdUsuarioCreacion).HasMaxLength(450);
+
+            entity.HasOne(d => d.IdAnchoBobinaNavigation).WithMany(p => p.DetPrdAccesorios)
+                .HasForeignKey(d => d.IdAnchoBobina)
+                .HasConstraintName("FK_DetPrdAccesorios_AnchoBobina");
+
+            entity.HasOne(d => d.IdArticuloNavigation).WithMany(p => p.DetPrdAccesorios)
+                .HasForeignKey(d => d.IdArticulo)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_DetPrdAccesorios_CatalogoAccesorios");
+
+            entity.HasOne(d => d.IdCalibreNavigation).WithMany(p => p.DetPrdAccesorioIdCalibreNavigations)
+                .HasForeignKey(d => d.IdCalibre)
+                .HasConstraintName("FK_DetPrdAccesorios_MaestroCatalogo1");
+
+            entity.HasOne(d => d.IdMallaCovintecNavigation).WithMany(p => p.DetPrdAccesorios)
+                .HasForeignKey(d => d.IdMallaCovintec)
+                .HasConstraintName("FK_DetPrdAccesorios_CatalogoMallasCovintec");
+
+            entity.HasOne(d => d.IdTipoArticuloNavigation).WithMany(p => p.DetPrdAccesorioIdTipoArticuloNavigations)
+                .HasForeignKey(d => d.IdTipoArticulo)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_DetPrdAccesorios_MaestroCatalogo");
+
+            entity.HasOne(d => d.IdTipoFabricacionNavigation).WithMany(p => p.DetPrdAccesorios)
+                .HasForeignKey(d => d.IdTipoFabricacion)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_DetPrdAccesorios_TipoFabricacion");
+
+            entity.HasOne(d => d.IdTipoMallaPchNavigation).WithMany(p => p.DetPrdAccesorios)
+                .HasForeignKey(d => d.IdTipoMallaPch)
+                .HasConstraintName("FK_DetPrdAccesorios_CatTipoMalla");
         });
 
         modelBuilder.Entity<DetPrdBloque>(entity =>
@@ -604,6 +740,39 @@ public partial class AppDbContext : DbContext
                 .HasConstraintName("FK_DetPrdOtro_PrdOtro");
         });
 
+        modelBuilder.Entity<DetPrdPaneladoraPch>(entity =>
+        {
+            entity.ToTable("DetPrdPaneladoraPch", "cp");
+
+            entity.Property(e => e.FechaActualizacion).HasColumnType("datetime");
+            entity.Property(e => e.FechaCreacion).HasColumnType("datetime");
+            entity.Property(e => e.IdUsuarioActualizacion).HasMaxLength(450);
+            entity.Property(e => e.IdUsuarioCreacion).HasMaxLength(450);
+            entity.Property(e => e.Longitud).HasColumnType("decimal(18, 2)");
+            entity.Property(e => e.MermaAlambreKg).HasColumnType("decimal(18, 1)");
+            entity.Property(e => e.Mts2PorPanel).HasColumnType("decimal(10, 1)");
+            entity.Property(e => e.PesoAlambreKg).HasColumnType("decimal(18, 1)");
+
+            entity.HasOne(d => d.IdArticuloNavigation).WithMany(p => p.DetPrdPaneladoraPches)
+                .HasForeignKey(d => d.IdArticulo)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_cp_DetPrdPaneladoraPch_CatPanelesCovintec");
+
+            entity.HasOne(d => d.IdArticulo1).WithMany(p => p.DetPrdPaneladoraPches)
+                .HasForeignKey(d => d.IdArticulo)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_DetPrdPaneladoraPch_CatalogoPanelesPCH");
+
+            entity.HasOne(d => d.IdTipoFabricacionNavigation).WithMany(p => p.DetPrdPaneladoraPches)
+                .HasForeignKey(d => d.IdTipoFabricacion)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_cp_DetPrdPaneladoraPch_TipoFabricacion");
+
+            entity.HasOne(d => d.PrdPaneladoraPch).WithMany(p => p.DetPrdPaneladoraPches)
+                .HasForeignKey(d => d.PrdPaneladoraPchId)
+                .HasConstraintName("FK_cp_DetPrdPaneladoraPch_PrdPaneladoraPch");
+        });
+
         modelBuilder.Entity<DetPrdPanelesCovintec>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__DetPrdPa__3214EC07BC260943");
@@ -632,6 +801,138 @@ public partial class AppDbContext : DbContext
                 .HasForeignKey(d => d.IdTipoFabricacion)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_DetPrdPanelesCovintec_TipoFabricacion");
+        });
+
+        modelBuilder.Entity<DetPrdPchMaquinaA>(entity =>
+        {
+            entity.ToTable("DetPrdPchMaquinaA", "cp");
+
+            entity.Property(e => e.FechaActualizacion).HasColumnType("datetime");
+            entity.Property(e => e.FechaCreacion).HasColumnType("datetime");
+            entity.Property(e => e.HilosTransversalesUn).HasColumnName("HilosTransversalesUN");
+            entity.Property(e => e.IdUsuarioActualizacion).HasMaxLength(450);
+            entity.Property(e => e.IdUsuarioCreacion).HasMaxLength(450);
+            entity.Property(e => e.Longitud).HasColumnType("decimal(18, 2)");
+            entity.Property(e => e.MermaHilosTransversalesKg).HasColumnType("decimal(18, 1)");
+            entity.Property(e => e.PesoAlambreKgA).HasColumnType("decimal(18, 1)");
+            entity.Property(e => e.Produccion).HasColumnType("decimal(18, 2)");
+
+            entity.HasOne(d => d.IdMaquinaNavigation).WithMany(p => p.DetPrdPchMaquinaAs)
+                .HasForeignKey(d => d.IdMaquina)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_DetPrdPchMaquinaA_Maquinas");
+
+            entity.HasOne(d => d.IdTipoFabricacionNavigation).WithMany(p => p.DetPrdPchMaquinaAs)
+                .HasForeignKey(d => d.IdTipoFabricacion)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_DetPrdPchMaquinaA_TipoFabricacion");
+
+            entity.HasOne(d => d.PrdMallaPch).WithMany(p => p.DetPrdPchMaquinaAs)
+                .HasForeignKey(d => d.PrdMallaPchId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_DetPrdPchMaquinaA_PrdMallaPch");
+        });
+
+        modelBuilder.Entity<DetPrdPchMaquinaB>(entity =>
+        {
+            entity.ToTable("DetPrdPchMaquinaB", "cp");
+
+            entity.Property(e => e.FechaActualizacion).HasColumnType("datetime");
+            entity.Property(e => e.FechaCreacion).HasColumnType("datetime");
+            entity.Property(e => e.HilosLongitudinalesUn).HasColumnName("HilosLongitudinalesUN");
+            entity.Property(e => e.IdUsuarioActualizacion).HasMaxLength(450);
+            entity.Property(e => e.IdUsuarioCreacion).HasMaxLength(450);
+            entity.Property(e => e.Longitud).HasColumnType("decimal(18, 2)");
+            entity.Property(e => e.MermaHilosLongitudinalesKg).HasColumnType("decimal(18, 1)");
+            entity.Property(e => e.PesoAlambreKgB).HasColumnType("decimal(18, 1)");
+            entity.Property(e => e.Produccion).HasColumnType("decimal(18, 2)");
+
+            entity.HasOne(d => d.IdMaquinaNavigation).WithMany(p => p.DetPrdPchMaquinaBs)
+                .HasForeignKey(d => d.IdMaquina)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_DetPrdPchMaquinaB_Maquinas");
+
+            entity.HasOne(d => d.IdTipoFabricacionNavigation).WithMany(p => p.DetPrdPchMaquinaBs)
+                .HasForeignKey(d => d.IdTipoFabricacion)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_DetPrdPchMaquinaB_TipoFabricacion");
+
+            entity.HasOne(d => d.PrdMallaPch).WithMany(p => p.DetPrdPchMaquinaBs)
+                .HasForeignKey(d => d.PrdMallaPchId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_DetPrdPchMaquinaB_PrdMallaPch");
+        });
+
+        modelBuilder.Entity<DetPrdPchMaquinaC>(entity =>
+        {
+            entity.ToTable("DetPrdPchMaquinaC", "cp");
+
+            entity.Property(e => e.FechaActualizacion).HasColumnType("datetime");
+            entity.Property(e => e.FechaCreacion).HasColumnType("datetime");
+            entity.Property(e => e.IdUsuarioActualizacion).HasMaxLength(450);
+            entity.Property(e => e.IdUsuarioCreacion).HasMaxLength(450);
+            entity.Property(e => e.Longitud).HasColumnType("decimal(18, 2)");
+            entity.Property(e => e.MermaMallasKg).HasColumnType("decimal(18, 1)");
+            entity.Property(e => e.Produccion).HasColumnType("decimal(18, 2)");
+
+            entity.HasOne(d => d.IdMaquinaNavigation).WithMany(p => p.DetPrdPchMaquinaCs)
+                .HasForeignKey(d => d.IdMaquina)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_DetPrdPchMaquinaC_Maquinas");
+
+            entity.HasOne(d => d.IdTipoFabricacionNavigation).WithMany(p => p.DetPrdPchMaquinaCs)
+                .HasForeignKey(d => d.IdTipoFabricacion)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_DetPrdPchMaquinaC_TipoFabricacion");
+
+            entity.HasOne(d => d.IdTipoMallaNavigation).WithMany(p => p.DetPrdPchMaquinaCs)
+                .HasForeignKey(d => d.IdTipoMalla)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_DetPrdPchMaquinaC_CatTipoMalla");
+
+            entity.HasOne(d => d.PrdMallaPch).WithMany(p => p.DetPrdPchMaquinaCs)
+                .HasForeignKey(d => d.PrdMallaPchId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_DetPrdPchMaquinaC_PrdMallaPch");
+        });
+
+        modelBuilder.Entity<DetPrdpreExpansion>(entity =>
+        {
+            entity.ToTable("DetPrdpreExpansion", "cp");
+
+            entity.Property(e => e.Densidad).HasColumnType("decimal(10, 2)");
+            entity.Property(e => e.FechaActualizacion).HasColumnType("datetime");
+            entity.Property(e => e.FechaCreacion).HasColumnType("datetime");
+            entity.Property(e => e.IdUsuarioActualizacion).HasMaxLength(450);
+            entity.Property(e => e.IdUsuarioCreacion).HasMaxLength(450);
+            entity.Property(e => e.PesoBatchGr).HasColumnType("decimal(10, 1)");
+            entity.Property(e => e.PresionPsi).HasColumnName("PresionPSI");
+
+            entity.HasOne(d => d.PrdpreExpansion).WithMany(p => p.DetPrdpreExpansions)
+                .HasForeignKey(d => d.PrdpreExpansionId)
+                .HasConstraintName("FK_DetPrdpreExpansion_PrdpreExpansion");
+        });
+
+        modelBuilder.Entity<ErrorLog>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK_ErrorLog");
+
+            entity.ToTable("ErrorLogs", "cp");
+
+            entity.Property(e => e.CorrelationId).HasMaxLength(100);
+            entity.Property(e => e.Ipaddress)
+                .HasMaxLength(45)
+                .HasColumnName("IPAddress");
+            entity.Property(e => e.Level).HasMaxLength(32);
+            entity.Property(e => e.Message).HasMaxLength(4000);
+            entity.Property(e => e.QueryString).HasMaxLength(2048);
+            entity.Property(e => e.RequestMethod).HasMaxLength(16);
+            entity.Property(e => e.RequestPath).HasMaxLength(2048);
+            entity.Property(e => e.TimeUtc)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.UserAgent).HasMaxLength(512);
+            entity.Property(e => e.UserId).HasMaxLength(450);
         });
 
         modelBuilder.Entity<LineaProduccion>(entity =>
@@ -672,6 +973,31 @@ public partial class AppDbContext : DbContext
             entity.Property(e => e.Nombre)
                 .HasMaxLength(100)
                 .IsUnicode(false);
+        });
+
+        modelBuilder.Entity<PrdAccesorio>(entity =>
+        {
+            entity.ToTable("PrdAccesorios", "cp");
+
+            entity.HasIndex(e => e.IdMaquina, "IX_PrdAccesorios_IdMaquina");
+
+            entity.Property(e => e.Fecha).HasColumnType("date");
+            entity.Property(e => e.FechaActualizacion).HasColumnType("datetime");
+            entity.Property(e => e.FechaCreacion).HasColumnType("datetime");
+            entity.Property(e => e.IdAprobadoGerencia).HasMaxLength(450);
+            entity.Property(e => e.IdAprobadoSupervisor).HasMaxLength(450);
+            entity.Property(e => e.IdUsuarioActualizacion).HasMaxLength(450);
+            entity.Property(e => e.IdUsuarioCreacion).HasMaxLength(450);
+            entity.Property(e => e.MermaBobinasKg).HasColumnType("decimal(10, 1)");
+            entity.Property(e => e.MermaLitewallKg).HasColumnType("decimal(10, 1)");
+            entity.Property(e => e.MermaMallaCovintecKg).HasColumnType("decimal(10, 1)");
+            entity.Property(e => e.MermaMallaPchKg).HasColumnType("decimal(10, 1)");
+            entity.Property(e => e.Observaciones).HasMaxLength(4000);
+
+            entity.HasOne(d => d.IdMaquinaNavigation).WithMany(p => p.PrdAccesorios)
+                .HasForeignKey(d => d.IdMaquina)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_PrdAccesorios_Maquinas");
         });
 
         modelBuilder.Entity<PrdBloque>(entity =>
@@ -861,6 +1187,23 @@ public partial class AppDbContext : DbContext
                 .HasConstraintName("FK_PrdMallaCovintec_Reporte");
         });
 
+        modelBuilder.Entity<PrdMallaPch>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK_PrdPaneladoraPch");
+
+            entity.ToTable("PrdMallaPch", "cp");
+
+            entity.Property(e => e.Fecha).HasColumnType("date");
+            entity.Property(e => e.FechaActualizacion).HasColumnType("datetime");
+            entity.Property(e => e.FechaCreacion).HasColumnType("datetime");
+            entity.Property(e => e.IdAprobadoGerencia).HasMaxLength(450);
+            entity.Property(e => e.IdAprobadoSupervisor).HasMaxLength(450);
+            entity.Property(e => e.IdUsuarioActualizacion).HasMaxLength(450);
+            entity.Property(e => e.IdUsuarioCreacion).HasMaxLength(450);
+            entity.Property(e => e.Observaciones).HasMaxLength(4000);
+            entity.Property(e => e.ProduccionDia).HasColumnType("decimal(18, 2)");
+        });
+
         modelBuilder.Entity<PrdNevera>(entity =>
         {
             entity.ToTable("PrdNevera", "cp");
@@ -896,6 +1239,31 @@ public partial class AppDbContext : DbContext
             entity.Property(e => e.IdUsuarioCreacion).HasMaxLength(450);
         });
 
+        modelBuilder.Entity<PrdPaneladoraPch>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK_cp_PrdPaneladoraPch");
+
+            entity.ToTable("PrdPaneladoraPch", "cp");
+
+            entity.Property(e => e.Fecha).HasColumnType("date");
+            entity.Property(e => e.FechaActualizacion).HasColumnType("datetime");
+            entity.Property(e => e.FechaCreacion)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.IdAprobadoGerencia).HasMaxLength(450);
+            entity.Property(e => e.IdAprobadoSupervisor).HasMaxLength(450);
+            entity.Property(e => e.IdUsuarioActualizacion).HasMaxLength(450);
+            entity.Property(e => e.IdUsuarioCreacion).HasMaxLength(450);
+            entity.Property(e => e.Observaciones).HasMaxLength(4000);
+            entity.Property(e => e.ProduccionDia).HasColumnType("decimal(10, 1)");
+            entity.Property(e => e.TiempoParo).HasColumnType("decimal(10, 1)");
+
+            entity.HasOne(d => d.IdMaquinaNavigation).WithMany(p => p.PrdPaneladoraPches)
+                .HasForeignKey(d => d.IdMaquina)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_cp_PrdPaneladoraPch_Maquinas");
+        });
+
         modelBuilder.Entity<PrdPanelesCovintec>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__PrdPanel__3214EC078A18F682");
@@ -921,6 +1289,24 @@ public partial class AppDbContext : DbContext
             entity.HasOne(d => d.IdTipoReporteNavigation).WithMany(p => p.PrdPanelesCovintecs)
                 .HasForeignKey(d => d.IdTipoReporte)
                 .HasConstraintName("FK_PrdPanelesCovintec_Reporte");
+        });
+
+        modelBuilder.Entity<PrdpreExpansion>(entity =>
+        {
+            entity.ToTable("PrdpreExpansion", "cp");
+
+            entity.Property(e => e.CodigoSaco).HasMaxLength(150);
+            entity.Property(e => e.Fecha).HasColumnType("date");
+            entity.Property(e => e.FechaActualizacion).HasColumnType("datetime");
+            entity.Property(e => e.FechaCreacion).HasColumnType("datetime");
+            entity.Property(e => e.FechaProduccion).HasColumnType("date");
+            entity.Property(e => e.IdAprobadoGerencia).HasMaxLength(450);
+            entity.Property(e => e.IdAprobadoSupervisor).HasMaxLength(450);
+            entity.Property(e => e.IdUsuarioActualizacion).HasMaxLength(450);
+            entity.Property(e => e.IdUsuarioCreacion).HasMaxLength(450);
+            entity.Property(e => e.Lote).HasMaxLength(150);
+            entity.Property(e => e.Observaciones).HasMaxLength(4000);
+            entity.Property(e => e.PresionCaldera).HasMaxLength(150);
         });
 
         modelBuilder.Entity<Reporte>(entity =>

@@ -145,11 +145,12 @@
 
 
 
-            <h1>Reporte de Producción Mallas Covintec</h1>
+          
             @foreach (var reporte in Model)
             {
 
                 <div class="report-page">
+                    <h1>Reporte de Producción Mallas Covintec</h1>
                     <!-- Encabezado del Reporte -->
                     @*   <div class="header-title">Reporte Id:@reporte.Id</div> *@
                     <img src="~/logoEcotec.png" alt="Logo Ecotec" style="width:150px; height:50px;">
@@ -287,13 +288,32 @@
         var startParam = ViewContext.HttpContext.Request.Query["start"].ToString();
         var endParam = ViewContext.HttpContext.Request.Query["end"].ToString();
 
-        var defaultStartDate = string.IsNullOrEmpty(startParam)
-            ? DateTime.Now.AddDays(-1).ToString("MM/dd/yyyy")
-            : startParam;
+        // var defaultStartDate = string.IsNullOrEmpty(startParam)
+        //     ? DateTime.Now.AddDays(-1).ToString("MM/dd/yyyy")
+        //     : startParam;
 
-        var defaultEndDate = string.IsNullOrEmpty(endParam)
-            ? DateTime.Now.ToString("MM/dd/yyyy")
-            : endParam;
+        // var defaultEndDate = string.IsNullOrEmpty(endParam)
+        //     ? DateTime.Now.ToString("MM/dd/yyyy")
+        //     : endParam;
+
+
+
+        // Parse and validate date parameters
+
+        DateTime startDate, endDate;
+
+        if (!DateTime.TryParse(startParam, out startDate) || startDate < new DateTime(1753, 1, 1))
+        {
+            startDate = DateTime.Now.AddDays(-1);
+        }
+
+        if (!DateTime.TryParse(endParam, out endDate) || endDate < new DateTime(1753, 1, 1))
+        {
+            endDate = DateTime.Now;
+        }
+
+        var defaultStartDate = startDate.ToString("MM/dd/yyyy");
+        var defaultEndDate = endDate.ToString("MM/dd/yyyy");
     }
     <script src="~/js/html2canvas.min.js"></script>
     <script src="~/js/jspdf.umd.min.js"></script>

@@ -1,0 +1,455 @@
+﻿@using ControlProduccion.ViewModel;
+@model PrdPreExpansionViewModel;
+@{
+    ViewData["Title"] = "Editar Producción Pre-Expansión";
+}
+
+<div class="col-md-8 offset-md-2">
+    <div class="ibox ">
+        <div class="ibox-title">
+            <h5>@ViewData["Title"]</h5>
+        </div>
+        <div class="ibox-content">
+            <form id="frmProduccion" method="post" asp-action="Edit" autocomplete="off">
+                @Html.AntiForgeryToken()
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+                <input type="hidden" asp-for="Id" />
+                @if (Model.AprobadoGerencia == true)
+                {
+                    <div class="alert alert-success">
+                        <i class="fa fa-check"></i> Esta producción ha sido aprobada y no puede ser modificada.
+                    </div>
+                }
+                <div class="form-group">
+                    <label asp-for="IdUsuarios"></label>
+                    <select id="IdUsuarios" multiple name="IdUsuarios" asp-for="IdUsuarios" class="form-control select2" asp-items="Model.Operarios">
+                    </select>
+                    <span asp-validation-for="IdUsuarios" class="text-danger"></span>
+                </div>
+                
+                <div class="form-group">
+                    <label asp-for="IdMaquina"></label>
+                    <select id="IdMaquina" name="IdMaquina" asp-for="IdMaquina" class="form-control" asp-items="Model.Maquinas">
+                        <option>- Seleccione una máquina -</option>
+                    </select>
+                    <span asp-validation-for="IdMaquina" class="text-danger"></span>
+                </div>
+                
+                <div class="form-group">
+                    <label asp-for="Fecha"></label>
+                    <input asp-for="Fecha" class="form-control" />
+                    <span asp-validation-for="Fecha" class="text-danger"></span>
+                </div>
+                
+                <div class="form-group row">
+                    <div class="col-md-6">
+                        <label asp-for="HoraInicio"></label>
+                        <input asp-for="HoraInicio" class="form-control" />
+                        <span asp-validation-for="HoraInicio" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="HoraFin"></label>
+                        <input asp-for="HoraFin" class="form-control" />
+                        <span asp-validation-for="HoraFin" class="text-danger"></span>
+                    </div>
+                </div>
+                
+                <div class="form-group row">
+                    <div class="col-md-6">
+                        <label asp-for="PresionCaldera"></label>
+                        <input asp-for="PresionCaldera" class="form-control" />
+                        <span asp-validation-for="PresionCaldera" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="Lote"></label>
+                        <input asp-for="Lote" class="form-control" />
+                        <span asp-validation-for="Lote" class="text-danger"></span>
+                    </div>
+                </div>
+                
+                <div class="form-group row">
+                    <div class="col-md-6">
+                        <label asp-for="FechaProduccion"></label>
+                        <input asp-for="FechaProduccion" class="form-control" />
+                        <span asp-validation-for="FechaProduccion" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="CodigoSaco"></label>
+                        <input asp-for="CodigoSaco" class="form-control" />
+                        <span asp-validation-for="CodigoSaco" class="text-danger"></span>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label asp-for="IdTipoFabricacion"></label>
+                    <select id="IdTipoFabricacion" name="IdTipoFabricacion" asp-for="IdTipoFabricacion" class="form-control" asp-items="Model.TiposFabricacion">
+                        <option>- Seleccione un tipo de fabricación -</option>
+                    </select>
+                    <span asp-validation-for="IdTipoFabricacion" class="text-danger"></span>
+                </div>
+                
+                <div class="form-group" id="divNumeroPedido" style="display:none">
+                    <label asp-for="NumeroPedido"></label>
+                    <input asp-for="NumeroPedido" class="form-control" />
+                    <span asp-validation-for="NumeroPedido" class="text-danger"></span>
+                </div>
+                
+                <div class="form-group">
+                    <label asp-for="TiempoParo"></label>
+                    <input asp-for="TiempoParo" class="form-control" step="0.01" />
+                    <span asp-validation-for="TiempoParo" class="text-danger"></span>
+                </div>
+
+                <div class="hr-line-dashed"></div>
+                
+                <div class="form-group row">
+                    <div class="col-sm-12" style="max-height: 300px; overflow: scroll">
+                        <h4>Detalle Producción</h4>
+
+                        <table id="tblProduccion" class="table table-bordered table-hover">
+                            <thead class="table-light">
+                                <tr>
+                                    <th style="display:none" data-field="id">Id</th>
+                                    <th data-field="noBatch">No. Batch</th>
+                                    <th data-field="hora">Hora</th>
+                                  
+                                    <th data-field="densidadEsperada">Densidad Esperada</th>
+                                    <th data-field="pesoBatchGr">Peso Batch (g)</th>
+                                    <th data-field="densidad">Densidad</th>
+                                    <th data-field="kgPorBatch">Kg por Batch</th>
+                                    <th data-field="presionPsi">Presión (psi)</th>
+                                    <th data-field="tiempoBatchSeg">Tiempo Batch (seg)</th>
+                                    <th data-field="temperaturaC">Temperatura (°C)</th>
+                                    <th data-field="silo">Silo</th>
+                                    <th>Paso</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model.DetPrdPreExpansions != null)
+                                {
+                                    @foreach (var detalle in Model.DetPrdPreExpansions)
+                                    {
+                                        <tr>
+                                            <td style="display:none" data-field="id">@detalle.Id</td>
+                                            @if (Model.AprobadoGerencia != true)
+                                            {
+                                             
+                                                <td data-field="noBatch"><a href="#" class="open-modal">@detalle.NoBatch</a></td>
+                                            }
+                                            else
+                                            {
+                                                <td data-field="noBatch">@detalle.NoBatch</td>
+                                            }
+                                         
+                                            <td data-field="hora">@To12HourFormat(detalle.Hora)</td>
+                                            <td data-field="densidadEsperada">@detalle.DensidadEsperada</td>
+                                            <td data-field="pesoBatchGr">@detalle.PesoBatchGr</td>
+                                            <td data-field="densidad">@detalle.Densidad</td>
+                                            <td data-field="kgPorBatch">@detalle.KgPorBatch</td>
+                                            <td data-field="presionPsi">@detalle.PresionPsi</td>
+                                            <td data-field="tiempoBatchSeg">@detalle.TiempoBatchSeg</td>
+                                            <td data-field="temperaturaC">@detalle.TemperaturaC</td>
+                                            <td data-field="silo">@detalle.Silo</td>
+                                            @if (detalle.Paso == 1)
+                                            {
+                                                <td>Primer Paso</td>
+                                            }
+                                            else
+                                            {
+                                                <td>Segundo Paso</td>
+                                            }
+                                        </tr>
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Observaciones"></label>
+                    <textarea asp-for="Observaciones" class="form-control"></textarea>
+                    <span asp-validation-for="Observaciones" class="text-danger"></span>
+                </div>
+                
+                <button type="button" class="btn btn-dark" onclick="location.href='@Url.Action("Index", "PrdPreExpansion")'">Regresar</button>
+                @if (Model.AprobadoGerencia != true)
+                {
+                    <button type="submit" class="btn btn-primary">Actualizar</button>
+                }
+
+                @if (User.IsInRole("JefeProduccion") && Model.AprobadoGerencia != true)
+                {
+                    <button id="btnAprobarProd" type="button" class="btn btn-danger" onclick="validar(@Model.Id)">Aprobar</button>
+                }
+                else
+                {
+                    <button type="button" class="btn btn-success">Aprobado</button>
+                }
+            </form>
+
+            @* Modal para editar detalle *@
+            <div id="modal-Detalle" class="modal fade" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-body">
+                            <form id="frmDetPrd">
+                                <input type="hidden" id="DetPrdPreExpansionId" name="DetPrdPreExpansionId" />
+                                <input type="hidden" id="PrdpreExpansionId" name="PrdpreExpansionId" value="@Model.Id" />
+
+                                <h3>Editar Detalle</h3>
+                                <hr />
+
+                                <div class="mb-3">
+                                    <label for="Hora" class="form-label">Hora</label>
+                                    <input type="time" id="Hora" name="Hora" class="form-control" />
+                                    <span class="text-danger"></span>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="NoBatch" class="form-label">No. Batch</label>
+                                    <input readonly type="number" id="NoBatch" name="NoBatch" class="form-control" min="0" />
+                                    <span class="text-danger"></span>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="DensidadEsperada" class="form-label">Densidad Esperada</label>
+                                    <input type="number" id="DensidadEsperada" name="DensidadEsperada" class="form-control" min="0" />
+                                    <span class="text-danger"></span>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="PesoBatchGr" class="form-label">Peso Batch (g)</label>
+                                    <input type="number" step="0.01" id="PesoBatchGr" name="PesoBatchGr" class="form-control" min="0" />
+                                    <span class="text-danger"></span>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="Densidad" class="form-label">Densidad</label>
+                                    <input type="number" step="0.01" id="Densidad" name="Densidad" class="form-control" min="0" />
+                                    <span class="text-danger"></span>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="KgPorBatch" class="form-label">Kg por Batch</label>
+                                    <input type="number" id="KgPorBatch" name="KgPorBatch" class="form-control" min="0" />
+                                    <span class="text-danger"></span>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="PresionPsi" class="form-label">Presión (psi)</label>
+                                    <input type="number" id="PresionPsi" name="PresionPsi" class="form-control" min="0" />
+                                    <span class="text-danger"></span>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="TiempoBatchSeg" class="form-label">Tiempo Batch (seg)</label>
+                                    <input type="number" id="TiempoBatchSeg" name="TiempoBatchSeg" class="form-control" min="0" />
+                                    <span class="text-danger"></span>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="TemperaturaC" class="form-label">Temperatura (°C)</label>
+                                    <input type="number" id="TemperaturaC" name="TemperaturaC" class="form-control" min="0" />
+                                    <span class="text-danger"></span>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="Silo" class="form-label">Silo</label>
+                                    <input type="number" id="Silo" name="Silo" class="form-control" min="0" />
+                                    <span class="text-danger"></span>
+                                </div>
+                            </form>
+
+                            <button id="btnGuardarDetPrd" type="button" class="btn btn-primary">Actualizar</button>
+                            <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Cancelar</button>
+                            <br />
+                            <p id="spnbtnGuardarDetPrd" class="text-sm text-danger"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        // Initialize select2 for main form
+        $(document).ready(function() {
+            $("#IdUsuarios").select2({
+                placeholder: "- Selecciona los operarios -",
+                allowClear: true
+            });
+
+            $("#IdMaquina").select2({
+                placeholder: "- Seleccione una máquina -",
+                allowClear: true
+            });
+
+            $("#IdTipoFabricacion").select2({
+                placeholder: "- Seleccione un tipo de fabricación -",
+                allowClear: true
+            });
+
+            // Handle tipo fabricacion change
+            $("#IdTipoFabricacion").change(function () {
+                var selectedValue = $(this).val();
+                if (selectedValue == 2) {
+                    $("#divNumeroPedido").show();
+                } else {
+                    $("#divNumeroPedido").hide();
+                }
+            });
+
+            // Initialize on load
+            if ($("#IdTipoFabricacion").val() == 2) {
+                $("#divNumeroPedido").show();
+            }
+        });
+
+        // Handle detail modal opening
+        $("#tblProduccion").on("click", ".open-modal", function(e){
+            e.preventDefault();
+            var $row = $(this).closest("tr");
+
+            var id = $row.find("td[data-field='id']").text().trim();
+            var hora12h = $row.find("td[data-field='hora']").text().trim();
+            var noBatch = $row.find("td[data-field='noBatch']").text().trim();
+            var densidadEsperada = $row.find("td[data-field='densidadEsperada']").text().trim();
+            var pesoBatchGr = $row.find("td[data-field='pesoBatchGr']").text().trim();
+            var densidad = $row.find("td[data-field='densidad']").text().trim();
+            var kgPorBatch = $row.find("td[data-field='kgPorBatch']").text().trim();
+            var presionPsi = $row.find("td[data-field='presionPsi']").text().trim();
+            var tiempoBatchSeg = $row.find("td[data-field='tiempoBatchSeg']").text().trim();
+            var temperaturaC = $row.find("td[data-field='temperaturaC']").text().trim();
+            var silo = $row.find("td[data-field='silo']").text().trim();
+
+            // Clear any previous error messages
+            $("#spnbtnGuardarDetPrd").text("");
+
+            // Populate modal
+            $("#DetPrdPreExpansionId").val(id);
+            // PrdPreExpansionId is already set in the hidden field to @Model.Id
+
+            // Convert 12-hour time to 24-hour format for input
+            var partesHora = hora12h.split(' ');
+            var tiempo = partesHora[0];
+            var periodo = partesHora[1];
+            var hora24h = convertTo24Hour(tiempo, periodo);
+            $("#Hora").val(hora24h);
+
+            $("#NoBatch").val(noBatch);
+            $("#DensidadEsperada").val(densidadEsperada);
+            $("#PesoBatchGr").val(pesoBatchGr);
+            $("#Densidad").val(densidad);
+            $("#KgPorBatch").val(kgPorBatch);
+            $("#PresionPsi").val(presionPsi);
+            $("#TiempoBatchSeg").val(tiempoBatchSeg);
+            $("#TemperaturaC").val(temperaturaC);
+            $("#Silo").val(silo);
+
+            $("#modal-Detalle").modal("show");
+        });
+
+        // Handle detail save
+        $("#btnGuardarDetPrd").click(function(e){
+            e.preventDefault();
+
+            // Clear previous error messages
+            $("#spnbtnGuardarDetPrd").text("");
+
+            // Basic validation
+            if (!$("#Hora").val() || !$("#NoBatch").val() || !$("#DensidadEsperada").val() || 
+                !$("#PesoBatchGr").val() || !$("#Densidad").val() || !$("#KgPorBatch").val() || 
+                !$("#PresionPsi").val() || !$("#TiempoBatchSeg").val() || !$("#TemperaturaC").val() || 
+                !$("#Silo").val()) {
+                $("#spnbtnGuardarDetPrd").text("Por favor complete todos los campos obligatorios.");
+                return;
+            }
+
+            // Get the token from the main form
+            var token = $("#frmProduccion").find("input[name='__RequestVerificationToken']").val();
+
+            var formData = $("#frmDetPrd").serialize();
+
+            $.ajax({
+                url: '@Url.Action("EditDetPrd", "PrdPreExpansion")',
+                type: 'POST',
+                data: formData,
+                headers: {
+                    "RequestVerificationToken": token
+                },
+                success: function(response) {
+                    if(response.success){
+                        alert(response.message);
+                        $("#modal-Detalle").modal("hide");
+                        location.reload();
+                    } else {
+                        $("#spnbtnGuardarDetPrd").text("Error: " + response.message);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error(xhr.responseText);
+                    $("#spnbtnGuardarDetPrd").text("Ocurrió un error en la solicitud: " + error);
+                }
+            });
+        });
+
+        // Approval function
+        function validar(id) {
+            if (confirm("¿Está seguro de que desea Aprobar esta producción?")) {
+                var token = $("#frmProduccion").find("input[name='__RequestVerificationToken']").val();
+
+                $.ajax({
+                    url: '@Url.Action("AprobarPrd", "PrdPreExpansion")',
+                    type: 'POST',
+                    data: { id: id },
+                    headers: {
+                        "RequestVerificationToken": token
+                    },
+                    success: function(response) {
+                        if (response) {
+                            alert("Producción Aprobada exitosamente.");
+                            location.reload();
+                        } else {
+                            alert("Error al Aprobar la producción, contacte a soporte.");
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error("Error en la solicitud de aprobación:", xhr.responseText);
+                        alert("Error al procesar la solicitud: " + error);
+                    }
+                });
+            }
+        }
+
+        // Utility function to convert 12-hour to 24-hour format
+        function convertTo24Hour(time, period) {
+            var parts = time.split(':');
+            var hours = parseInt(parts[0], 10);
+            var minutes = parts[1];
+            
+            if (period === 'PM' && hours !== 12) {
+                hours += 12;
+            } else if (period === 'AM' && hours === 12) {
+                hours = 0;
+            }
+            
+            return String(hours).padStart(2, '0') + ':' + minutes;
+        }
+    </script>
+}
+
+@functions {
+    public static string To12HourFormat(TimeSpan hora)
+    {
+        var dateTime = DateTime.Today.Add(hora);
+        return dateTime.ToString("hh:mm tt");
+    }
+}

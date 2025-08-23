@@ -1,0 +1,819 @@
+﻿@using ControlProduccion.ViewModel;
+@model PrdMallaPchViewModel;
+@{
+    ViewData["Title"] = "Editar Produccion Malla PCH";
+}
+
+<div class="col-md-10 offset-md-1">
+    <div class="ibox ">
+        <div class="ibox-title">
+            <h5>@ViewData["Title"]</h5>
+        </div>
+        <div class="ibox-content">
+            <form id="frmProduccion" method="post" asp-action="Edit" autocomplete="off">
+                @Html.AntiForgeryToken()
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+                <input type="hidden" asp-for="Id" />
+                @if (Model.AprobadoGerencia == true)
+                {
+                    <div class="alert alert-success">
+                        <i class="fa fa-check"></i> Esta producción ha sido aprobada y no puede ser modificada.
+                    </div>
+                }
+                <div class="form-group">
+                    <label asp-for="IdUsuarios"></label>
+                    <select id="IdUsuarios" multiple name="IdUsuarios" asp-for="IdUsuarios" class="form-control select2" asp-items="Model.Operarios">
+                    </select>
+                    <span asp-validation-for="IdUsuarios" class="text-danger"></span>
+                </div>
+                
+                <div class="form-group">
+                    <label asp-for="Fecha"></label>
+                    <input asp-for="Fecha" class="form-control" />
+                    <span asp-validation-for="Fecha" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="ProduccionTotal"></label>
+                    <input asp-for="ProduccionTotal" class="form-control" readonly />
+                    <span asp-validation-for="ProduccionTotal" class="text-danger"></span>
+                </div>
+
+                <div class="hr-line-dashed"></div>
+
+                <!-- Sección Máquina A -->
+                <div class="form-group row">
+                    <div class="col-sm-12" style="max-height: 300px; overflow-y: auto">
+                        <h4>Detalle Máquina A - Hilos Transversales</h4>
+                        <table id="tblDetalleA" class="table table-bordered table-hover">
+                            <thead class="table-light">
+                                <tr>
+                                    <th style="display:none" data-field="id">Id</th>
+                                    <th data-field="no">No.</th>
+                                    <th data-field="maquina">Máquina</th>
+                                    <th data-field="hilosTransversales">Hilos Transversales (un)</th>
+                                    <th data-field="mermaHilos">Merma Hilos Transversales (kg)</th>
+                                    <th data-field="tipoFabricacion">Tipo Fabricación</th>
+                                    <th data-field="numeroPedido">N° Pedido</th>
+                                    <th data-field="longitud">Longitud (m)</th>
+                                    <th data-field="cantidad">Cantidad (un)</th>
+                                    <th data-field="produccion">Producción (Mts)</th>
+                                    <th data-field="numeroAlambre">N° Alambre A</th>
+                                    <th data-field="pesoAlambre">Peso Alambre A (kg)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model.DetPrdPchMaquinaAs != null)
+                                {
+                                    int counterA = 1;
+                                    @foreach (var detalle in Model.DetPrdPchMaquinaAs)
+                                    {
+                                        var maquinaNombre = Model.Maquinas?.FirstOrDefault(m => m.Value == detalle.IdMaquina.ToString())?.Text ?? "";
+                                        var tipoFabricacionNombre = Model.TiposFabricacion?.FirstOrDefault(t => t.Value == detalle.IdTipoFabricacion.ToString())?.Text ?? "";
+                                        <tr>
+                                            <td style="display:none" data-field="id">@detalle.DetPrdPchMaquinaAId</td>
+                                            @if (Model.AprobadoGerencia != true)
+                                            {
+                                                <td data-field="no"><a href="#" class="open-modal-a">@counterA</a></td>
+                                            }
+                                            else
+                                            {
+                                                <td data-field="no"><a>@counterA</a></td>
+                                            }
+                                            <td data-field="maquina">@maquinaNombre</td>
+                                            <td data-field="hilosTransversales">@detalle.HilosTransversalesUn</td>
+                                            <td data-field="mermaHilos">@detalle.MermaHilosTransversalesKg</td>
+                                            <td data-field="tipoFabricacion">@tipoFabricacionNombre</td>
+                                            <td data-field="numeroPedido">@detalle.NumeroPedido</td>
+                                            <td data-field="longitud">@detalle.Longitud</td>
+                                            <td data-field="cantidad">@detalle.Cantidad</td>
+                                            <td data-field="produccion">@detalle.Produccion</td>
+                                            <td data-field="numeroAlambre">@detalle.NumeroAlambreA</td>
+                                            <td data-field="pesoAlambre">@detalle.PesoAlambreKgA</td>
+
+                                            <td style='display:none;' data-field="idMaquina">@detalle.IdMaquina</td>
+                                            <td style='display:none;' data-field="idTipoFabricacion">@detalle.IdTipoFabricacion</td>
+                                        </tr>
+                                        counterA++;
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="hr-line-dashed"></div>
+
+                <!-- Sección Máquina B -->
+                <div class="form-group row">
+                    <div class="col-sm-12" style="max-height: 300px; overflow-y: auto">
+                        <h4>Detalle Máquina B - Hilos Longitudinales</h4>
+                        <table id="tblDetalleB" class="table table-bordered table-hover">
+                            <thead class="table-light">
+                                <tr>
+                                    <th style="display:none" data-field="id">Id</th>
+                                    <th data-field="no">No.</th>
+                                    <th data-field="maquina">Máquina</th>
+                                    <th data-field="hilosLongitudinales">Hilos Longitudinales (un)</th>
+                                    <th data-field="mermaHilos">Merma Hilos Longitudinales (kg)</th>
+                                    <th data-field="tipoFabricacion">Tipo Fabricación</th>
+                                    <th data-field="numeroPedido">N° Pedido</th>
+                                    <th data-field="longitud">Longitud (m)</th>
+                                    <th data-field="cantidad">Cantidad (un)</th>
+                                    <th data-field="produccion">Producción (Mts)</th>
+                                    <th data-field="numeroAlambre">N° Alambre B</th>
+                                    <th data-field="pesoAlambre">Peso Alambre B (kg)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model.DetPrdPchMaquinaBs != null)
+                                {
+                                    int counterB = 1;
+                                    @foreach (var detalle in Model.DetPrdPchMaquinaBs)
+                                    {
+                                        var maquinaNombre = Model.Maquinas?.FirstOrDefault(m => m.Value == detalle.IdMaquina.ToString())?.Text ?? "";
+                                        var tipoFabricacionNombre = Model.TiposFabricacion?.FirstOrDefault(t => t.Value == detalle.IdTipoFabricacion.ToString())?.Text ?? "";
+                                        <tr>
+                                            <td style="display:none" data-field="id">@detalle.DetPrdPchMaquinaBId</td>
+                                            @if (Model.AprobadoGerencia != true)
+                                            {
+                                                <td data-field="no"><a href="#" class="open-modal-b">@counterB</a></td>
+                                            }
+                                            else
+                                            {
+                                                <td data-field="no"><a>@counterB</a></td>
+                                            }
+                                            <td data-field="maquina">@maquinaNombre</td>
+                                            <td data-field="hilosLongitudinales">@detalle.HilosLongitudinalesUn</td>
+                                            <td data-field="mermaHilos">@detalle.MermaHilosLongitudinalesKg</td>
+                                            <td data-field="tipoFabricacion">@tipoFabricacionNombre</td>
+                                            <td data-field="numeroPedido">@detalle.NumeroPedido</td>
+                                            <td data-field="longitud">@detalle.Longitud</td>
+                                            <td data-field="cantidad">@detalle.Cantidad</td>
+                                            <td data-field="produccion">@detalle.Produccion</td>
+                                            <td data-field="numeroAlambre">@detalle.NumeroAlambreB</td>
+                                            <td data-field="pesoAlambre">@detalle.PesoAlambreKgB</td>
+
+                                            <td style='display:none;' data-field="idMaquina">@detalle.IdMaquina</td>
+                                            <td style='display:none;' data-field="idTipoFabricacion">@detalle.IdTipoFabricacion</td>
+                                        </tr>
+                                        counterB++;
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="hr-line-dashed"></div>
+
+                <!-- Sección Máquina C -->
+                <div class="form-group row">
+                    <div class="col-sm-12" style="max-height: 300px; overflow-y: auto">
+                        <h4>Detalle Máquina C - Mallas</h4>
+                        <table id="tblDetalleC" class="table table-bordered table-hover">
+                            <thead class="table-light">
+                                <tr>
+                                    <th style="display:none" data-field="id">Id</th>
+                                    <th data-field="no">No.</th>
+                                    <th data-field="maquina">Máquina</th>
+                                    <th data-field="tipoMalla">Tipo Malla</th>
+                                    <th data-field="mermaMallas">Merma Mallas (kg)</th>
+                                    <th data-field="tipoFabricacion">Tipo Fabricación</th>
+                                    <th data-field="numeroPedido">N° Pedido</th>
+                                    <th data-field="longitud">Longitud (m)</th>
+                                    <th data-field="cantidad">Cantidad (un)</th>
+                                    <th data-field="produccion">Producción (Mts)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model.DetPrdPchMaquinaCs != null)
+                                {
+                                    int counterC = 1;
+                                    @foreach (var detalle in Model.DetPrdPchMaquinaCs)
+                                    {
+                                        var maquinaNombre = Model.Maquinas?.FirstOrDefault(m => m.Value == detalle.IdMaquina.ToString())?.Text ?? "";
+                                        var tipoMallaNombre = Model.TiposMalla?.FirstOrDefault(tm => tm.Value == detalle.IdTipoMalla.ToString())?.Text ?? "";
+                                        var tipoFabricacionNombre = Model.TiposFabricacion?.FirstOrDefault(t => t.Value == detalle.IdTipoFabricacion.ToString())?.Text ?? "";
+                                        <tr>
+                                            <td style="display:none" data-field="id">@detalle.DetPrdPchMaquinaCId</td>
+                                            @if (Model.AprobadoGerencia != true)
+                                            {
+                                                <td data-field="no"><a href="#" class="open-modal-c">@counterC</a></td>
+                                            }
+                                            else
+                                            {
+                                                <td data-field="no"><a>@counterC</a></td>
+                                            }
+                                            <td data-field="maquina">@maquinaNombre</td>
+                                            <td data-field="tipoMalla">@tipoMallaNombre</td>
+                                            <td data-field="mermaMallas">@detalle.MermaMallasKg</td>
+                                            <td data-field="tipoFabricacion">@tipoFabricacionNombre</td>
+                                            <td data-field="numeroPedido">@detalle.NumeroPedido</td>
+                                            <td data-field="longitud">@detalle.Longitud</td>
+                                            <td data-field="cantidad">@detalle.Cantidad</td>
+                                            <td data-field="produccion">@detalle.Produccion</td>
+
+                                            <td style='display:none;' data-field="idMaquina">@detalle.IdMaquina</td>
+                                            <td style='display:none;' data-field="idTipoMalla">@detalle.IdTipoMalla</td>
+                                            <td style='display:none;' data-field="idTipoFabricacion">@detalle.IdTipoFabricacion</td>
+                                        </tr>
+                                        counterC++;
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="hr-line-dashed"></div>
+
+                <div class="form-group">
+                    <label asp-for="Observaciones"></label>
+                    <textarea asp-for="Observaciones" class="form-control" rows="3"></textarea>
+                    <span asp-validation-for="Observaciones" class="text-danger"></span>
+                </div>
+
+                <button type="button" class="btn btn-dark" onclick="location.href='@Url.Action("Index", "PrdMallaPch")'">Regresar</button>
+                @if (Model.AprobadoGerencia != true)
+                {
+                    <button type="submit" class="btn btn-primary">Actualizar</button>
+                }
+
+           
+
+                @if (User.IsInRole("JefeProduccion") && Model.AprobadoSupervisor == true && Model.AprobadoGerencia != true)
+                {
+                    <button id="btnAprobarPrd" type="button" class="btn btn-danger" onclick="aprobarPrd(@Model.Id)">Aprobar</button>
+                }
+                else if (Model.AprobadoGerencia == true)
+                {
+                    <button type="button" class="btn btn-success">Aprobado</button>
+                }
+            </form>
+
+            @* Modal para editar detalle Máquina A *@
+            <div id="modal-DetalleA" class="modal fade" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title">Editar Detalle Máquina A</h4>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="frmDetPrdA">
+                                <input type="hidden" id="DetPrdPchMaquinaAId" name="DetPrdPchMaquinaAId" />
+                                <input type="hidden" id="PrdMallaPchIdA" name="PrdMallaPchId" />
+
+                                <div class="form-group">
+                                    <label class="form-label">Máquina <span class="text-danger">*</span></label>
+                                    <select id="IdMaquinaA" name="IdMaquina" class="form-control" asp-items="Model.Maquinas">
+                                        <option value="">-- Seleccione Máquina --</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">Hilos Transversales (un) <span class="text-danger">*</span></label>
+                                    <input type="number" step="1" min="0" id="HilosTransversalesUn" name="HilosTransversalesUn" class="form-control" />
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">Merma Hilos Transversales (kg) <span class="text-danger">*</span></label>
+                                    <input type="number" step="0.01" min="0" id="MermaHilosTransversalesKg" name="MermaHilosTransversalesKg" class="form-control" />
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">Tipo de Fabricación <span class="text-danger">*</span></label>
+                                    <select id="IdTipoFabricacionA" name="IdTipoFabricacion" class="form-control" asp-items="Model.TiposFabricacion">
+                                        <option value="">-- Seleccione Tipo --</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group" id="divNumeroPedidoA" style="display:none">
+                                    <label class="form-label">Número de Pedido <span class="text-danger">*</span></label>
+                                    <input type="number" id="NumeroPedidoA" name="NumeroPedido" class="form-control" min="0" step="1" />
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">Longitud (m) <span class="text-danger">*</span></label>
+                                    <input type="number" step="0.01" min="0" id="LongitudA" name="Longitud" class="form-control" />
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">Cantidad (un) <span class="text-danger">*</span></label>
+                                    <input type="number" step="1" min="0" id="CantidadA" name="Cantidad" class="form-control" />
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">N° Alambre A <span class="text-danger">*</span></label>
+                                    <input type="number" step="1" min="0" id="NumeroAlambreA" name="NumeroAlambreA" class="form-control" />
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">Peso Alambre A (kg) <span class="text-danger">*</span></label>
+                                    <input type="number" step="0.01" min="0" id="PesoAlambreKgA" name="PesoAlambreKgA" class="form-control" />
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button id="btnGuardarDetPrdA" type="button" class="btn btn-primary">Actualizar</button>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                            <div class="w-100">
+                                <p id="spnbtnGuardarDetPrdA" class="text-sm text-danger mt-2"></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            @* Modal para editar detalle Máquina B *@
+            <div id="modal-DetalleB" class="modal fade" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title">Editar Detalle Máquina B</h4>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="frmDetPrdB">
+                                <input type="hidden" id="DetPrdPchMaquinaBId" name="DetPrdPchMaquinaBId" />
+                                <input type="hidden" id="PrdMallaPchIdB" name="PrdMallaPchId" />
+
+                                <div class="form-group">
+                                    <label class="form-label">Máquina <span class="text-danger">*</span></label>
+                                    <select id="IdMaquinaB" name="IdMaquina" class="form-control" asp-items="Model.Maquinas">
+                                        <option value="">-- Seleccione Máquina --</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">Hilos Longitudinales (un) <span class="text-danger">*</span></label>
+                                    <input type="number" step="1" min="0" id="HilosLongitudinalesUn" name="HilosLongitudinalesUn" class="form-control" />
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">Merma Hilos Longitudinales (kg) <span class="text-danger">*</span></label>
+                                    <input type="number" step="0.01" min="0" id="MermaHilosLongitudinalesKg" name="MermaHilosLongitudinalesKg" class="form-control" />
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">Tipo de Fabricación <span class="text-danger">*</span></label>
+                                    <select id="IdTipoFabricacionB" name="IdTipoFabricacion" class="form-control" asp-items="Model.TiposFabricacion">
+                                        <option value="">-- Seleccione Tipo --</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group" id="divNumeroPedidoB" style="display:none">
+                                    <label class="form-label">Número de Pedido <span class="text-danger">*</span></label>
+                                    <input type="number" id="NumeroPedidoB" name="NumeroPedido" class="form-control" min="0" step="1" />
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">Longitud (m) <span class="text-danger">*</span></label>
+                                    <input type="number" step="0.01" min="0" id="LongitudB" name="Longitud" class="form-control" />
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">Cantidad (un) <span class="text-danger">*</span></label>
+                                    <input type="number" step="1" min="0" id="CantidadB" name="Cantidad" class="form-control" />
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">N° Alambre B <span class="text-danger">*</span></label>
+                                    <input type="number" step="1" min="0" id="NumeroAlambreB" name="NumeroAlambreB" class="form-control" />
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">Peso Alambre B (kg) <span class="text-danger">*</span></label>
+                                    <input type="number" step="0.01" min="0" id="PesoAlambreKgB" name="PesoAlambreKgB" class="form-control" />
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button id="btnGuardarDetPrdB" type="button" class="btn btn-primary">Actualizar</button>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                            <div class="w-100">
+                                <p id="spnbtnGuardarDetPrdB" class="text-sm text-danger mt-2"></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            @* Modal para editar detalle Máquina C *@
+            <div id="modal-DetalleC" class="modal fade" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title">Editar Detalle Máquina C</h4>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="frmDetPrdC">
+                                <input type="hidden" id="DetPrdPchMaquinaCId" name="DetPrdPchMaquinaCId" />
+                                <input type="hidden" id="PrdMallaPchIdC" name="PrdMallaPchId" />
+
+                                <div class="form-group">
+                                    <label class="form-label">Máquina <span class="text-danger">*</span></label>
+                                    <select id="IdMaquinaC" name="IdMaquina" class="form-control" asp-items="Model.Maquinas">
+                                        <option value="">-- Seleccione Máquina --</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">Tipo de Malla <span class="text-danger">*</span></label>
+                                    <select id="IdTipoMalla" name="IdTipoMalla" class="form-control" asp-items="Model.TiposMalla">
+                                        <option value="">-- Seleccione Tipo de Malla --</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">Merma de Mallas (kg) <span class="text-danger">*</span></label>
+                                    <input type="number" step="0.01" min="0" id="MermaMallasKg" name="MermaMallasKg" class="form-control" />
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">Tipo de Fabricación <span class="text-danger">*</span></label>
+                                    <select id="IdTipoFabricacionC" name="IdTipoFabricacion" class="form-control" asp-items="Model.TiposFabricacion">
+                                        <option value="">-- Seleccione Tipo --</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group" id="divNumeroPedidoC" style="display:none">
+                                    <label class="form-label">Número de Pedido <span class="text-danger">*</span></label>
+                                    <input type="number" id="NumeroPedidoC" name="NumeroPedido" class="form-control" min="0" step="1" />
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">Longitud (m) <span class="text-danger">*</span></label>
+                                    <input type="number" step="0.01" min="0" id="LongitudC" name="Longitud" class="form-control" />
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">Cantidad (un) <span class="text-danger">*</span></label>
+                                    <input type="number" step="1" min="0" id="CantidadC" name="Cantidad" class="form-control" />
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button id="btnGuardarDetPrdC" type="button" class="btn btn-primary">Actualizar</button>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                            <div class="w-100">
+                                <p id="spnbtnGuardarDetPrdC" class="text-sm text-danger mt-2"></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        $(document).ready(function() {
+            // --- INICIALIZACIÓN SELECT2 EN LA PÁGINA PRINCIPAL ---
+            $("#IdUsuarios").select2({
+                placeholder: "- Selecciona los operarios -",
+                allowClear: true,
+                width: '100%'
+            });
+
+            // --- EVENTOS CLICK PARA ABRIR MODALES DE EDICIÓN ---
+            $("#tblDetalleA").on("click", ".open-modal-a", function(e){
+                e.preventDefault();
+                var $row = $(this).closest("tr");
+
+                var id = $row.find("td[data-field='id']").text().trim();
+                var hilosTransversales = $row.find("td[data-field='hilosTransversales']").text().trim();
+                var mermaHilos = $row.find("td[data-field='mermaHilos']").text().trim();
+                var numeroPedido = $row.find("td[data-field='numeroPedido']").text().trim();
+                var longitud = $row.find("td[data-field='longitud']").text().trim();
+                var cantidad = $row.find("td[data-field='cantidad']").text().trim();
+                var numeroAlambre = $row.find("td[data-field='numeroAlambre']").text().trim();
+                var pesoAlambre = $row.find("td[data-field='pesoAlambre']").text().trim();
+                var idMaquina = $row.find("td[data-field='idMaquina']").text().trim();
+                var idTipoFabricacion = $row.find("td[data-field='idTipoFabricacion']").text().trim();
+
+                // Rellenar los campos del modal
+                $("#DetPrdPchMaquinaAId").val(id);
+                $("#PrdMallaPchIdA").val(@Model.Id);
+                $("#IdMaquinaA").val(idMaquina);
+                $("#HilosTransversalesUn").val(hilosTransversales);
+                $("#MermaHilosTransversalesKg").val(mermaHilos);
+                $("#IdTipoFabricacionA").val(idTipoFabricacion);
+                $("#LongitudA").val(longitud);
+                $("#CantidadA").val(cantidad);
+                $("#NumeroAlambreA").val(numeroAlambre);
+                $("#PesoAlambreKgA").val(pesoAlambre);
+
+                if (idTipoFabricacion == "2") {
+                    $("#divNumeroPedidoA").show();
+                } else {
+                    $("#divNumeroPedidoA").hide();
+                }
+                $("#NumeroPedidoA").val(numeroPedido);
+
+                $("#modal-DetalleA").modal("show");
+            });
+
+            $("#tblDetalleB").on("click", ".open-modal-b", function(e){
+                e.preventDefault();
+                var $row = $(this).closest("tr");
+
+                var id = $row.find("td[data-field='id']").text().trim();
+                var hilosLongitudinales = $row.find("td[data-field='hilosLongitudinales']").text().trim();
+                var mermaHilos = $row.find("td[data-field='mermaHilos']").text().trim();
+                var numeroPedido = $row.find("td[data-field='numeroPedido']").text().trim();
+                var longitud = $row.find("td[data-field='longitud']").text().trim();
+                var cantidad = $row.find("td[data-field='cantidad']").text().trim();
+                var numeroAlambre = $row.find("td[data-field='numeroAlambre']").text().trim();
+                var pesoAlambre = $row.find("td[data-field='pesoAlambre']").text().trim();
+                var idMaquina = $row.find("td[data-field='idMaquina']").text().trim();
+                var idTipoFabricacion = $row.find("td[data-field='idTipoFabricacion']").text().trim();
+
+                // Rellenar los campos del modal
+                $("#DetPrdPchMaquinaBId").val(id);
+                $("#PrdMallaPchIdB").val(@Model.Id);
+                $("#IdMaquinaB").val(idMaquina);
+                $("#HilosLongitudinalesUn").val(hilosLongitudinales);
+                $("#MermaHilosLongitudinalesKg").val(mermaHilos);
+                $("#IdTipoFabricacionB").val(idTipoFabricacion);
+                $("#LongitudB").val(longitud);
+                $("#CantidadB").val(cantidad);
+                $("#NumeroAlambreB").val(numeroAlambre);
+                $("#PesoAlambreKgB").val(pesoAlambre);
+
+                if (idTipoFabricacion == "2") {
+                    $("#divNumeroPedidoB").show();
+                } else {
+                    $("#divNumeroPedidoB").hide();
+                }
+                $("#NumeroPedidoB").val(numeroPedido);
+
+                $("#modal-DetalleB").modal("show");
+            });
+
+            $("#tblDetalleC").on("click", ".open-modal-c", function(e){
+                e.preventDefault();
+                var $row = $(this).closest("tr");
+
+                var id = $row.find("td[data-field='id']").text().trim();
+                var mermaMallas = $row.find("td[data-field='mermaMallas']").text().trim();
+                var numeroPedido = $row.find("td[data-field='numeroPedido']").text().trim();
+                var longitud = $row.find("td[data-field='longitud']").text().trim();
+                var cantidad = $row.find("td[data-field='cantidad']").text().trim();
+                var idMaquina = $row.find("td[data-field='idMaquina']").text().trim();
+                var idTipoMalla = $row.find("td[data-field='idTipoMalla']").text().trim();
+                var idTipoFabricacion = $row.find("td[data-field='idTipoFabricacion']").text().trim();
+
+                // Rellenar los campos del modal
+                $("#DetPrdPchMaquinaCId").val(id);
+                $("#PrdMallaPchIdC").val(@Model.Id);
+                $("#IdMaquinaC").val(idMaquina);
+                $("#IdTipoMalla").val(idTipoMalla);
+                $("#MermaMallasKg").val(mermaMallas);
+                $("#IdTipoFabricacionC").val(idTipoFabricacion);
+                $("#LongitudC").val(longitud);
+                $("#CantidadC").val(cantidad);
+
+                if (idTipoFabricacion == "2") {
+                    $("#divNumeroPedidoC").show();
+                } else {
+                    $("#divNumeroPedidoC").hide();
+                }
+                $("#NumeroPedidoC").val(numeroPedido);
+
+                $("#modal-DetalleC").modal("show");
+            });
+
+            // --- MANEJO DE MODALES SELECT2 ---
+            $('#modal-DetalleA').on('shown.bs.modal', function() {
+                const $modal = $(this);
+                const $modalBody = $modal.find('.modal-body');
+
+                $modal.find('select').each(function() {
+                    if ($(this).data('select2')) {
+                        $(this).select2('destroy');
+                    }
+                });
+
+                $modal.find('select').select2({
+                    dropdownParent: $modalBody,
+                    allowClear: true,
+                    width: '100%'
+                });
+
+                 var $sel = $('#IdMaquinaA');
+                        var name = $sel.attr('name');
+                        // crea el hidden con el valor actual
+                        $('<input>', { type: 'hidden', name: name, value: $sel.val() }).insertAfter($sel);
+                        // deshabilita el select (solo lectura visual y funcional)
+                        $sel.prop('disabled', true);
+            });
+
+            $('#modal-DetalleB').on('shown.bs.modal', function() {
+                const $modal = $(this);
+                const $modalBody = $modal.find('.modal-body');
+
+                $modal.find('select').each(function() {
+                    if ($(this).data('select2')) {
+                        $(this).select2('destroy');
+                    }
+                });
+
+                $modal.find('select').select2({
+                    dropdownParent: $modalBody,
+                    allowClear: true,
+                    width: '100%'
+                });
+
+                  var $sel = $('#IdMaquinaB');
+                        var name = $sel.attr('name');
+                        // crea el hidden con el valor actual
+                        $('<input>', { type: 'hidden', name: name, value: $sel.val() }).insertAfter($sel);
+                        // deshabilita el select (solo lectura visual y funcional)
+                        $sel.prop('disabled', true);
+            });
+
+            $('#modal-DetalleC').on('shown.bs.modal', function() {
+                const $modal = $(this);
+                const $modalBody = $modal.find('.modal-body');
+
+                $modal.find('select').each(function() {
+                    if ($(this).data('select2')) {
+                        $(this).select2('destroy');
+                    }
+                });
+
+                $modal.find('select').select2({
+                    dropdownParent: $modalBody,
+                    allowClear: true,
+                    width: '100%'
+                });
+
+                var $sel = $('#IdMaquinaC');
+                        var name = $sel.attr('name');
+                        // crea el hidden con el valor actual
+                        $('<input>', { type: 'hidden', name: name, value: $sel.val() }).insertAfter($sel);
+                        // deshabilita el select (solo lectura visual y funcional)
+                        $sel.prop('disabled', true);
+            });
+
+            // --- EVENTOS CHANGE PARA TIPO FABRICACIÓN ---
+            $(document).on('change', '#IdTipoFabricacionA', function(){
+                if($(this).val() == 2) {
+                    $('#divNumeroPedidoA').show();
+                } else {
+                    $('#divNumeroPedidoA').hide();
+                    $('#NumeroPedidoA').val('');
+                }
+            });
+
+            $(document).on('change', '#IdTipoFabricacionB', function(){
+                if($(this).val() == 2) {
+                    $('#divNumeroPedidoB').show();
+                } else {
+                    $('#divNumeroPedidoB').hide();
+                    $('#NumeroPedidoB').val('');
+                }
+            });
+
+            $(document).on('change', '#IdTipoFabricacionC', function(){
+                if($(this).val() == 2) {
+                    $('#divNumeroPedidoC').show();
+                } else {
+                    $('#divNumeroPedidoC').hide();
+                    $('#NumeroPedidoC').val('');
+                }
+            });
+
+            // --- BOTONES GUARDAR DE LOS MODALES ---
+            $('#btnGuardarDetPrdA').click(function(e){
+                e.preventDefault();
+                var token = $("#frmProduccion").find("input[name='__RequestVerificationToken']").val();
+                var formData = $("#frmDetPrdA").serialize();
+
+                $.ajax({
+                    url: '@Url.Action("EditDetPrdMaquinaA", "PrdMallaPch")',
+                    type: 'POST',
+                    data: formData,
+                    headers: {
+                        "RequestVerificationToken": token
+                    },
+                    success: function(response) {
+                        if(response.success){
+                            alert(response.message);
+                            $("#modal-DetalleA").modal("hide");
+                            location.reload();
+                        } else {
+                            alert("Error: " + response.message);
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error(xhr.responseText);
+                        alert("Ocurrió un error en la solicitud: " + error);
+                    }
+                });
+            });
+
+            $('#btnGuardarDetPrdB').click(function(e){
+                e.preventDefault();
+                var token = $("#frmProduccion").find("input[name='__RequestVerificationToken']").val();
+                var formData = $("#frmDetPrdB").serialize();
+
+                $.ajax({
+                    url: '@Url.Action("EditDetPrdMaquinaB", "PrdMallaPch")',
+                    type: 'POST',
+                    data: formData,
+                    headers: {
+                        "RequestVerificationToken": token
+                    },
+                    success: function(response) {
+                        if(response.success){
+                            alert(response.message);
+                            $("#modal-DetalleB").modal("hide");
+                            location.reload();
+                        } else {
+                            alert("Error: " + response.message);
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error(xhr.responseText);
+                        alert("Ocurrió un error en la solicitud: " + error);
+                    }
+                });
+            });
+
+            $('#btnGuardarDetPrdC').click(function(e){
+                e.preventDefault();
+                var token = $("#frmProduccion").find("input[name='__RequestVerificationToken']").val();
+                var formData = $("#frmDetPrdC").serialize();
+
+                $.ajax({
+                    url: '@Url.Action("EditDetPrdMaquinaC", "PrdMallaPch")',
+                    type: 'POST',
+                    data: formData,
+                    headers: {
+                        "RequestVerificationToken": token
+                    },
+                    success: function(response) {
+                        if(response.success){
+                            alert(response.message);
+                            $("#modal-DetalleC").modal("hide");
+                            location.reload();
+                        } else {
+                            alert("Error: " + response.message);
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error(xhr.responseText);
+                        alert("Ocurrió un error en la solicitud: " + error);
+                    }
+                });
+            });
+
+            // --- FUNCIONES DE VALIDACIÓN Y APROBACIÓN ---
+ 
+
+            window.aprobarPrd = function(id) {
+                if (confirm("¿Está seguro de que desea Aprobar esta producción?")) {
+                    var token = $("#frmProduccion").find("input[name='__RequestVerificationToken']").val();
+
+                    $.ajax({
+                        url: '@Url.Action("AprobarPrd", "PrdMallaPch")',
+                        type: 'POST',
+                        data: { id: id },
+                        headers: {
+                            "RequestVerificationToken": token
+                        },
+                        success: function(response) {
+                            if (response) {
+                                alert("Producción Aprobada exitosamente.");
+                                location.reload();
+                            } else {
+                                alert("Error al Aprobar la producción, contacte a soporte.");
+                            }
+                        },
+                        error: function(xhr, status, error) {
+                            console.error("Error en la solicitud de aprobación:", xhr.responseText);
+                            alert("Error al procesar la solicitud: " + error);
+                        }
+                    });
+                }
+            }
+        });
+    </script>
+}

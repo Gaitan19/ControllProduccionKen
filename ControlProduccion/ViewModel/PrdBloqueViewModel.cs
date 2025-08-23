@@ -55,35 +55,6 @@ namespace ControlProduccion.ViewModel
         // Detalles
         public List<DetPrdBloqueViewModel>? DetPrdBloques { get; set; }
 
-        // Validación cruzada
-        //public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
-        //{
-        //    // Validar que la fecha no sea futura
-        //    if (Fecha > DateTime.Now.Date)
-        //        yield return new ValidationResult(
-        //            "La fecha no puede ser futura.",
-        //            new[] { nameof(Fecha) });
-
-        //    // Validar que se haya seleccionado al menos un operario
-        //    if (IdUsuarios == null || !IdUsuarios.Any())
-        //        yield return new ValidationResult(
-        //            "Debe seleccionar al menos un operario.",
-        //            new[] { nameof(IdUsuarios) });
-
-        //    // Validar detalles si existen
-        //    if (DetPrdBloques != null && DetPrdBloques.Any())
-        //    {
-        //        for (int i = 0; i < DetPrdBloques.Count; i++)
-        //        {
-        //            var detalle = DetPrdBloques[i];
-                    
-        //            // Validar que cada detalle tenga al menos un sub-detalle
-        //            if (detalle.SubDetPrdBloques == null || !detalle.SubDetPrdBloques.Any())
-        //                yield return new ValidationResult(
-        //                    $"El detalle en la posición {i + 1} debe tener al menos un sub-detalle.",
-        //                    new[] { $"DetPrdBloques[{i}].SubDetPrdBloques" });
-        //        }
-        //    }
-        //}
+  
     }
 }

@@ -8,6 +8,7 @@ using Application.Profiles;
 using Infrastructure.Identity;
 using Microsoft.AspNetCore.Identity;
 using ControlProduccion.Helpers;
+//using ControlProduccion.Middleware;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -36,6 +37,8 @@ builder.Services.ConfigureApplicationCookie(options =>
 {
     options.LoginPath = "/Identity/Account/Login";
     options.LogoutPath = "/Identity/Account/Logout";
+    options.ExpireTimeSpan = TimeSpan.FromHours(12);   // tiempo de vida de la cookie de autenticación
+    options.SlidingExpiration = true;
 });
 
 //simbolo # directiva para compilar condicionalmente
@@ -71,8 +74,28 @@ builder.Services.AddScoped<IPrdNeveraService, PrdNeveraService>();
 builder.Services.AddScoped<IPrdOtroService, PrdOtroService>();
 builder.Services.AddScoped<IPrdBloquesService, PrdBloquesService>();
 builder.Services.AddScoped<IPrdCorteTService, PrdCorteTService>();
+builder.Services.AddScoped<IPrdAccesorioService, PrdAccesorioService>();
+builder.Services.AddScoped<IPrdCortePService, PrdCortePService>();
+builder.Services.AddScoped<IPrdPreExpansionService, PrdPreExpansionService>();
+builder.Services.AddScoped<IPrdMallaPchService, PrdMallaPchService>();
+builder.Services.AddScoped<IPrdPaneladoraPchService, PrdPaneladoraPchService>();
+builder.Services.AddScoped<IErrorLogService, ErrorLogService>();
 builder.Services.AddRazorPages();
+
+
+
+// Registrar cache distribuida y sesión
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromHours(12); // por defecto serían 20 min
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
+
 var app = builder.Build();
+
+
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
@@ -85,11 +108,16 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
+
+
 app.UseRouting();
 
-
+app.UseSession();
 app.UseAuthentication();
 app.UseAuthorization();
+// Middleware de registro de errores
+app.UseMiddleware<ErrorLoggingMiddleware>();
+
 app.MapRazorPages();
 app.MapControllerRoute(
     name: "default",
