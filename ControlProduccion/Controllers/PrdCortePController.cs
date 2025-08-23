@@ -97,6 +97,7 @@ namespace ControlProduccion.Controllers
                 IdMaquina = model.IdMaquina,
                 Fecha = model.Fecha,
                 Observaciones = model.Observaciones,
+                TiempoParo = model.TiempoParo,
                 IdUsuarioCreacion = model.IdUsuarioCreacion,
                 DetPrdCortePs = detalleDto
             };
@@ -151,6 +152,7 @@ namespace ControlProduccion.Controllers
                 IdMaquina = model.IdMaquina,
                 Fecha = model.Fecha,
                 Observaciones = model.Observaciones,
+                TiempoParo = model.TiempoParo,
                 IdUsuarioActualizacion = userId
             };
 
@@ -273,6 +275,7 @@ namespace ControlProduccion.Controllers
                 CatalogoDensidad = dtoCat.CatalogoDensidad?.Select(d => new SelectListItem { Value = d.Id.ToString(), Text = d.Descripcion }),
                 CatalogoTipoBloque = dtoCat.CatalogoTipoBloque?.Select(t => new SelectListItem { Value = t.Id.ToString(), Text = t.Descripcion }),
                 Observaciones = modelDto.Observaciones,
+                TiempoParo = modelDto.TiempoParo,
                 DetPrdCorteP = modelDto.DetPrdCortePs?.Select(d => new DetPrdCortePViewModel
                 {
                     DetPrdCortePId = d.Id,

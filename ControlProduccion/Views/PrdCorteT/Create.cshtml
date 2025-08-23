@@ -28,6 +28,11 @@
                             <label asp-for="Fecha"></label>
                             <input asp-for="Fecha" class="form-control" />
                         </div>
+                        <div class="form-group">
+                            <label asp-for="TiempoParo"></label>
+                            <input asp-for="TiempoParo" type="number" step="0.1" min="0" class="form-control" />
+                            <span asp-validation-for="TiempoParo" class="text-danger"></span>
+                        </div>
            
                 
             
@@ -422,6 +427,7 @@
                     IdUsuarios: $('#IdUsuarios').val(), 
                     IdMaquina: parseInt($('#IdMaquina').val()),
                     Fecha: $('#Fecha').val(),
+                    TiempoParo: $('#TiempoParo').val() ? parseFloat($('#TiempoParo').val()) : null,
                     Observaciones: $('#Observaciones').val(),
                     DetPrdCorteT: [] 
                 };
