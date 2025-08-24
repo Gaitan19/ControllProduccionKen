@@ -793,7 +793,9 @@ SELECT
     D.Merma,
     D.Comentario,
     D.HoraInicio,
-    D.HoraFin
+    D.HoraFin,
+    D.Cantidad,
+    D.UnidadMedida
 FROM cp.DetPrdOtro D
 LEFT JOIN cp.TipoFabricacion   TF ON TF.Id = D.IdTipoFabricacion
 WHERE  D.PrdOtroId IN (
