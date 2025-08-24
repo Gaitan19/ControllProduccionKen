@@ -431,9 +431,21 @@
     <script>
         $(document).ready(function() {
             // Clear default values from numeric input fields on page load
-            $('input[type="number"], input[step]').each(function() {
-                if ($(this).val() === '0' || $(this).val() === '0.00') {
-                    $(this).val('');
+            var numericFieldIds = [
+                '#TiempoParo', '#VelocidadMaquina', '#AnchoMmA', '#PesoInicialKgA', '#PesoFinalKgA',
+                '#MetrosInicialA', '#MetrosFinalA', '#EspesorInicialCmA', '#EspesorFinalCmA',
+                '#CalibreMmA', '#AnchoMmB', '#PesoInicialKgB', '#PesoFinalKgB', '#MetrosInicialB',
+                '#MetrosFinalB', '#EspesorInicialCmB', '#EspesorFinalCmB', '#CalibreMmB',
+                '#MetrosInicialPoliol', '#CantidadUtilizadaA', '#PesoInicialA', '#PesoFinalA',
+                '#VelocidadSuperiorA', '#VelocidadInferiorA', '#MetrosInicialIsocianato',
+                '#CantidadUtilizadaB', '#PesoInicialB', '#PesoFinalB', '#VelocidadSuperiorB',
+                '#VelocidadInferiorB', '#CantidadArranques'
+            ];
+            
+            $.each(numericFieldIds, function(index, fieldId) {
+                var $field = $(fieldId);
+                if ($field.length && ($field.val() === '0' || $field.val() === '0.00' || $field.val() === '0.0')) {
+                    $field.val('');
                 }
             });
         });
@@ -534,12 +546,30 @@
                         // Calculate Peso Final A = Peso Inicial A - Cantidad Utilizada A
                         var pesoInicialA = parseFloat($("#PesoInicialA").val()) || 0;
                         var cantidadUtilizadaA = parseFloat($("#CantidadUtilizadaA").val()) || 0;
+                        
+                        // Validate that Peso Inicial A >= Cantidad Utilizada A
+                        if (cantidadUtilizadaA > pesoInicialA && pesoInicialA > 0) {
+                            alert("La Cantidad Utilizada A no puede ser mayor que el Peso Inicial A.");
+                            $("#CantidadUtilizadaA").val('').focus();
+                            $("#PesoFinalA").val('');
+                            return;
+                        }
+                        
                         var pesoFinalA = pesoInicialA - cantidadUtilizadaA;
                         $("#PesoFinalA").val(pesoFinalA >= 0 ? pesoFinalA.toFixed(2) : "");
 
                         // Calculate Peso Final B = Peso Inicial B - Cantidad Utilizada B
                         var pesoInicialB = parseFloat($("#PesoInicialB").val()) || 0;
                         var cantidadUtilizadaB = parseFloat($("#CantidadUtilizadaB").val()) || 0;
+                        
+                        // Validate that Peso Inicial B >= Cantidad Utilizada B
+                        if (cantidadUtilizadaB > pesoInicialB && pesoInicialB > 0) {
+                            alert("La Cantidad Utilizada B no puede ser mayor que el Peso Inicial B.");
+                            $("#CantidadUtilizadaB").val('').focus();
+                            $("#PesoFinalB").val('');
+                            return;
+                        }
+                        
                         var pesoFinalB = pesoInicialB - cantidadUtilizadaB;
                         $("#PesoFinalB").val(pesoFinalB >= 0 ? pesoFinalB.toFixed(2) : "");
                     }
