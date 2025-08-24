@@ -94,7 +94,7 @@
                                     {
                                         <tr>
                                             <td>@detalle.TipoArticulo</td>
-                                            <td>@detalle.Articulo</td>
+                                            <td>@(detalle.TipoArticulo == "COVINTEC" ? "" : detalle.Articulo)</td>
                                             <td>@detalle.TipoFabricacion</td>
                                             <td>@detalle.NumeroPedido</td>
                                             <td>@detalle.MallaCovintec</td>

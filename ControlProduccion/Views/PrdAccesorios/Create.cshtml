@@ -581,6 +581,7 @@
           const rowPch      = rowOf('#IdTipoMallaPch');    // + #CantidadPchKg
           const rowIso      = rowOf('#IdAnchoBobina');     // + #CantidadBobinaKg
           const rowLitewall = rowOf('#IdCalibre');         // + #CantidadCalibreKg
+          const rowArticulo = rowOf('#IdArticulo');        // Artículo field row
 
           function clearRow($row) {
             $row.find('input[type="text"], input[type="number"]').val('');
@@ -607,6 +608,18 @@
           }
 
           function applyTipoArticulo(tipoVal) {
+            // Show/hide Artículo field based on article type
+            if (tipoVal === TIPO_ART.COVINTEC) {
+              rowArticulo.hide();
+              // Set a default article value for COVINTEC to prevent errors
+              $(modalId + ' #IdArticulo').val('1').trigger('change'); // You may need to adjust this default value
+              $(modalId + ' #IdArticulo').removeAttr('required');
+            } else {
+              rowArticulo.show();
+              $(modalId + ' #IdArticulo').attr('required', 'required');
+            }
+
+            // Show/hide specific type fields
             switch (tipoVal) {
               case TIPO_ART.COVINTEC:
                 showOnlyRow(rowCovintec);
@@ -622,6 +635,8 @@
                 break;
               default:
                 hideAllTipoRows();
+                rowArticulo.show();
+                $(modalId + ' #IdArticulo').attr('required', 'required');
             }
           }
 

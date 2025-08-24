@@ -184,7 +184,7 @@
                                                 <td data-field="no"><a>@counter</a></td>
                                             }
                                             <td data-field="tipoarticulo">@detalle.TipoArticulo</td>
-                                            <td data-field="articulo">@detalle.Articulo</td>
+                                            <td data-field="articulo">@(detalle.TipoArticulo == "COVINTEC" ? "" : detalle.Articulo)</td>
                                             <td data-field="tipoFabricacion">@detalle.TipoFabricacion</td>
                                             <td data-field="numeroPedido">@detalle.NumeroPedido</td>
                                             <td data-field="mallaCovintec">@detalle.MallaCovintec</td>
@@ -445,12 +445,29 @@
                 $row.show();
             }
             function applyTipoArticulo(tipoVal, shouldClear = false) {
+                // Show/hide Artículo field based on article type
+                const articuloRow = rowOf('#IdArticulo');
+                if (tipoVal === TIPO_ART.COVINTEC) {
+                    articuloRow.hide();
+                    // Set a default article value for COVINTEC to prevent errors
+                    $('#modal-Detalle #IdArticulo').val('1').trigger('change');
+                    $('#modal-Detalle #IdArticulo').removeAttr('required');
+                } else {
+                    articuloRow.show();
+                    $('#modal-Detalle #IdArticulo').attr('required', 'required');
+                }
+
+                // Show/hide specific type fields
                 switch (tipoVal) {
                     case TIPO_ART.COVINTEC: showOnlyRow(rowOf('#IdMallaCovintec'), shouldClear); break;
                     case TIPO_ART.PCH:      showOnlyRow(rowOf('#IdTipoMallaPch'), shouldClear); break;
                     case TIPO_ART.ISO:      showOnlyRow(rowOf('#IdAnchoBobina'), shouldClear); break;
                     case TIPO_ART.LITEWALL: showOnlyRow(rowOf('#IdCalibre'), shouldClear); break;
-                    default: hideAllTipoRows(); break;
+                    default: 
+                        hideAllTipoRows(); 
+                        articuloRow.show();
+                        $('#modal-Detalle #IdArticulo').attr('required', 'required');
+                        break;
                 }
             }
 
