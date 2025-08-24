@@ -19,6 +19,10 @@ namespace ControlProduccion.ViewModel
         [DataType(DataType.Date)]
         public DateTime Fecha { get; set; } = DateTime.Now;
 
+        [Display(Name = "Tiempo de paro (horas)")]
+        [Range(0, double.MaxValue, ErrorMessage = "El tiempo de paro debe ser mayor o igual a 0")]
+        public decimal? TiempoParo { get; set; }
+
         // Auditoría
         public string IdUsuarioCreacion { get; set; } = string.Empty;
         public DateTime FechaCreacion { get; set; } = DateTime.Now;

@@ -65,6 +65,8 @@ namespace ControlProduccion.Controllers
                     Nota = x.Nota,
                     Merma = x.Merma,
                     Comentario = x.Comentario,
+                    Cantidad = x.Cantidad,
+                    UnidadMedida = x.UnidadMedida,
                     HoraInicio = x.HoraInicio,
                     HoraFin = x.HoraFin
                 }).ToList(),
@@ -106,6 +108,8 @@ namespace ControlProduccion.Controllers
                 Nota = x.Nota,
                 Merma = x.Merma,
                 Comentario = x.Comentario,
+                Cantidad = x.Cantidad,
+                UnidadMedida = x.UnidadMedida,
                 HoraInicio = x.HoraInicio,
                 HoraFin = x.HoraFin,
                 IdUsuarioCreacion = userId
@@ -116,6 +120,7 @@ namespace ControlProduccion.Controllers
             {
                 IdUsuarios = model.IdUsuarios,
                 Fecha = model.Fecha,
+                TiempoParo = model.TiempoParo,
                 IdUsuarioCreacion = model.IdUsuarioCreacion!,
                 DetPrdOtros = detallePrd
               
@@ -149,7 +154,7 @@ namespace ControlProduccion.Controllers
                 AprobadoGerencia = modelDto.AprobadoGerencia,
                 DetPrdOtros = modelDto.DetPrdOtros?.Select(x => new DetPrdOtroViewModel
                 {
-                    Id= x.Id,
+                    Id = x.Id,
                     PrdOtroId = x.PrdOtroId,
                     Actividad = x.Actividad,
                     DescripcionProducto = x.DescripcionProducto,
@@ -161,6 +166,8 @@ namespace ControlProduccion.Controllers
                     Nota = x.Nota,
                     Merma = x.Merma,
                     Comentario = x.Comentario,
+                    Cantidad = x.Cantidad,
+                    UnidadMedida = x.UnidadMedida,
                     HoraInicio = x.HoraInicio,
                     HoraFin = x.HoraFin
                 }).ToList(),
@@ -210,7 +217,9 @@ namespace ControlProduccion.Controllers
                         Merma = x.Merma,
                         Comentario = x.Comentario,
                         HoraInicio = x.HoraInicio,
-                        HoraFin = x.HoraFin
+                        HoraFin = x.HoraFin,
+                        Cantidad = x.Cantidad,
+                        UnidadMedida = x.UnidadMedida,
                     }).ToList(),
                     Operarios = operarios.Select(o => new SelectListItem { Value = o.Id, Text = o.UserName }),
                     TiposFabricacion = dtoCat.CatTipoFabricacion.Select(tf => new SelectListItem { Value = tf.Id.ToString(), Text = tf.Descripcion })
@@ -231,6 +240,7 @@ namespace ControlProduccion.Controllers
                     Id = model.Id,
                     IdUsuarios = model.IdUsuarios,
                     Fecha = model.Fecha,
+                    TiempoParo = model.TiempoParo,
                     IdUsuarioActualizacion = userId,
                     FechaActualizacion = DateTime.Now
                 };
@@ -282,7 +292,9 @@ namespace ControlProduccion.Controllers
                         Merma = x.Merma,
                         Comentario = x.Comentario,
                         HoraInicio = x.HoraInicio,
-                        HoraFin = x.HoraFin
+                        HoraFin = x.HoraFin,
+                        Cantidad = x.Cantidad,
+                        UnidadMedida = x.UnidadMedida,
                     }).ToList(),
                     Operarios = operarios.Select(o => new SelectListItem { Value = o.Id, Text = o.UserName }),
                     TiposFabricacion = dtoCat.CatTipoFabricacion.Select(tf => new SelectListItem { Value = tf.Id.ToString(), Text = tf.Descripcion })
@@ -384,6 +396,8 @@ namespace ControlProduccion.Controllers
                     Nota = model.Nota,
                     Merma = model.Merma,
                     Comentario = model.Comentario,
+                    Cantidad = model.Cantidad,
+                    UnidadMedida = model.UnidadMedida,
                     HoraInicio = model.HoraInicio,
                     HoraFin = model.HoraFin,
                     IdUsuarioActualizacion = userId

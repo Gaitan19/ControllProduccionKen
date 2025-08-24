@@ -11,6 +11,7 @@ namespace Application.DTOs
         public int Id { get; set; }
         public List<string> IdUsuarios { get; set; } = new();
         public DateTime Fecha { get; set; }
+        public decimal? TiempoParo { get; set; }
         public string IdUsuarioCreacion { get; set; } = null!;
         public DateTime FechaCreacion { get; set; }
         public string? IdUsuarioActualizacion { get; set; }
