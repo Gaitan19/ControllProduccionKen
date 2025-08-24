@@ -183,7 +183,7 @@
                             </form>
 
                             <button id="btnGuardarDetPrd" type="button" class="btn btn-primary">Agregar</button>
-                            <button type="button" class="btn  btn-dark" data-dismiss="modal">Cancelar</button>
+                            <button type="button" class="btn btn-dark" data-dismiss="modal" onclick="$('#modal-Detalle').find(':focus').blur();">Cancelar</button>
                             <br />
                             <p id="spnbtnGuardarDetPrd" class="text-sm text-danger"></p>
                         </div>
@@ -416,7 +416,10 @@
 
             // Opcional: Si "Número Pedido" debe ocultarse de nuevo después de guardar
             $("#divNumeroPedido").hide();
-              $("#modal-Detalle").modal('hide');
+            
+            // Remove focus from any active element in the modal to prevent accessibility issues
+            $("#modal-Detalle").find(':focus').blur();
+            $("#modal-Detalle").modal('hide');
         });
 
 
