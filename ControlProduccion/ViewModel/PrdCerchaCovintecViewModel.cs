@@ -36,7 +36,7 @@ namespace ControlProduccion.ViewModel
         [DataType(DataType.Date)]
         public DateTime Fecha { get; set; } = DateTime.Now;
 
-        [Display(Name = "Merma Alambre")]
+        [Display(Name = "Merma Alambre (Kg)")]
         public decimal? MermaAlambre { get; set; }
 
         [Display(Name = "Tiempo Paro (Horas)")]

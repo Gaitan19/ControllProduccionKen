@@ -31,7 +31,7 @@ namespace ControlProduccion.ViewModel
         [DataType(DataType.MultilineText)]
         public string Observaciones { get; set; }
         [Required(ErrorMessage = "El campo {0} es obligatorio")]
-        [Display(Name = "Merma Alambre")]
+        [Display(Name = "Merma Alambre (Kg)")]
         public decimal MermaAlambre { get; set; }
 
         [Display(Name = "Tiempo Paro (Horas)")]
