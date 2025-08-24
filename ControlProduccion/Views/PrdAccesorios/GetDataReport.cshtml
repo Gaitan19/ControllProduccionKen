@@ -260,7 +260,7 @@
                                 <tr>
                                     <td>@detalle.No</td>
                                     <td>@detalle.TipoArticulo</td>
-                                    <td>@(string.Equals(detalle.TipoArticulo?.Trim(), "COVINTEC", StringComparison.OrdinalIgnoreCase) || string.Equals(detalle.TipoArticulo?.Trim(), "CONVITEC", StringComparison.OrdinalIgnoreCase) ? "" : detalle.Articulo)</td>
+                                    <td>@detalle.Articulo</td>
                                     <td>@detalle.TipoFabricacion</td>
                                     <td>@(detalle.NumeroPedido?.ToString() ?? "N/A")</td>
                                     <td>@(detalle.MallaCovintec ?? "N/A")</td>

@@ -305,32 +305,42 @@ namespace ControlProduccion.Controllers
                 MermaBobinasKg = modelDto.MermaBobinasKg,
                 MermaLitewallKg = modelDto.MermaLitewallKg,
                 TiempoParo = modelDto.TiempoParo,
-                DetPrdAccesorios = modelDto.DetPrdAccesorios?.Select(d => new DetPrdAccesorioViewModel
-                {
-                    DetPrdAccesorioId = d.Id,
-                    PrdAccesoriosId = d.PrdAccesoriosId,
-                    IdTipoArticulo = d.IdTipoArticulo,
-                    TipoArticulo = tiposArticuloDict?.GetValueOrDefault(d.IdTipoArticulo),
-                    IdArticulo = d.IdArticulo,
-                    Articulo = articulosDict != null && articulosDict.ContainsKey(d.IdArticulo)
-                        ? $"{articulosDict[d.IdArticulo].CodigoArticulo}-{articulosDict[d.IdArticulo].DescripcionArticulo}"
-                        : null,
-                    IdTipoFabricacion = d.IdTipoFabricacion,
-                    TipoFabricacion = tiposFabDict?.GetValueOrDefault(d.IdTipoFabricacion),
-                    NumeroPedido = d.NumeroPedido,
-                    IdMallaCovintec = d.IdMallaCovintec,
-                    MallaCovintec = mallasCovintecDict?.GetValueOrDefault(d.IdMallaCovintec ?? 0),
-                    CantidadMallaUn = d.CantidadMallaUn,
-                    IdTipoMallaPch = d.IdTipoMallaPch,
-                    TipoMallaPch = tiposMallaPchDict?.GetValueOrDefault(d.IdTipoMallaPch ?? 0),
-                    CantidadPchKg = d.CantidadPchKg,
-                    IdAnchoBobina = d.IdAnchoBobina,
-                    AnchoBobina = anchosBobinaDict?.GetValueOrDefault(d.IdAnchoBobina ?? 0),
-                    CantidadBobinaKg = d.CantidadBobinaKg,
-                    IdCalibre = d.IdCalibre,
-                    Calibre = calibresDict?.GetValueOrDefault(d.IdCalibre ?? 0),
-                    CantidadCalibreKg = d.CantidadCalibreKg
-               
+                DetPrdAccesorios = modelDto.DetPrdAccesorios?.Select(d => {
+                    var tipoArticulo = tiposArticuloDict?.GetValueOrDefault(d.IdTipoArticulo);
+                    // Check if this is a COVINTEC article (by ID or name variations)
+                    var isCovintec = d.IdTipoArticulo == 26 || 
+                                   string.Equals(tipoArticulo?.Trim(), "COVINTEC", StringComparison.OrdinalIgnoreCase) ||
+                                   string.Equals(tipoArticulo?.Trim(), "CONVITEC", StringComparison.OrdinalIgnoreCase);
+                    
+                    return new DetPrdAccesorioViewModel
+                    {
+                        DetPrdAccesorioId = d.Id,
+                        PrdAccesoriosId = d.PrdAccesoriosId,
+                        IdTipoArticulo = d.IdTipoArticulo,
+                        TipoArticulo = tipoArticulo,
+                        IdArticulo = d.IdArticulo,
+                        // For COVINTEC articles, always set Articulo to empty/null
+                        Articulo = isCovintec ? null : 
+                                  (articulosDict != null && articulosDict.ContainsKey(d.IdArticulo)
+                                      ? $"{articulosDict[d.IdArticulo].CodigoArticulo}-{articulosDict[d.IdArticulo].DescripcionArticulo}"
+                                      : null),
+                        IdTipoFabricacion = d.IdTipoFabricacion,
+                        TipoFabricacion = tiposFabDict?.GetValueOrDefault(d.IdTipoFabricacion),
+                        NumeroPedido = d.NumeroPedido,
+                        IdMallaCovintec = d.IdMallaCovintec,
+                        MallaCovintec = mallasCovintecDict?.GetValueOrDefault(d.IdMallaCovintec ?? 0),
+                        CantidadMallaUn = d.CantidadMallaUn,
+                        IdTipoMallaPch = d.IdTipoMallaPch,
+                        TipoMallaPch = tiposMallaPchDict?.GetValueOrDefault(d.IdTipoMallaPch ?? 0),
+                        CantidadPchKg = d.CantidadPchKg,
+                        IdAnchoBobina = d.IdAnchoBobina,
+                        AnchoBobina = anchosBobinaDict?.GetValueOrDefault(d.IdAnchoBobina ?? 0),
+                        CantidadBobinaKg = d.CantidadBobinaKg,
+                        IdCalibre = d.IdCalibre,
+                        Calibre = calibresDict?.GetValueOrDefault(d.IdCalibre ?? 0),
+                        CantidadCalibreKg = d.CantidadCalibreKg
+                   
+                    };
                 }).ToList()
             };
         }

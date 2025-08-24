@@ -184,7 +184,7 @@
                                                 <td data-field="no"><a>@counter</a></td>
                                             }
                                             <td data-field="tipoarticulo">@detalle.TipoArticulo</td>
-                                            <td data-field="articulo">@(detalle.IdTipoArticulo == 26 || string.Equals(detalle.TipoArticulo?.Trim(), "COVINTEC", StringComparison.OrdinalIgnoreCase) || string.Equals(detalle.TipoArticulo?.Trim(), "CONVITEC", StringComparison.OrdinalIgnoreCase) ? "" : detalle.Articulo)</td>
+                                            <td data-field="articulo">@detalle.Articulo</td>
                                             <td data-field="tipoFabricacion">@detalle.TipoFabricacion</td>
                                             <td data-field="numeroPedido">@detalle.NumeroPedido</td>
                                             <td data-field="mallaCovintec">@detalle.MallaCovintec</td>
