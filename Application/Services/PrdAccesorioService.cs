@@ -39,6 +39,7 @@ namespace Application.Services
                     MermaMallaPchKg = dto.MermaMallaPchKg,
                     MermaBobinasKg = dto.MermaBobinasKg,
                     MermaLitewallKg = dto.MermaLitewallKg,
+                    TiempoParo = dto.TiempoParo,
                     IdUsuarioCreacion = dto.IdUsuarioCreacion,
                     FechaCreacion = DateTime.Now,
                     AprobadoSupervisor = false,
@@ -138,6 +139,7 @@ namespace Application.Services
                 MermaMallaPchKg = entity.MermaMallaPchKg,
                 MermaBobinasKg = entity.MermaBobinasKg,
                 MermaLitewallKg = entity.MermaLitewallKg,
+                TiempoParo = entity.TiempoParo,
                 AprobadoSupervisor = entity.AprobadoSupervisor,
                 AprobadoGerencia = entity.AprobadoGerencia,
                 IdAprobadoSupervisor = entity.IdAprobadoSupervisor,
@@ -233,6 +235,7 @@ namespace Application.Services
                 entity.MermaMallaPchKg = dto.MermaMallaPchKg;
                 entity.MermaBobinasKg = dto.MermaBobinasKg;
                 entity.MermaLitewallKg = dto.MermaLitewallKg;
+                entity.TiempoParo = dto.TiempoParo;
                 entity.IdUsuarioActualizacion = dto.IdUsuarioActualizacion;
                 entity.FechaActualizacion = DateTime.Now;
 
