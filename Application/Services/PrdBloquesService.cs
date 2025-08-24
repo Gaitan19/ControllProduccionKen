@@ -38,6 +38,7 @@ namespace Application.Services
                 var prdBloque = new PrdBloque
                 {
                     Fecha = dto.Fecha,
+                    TiempoParo = dto.TiempoParo,
                     IdUsuarios = string.Join(",", dto.IdUsuarios ?? new List<string>()),
                     IdUsuarioCreacion = dto.IdUsuarioCreacion,
                     FechaCreacion = DateTime.Now,
@@ -149,7 +150,7 @@ namespace Application.Services
                                         filter: b => b.Id == id,
                                         include: q => q
                                             .Include(b => b.DetPrdBloques)               // 1er nivel
-                                              .ThenInclude(d => d.SubDetPrdBloques)      // 2º nivel
+                                              .ThenInclude(d => d.SubDetPrdBloques)      // 2ï¿½ nivel
                                     );
 
             var prd = lista.SingleOrDefault();
@@ -162,6 +163,7 @@ namespace Application.Services
                 Id = prd.Id,
                 IdUsuarios = userIds,
                 Fecha = prd.Fecha,
+                TiempoParo = prd.TiempoParo,
                 IdUsuarioCreacion = prd.IdUsuarioCreacion,
                 FechaCreacion = prd.FechaCreacion,
                 IdUsuarioActualizacion = prd.IdUsuarioActualizacion,
@@ -281,6 +283,7 @@ namespace Application.Services
             if (prd != null)
             {
                 prd.Fecha = dto.Fecha;
+                prd.TiempoParo = dto.TiempoParo;
                 prd.IdUsuarios = string.Join(",", dto.IdUsuarios ?? new List<string>());
                 prd.IdUsuarioActualizacion = dto.IdUsuarioActualizacion;
                 prd.FechaActualizacion = DateTime.Now;

@@ -16,6 +16,7 @@ namespace Infrastructure.DTO
         public DateTime Fecha { get; set; }
         public decimal? ProduccionDia { get; set; }
         public string? Observaciones { get; set; }
+        public decimal? TiempoParo { get; set; }
 
         // Auditoría y aprobaciones
         public string IdUsuarioCreacion { get; set; } = string.Empty;

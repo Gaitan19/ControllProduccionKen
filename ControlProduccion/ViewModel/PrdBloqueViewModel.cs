@@ -25,6 +25,10 @@ namespace ControlProduccion.ViewModel
         public string? IdUsuarioActualizacion { get; set; }
         public DateTime? FechaActualizacion { get; set; }
 
+        [Display(Name = "Tiempo Paro (Horas)")]
+        [Range(0, double.MaxValue, ErrorMessage = "El tiempo de paro debe ser mayor o igual a 0")]
+        public decimal? TiempoParo { get; set; }
+
         [Display(Name = "Aprobado por Supervisor")]
         public bool? AprobadoSupervisor { get; set; }
         public string? IdAprobadoSupervisor { get; set; }

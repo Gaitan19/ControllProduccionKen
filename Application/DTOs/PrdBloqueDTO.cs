@@ -30,6 +30,8 @@ namespace Application.DTOs
 
         public DateTime? FechaActualizacion { get; set; }
 
+        public decimal? TiempoParo { get; set; }
+
         public List<DetPrdBloqueDTO>? DetPrdBloques { get; set; }
     }
 }

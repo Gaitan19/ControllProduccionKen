@@ -14,6 +14,7 @@ namespace Infrastructure.DTO
         public string Supervisor { get; set; } = string.Empty;
         public string JefeProd { get; set; } = string.Empty;
         public DateTime Fecha { get; set; }
+        public decimal? TiempoParo { get; set; }
 
         // Detalles
         public List<DetalleBloquesDto> Detalles { get; set; } = new List<DetalleBloquesDto>();

@@ -141,6 +141,7 @@ namespace ControlProduccion.Controllers
                 IdUsuarios = model.IdUsuarios,
                 Fecha = model.Fecha,
                 Observaciones = model.Observaciones,
+                TiempoParo = model.TiempoParo,
                 IdUsuarioCreacion = userId,
                 FechaCreacion = DateTime.Now,
                 DetPrdPchMaquinaAs = detPrdPchMaquinaAs,
@@ -188,6 +189,7 @@ namespace ControlProduccion.Controllers
                 IdUsuarios = model.IdUsuarios,
                 Fecha = model.Fecha,
                 Observaciones = model.Observaciones,
+                TiempoParo = model.TiempoParo,
                 IdUsuarioActualizacion = userId,
                 FechaActualizacion = DateTime.Now
             };
@@ -352,6 +354,7 @@ namespace ControlProduccion.Controllers
                 IdUsuarios = modelDto.IdUsuarios,
                 Fecha = modelDto.Fecha,
                 Observaciones = modelDto.Observaciones,
+                TiempoParo = modelDto.TiempoParo,
                 AprobadoSupervisor = modelDto.AprobadoSupervisor,
                 AprobadoGerencia = modelDto.AprobadoGerencia,
                 IdAprobadoSupervisor = modelDto.IdAprobadoSupervisor,

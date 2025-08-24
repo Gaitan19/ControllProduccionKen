@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -25,6 +26,11 @@ namespace Application.DTOs
         public decimal? MermaMallaPchKg { get; set; }
         public decimal? MermaBobinasKg { get; set; }
         public decimal? MermaLitewallKg { get; set; }
+        
+        [Display(Name = "Tiempo Paro (Horas)")]
+        [Range(0, double.MaxValue, ErrorMessage = "El tiempo de paro debe ser mayor o igual a 0")]
+        public decimal? TiempoParo { get; set; }
+
         public List<DetPrdAccesorioDto>? DetPrdAccesorios { get; set; }
     }
 }

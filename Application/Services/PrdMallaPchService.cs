@@ -36,6 +36,7 @@ namespace Application.Services
                     Fecha = dto.Fecha,
                     Observaciones = dto.Observaciones,
                     ProduccionDia = 0, // Will be calculated from details
+                    TiempoParo = dto.TiempoParo,
                     IdUsuarioCreacion = dto.IdUsuarioCreacion,
                     FechaCreacion = DateTime.Now,
                     AprobadoSupervisor = false,
@@ -186,6 +187,7 @@ namespace Application.Services
                 Fecha = prd.Fecha,
                 Observaciones = prd.Observaciones,
                 ProduccionDia = prd.ProduccionDia,
+                TiempoParo = prd.TiempoParo,
                 IdUsuarioCreacion = prd.IdUsuarioCreacion,
                 FechaCreacion = prd.FechaCreacion,
                 IdUsuarioActualizacion = prd.IdUsuarioActualizacion,
@@ -260,6 +262,7 @@ namespace Application.Services
                 prd.IdUsuarios = string.Join(",", dto.IdUsuarios ?? new List<string>());
                 prd.Fecha = dto.Fecha;
                 prd.Observaciones = dto.Observaciones;
+                prd.TiempoParo = dto.TiempoParo;
                 prd.IdUsuarioActualizacion = dto.IdUsuarioActualizacion;
                 prd.FechaActualizacion = DateTime.Now;
 
