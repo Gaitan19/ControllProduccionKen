@@ -83,5 +83,15 @@ namespace Infrastructure.DTO
         /// Hora de fin de la actividad.
         /// </summary>
         public TimeSpan HoraFin { get; set; }
+
+        /// <summary>
+        /// Cantidad del producto.
+        /// </summary>
+        public decimal Cantidad { get; set; }
+
+        /// <summary>
+        /// Unidad de medida del producto.
+        /// </summary>
+        public string UnidadMedida { get; set; } = string.Empty;
     }
 }

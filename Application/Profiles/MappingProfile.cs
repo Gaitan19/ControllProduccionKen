@@ -31,6 +31,10 @@ namespace Application.Profiles
             CreateMap<CatProdTermoIsoPanel, CatProdTermoIsoPanelDTO>().ReverseMap();
             CreateMap<CatEspesor, CatEspesorDTO>().ReverseMap();
             CreateMap<CatalogoBloque, CatalogoBloqueDTO>().ReverseMap();
+            
+            // PrdOtro mappings
+            CreateMap<DetPrdOtro, DetPrdOtroDTO>().ReverseMap();
+            CreateMap<PrdOtro, PrdOtroDto>().ReverseMap();
 
         }
     }

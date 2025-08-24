@@ -86,6 +86,16 @@ namespace ControlProduccion.ViewModel
         [DataType(DataType.Time)]
         public TimeSpan HoraFin { get; set; }
 
+        [Required(ErrorMessage = "El campo Cantidad es obligatorio")]
+        [Display(Name = "Cantidad")]
+        [Range(0.01, double.MaxValue, ErrorMessage = "La cantidad debe ser mayor a 0")]
+        public decimal Cantidad { get; set; }
+
+        [Required(ErrorMessage = "El campo Unidad de Medida es obligatorio")]
+        [Display(Name = "Unidad de Medida")]
+        [StringLength(50, ErrorMessage = "La unidad de medida no puede exceder 50 caracteres")]
+        public string UnidadMedida { get; set; } = string.Empty;
+
         // Auditoría
         public string IdUsuarioCreacion { get; set; } = string.Empty;
         public DateTime FechaCreacion { get; set; } = DateTime.Now;

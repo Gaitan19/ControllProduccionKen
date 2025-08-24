@@ -45,6 +45,8 @@
                                     <th>Nota</th>
                                     <th>Merma</th>
                                     <th>Comentario</th>
+                                    <th>Cantidad</th>
+                                    <th>Unidad Medida</th>
                                     <th>Hora Inicio</th>
                                     <th>Hora Fin</th>
                                 </tr>
@@ -63,6 +65,8 @@
                                             <td>@detalle.Nota</td>
                                             <td>@detalle.Merma</td>
                                             <td>@detalle.Comentario</td>
+                                            <td>@detalle.Cantidad</td>
+                                            <td>@detalle.UnidadMedida</td>
                                             <td>@DateTime.Today.Add(detalle.HoraInicio).ToString("h:mm tt")</td>
                                             <td>@DateTime.Today.Add(detalle.HoraFin).ToString("h:mm tt")</td>
                                         </tr>

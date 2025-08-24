@@ -49,6 +49,8 @@
                                     <th>Nota</th>
                                     <th>Merma</th>
                                     <th>Comentario</th>
+                                    <th>Cantidad</th>
+                                    <th>Unidad Medida</th>
                                     <th>Hora Inicio</th>
                                     <th>Hora Fin</th>
                                 </tr>
@@ -135,6 +137,23 @@
                                         <div class="mb-3">
                                             <label class="form-label">Comentario</label>
                                             <input type="text" id="Comentario" name="Comentario" class="form-control" />
+                                            <span class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="form-label">Cantidad</label>
+                                            <input type="number" id="Cantidad" name="Cantidad" class="form-control" step="0.01" min="0.01" />
+                                            <span class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="form-label">Unidad de Medida</label>
+                                            <input type="text" id="UnidadMedida" name="UnidadMedida" class="form-control" maxlength="50" />
                                             <span class="text-danger"></span>
                                         </div>
                                     </div>
@@ -299,6 +318,8 @@
             var nota = $("#Nota").val().trim();
             var merma = $("#Merma").val().trim();
             var comentario = $("#Comentario").val().trim();
+            var cantidad = $("#Cantidad").val().trim();
+            var unidadMedida = $("#UnidadMedida").val().trim();
             var horaInicio = $("#HoraInicio").val();
             var horaFin = $("#HoraFin").val();
 
@@ -330,6 +351,14 @@
             }
             if (comentario === "") {
                 $("#spnbtnGuardarDetPrd").text("Ingrese el comentario.");
+                return false;
+            }
+            if (cantidad === "" || isNaN(cantidad) || parseFloat(cantidad) <= 0) {
+                $("#spnbtnGuardarDetPrd").text("Ingrese una cantidad válida mayor a 0.");
+                return false;
+            }
+            if (unidadMedida === "") {
+                $("#spnbtnGuardarDetPrd").text("Ingrese la unidad de medida.");
                 return false;
             }
             if (horaInicio === "") {
@@ -367,8 +396,10 @@
                 "<td>" + nota + "</td>" +
                 "<td>" + merma + "</td>" +
                 "<td>" + comentario + "</td>" +
+                "<td>" + cantidad + "</td>" +
+                "<td>" + unidadMedida + "</td>" +
                 "<td>" + to12h(horaInicio) + "</td>" +
-                "<td>" +to12h(horaFin)  + "</td>" +
+                "<td>" + to12h(horaFin) + "</td>" +
                 "<td style='display:none;'>" + idTipoFabricacion + "</td>" +
                 "</tr>";
 
@@ -405,18 +436,20 @@
             // Se asume que la fila contiene:
             // [0]: Actividad, [1]: Descripción Producto, [2]: Tipo Fabricación (texto), 
             // [3]: Número Pedido, [4]: Nota, [5]: Merma, [6]: Comentario,
-            // [7]: Hora Inicio, [8]: Hora Fin, [9]: IdTipoFabricacion (oculto)
+            // [7]: Cantidad, [8]: Unidad Medida, [9]: Hora Inicio, [10]: Hora Fin, [11]: IdTipoFabricacion (oculto)
             $("#tblProduccion tbody tr").each(function () {
                 var detalle = {
                     Actividad: $(this).find("td:eq(0)").text(),
                     DescripcionProducto: $(this).find("td:eq(1)").text(),
-                    IdTipoFabricacion: parseInt($(this).find("td:eq(9)").text()),
+                    IdTipoFabricacion: parseInt($(this).find("td:eq(11)").text()),
                     NumeroPedido: $(this).find("td:eq(3)").text() !== "" ? parseInt($(this).find("td:eq(3)").text()) : null,
                     Nota: $(this).find("td:eq(4)").text(),
                     Merma: $(this).find("td:eq(5)").text(),
                     Comentario: $(this).find("td:eq(6)").text(),
-                    HoraInicio:to24h($(this).find("td:eq(7)").text()) ,
-                    HoraFin: to24h($(this).find("td:eq(8)").text())
+                    Cantidad: parseFloat($(this).find("td:eq(7)").text()),
+                    UnidadMedida: $(this).find("td:eq(8)").text(),
+                    HoraInicio:to24h($(this).find("td:eq(9)").text()) ,
+                    HoraFin: to24h($(this).find("td:eq(10)").text())
                 };
                 viewModel.DetPrdOtros.push(detalle);
             });

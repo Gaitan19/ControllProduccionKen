@@ -20,6 +20,8 @@ namespace Application.DTOs
         public string Comentario { get; set; } = null!;
         public TimeSpan HoraInicio { get; set; }
         public TimeSpan HoraFin { get; set; }
+        public decimal Cantidad { get; set; }
+        public string UnidadMedida { get; set; } = null!;
         
         public string IdUsuarioCreacion { get; set; } = null!;
         public DateTime FechaCreacion { get; set; }
