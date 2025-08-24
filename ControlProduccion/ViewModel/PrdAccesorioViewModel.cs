@@ -80,6 +80,10 @@ namespace ControlProduccion.ViewModel
         [Range(0, double.MaxValue, ErrorMessage = "Debe ser un número positivo")]
         public decimal? MermaLitewallKg { get; set; }
 
+        [Display(Name = "Tiempo Paro (Horas)")]
+        [Range(0, double.MaxValue, ErrorMessage = "El tiempo de paro debe ser mayor o igual a 0")]
+        public decimal? TiempoParo { get; set; }
+
         // Detalles
         public List<DetPrdAccesorioViewModel>? DetPrdAccesorios { get; set; }
 

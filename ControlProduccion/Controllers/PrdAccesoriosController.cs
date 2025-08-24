@@ -105,6 +105,7 @@ namespace ControlProduccion.Controllers
                 MermaMallaPchKg = model.MermaMallaPchKg,
                 MermaBobinasKg = model.MermaBobinasKg,
                 MermaLitewallKg = model.MermaLitewallKg,
+                TiempoParo = model.TiempoParo,
                 IdUsuarioCreacion = userId,
                 DetPrdAccesorios = detalleDto
             };
@@ -152,6 +153,7 @@ namespace ControlProduccion.Controllers
                 MermaMallaPchKg = model.MermaMallaPchKg,
                 MermaBobinasKg = model.MermaBobinasKg,
                 MermaLitewallKg = model.MermaLitewallKg,
+                TiempoParo = model.TiempoParo,
                 IdUsuarioActualizacion = userId
             };
 
@@ -287,6 +289,7 @@ namespace ControlProduccion.Controllers
                 MermaMallaPchKg = modelDto.MermaMallaPchKg,
                 MermaBobinasKg = modelDto.MermaBobinasKg,
                 MermaLitewallKg = modelDto.MermaLitewallKg,
+                TiempoParo = modelDto.TiempoParo,
                 DetPrdAccesorios = modelDto.DetPrdAccesorios?.Select(d => new DetPrdAccesorioViewModel
                 {
                     DetPrdAccesorioId = d.Id,

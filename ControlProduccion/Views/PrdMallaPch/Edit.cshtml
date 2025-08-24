@@ -35,6 +35,12 @@
                 </div>
 
                 <div class="form-group">
+                    <label asp-for="TiempoParo"></label>
+                    <input asp-for="TiempoParo" type="number" step="0.1" min="0" class="form-control" />
+                    <span asp-validation-for="TiempoParo" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
                     <label asp-for="ProduccionTotal"></label>
                     <input asp-for="ProduccionTotal" class="form-control" readonly />
                     <span asp-validation-for="ProduccionTotal" class="text-danger"></span>

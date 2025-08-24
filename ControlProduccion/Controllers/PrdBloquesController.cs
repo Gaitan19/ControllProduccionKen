@@ -100,6 +100,7 @@ namespace ControlProduccion.Controllers
             {
                 IdUsuarios = model.IdUsuarios,
                 Fecha = model.Fecha,
+                TiempoParo = model.TiempoParo,
                 IdUsuarioCreacion = model.IdUsuarioCreacion,
                 DetPrdBloques = detalleDto
             };
@@ -151,6 +152,7 @@ namespace ControlProduccion.Controllers
                 Id = model.Id,
                 IdUsuarios = model.IdUsuarios,
                 Fecha = model.Fecha,
+                TiempoParo = model.TiempoParo,
                 IdUsuarioActualizacion = userId
             };
 
@@ -290,6 +292,7 @@ namespace ControlProduccion.Controllers
                 Id = modelDto.Id,
                 IdUsuarios = modelDto.IdUsuarios,
                 Fecha = modelDto.Fecha,
+                TiempoParo = modelDto.TiempoParo,
                 AprobadoSupervisor = modelDto.AprobadoSupervisor,
                 AprobadoGerencia = modelDto.AprobadoGerencia,
                 IdAprobadoSupervisor = modelDto.IdAprobadoSupervisor,
