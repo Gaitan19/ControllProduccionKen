@@ -358,7 +358,7 @@
             });
         function addDetalleToTable(data) {
             var tipoArticuloText = $('#IdTipoArticulo option[value="' + data.IdTipoArticulo + '"]').text();
-            var articuloText = $('#IdArticulo option[value="' + data.IdArticulo + '"]').text();
+            var articuloText = data.IdTipoArticulo === '26' ? '' : $('#IdArticulo option[value="' + data.IdArticulo + '"]').text(); // Show empty for COVINTEC
             var tipoFabricacionText = $('#IdTipoFabricacion option[value="' + data.IdTipoFabricacion + '"]').text();
             var mallaCovintecText = data.IdMallaCovintec ? $('#IdMallaCovintec option[value="' + data.IdMallaCovintec + '"]').text() : '';
             var tipoMallaPchText = data.IdTipoMallaPch ? $('#IdTipoMallaPch option[value="' + data.IdTipoMallaPch + '"]').text() : '';
@@ -420,9 +420,20 @@
                
                 };
 
-                if(!data.IdTipoArticulo || !data.IdArticulo || !data.IdTipoFabricacion) {
-                    alert('Los campos Tipo de Artículo, Artículo y Tipo de Fabricación son obligatorios.');
+                // Special validation for COVINTEC - IdArticulo is not required
+                var isCovintec = data.IdTipoArticulo === '26';
+                if(!data.IdTipoArticulo || (!isCovintec && !data.IdArticulo) || !data.IdTipoFabricacion) {
+                    var missingFields = [];
+                    if (!data.IdTipoArticulo) missingFields.push('Tipo de Artículo');
+                    if (!isCovintec && !data.IdArticulo) missingFields.push('Artículo');
+                    if (!data.IdTipoFabricacion) missingFields.push('Tipo de Fabricación');
+                    alert('Los siguientes campos son obligatorios: ' + missingFields.join(', '));
                     return;
+                }
+
+                // Set default article for COVINTEC if not set
+                if (isCovintec && !data.IdArticulo) {
+                    data.IdArticulo = '1';
                 }
 
                 addDetalleToTable(data);
@@ -594,6 +605,13 @@
             $formGroup.find('select').val(null).trigger('change');
           }
 
+          function clearAllArticleTypeFields() {
+            // Clear all fields related to article types
+            [rowCovintec, rowPch, rowIso, rowLitewall].forEach($r => {
+              clearRow($r);
+            });
+          }
+
           function setRequired($row, required) {
             if (required) $row.find('select, input').attr('required', 'required');
             else $row.find('select, input').removeAttr('required');
@@ -601,7 +619,6 @@
 
           function hideAllTipoRows() {
             [rowCovintec, rowPch, rowIso, rowLitewall].forEach($r => {
-              clearRow($r);
               setRequired($r, false);
               $r.hide();
             });
@@ -614,6 +631,9 @@
           }
 
           function applyTipoArticulo(tipoVal) {
+            // Clear all article type fields when changing type
+            clearAllArticleTypeFields();
+            
             // Show/hide Artículo field based on article type
             if (tipoVal === TIPO_ART.COVINTEC) {
               formGroupArticulo.hide();

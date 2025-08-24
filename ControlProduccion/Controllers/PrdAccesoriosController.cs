@@ -166,6 +166,21 @@ namespace ControlProduccion.Controllers
         [Authorize(Roles = "JefeProduccion")]
         public async Task<ActionResult> EditDetPrd( DetPrdAccesorioViewModel model)
         {
+            // Custom validation for COVINTEC type - IdArticulo is not required
+            if (model.IdTipoArticulo == 26) // COVINTEC type ID
+            {
+                ModelState.Remove("IdArticulo");
+                if (model.IdArticulo == 0)
+                {
+                    model.IdArticulo = 1; // Set default value for COVINTEC
+                }
+            }
+            
+            if (!ModelState.IsValid)
+            {
+                return Json(new { success = false, message = "Datos inválidos", errors = ModelState });
+            }
+
             var userId = _userManager.GetUserId(User);
             var dto = new DetPrdAccesorioDto
             {

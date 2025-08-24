@@ -184,7 +184,7 @@
                                                 <td data-field="no"><a>@counter</a></td>
                                             }
                                             <td data-field="tipoarticulo">@detalle.TipoArticulo</td>
-                                            <td data-field="articulo">@(detalle.TipoArticulo == "COVINTEC" ? "" : detalle.Articulo)</td>
+                                            <td data-field="articulo">@(string.Equals(detalle.TipoArticulo?.Trim(), "COVINTEC", StringComparison.OrdinalIgnoreCase) ? "" : detalle.Articulo)</td>
                                             <td data-field="tipoFabricacion">@detalle.TipoFabricacion</td>
                                             <td data-field="numeroPedido">@detalle.NumeroPedido</td>
                                             <td data-field="mallaCovintec">@detalle.MallaCovintec</td>
@@ -440,9 +440,17 @@
                 $row.find('input[type="text"], input[type="number"]').val('');
                 $row.find('select').val(null).trigger('change');
             }
+            function clearAllArticleTypeFields() {
+                // Clear all fields related to article types
+                [rowOf('#IdMallaCovintec'), rowOf('#IdTipoMallaPch'), rowOf('#IdAnchoBobina'), rowOf('#IdCalibre')].forEach($r => {
+                    clearRow($r);
+                });
+            }
             function showOnlyRow($row, shouldClear) {
+                if (shouldClear) {
+                    clearAllArticleTypeFields(); // Clear ALL fields when changing type
+                }
                 hideAllTipoRows();
-                if (shouldClear) clearRow($row);
                 $row.show();
             }
             function applyTipoArticulo(tipoVal, shouldClear = false) {
@@ -465,6 +473,7 @@
                     case TIPO_ART.ISO:      showOnlyRow(rowOf('#IdAnchoBobina'), shouldClear); break;
                     case TIPO_ART.LITEWALL: showOnlyRow(rowOf('#IdCalibre'), shouldClear); break;
                     default: 
+                        if (shouldClear) clearAllArticleTypeFields();
                         hideAllTipoRows(); 
                         articuloFormGroup.show();
                         $('#modal-Detalle #IdArticulo').attr('required', 'required');
