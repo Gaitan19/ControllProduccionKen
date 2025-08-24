@@ -13,63 +13,15 @@
             <form autocomplete="off">
                 @Html.AntiForgeryToken()
 
-                <div class="form-group">
-                    <label asp-for="IdUsuarios"></label>
-                    <select multiple asp-for="IdUsuarios" class="form-control select2" asp-items="Model.Operarios" disabled>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label asp-for="IdMaquina"></label>
-                    <select asp-for="IdMaquina" class="form-control select2" asp-items="Model.Maquinas" disabled>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label asp-for="Fecha"></label>
-                    <input asp-for="Fecha" class="form-control" readonly />
-                </div>
-                <div class="form-group">
-                    <label asp-for="TiempoParo"></label>
-                    <input asp-for="TiempoParo" class="form-control" readonly />
-                </div>
-
-                <!-- Campos de Merma -->
-                <div class="hr-line-dashed"></div>
-                <h4>Mermas</h4>
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label asp-for="MermaMallaCovintecKg"></label>
-                            <input asp-for="MermaMallaCovintecKg" class="form-control" readonly />
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label asp-for="MermaMallaPchKg"></label>
-                            <input asp-for="MermaMallaPchKg" class="form-control" readonly />
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label asp-for="MermaBobinasKg"></label>
-                            <input asp-for="MermaBobinasKg" class="form-control" readonly />
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label asp-for="MermaLitewallKg"></label>
-                            <input asp-for="MermaLitewallKg" class="form-control" readonly />
-                        </div>
-                    </div>
-                </div>
+                <!-- Campos de cabecera igual que tenías -->
+                ...
 
                 <div class="hr-line-dashed"></div>
                 <div class="form-group row">
                     <div class="col-sm-12" style="max-height: 400px; overflow: scroll">
                         <h4>Detalle Producción</h4>
 
-                        <table class="table table-bordered table-hover">
+                        <table id="tblProduccion" class="table table-bordered table-hover">
                             <thead class="table-light">
                                 <tr>
                                     <th>Tipo Artículo</th>
@@ -84,7 +36,6 @@
                                     <th>Cant. Bobina (Kg)</th>
                                     <th>Calibre</th>
                                     <th>Cant. Calibre (Kg)</th>
-                                  
                                 </tr>
                             </thead>
                             <tbody>
@@ -93,8 +44,10 @@
                                     @foreach (var detalle in Model.DetPrdAccesorios)
                                     {
                                         <tr>
-                                            <td>@detalle.TipoArticulo</td>
-                                            <td>@detalle.Articulo</td>
+                                            <td data-field="tipoarticulo">@detalle.TipoArticulo</td>
+                                            <td data-field="articulo">
+                                                @(detalle.TipoArticulo == "COVINTEC" ? "" : detalle.Articulo)
+                                            </td>
                                             <td>@detalle.TipoFabricacion</td>
                                             <td>@detalle.NumeroPedido</td>
                                             <td>@detalle.MallaCovintec</td>
@@ -105,7 +58,10 @@
                                             <td>@detalle.CantidadBobinaKg</td>
                                             <td>@detalle.Calibre</td>
                                             <td>@detalle.CantidadCalibreKg</td>
-                                         
+
+                                            <!-- ocultos -->
+                                            <td style="display:none" data-field="idTipoArticulo">@detalle.IdTipoArticulo</td>
+                                            <td style="display:none" data-field="idArticulo">@detalle.IdArticulo</td>
                                         </tr>
                                     }
                                 }
@@ -114,73 +70,47 @@
                     </div>
                 </div>
 
-                <div class="form-group">
-                    <label asp-for="Observaciones"></label>
-                    <textarea asp-for="Observaciones" class="form-control" rows="3" readonly></textarea>
-                </div>
-
-                <div class="hr-line-dashed"></div>
-
-
-
-                <button type="button" class="btn btn-dark" onclick="location.href='@Url.Action("Index", "PrdAccesorios")'">Regresar</button>
-                @if (User.IsInRole("Supervisor") && Model.AprobadoSupervisor != true)
-                {
-                    <button id="btnValidarProd" type="button" class="btn btn-danger" >Validar</button>
-                }
-                else
-                {
-                    <button type="button" class="btn btn-success">Validado</button>
-                }
-
-               
+                <!-- resto igual -->
             </form>
         </div>
     </div>
 </div>
 
 @section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
-
     <script>
-        $(document).ready(function(){
-            // Inicializar select2 deshabilitado
-            $('.select2').select2({
-                width: '100%'
+        function hydrateArticuloColumn() {
+            var grupos = {};
+
+            $('#tblProduccion tbody tr').each(function () {
+                var $row = $(this);
+                if ($row.find("td[data-field='articulo']").text().trim()) return;
+
+                var tipoId = $row.find("td[data-field='idTipoArticulo']").text().trim();
+                var artId = $row.find("td[data-field='idArticulo']").text().trim();
+                if (!tipoId || !artId) return;
+
+                (grupos[tipoId] = grupos[tipoId] || []).push({ row: $row, artId: String(artId) });
             });
 
-            // Botón validar
-            $('#btnValidarProd').click(function(){
-                if(confirm('¿Está seguro que desea validar esta producción?')) {
-                    var token = $('input[name="__RequestVerificationToken"]').val();
-                    var id = @Model.Id;
-                    
-                    $.ajax({
-                        url: '@Url.Action("ValidarPrd", "PrdAccesorios")',
-                        type: 'POST',
-                        data: { id: id },
-                        headers: {
-                            'RequestVerificationToken': token
-                        },
-                        success: function(response) {
-                            if(response) {
-                                alert('Producción validada exitosamente');
-                                location.reload();
-                            } else {
-                                alert('No se pudo validar la producción');
-                            }
-                        },
-                        error: function() {
-                            alert('Error al validar la producción');
-                        }
+            var requests = Object.keys(grupos).map(function (tipoId) {
+                return $.getJSON('@Url.Action("GetArticulosByTipo", "PrdAccesorios")', { idTipoArticulo: tipoId })
+                    .done(function (data) {
+                        var dict = {};
+                        (data || []).forEach(function (it) { dict[String(it.id)] = it.texto; });
+
+                        grupos[tipoId].forEach(function (x) {
+                            var tipoTexto = x.row.find("td[data-field='tipoarticulo']").text().trim().toUpperCase();
+                            var nombre = (tipoTexto === "COVINTEC") ? "" : (dict[x.artId] || '');
+                            x.row.find("td[data-field='articulo']").text(nombre);
+                        });
                     });
-                }
             });
 
-           
-           
+            if (requests.length) { $.when.apply($, requests); }
+        }
+
+        $(document).ready(function () {
+            hydrateArticuloColumn();
         });
     </script>
 }

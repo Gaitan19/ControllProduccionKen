@@ -166,6 +166,21 @@ namespace ControlProduccion.Controllers
         [Authorize(Roles = "JefeProduccion")]
         public async Task<ActionResult> EditDetPrd( DetPrdAccesorioViewModel model)
         {
+            // Custom validation for COVINTEC type - IdArticulo is not required
+            if (model.IdTipoArticulo == 26) // COVINTEC type ID
+            {
+                ModelState.Remove("IdArticulo");
+                if (model.IdArticulo == 0)
+                {
+                    model.IdArticulo = 1; // Set default value for COVINTEC
+                }
+            }
+            
+            if (!ModelState.IsValid)
+            {
+                return Json(new { success = false, message = "Datos inválidos", errors = ModelState });
+            }
+
             var userId = _userManager.GetUserId(User);
             var dto = new DetPrdAccesorioDto
             {
@@ -290,32 +305,46 @@ namespace ControlProduccion.Controllers
                 MermaBobinasKg = modelDto.MermaBobinasKg,
                 MermaLitewallKg = modelDto.MermaLitewallKg,
                 TiempoParo = modelDto.TiempoParo,
-                DetPrdAccesorios = modelDto.DetPrdAccesorios?.Select(d => new DetPrdAccesorioViewModel
-                {
-                    DetPrdAccesorioId = d.Id,
-                    PrdAccesoriosId = d.PrdAccesoriosId,
-                    IdTipoArticulo = d.IdTipoArticulo,
-                    TipoArticulo = tiposArticuloDict?.GetValueOrDefault(d.IdTipoArticulo),
-                    IdArticulo = d.IdArticulo,
-                    Articulo = articulosDict != null && articulosDict.ContainsKey(d.IdArticulo)
-                        ? $"{articulosDict[d.IdArticulo].CodigoArticulo}-{articulosDict[d.IdArticulo].DescripcionArticulo}"
-                        : null,
-                    IdTipoFabricacion = d.IdTipoFabricacion,
-                    TipoFabricacion = tiposFabDict?.GetValueOrDefault(d.IdTipoFabricacion),
-                    NumeroPedido = d.NumeroPedido,
-                    IdMallaCovintec = d.IdMallaCovintec,
-                    MallaCovintec = mallasCovintecDict?.GetValueOrDefault(d.IdMallaCovintec ?? 0),
-                    CantidadMallaUn = d.CantidadMallaUn,
-                    IdTipoMallaPch = d.IdTipoMallaPch,
-                    TipoMallaPch = tiposMallaPchDict?.GetValueOrDefault(d.IdTipoMallaPch ?? 0),
-                    CantidadPchKg = d.CantidadPchKg,
-                    IdAnchoBobina = d.IdAnchoBobina,
-                    AnchoBobina = anchosBobinaDict?.GetValueOrDefault(d.IdAnchoBobina ?? 0),
-                    CantidadBobinaKg = d.CantidadBobinaKg,
-                    IdCalibre = d.IdCalibre,
-                    Calibre = calibresDict?.GetValueOrDefault(d.IdCalibre ?? 0),
-                    CantidadCalibreKg = d.CantidadCalibreKg
-               
+                DetPrdAccesorios = modelDto.DetPrdAccesorios?.Select(d => {
+                    var tipoArticulo = tiposArticuloDict?.GetValueOrDefault(d.IdTipoArticulo);
+                    
+                    // Enhanced COVINTEC detection with multiple criteria and normalization
+                    var normalizedTipoArticulo = tipoArticulo?.Trim().ToUpperInvariant() ?? "";
+                    var isCovintec = d.IdTipoArticulo == 26 || 
+                                   normalizedTipoArticulo == "COVINTEC" ||
+                                   normalizedTipoArticulo == "CONVITEC" ||
+                                   normalizedTipoArticulo.Contains("COVINTEC") ||
+                                   normalizedTipoArticulo.Contains("CONVITEC");
+                    
+                    return new DetPrdAccesorioViewModel
+                    {
+                        DetPrdAccesorioId = d.Id,
+                        PrdAccesoriosId = d.PrdAccesoriosId,
+                        IdTipoArticulo = d.IdTipoArticulo,
+                        TipoArticulo = tipoArticulo,
+                        IdArticulo = d.IdArticulo,
+                        // For COVINTEC articles, always set Articulo to empty string (not null to avoid view issues)
+                        Articulo = isCovintec ? "" : 
+                                  (articulosDict != null && articulosDict.ContainsKey(d.IdArticulo)
+                                      ? $"{articulosDict[d.IdArticulo].CodigoArticulo}-{articulosDict[d.IdArticulo].DescripcionArticulo}"
+                                      : ""),
+                        IdTipoFabricacion = d.IdTipoFabricacion,
+                        TipoFabricacion = tiposFabDict?.GetValueOrDefault(d.IdTipoFabricacion),
+                        NumeroPedido = d.NumeroPedido,
+                        IdMallaCovintec = d.IdMallaCovintec,
+                        MallaCovintec = mallasCovintecDict?.GetValueOrDefault(d.IdMallaCovintec ?? 0),
+                        CantidadMallaUn = d.CantidadMallaUn,
+                        IdTipoMallaPch = d.IdTipoMallaPch,
+                        TipoMallaPch = tiposMallaPchDict?.GetValueOrDefault(d.IdTipoMallaPch ?? 0),
+                        CantidadPchKg = d.CantidadPchKg,
+                        IdAnchoBobina = d.IdAnchoBobina,
+                        AnchoBobina = anchosBobinaDict?.GetValueOrDefault(d.IdAnchoBobina ?? 0),
+                        CantidadBobinaKg = d.CantidadBobinaKg,
+                        IdCalibre = d.IdCalibre,
+                        Calibre = calibresDict?.GetValueOrDefault(d.IdCalibre ?? 0),
+                        CantidadCalibreKg = d.CantidadCalibreKg
+                   
+                    };
                 }).ToList()
             };
         }
