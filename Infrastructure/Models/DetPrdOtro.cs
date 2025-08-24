@@ -35,6 +35,10 @@ public partial class DetPrdOtro
 
     public DateTime? FechaActualizacion { get; set; }
 
+    public decimal Cantidad { get; set; }
+
+    public string UnidadMedida { get; set; } = null!;
+
     public virtual TipoFabricacion IdTipoFabricacionNavigation { get; set; } = null!;
 
     public virtual PrdOtro PrdOtro { get; set; } = null!;

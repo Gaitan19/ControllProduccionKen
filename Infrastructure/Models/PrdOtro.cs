@@ -29,5 +29,7 @@ public partial class PrdOtro
 
     public int? IdTipoReporte { get; set; }
 
+    public decimal? TiempoParo { get; set; }
+
     public virtual ICollection<DetPrdOtro> DetPrdOtros { get; set; } = new List<DetPrdOtro>();
 }

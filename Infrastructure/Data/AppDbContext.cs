@@ -720,6 +720,7 @@ public partial class AppDbContext : DbContext
             entity.ToTable("DetPrdOtro", "cp");
 
             entity.Property(e => e.Actividad).HasMaxLength(4000);
+            entity.Property(e => e.Cantidad).HasColumnType("decimal(10, 2)");
             entity.Property(e => e.Comentario).HasMaxLength(4000);
             entity.Property(e => e.DescripcionProducto).HasMaxLength(4000);
             entity.Property(e => e.FechaActualizacion).HasColumnType("datetime");
@@ -728,6 +729,7 @@ public partial class AppDbContext : DbContext
             entity.Property(e => e.IdUsuarioCreacion).HasMaxLength(450);
             entity.Property(e => e.Merma).HasMaxLength(4000);
             entity.Property(e => e.Nota).HasMaxLength(4000);
+            entity.Property(e => e.UnidadMedida).HasMaxLength(450);
 
             entity.HasOne(d => d.IdTipoFabricacionNavigation).WithMany(p => p.DetPrdOtros)
                 .HasForeignKey(d => d.IdTipoFabricacion)
@@ -1240,6 +1242,7 @@ public partial class AppDbContext : DbContext
             entity.Property(e => e.IdAprobadoSupervisor).HasMaxLength(450);
             entity.Property(e => e.IdUsuarioActualizacion).HasMaxLength(450);
             entity.Property(e => e.IdUsuarioCreacion).HasMaxLength(450);
+            entity.Property(e => e.TiempoParo).HasColumnType("decimal(18, 1)");
         });
 
         modelBuilder.Entity<PrdPaneladoraPch>(entity =>
