@@ -240,7 +240,7 @@
            
                 <div class="form-group">
                     <label asp-for="PesoFinalA"></label>
-                    <input asp-for="PesoFinalA" class="form-control" />
+                    <input asp-for="PesoFinalA" class="form-control" readonly />
                     <span asp-validation-for="PesoFinalA" class="text-danger"></span>
                 </div>
                 <div class="form-group">
@@ -281,7 +281,7 @@
           
                 <div class="form-group">
                     <label asp-for="PesoFinalB"></label>
-                    <input asp-for="PesoFinalB" class="form-control" />
+                    <input asp-for="PesoFinalB" class="form-control" readonly />
                     <span asp-validation-for="PesoFinalB" class="text-danger"></span>
                 </div>
                 <div class="form-group">
@@ -408,6 +408,15 @@
     }
  
     <script>
+        $(document).ready(function() {
+            // Clear default values from numeric input fields on page load
+            $('input[type="number"], input[step]').each(function() {
+                if ($(this).val() === '0' || $(this).val() === '0.00') {
+                    $(this).val('');
+                }
+            });
+        });
+
                        // ─────────── AUTOSAVE / RESTORE /PREVENT EXIT (MEJORADO) ───────────
                     const DRAFT_KEY = 'draft-prdIlKwang'; // Clave única para esta vista
 
@@ -871,6 +880,27 @@
         
         });
 
+
+        $(function() {
+            // Automatic calculation for Peso Final A and B in Poliol/Isocianato section
+            function calculatePesoFinal() {
+                // Calculate Peso Final A = Peso Inicial A - Cantidad Utilizada A
+                var pesoInicialA = parseFloat($("#PesoInicialA").val()) || 0;
+                var cantidadUtilizadaA = parseFloat($("#CantidadUtilizadaA").val()) || 0;
+                var pesoFinalA = pesoInicialA - cantidadUtilizadaA;
+                $("#PesoFinalA").val(pesoFinalA >= 0 ? pesoFinalA.toFixed(2) : "");
+
+                // Calculate Peso Final B = Peso Inicial B - Cantidad Utilizada B
+                var pesoInicialB = parseFloat($("#PesoInicialB").val()) || 0;
+                var cantidadUtilizadaB = parseFloat($("#CantidadUtilizadaB").val()) || 0;
+                var pesoFinalB = pesoInicialB - cantidadUtilizadaB;
+                $("#PesoFinalB").val(pesoFinalB >= 0 ? pesoFinalB.toFixed(2) : "");
+            }
+
+            // Attach event handlers to trigger calculation
+            $("#PesoInicialA, #CantidadUtilizadaA").on("input blur", calculatePesoFinal);
+            $("#PesoInicialB, #CantidadUtilizadaB").on("input blur", calculatePesoFinal);
+        });
 
         $(function() {
     // Genérico para pares de hora (en formato 24h: "HH:mm")

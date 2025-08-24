@@ -242,7 +242,7 @@
                         </div>
                         <div class="form-group">
                             <label asp-for="PesoFinalA"></label>
-                            <input asp-for="PesoFinalA" class="form-control" />
+                            <input asp-for="PesoFinalA" class="form-control" readonly />
                             <span asp-validation-for="PesoFinalA" class="text-danger"></span>
                         </div>
                         <div class="form-group">
@@ -284,7 +284,7 @@
                         </div>
                         <div class="form-group">
                             <label asp-for="PesoFinalB"></label>
-                            <input asp-for="PesoFinalB" class="form-control" />
+                            <input asp-for="PesoFinalB" class="form-control" readonly />
                             <span asp-validation-for="PesoFinalB" class="text-danger"></span>
                         </div>
                         <div class="form-group">
@@ -429,6 +429,14 @@
 @section Scripts {
     @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
     <script>
+        $(document).ready(function() {
+            // Clear default values from numeric input fields on page load
+            $('input[type="number"], input[step]').each(function() {
+                if ($(this).val() === '0' || $(this).val() === '0.00') {
+                    $(this).val('');
+                }
+            });
+        });
 
 
         $("#IdUsuarios").select2({ placeholder: "- Selecciona los operarios -", allowClear: true });
@@ -520,6 +528,28 @@
                             }
                         });
                     }
+
+                    // Automatic calculation for Peso Final A and B in Poliol/Isocianato section
+                    function calculatePesoFinal() {
+                        // Calculate Peso Final A = Peso Inicial A - Cantidad Utilizada A
+                        var pesoInicialA = parseFloat($("#PesoInicialA").val()) || 0;
+                        var cantidadUtilizadaA = parseFloat($("#CantidadUtilizadaA").val()) || 0;
+                        var pesoFinalA = pesoInicialA - cantidadUtilizadaA;
+                        $("#PesoFinalA").val(pesoFinalA >= 0 ? pesoFinalA.toFixed(2) : "");
+
+                        // Calculate Peso Final B = Peso Inicial B - Cantidad Utilizada B
+                        var pesoInicialB = parseFloat($("#PesoInicialB").val()) || 0;
+                        var cantidadUtilizadaB = parseFloat($("#CantidadUtilizadaB").val()) || 0;
+                        var pesoFinalB = pesoInicialB - cantidadUtilizadaB;
+                        $("#PesoFinalB").val(pesoFinalB >= 0 ? pesoFinalB.toFixed(2) : "");
+                    }
+
+                    // Attach event handlers to trigger calculation
+                    $("#PesoInicialA, #CantidadUtilizadaA").on("input blur", calculatePesoFinal);
+                    $("#PesoInicialB, #CantidadUtilizadaB").on("input blur", calculatePesoFinal);
+
+                    // Initialize calculation on page load
+                    calculatePesoFinal();
 
                     // Ejemplo para todos los pares que mencionaste
                             validarNumeros("#PesoInicialKgA", "#PesoFinalKgA", "El Peso Final (Kg) A no puede ser mayor que el Peso Inicial (Kg) A.");
