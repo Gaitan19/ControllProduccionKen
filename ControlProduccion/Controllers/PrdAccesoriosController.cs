@@ -307,10 +307,14 @@ namespace ControlProduccion.Controllers
                 TiempoParo = modelDto.TiempoParo,
                 DetPrdAccesorios = modelDto.DetPrdAccesorios?.Select(d => {
                     var tipoArticulo = tiposArticuloDict?.GetValueOrDefault(d.IdTipoArticulo);
-                    // Check if this is a COVINTEC article (by ID or name variations)
+                    
+                    // Enhanced COVINTEC detection with multiple criteria and normalization
+                    var normalizedTipoArticulo = tipoArticulo?.Trim().ToUpperInvariant() ?? "";
                     var isCovintec = d.IdTipoArticulo == 26 || 
-                                   string.Equals(tipoArticulo?.Trim(), "COVINTEC", StringComparison.OrdinalIgnoreCase) ||
-                                   string.Equals(tipoArticulo?.Trim(), "CONVITEC", StringComparison.OrdinalIgnoreCase);
+                                   normalizedTipoArticulo == "COVINTEC" ||
+                                   normalizedTipoArticulo == "CONVITEC" ||
+                                   normalizedTipoArticulo.Contains("COVINTEC") ||
+                                   normalizedTipoArticulo.Contains("CONVITEC");
                     
                     return new DetPrdAccesorioViewModel
                     {
@@ -319,11 +323,11 @@ namespace ControlProduccion.Controllers
                         IdTipoArticulo = d.IdTipoArticulo,
                         TipoArticulo = tipoArticulo,
                         IdArticulo = d.IdArticulo,
-                        // For COVINTEC articles, always set Articulo to empty/null
-                        Articulo = isCovintec ? null : 
+                        // For COVINTEC articles, always set Articulo to empty string (not null to avoid view issues)
+                        Articulo = isCovintec ? "" : 
                                   (articulosDict != null && articulosDict.ContainsKey(d.IdArticulo)
                                       ? $"{articulosDict[d.IdArticulo].CodigoArticulo}-{articulosDict[d.IdArticulo].DescripcionArticulo}"
-                                      : null),
+                                      : ""),
                         IdTipoFabricacion = d.IdTipoFabricacion,
                         TipoFabricacion = tiposFabDict?.GetValueOrDefault(d.IdTipoFabricacion),
                         NumeroPedido = d.NumeroPedido,
