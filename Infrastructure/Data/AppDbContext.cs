@@ -993,6 +993,7 @@ public partial class AppDbContext : DbContext
             entity.Property(e => e.MermaMallaCovintecKg).HasColumnType("decimal(10, 1)");
             entity.Property(e => e.MermaMallaPchKg).HasColumnType("decimal(10, 1)");
             entity.Property(e => e.Observaciones).HasMaxLength(4000);
+            entity.Property(e => e.TiempoParo).HasColumnType("decimal(18, 1)");
 
             entity.HasOne(d => d.IdMaquinaNavigation).WithMany(p => p.PrdAccesorios)
                 .HasForeignKey(d => d.IdMaquina)
@@ -1011,6 +1012,7 @@ public partial class AppDbContext : DbContext
             entity.Property(e => e.IdAprobadoSupervisor).HasMaxLength(450);
             entity.Property(e => e.IdUsuarioActualizacion).HasMaxLength(450);
             entity.Property(e => e.IdUsuarioCreacion).HasMaxLength(450);
+            entity.Property(e => e.TiempoParo).HasColumnType("decimal(18, 1)");
         });
 
         modelBuilder.Entity<PrdCerchaCovintec>(entity =>
@@ -1202,6 +1204,7 @@ public partial class AppDbContext : DbContext
             entity.Property(e => e.IdUsuarioCreacion).HasMaxLength(450);
             entity.Property(e => e.Observaciones).HasMaxLength(4000);
             entity.Property(e => e.ProduccionDia).HasColumnType("decimal(18, 2)");
+            entity.Property(e => e.TiempoParo).HasColumnType("decimal(18, 1)");
         });
 
         modelBuilder.Entity<PrdNevera>(entity =>

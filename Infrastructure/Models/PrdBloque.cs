@@ -27,5 +27,7 @@ public partial class PrdBloque
 
     public DateTime? FechaActualizacion { get; set; }
 
+    public decimal? TiempoParo { get; set; }
+
     public virtual ICollection<DetPrdBloque> DetPrdBloques { get; set; } = new List<DetPrdBloque>();
 }

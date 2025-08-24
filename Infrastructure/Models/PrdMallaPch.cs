@@ -31,6 +31,8 @@ public partial class PrdMallaPch
 
     public string? IdAprobadoGerencia { get; set; }
 
+    public decimal? TiempoParo { get; set; }
+
     public virtual ICollection<DetPrdPchMaquinaA> DetPrdPchMaquinaAs { get; set; } = new List<DetPrdPchMaquinaA>();
 
     public virtual ICollection<DetPrdPchMaquinaB> DetPrdPchMaquinaBs { get; set; } = new List<DetPrdPchMaquinaB>();

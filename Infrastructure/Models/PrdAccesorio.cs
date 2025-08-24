@@ -39,5 +39,7 @@ public partial class PrdAccesorio
 
     public decimal? MermaLitewallKg { get; set; }
 
+    public decimal? TiempoParo { get; set; }
+
     public virtual Maquina IdMaquinaNavigation { get; set; } = null!;
 }
