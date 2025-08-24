@@ -227,20 +227,22 @@
                     <input asp-for="MetrosInicialPoliol" class="form-control" />
                     <span asp-validation-for="MetrosInicialPoliol" class="text-danger"></span>
                 </div>
-                <div class="form-group">
-                    <label asp-for="CantidadUtilizadaA"></label>
-                    <input asp-for="CantidadUtilizadaA" class="form-control" />
-                    <span asp-validation-for="CantidadUtilizadaA" class="text-danger"></span>
-                </div>
+               
                 <div class="form-group">
                     <label asp-for="PesoInicialA"></label>
                     <input asp-for="PesoInicialA" class="form-control" />
                     <span asp-validation-for="PesoInicialA" class="text-danger"></span>
                 </div>
+
+                <div class="form-group">
+                    <label asp-for="CantidadUtilizadaA"></label>
+                    <input asp-for="CantidadUtilizadaA" class="form-control" />
+                    <span asp-validation-for="CantidadUtilizadaA" class="text-danger"></span>
+                </div>
            
                 <div class="form-group">
                     <label asp-for="PesoFinalA"></label>
-                    <input asp-for="PesoFinalA" class="form-control" />
+                    <input asp-for="PesoFinalA" class="form-control" readonly />
                     <span asp-validation-for="PesoFinalA" class="text-danger"></span>
                 </div>
                 <div class="form-group">
@@ -268,20 +270,22 @@
                     <input asp-for="MetrosInicialIsocianato" class="form-control" />
                     <span asp-validation-for="MetrosInicialIsocianato" class="text-danger"></span>
                 </div>
-                <div class="form-group">
-                    <label asp-for="CantidadUtilizadaB"></label>
-                    <input asp-for="CantidadUtilizadaB" class="form-control" />
-                    <span asp-validation-for="CantidadUtilizadaB" class="text-danger"></span>
-                </div>
+                
                 <div class="form-group">
                     <label asp-for="PesoInicialB"></label>
                     <input asp-for="PesoInicialB" class="form-control" />
                     <span asp-validation-for="PesoInicialB" class="text-danger"></span>
                 </div>
+
+                <div class="form-group">
+                    <label asp-for="CantidadUtilizadaB"></label>
+                    <input asp-for="CantidadUtilizadaB" class="form-control" />
+                    <span asp-validation-for="CantidadUtilizadaB" class="text-danger"></span>
+                </div>
           
                 <div class="form-group">
                     <label asp-for="PesoFinalB"></label>
-                    <input asp-for="PesoFinalB" class="form-control" />
+                    <input asp-for="PesoFinalB" class="form-control" readonly />
                     <span asp-validation-for="PesoFinalB" class="text-danger"></span>
                 </div>
                 <div class="form-group">
@@ -408,6 +412,27 @@
     }
  
     <script>
+        $(document).ready(function() {
+            // Clear default values from numeric input fields on page load
+            var numericFieldIds = [
+                '#TiempoParo', '#VelocidadMaquina', '#AnchoMmA', '#PesoInicialKgA', '#PesoFinalKgA',
+                '#MetrosInicialA', '#MetrosFinalA', '#EspesorInicialCmA', '#EspesorFinalCmA',
+                '#CalibreMmA', '#AnchoMmB', '#PesoInicialKgB', '#PesoFinalKgB', '#MetrosInicialB',
+                '#MetrosFinalB', '#EspesorInicialCmB', '#EspesorFinalCmB', '#CalibreMmB',
+                '#MetrosInicialPoliol', '#CantidadUtilizadaA', '#PesoInicialA', '#PesoFinalA',
+                '#VelocidadSuperiorA', '#VelocidadInferiorA', '#MetrosInicialIsocianato',
+                '#CantidadUtilizadaB', '#PesoInicialB', '#PesoFinalB', '#VelocidadSuperiorB',
+                '#VelocidadInferiorB', '#CantidadArranques'
+            ];
+            
+            $.each(numericFieldIds, function(index, fieldId) {
+                var $field = $(fieldId);
+                if ($field.length && ($field.val() === '0' || $field.val() === '0.00' || $field.val() === '0.0')) {
+                    $field.val('');
+                }
+            });
+        });
+
                        // ─────────── AUTOSAVE / RESTORE /PREVENT EXIT (MEJORADO) ───────────
                     const DRAFT_KEY = 'draft-prdIlKwang'; // Clave única para esta vista
 
@@ -871,6 +896,45 @@
         
         });
 
+
+        $(function() {
+            // Automatic calculation for Peso Final A and B in Poliol/Isocianato section
+            function calculatePesoFinal() {
+                // Calculate Peso Final A = Peso Inicial A - Cantidad Utilizada A
+                var pesoInicialA = parseFloat($("#PesoInicialA").val()) || 0;
+                var cantidadUtilizadaA = parseFloat($("#CantidadUtilizadaA").val()) || 0;
+                
+                // Validate that Peso Inicial A >= Cantidad Utilizada A
+                if (cantidadUtilizadaA > pesoInicialA && pesoInicialA > 0) {
+                    alert("La Cantidad Utilizada A no puede ser mayor que el Peso Inicial A.");
+                    $("#CantidadUtilizadaA").val('').focus();
+                    $("#PesoFinalA").val('');
+                    return;
+                }
+                
+                var pesoFinalA = pesoInicialA - cantidadUtilizadaA;
+                $("#PesoFinalA").val(pesoFinalA >= 0 ? pesoFinalA.toFixed(2) : "");
+
+                // Calculate Peso Final B = Peso Inicial B - Cantidad Utilizada B
+                var pesoInicialB = parseFloat($("#PesoInicialB").val()) || 0;
+                var cantidadUtilizadaB = parseFloat($("#CantidadUtilizadaB").val()) || 0;
+                
+                // Validate that Peso Inicial B >= Cantidad Utilizada B
+                if (cantidadUtilizadaB > pesoInicialB && pesoInicialB > 0) {
+                    alert("La Cantidad Utilizada B no puede ser mayor que el Peso Inicial B.");
+                    $("#CantidadUtilizadaB").val('').focus();
+                    $("#PesoFinalB").val('');
+                    return;
+                }
+                
+                var pesoFinalB = pesoInicialB - cantidadUtilizadaB;
+                $("#PesoFinalB").val(pesoFinalB >= 0 ? pesoFinalB.toFixed(2) : "");
+            }
+
+            // Attach event handlers to trigger calculation
+            $("#PesoInicialA, #CantidadUtilizadaA").on("input blur", calculatePesoFinal);
+            $("#PesoInicialB, #CantidadUtilizadaB").on("input blur", calculatePesoFinal);
+        });
 
         $(function() {
     // Genérico para pares de hora (en formato 24h: "HH:mm")
