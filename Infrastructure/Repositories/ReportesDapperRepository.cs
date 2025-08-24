@@ -289,7 +289,8 @@ SELECT
     dbo.GetUserNamesFromIDs(P.IdUsuarios)           AS Operarios,
     dbo.GetUserNamesFromIDs(P.IdAprobadoSupervisor) AS Supervisor,
     dbo.GetUserNamesFromIDs(P.IdAprobadoGerencia)   AS JefeProd,
-    P.Fecha
+    P.Fecha,
+    P.TiempoParo
 FROM cp.PrdBloques P
 WHERE CAST(P.Fecha AS DATE) BETWEEN CAST(@start AS DATE) AND CAST(@end AS DATE)
   AND P.AprobadoGerencia = 1;
@@ -930,6 +931,7 @@ SELECT
     P.Fecha,
     P.ProduccionDia,
     P.Observaciones,
+    P.TiempoParo,
     P.IdUsuarioCreacion,
     P.FechaCreacion,
     P.IdUsuarioActualizacion,
@@ -1162,6 +1164,7 @@ SELECT
     M.Nombre                                        AS Maquina,
     A.Fecha,
     A.Observaciones,
+    A.TiempoParo,
     A.MermaMallaCovintecKg,
     A.MermaMallaPchKg,
     A.MermaBobinasKg,

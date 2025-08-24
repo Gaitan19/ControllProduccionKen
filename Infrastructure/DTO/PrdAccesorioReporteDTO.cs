@@ -22,6 +22,7 @@ namespace Infrastructure.DTO
         // Datos generales
         public DateTime Fecha { get; set; }
         public string? Observaciones { get; set; }
+        public decimal? TiempoParo { get; set; }
 
         // Mermas
         public decimal? MermaMallaCovintecKg { get; set; }
