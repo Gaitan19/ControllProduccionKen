@@ -74,13 +74,7 @@ namespace ControlProduccion.Controllers
         {
             if (!ModelState.IsValid)
             {
-                var errors = ModelState
-                    .Where(x => x.Value.Errors.Count > 0)
-                    .ToDictionary(
-                        kvp => kvp.Key,
-                        kvp => kvp.Value.Errors.Select(e => e.ErrorMessage).ToArray()
-                    );
-                return BadRequest(new { errors = errors });
+                return BadRequest(new { errors = ModelState });
             }
 
             var userId = _userManager.GetUserId(User);
