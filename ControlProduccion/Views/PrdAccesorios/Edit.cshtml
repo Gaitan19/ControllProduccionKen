@@ -674,6 +674,13 @@
 
                 grupos[tipoId].forEach(function (x) {
                   var nombre = dict[x.artId] || '';
+
+                            // Si el tipo de artículo es COVINTEC, mostrar vacío
+                            var tipoTexto = x.row.find("td[data-field='tipoarticulo']").text().trim().toUpperCase();
+                            if (tipoTexto === "COVINTEC") {
+                                nombre = "";
+                            }
+
                   x.row.find("td[data-field='articulo']").text(nombre);
                 });
               });
@@ -684,7 +691,8 @@
 
         // Llamar al cargar la página (después de que se pinte la tabla)
         hydrateArticuloColumn();
-
+        let detalles = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.DetPrdAccesorios));
+        console.log(detalles);
     </script>
 
 }
