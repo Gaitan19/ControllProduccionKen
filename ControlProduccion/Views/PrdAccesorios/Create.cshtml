@@ -575,17 +575,23 @@
           };
 
           function rowOf(sel) { return $(modalId + ' ' + sel).closest('.row'); }
+          function formGroupOf(sel) { return $(modalId + ' ' + sel).closest('.form-group'); }
 
           // Cada "row" contiene el par de campos
           const rowCovintec = rowOf('#IdMallaCovintec');   // + #CantidadMallaUn
           const rowPch      = rowOf('#IdTipoMallaPch');    // + #CantidadPchKg
           const rowIso      = rowOf('#IdAnchoBobina');     // + #CantidadBobinaKg
           const rowLitewall = rowOf('#IdCalibre');         // + #CantidadCalibreKg
-          const rowArticulo = rowOf('#IdArticulo');        // Artículo field row
+          const formGroupArticulo = formGroupOf('#IdArticulo');  // Only Artículo field form-group
 
           function clearRow($row) {
             $row.find('input[type="text"], input[type="number"]').val('');
             $row.find('select').val(null).trigger('change'); // seguro con select2
+          }
+
+          function clearFormGroup($formGroup) {
+            $formGroup.find('input[type="text"], input[type="number"]').val('');
+            $formGroup.find('select').val(null).trigger('change');
           }
 
           function setRequired($row, required) {
@@ -610,12 +616,12 @@
           function applyTipoArticulo(tipoVal) {
             // Show/hide Artículo field based on article type
             if (tipoVal === TIPO_ART.COVINTEC) {
-              rowArticulo.hide();
+              formGroupArticulo.hide();
               // Set a default article value for COVINTEC to prevent errors
               $(modalId + ' #IdArticulo').val('1').trigger('change'); // You may need to adjust this default value
               $(modalId + ' #IdArticulo').removeAttr('required');
             } else {
-              rowArticulo.show();
+              formGroupArticulo.show();
               $(modalId + ' #IdArticulo').attr('required', 'required');
             }
 
@@ -635,7 +641,7 @@
                 break;
               default:
                 hideAllTipoRows();
-                rowArticulo.show();
+                formGroupArticulo.show();
                 $(modalId + ' #IdArticulo').attr('required', 'required');
             }
           }

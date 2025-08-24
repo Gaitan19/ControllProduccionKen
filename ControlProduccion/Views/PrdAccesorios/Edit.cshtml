@@ -432,6 +432,7 @@
             const TIPO_ART = { PCH: '25', COVINTEC: '26', ISO: '27', LITEWALL: '28' };
 
             function rowOf(sel) { return $('#modal-Detalle ' + sel).closest('.row'); }
+            function formGroupOf(sel) { return $('#modal-Detalle ' + sel).closest('.mb-3'); }
             function hideAllTipoRows() {
                 [rowOf('#IdMallaCovintec'), rowOf('#IdTipoMallaPch'), rowOf('#IdAnchoBobina'), rowOf('#IdCalibre')].forEach($r => $r.hide());
             }
@@ -446,14 +447,14 @@
             }
             function applyTipoArticulo(tipoVal, shouldClear = false) {
                 // Show/hide Artículo field based on article type
-                const articuloRow = rowOf('#IdArticulo');
+                const articuloFormGroup = formGroupOf('#IdArticulo');
                 if (tipoVal === TIPO_ART.COVINTEC) {
-                    articuloRow.hide();
+                    articuloFormGroup.hide();
                     // Set a default article value for COVINTEC to prevent errors
                     $('#modal-Detalle #IdArticulo').val('1').trigger('change');
                     $('#modal-Detalle #IdArticulo').removeAttr('required');
                 } else {
-                    articuloRow.show();
+                    articuloFormGroup.show();
                     $('#modal-Detalle #IdArticulo').attr('required', 'required');
                 }
 
@@ -465,7 +466,7 @@
                     case TIPO_ART.LITEWALL: showOnlyRow(rowOf('#IdCalibre'), shouldClear); break;
                     default: 
                         hideAllTipoRows(); 
-                        articuloRow.show();
+                        articuloFormGroup.show();
                         $('#modal-Detalle #IdArticulo').attr('required', 'required');
                         break;
                 }
