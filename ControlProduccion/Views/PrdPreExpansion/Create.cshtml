@@ -473,12 +473,23 @@
                 var horaInicioVal = $('#HoraInicio').val();
                 var horaFinVal = $('#HoraFin').val();
 
+                // Ensure IdUsuarios is always an array
+                var idUsuariosVal = $('#IdUsuarios').val();
+                var idUsuariosArray = [];
+                if (idUsuariosVal) {
+                    if (Array.isArray(idUsuariosVal)) {
+                        idUsuariosArray = idUsuariosVal;
+                    } else {
+                        idUsuariosArray = [idUsuariosVal]; // Convert single value to array
+                    }
+                }
+
                 var vm = {
-                    IdUsuarios: $('#IdUsuarios').val() || [], // Ensure it's always an array
+                    IdUsuarios: idUsuariosArray,
                     IdMaquina: $('#IdMaquina').val() ? parseInt($('#IdMaquina').val()) : 0,
                     Fecha: $('#Fecha').val(),
-                    HoraInicio: horaInicioVal ? horaInicioVal + ":00" : "00:00:00", // Convert HH:mm to HH:mm:ss
-                    HoraFin: horaFinVal ? horaFinVal + ":00" : "00:00:00", // Convert HH:mm to HH:mm:ss
+                    HoraInicio: horaInicioVal || "00:00",
+                    HoraFin: horaFinVal || "00:00",
                     PresionCaldera: $('#PresionCaldera').val(),
                     Lote: $('#Lote').val(),
                     FechaProduccion: $('#FechaProduccion').val(),
@@ -493,10 +504,7 @@
                        $('#tblDetalle tbody tr[data-nobatch]').each(function () {
           var $r = $(this);
           var horaValue = String($r.data('hora')); // Get the hora value
-          // Ensure it's in HH:mm:ss format
-          if (horaValue && horaValue.split(':').length === 2) {
-              horaValue += ":00"; // Convert HH:mm to HH:mm:ss
-          }
+          // Keep it as HH:mm format for TimeSpan
           vm.DetPrdPreExpansions.push({
             Hora: horaValue,
             NoBatch: parseInt($r.data('nobatch')),
