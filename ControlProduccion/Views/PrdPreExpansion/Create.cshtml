@@ -469,19 +469,16 @@
                 e.preventDefault();
                 var token = $('input[name="__RequestVerificationToken"]').val();
 
-                        // --- INICIO DE LA MODIFICACIÓN ---
+                // --- INICIO DE LA MODIFICACIÓN ---
                 var horaInicioVal = $('#HoraInicio').val();
                 var horaFinVal = $('#HoraFin').val();
 
-               var horasConvertidasInicio = convertirHora(horaInicioVal);
-                 var horasConvertidasFin = convertirHora(horaFinVal);
-
                 var vm = {
-                    IdUsuarios: $('#IdUsuarios').val(),
+                    IdUsuarios: $('#IdUsuarios').val() || [], // Ensure it's always an array
                     IdMaquina: $('#IdMaquina').val() ? parseInt($('#IdMaquina').val()) : 0,
                     Fecha: $('#Fecha').val(),
-                    HoraInicio: horasConvertidasInicio.formato24h,
-                    HoraFin: horasConvertidasFin.formato24h,
+                    HoraInicio: horaInicioVal ? horaInicioVal + ":00" : "00:00:00", // Convert HH:mm to HH:mm:ss
+                    HoraFin: horaFinVal ? horaFinVal + ":00" : "00:00:00", // Convert HH:mm to HH:mm:ss
                     PresionCaldera: $('#PresionCaldera').val(),
                     Lote: $('#Lote').val(),
                     FechaProduccion: $('#FechaProduccion').val(),
@@ -495,8 +492,13 @@
 
                        $('#tblDetalle tbody tr[data-nobatch]').each(function () {
           var $r = $(this);
+          var horaValue = String($r.data('hora')); // Get the hora value
+          // Ensure it's in HH:mm:ss format
+          if (horaValue && horaValue.split(':').length === 2) {
+              horaValue += ":00"; // Convert HH:mm to HH:mm:ss
+          }
           vm.DetPrdPreExpansions.push({
-            Hora: String($r.data('hora')),
+            Hora: horaValue,
             NoBatch: parseInt($r.data('nobatch')),
             DensidadEsperada: parseInt($r.data('densidadesperada')),
             PesoBatchGr: parseFloat($r.data('pesobatchgr')),

@@ -100,7 +100,8 @@ namespace ControlProduccion.Controllers
 
         // POST: PrdPreExpansionController/Create
         [HttpPost]
-        [ValidateAntiForgeryToken]
+        // POST: PrdPreExpansionController/Create
+        [HttpPost]
         public async Task<ActionResult> Create([FromBody] PrdPreExpansionViewModel model)
         {
             if (!ModelState.IsValid)
