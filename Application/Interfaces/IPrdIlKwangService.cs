@@ -11,7 +11,7 @@ namespace Application.Interfaces
     public interface IPrdIlKwangService
     {
         Task<IEnumerable<ShowPrdIlKwangDTO>> GetAllAsync();
-        Task<PrdIlKwangDTO> GetByIdAsync(int id);
+        Task<PrdIlKwangDTO?> GetByIdAsync(int id);
         Task CreateAsync(PrdIlKwangDTO dto);
         Task UpdateAsync(PrdIlKwangDTO dto);
         Task<bool> UpdateDetPrd(DetPrdIlKwangDTO dto);

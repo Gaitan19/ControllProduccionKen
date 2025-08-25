@@ -301,57 +301,63 @@ namespace ControlProduccion.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([FromBody] PrdPanelesCovintecViewModel model)
         {
-
-            if (!ModelState.IsValid)
+            try
             {
-                return BadRequest(ModelState);
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+
+                var userId = _userManager.GetUserId(User);
+
+                
+                model.IdUsuarioCreacion = userId;
+                model.IdTipoReporte = 9;
+
+                var detallePrdPanelesCovintec = model.DetPrdPanelesCovintec?.Select(x => new DetPrdPanelesCovintecDTO
+                {
+                    IdArticulo = x.IdArticulo,
+                    CantidadProducida = x.CantidadProducida,
+                    CantidadNoConforme = x.CantidadNoConforme,
+                    IdTipoFabricacion = x.IdTipoFabricacion,
+                    NumeroPedido = x.NumeroPedido,
+                    AprobadoSupervisor = false,
+                    AprobadoGerencia=false,
+                    IdUsuarioCreacion = userId,
+
+                }).ToList() ?? new List<DetPrdPanelesCovintecDTO>();
+
+                var detalleAlambrePrdPanelesCovintec = model.DetAlambrePrdPanelesCovintec?.Select(x => new DetAlambrePrdPanelesCovintecDTO
+                {
+                    NumeroAlambre = x.NumeroAlambre,
+                    PesoAlambre = x.PesoAlambre,
+                   
+                    IdUsuarioCreacion = userId,
+                }).ToList() ?? new List<DetAlambrePrdPanelesCovintecDTO>();
+
+                var dto = new PrdPanelesCovintecDto
+                {
+                    DetAlambrePrdPanelesCovintecs = detalleAlambrePrdPanelesCovintec,
+                    DetPrdPanelesCovintecs = detallePrdPanelesCovintec,
+                    IdUsuarios = model.IdUsuarios ,
+                    IdMaquina = model.IdMaquina,
+                    Fecha = model.Fecha,
+                    Observaciones = model.Observaciones,
+                    MermaAlambre = model.MermaAlambre,
+                    TiempoParo = model.TiempoParo,
+                    IdUsuarioCreacion = model.IdUsuarioCreacion
+                  
+                };
+
+                await _prdPanelesCovintecService.CreateAsync(dto);
+
+                return Json(new { success = true, message = "Producción guardada!" });
             }
-
-            var userId = _userManager.GetUserId(User);
-
-            
-            model.IdUsuarioCreacion = userId;
-            model.IdTipoReporte = 9;
-
-            var detallePrdPanelesCovintec = model.DetPrdPanelesCovintec.Select(x => new DetPrdPanelesCovintecDTO
+            catch (Exception ex)
             {
-                IdArticulo = x.IdArticulo,
-                CantidadProducida = x.CantidadProducida,
-                CantidadNoConforme = x.CantidadNoConforme,
-                IdTipoFabricacion = x.IdTipoFabricacion,
-                NumeroPedido = x.NumeroPedido,
-                AprobadoSupervisor = false,
-                AprobadoGerencia=false,
-                IdUsuarioCreacion = userId,
-
-            }).ToList();
-
-            var detalleAlambrePrdPanelesCovintec = model.DetAlambrePrdPanelesCovintec.Select(x => new DetAlambrePrdPanelesCovintecDTO
-            {
-                NumeroAlambre = x.NumeroAlambre,
-                PesoAlambre = x.PesoAlambre,
-               
-                IdUsuarioCreacion = userId,
-            }).ToList();
-
-            var dto = new PrdPanelesCovintecDto
-            {
-                DetAlambrePrdPanelesCovintecs = detalleAlambrePrdPanelesCovintec,
-                DetPrdPanelesCovintecs = detallePrdPanelesCovintec,
-                IdUsuarios = model.IdUsuarios ,
-                IdMaquina = model.IdMaquina,
-                Fecha = model.Fecha,
-                Observaciones = model.Observaciones,
-                MermaAlambre = model.MermaAlambre,
-                TiempoParo = model.TiempoParo,
-                IdUsuarioCreacion = model.IdUsuarioCreacion
-              
-            };
-
-            await _prdPanelesCovintecService.CreateAsync(dto);
-
-
-            return Json(new { success = true, message = "Producción guardada!" });
+                // Log the error (you can add proper logging here)
+                return Json(new { success = false, message = "Error al guardar la producción: " + ex.Message });
+            }
         }
 
         // GET: PrdPanelesCovintecController/Edit/5

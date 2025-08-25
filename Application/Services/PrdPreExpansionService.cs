@@ -1,5 +1,6 @@
 ﻿using Application.DTOs;
 using Application.Interfaces;
+using AutoMapper;
 using Infrastructure.DTO;
 using Infrastructure.Models;
 using Infrastructure.UnitOfWork;
@@ -16,15 +17,17 @@ namespace Application.Services
     public class PrdPreExpansionService : IPrdPreExpansionService
     {
         private readonly IUnitOfWork _unitOfWork;
-      
+        private readonly IMapper _mapper;
         private readonly UserManager<IdentityUser> _userManager;
 
         public PrdPreExpansionService(
              IUnitOfWork unitOfWork,
+            IMapper mapper,
             UserManager<IdentityUser> userManager)
         {
                  
             _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
+            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             _userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
         }
 
@@ -254,18 +257,8 @@ namespace Application.Services
 
             var dto = new CrearPrdPreExpansionDto
             {
-                CatMaquina = maquinas.Select(m => new MaquinaDto
-                {
-                    Id = m.Id,
-                    Nombre = m.Nombre,
-                    Activo = m.Activo
-                }).ToList(),
-                CatTipoFabricacion = tipos.Select(t => new TipoFabricacionDto
-                {
-                    Id = t.Id,
-                    Descripcion = t.Descripcion,
-                    Activo = t.Activo
-                }).ToList()
+                CatMaquina = _mapper.Map<List<MaquinaDto>>(maquinas.ToList()),
+                CatTipoFabricacion = _mapper.Map<List<TipoFabricacionDto>>(tipos.ToList())
             };
 
             return dto;
