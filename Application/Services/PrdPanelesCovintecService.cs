@@ -32,7 +32,7 @@ namespace Application.Services
             try
             {
 
-                var panelesCovintec = _unitOfWork.CatalogoPanelesCovintecRepository.GetAllAsync().Result;
+                var panelesCovintec = await _unitOfWork.CatalogoPanelesCovintecRepository.GetAllAsync();
 
                 await _unitOfWork.BeginTransactionAsync();
 
@@ -119,7 +119,7 @@ namespace Application.Services
    
         public async Task<IEnumerable<ShowPrdPanelesCovintecDto>> GetAllAsync()
         {
-            var maquinas = _unitOfWork.CatMaquinaRepository.GetAllAsync().Result;
+            var maquinas = await _unitOfWork.CatMaquinaRepository.GetAllAsync();
 
             //// 1. Obtener todas las producciones desde el repositorio
             //var productions = _unitOfWork.PrdPanelesCovintecRepository.GetAllAsync().Result;
@@ -142,9 +142,9 @@ namespace Application.Services
 
 
             //// 3. Consultar los usuarios de Identity para obtener sus nombres (username)
-            var identityUsers = _userManager.Users
+            var identityUsers = await _userManager.Users
                 .Where(u => distinctUserIds.Contains(u.Id))
-                .ToListAsync().Result;
+                .ToListAsync();
 
             //// Crear un diccionario para mapear id -> username
             var userDictionary = identityUsers.ToDictionary(u => u.Id, u => u.UserName);
@@ -187,9 +187,9 @@ namespace Application.Services
 
             var userIds = distinctUserIds.ToArray();
 
-            var prd = _unitOfWork.PrdPanelesCovintecRepository.GetByIdIncludeAsync(x => x.Id == id,
+            var prd = await _unitOfWork.PrdPanelesCovintecRepository.GetByIdIncludeAsync(x => x.Id == id,
                 x => x.DetAlambrePrdPanelesCovintecs,
-                x => x.DetPrdPanelesCovintecs).Result;
+                x => x.DetPrdPanelesCovintecs);
                 
                 var dto = new PrdPanelesCovintecDto
                 {
@@ -250,9 +250,9 @@ namespace Application.Services
         public async Task<CrearPrdPanelesCovintecDto> GetCreateData()
         {
              
-            var allowedMachines =  _unitOfWork.catalogosPermitidosPorReporteRepository.FindAsync(cp =>
+            var allowedMachines =  (await _unitOfWork.catalogosPermitidosPorReporteRepository.FindAsync(cp =>
                                            cp.IdTipoReporte == 9 &&
-                                           cp.Catalogo == "cp.Maquinas" ).Result.Select(x=>x.IdCatalogo).ToList();
+                                           cp.Catalogo == "cp.Maquinas" )).Select(x=>x.IdCatalogo).ToList();
 
             var CatMaquina = allowedMachines.Any()
     ? (await _unitOfWork.CatMaquinaRepository.FindAsync(x => allowedMachines.Contains(x.Id))).ToList()
@@ -262,8 +262,8 @@ namespace Application.Services
             var dto = new CrearPrdPanelesCovintecDto
             {
                 CatMaquina = _mapper.Map<List<MaquinaDto>>(CatMaquina.Where(x=>x.Activo==true).ToList()),
-                CatalogoPaneles = _mapper.Map<List<CatalogoPanelesCovintecDTO>>(_unitOfWork.CatalogoPanelesCovintecRepository.GetAllAsync().Result),
-                CatTipoFabricacion = _mapper.Map<List<TipoFabricacionDto>>(_unitOfWork.TipoFabricacionRepository.GetAllAsync().Result.Where(x => x.Activo == true).ToList()),
+                CatalogoPaneles = _mapper.Map<List<CatalogoPanelesCovintecDTO>>(await _unitOfWork.CatalogoPanelesCovintecRepository.GetAllAsync()),
+                CatTipoFabricacion = _mapper.Map<List<TipoFabricacionDto>>((await _unitOfWork.TipoFabricacionRepository.GetAllAsync()).Where(x => x.Activo == true).ToList()),
 
               
             };
