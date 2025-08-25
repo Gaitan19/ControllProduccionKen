@@ -312,14 +312,14 @@
                 var numeroPedido = $(modalId + ' #NumeroPedido').val();
                 var cantidadProducida = $(modalId + ' #CantidadProducida').val();
                 var cantidadNoConforme = $(modalId + ' #CantidadNoConforme').val();
-                var mts2PorPanel = $(modalId + ' #Mts2PorPanel').val();
+
                 var numeroAlambre = $(modalId + ' #NumeroAlambre').val();
                 var pesoAlambreKg = $(modalId + ' #PesoAlambreKg').val();
                 var mermaAlambreKg = $(modalId + ' #MermaAlambreKg').val();
 
                 // Validaciones
                 if(!idArticulo || !longitud || !idTipoFabricacion || !cantidadProducida || 
-                   !cantidadNoConforme || !mts2PorPanel || !numeroAlambre || !pesoAlambreKg || !mermaAlambreKg){
+                   !cantidadNoConforme){
                     $(modalId + ' #spnbtnGuardarDetPrd').text('Complete todos los campos obligatorios.');
                     return;
                 }
@@ -330,13 +330,7 @@
                     return;
                 }
 
-                // Validar formato de cantidades
-                var cantidadRegex = /^\d+(\.\d{1,2})?$/;
-                if(!cantidadRegex.test(longitud) || !cantidadRegex.test(mts2PorPanel) ||
-                   !cantidadRegex.test(pesoAlambreKg) || !cantidadRegex.test(mermaAlambreKg)){
-                    $(modalId + ' #spnbtnGuardarDetPrd').text('Las cantidades deben ser números válidos con máximo 2 decimales.');
-                    return;
-                }
+                
 
                 // Obtener textos para mostrar
                 var articuloText = $(modalId + ' #IdArticulo option:selected').text();
@@ -350,7 +344,7 @@
                               data-numeropedido="${numeroPedido || ''}"
                               data-cantidadproducida="${cantidadProducida}"
                               data-cantidadnoconforme="${cantidadNoConforme}"
-                              data-mts2porpanel="${mts2PorPanel}"
+
                               data-numeroalambre="${numeroAlambre}"
                               data-pesoalambrekg="${pesoAlambreKg}"
                               data-mermaalambrekg="${mermaAlambreKg}">
@@ -361,7 +355,7 @@
                                <td>${numeroPedido || ''}</td>
                                <td>${cantidadProducida}</td>
                                <td>${cantidadNoConforme}</td>
-                               <td>${mts2PorPanel}</td>
+
                                <td style="display:none">${numeroAlambre}</td>
                                <td style="display:none">${pesoAlambreKg}</td>
                                <td style="display:none">${mermaAlambreKg}</td>
@@ -409,7 +403,7 @@
                         NumeroPedido: $row.data('numeropedido') ? parseInt($row.data('numeropedido')) : null,
                         CantidadProducida: parseInt($row.data('cantidadproducida')),
                         CantidadNoConforme: parseInt($row.data('cantidadnoconforme')),
-                        Mts2PorPanel: parseFloat($row.data('mts2porpanel')),
+
                         NumeroAlambre: parseInt($row.data('numeroalambre')),
                         PesoAlambreKg: parseFloat($row.data('pesoalambrekg')),
                         MermaAlambreKg: parseFloat($row.data('mermaalambrekg'))

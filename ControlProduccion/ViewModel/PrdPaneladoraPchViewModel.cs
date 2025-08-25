@@ -108,17 +108,14 @@ namespace ControlProduccion.ViewModel
         [Display(Name = "Número de Pedido")]
         public int? NumeroPedido { get; set; }
 
-        [Required(ErrorMessage = "El campo Número de Alambre es obligatorio")]
         [Display(Name = "Número de Alambre")]
         [Range(1, int.MaxValue, ErrorMessage = "El número de alambre debe ser mayor a 0")]
         public int NumeroAlambre { get; set; }
 
-        [Required(ErrorMessage = "El campo Peso del Alambre es obligatorio")]
         [Display(Name = "Peso del Alambre (Kg)")]
         [Range(0.1, double.MaxValue, ErrorMessage = "El peso del alambre debe ser mayor a 0")]
         public decimal PesoAlambreKg { get; set; }
 
-        [Required(ErrorMessage = "El campo Merma del Alambre es obligatorio")]
         [Display(Name = "Merma del Alambre (Kg)")]
         [Range(0, double.MaxValue, ErrorMessage = "La merma del alambre debe ser mayor o igual a 0")]
         public decimal MermaAlambreKg { get; set; }
