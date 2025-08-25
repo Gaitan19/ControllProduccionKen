@@ -33,7 +33,7 @@ public partial class PrdpreExpansion
 
     public string? Observaciones { get; set; }
 
-    public int? TiempoParo { get; set; }
+    public decimal? TiempoParo { get; set; }
 
     public string IdUsuarioCreacion { get; set; } = null!;
 

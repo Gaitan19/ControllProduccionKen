@@ -1313,6 +1313,7 @@ public partial class AppDbContext : DbContext
             entity.Property(e => e.Lote).HasMaxLength(150);
             entity.Property(e => e.Observaciones).HasMaxLength(4000);
             entity.Property(e => e.PresionCaldera).HasMaxLength(150);
+            entity.Property(e => e.TiempoParo).HasColumnType("decimal(18, 2)");
         });
 
         modelBuilder.Entity<Reporte>(entity =>
