@@ -255,94 +255,102 @@ namespace ControlProduccion.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([FromBody] PrdIlKwangViewModel model)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            var userId = _userManager.GetUserId(User);
-            model.IdUsuarioCreacion = userId;
-            model.IdTipoReporte = 6;
-
-            var detPrdIlKwangDTO = model.DetPrdIlKwangs?.Select(d => new DetPrdIlKwangDTO
+            try
             {
-                
-                IdEspesor = d.IdEspesor,
-                Cantidad = d.Cantidad,
-                Medida = d.Medida,
-                MetrosCuadrados = d.Cantidad*d.Medida,
-                IdStatus = d.IdStatus,
-                IdTipo = d.IdTipo,
-                Posicion = (int)d.Posicion
-            }).ToList();
+                if (!ModelState.IsValid)
+                    return BadRequest(ModelState);
 
-            var dto = new PrdIlKwangDTO
+                var userId = _userManager.GetUserId(User);
+                model.IdUsuarioCreacion = userId;
+                model.IdTipoReporte = 6;
+
+                var detPrdIlKwangDTO = model.DetPrdIlKwangs?.Select(d => new DetPrdIlKwangDTO
+                {
+                    
+                    IdEspesor = d.IdEspesor,
+                    Cantidad = d.Cantidad,
+                    Medida = d.Medida,
+                    MetrosCuadrados = d.Cantidad*d.Medida,
+                    IdStatus = d.IdStatus,
+                    IdTipo = d.IdTipo,
+                    Posicion = (int)d.Posicion
+                }).ToList();
+
+                var dto = new PrdIlKwangDTO
+                {
+                    IdMaquina = model.IdMaquina,
+                    IdUsuarios = model.IdUsuarios,
+                    Fecha = model.Fecha,
+                    HoraInicio = model.HoraInicio,
+                    HoraFin = model.HoraFin,
+                    IdAnchoBobinaA = model.IdAnchoBobinaA,
+                    IdAnchoBobinaB = model.IdAnchoBobinaB,
+                    IdColorBobinaA = model.IdColorBobinaA,
+                    IdColorBobinaB = model.IdColorBobinaB,
+                    IdUbicacionBobinaA = model.IdUbicacionBobinaA,
+                    IdUbicacionBobinaB = model.IdUbicacionBobinaB,
+                    PesoInicialA = model.PesoInicialA,
+                    CantidadUtilizadaA = model.CantidadUtilizadaA,
+                    PesoFinalA = model.PesoFinalA,
+                    VelocidadSuperiorA = model.VelocidadSuperiorA,
+                    VelocidadInferiorA = model.VelocidadInferiorA,
+                    LoteA = model.LoteA,
+                    VencimientoA = model.VencimientoA,
+                    PesoInicialB = model.PesoInicialB,
+                    CantidadUtilizadaB = model.CantidadUtilizadaB,
+                    PesoFinalB = model.PesoFinalB,
+                    VelocidadSuperiorB = model.VelocidadSuperiorB,
+                    VelocidadInferiorB = model.VelocidadInferiorB,
+                    LoteB = model.LoteB,
+                    VencimientoB = model.VencimientoB,
+                    Observaciones = model.Observaciones,
+                    CantidadArranques = model.CantidadArranques,
+                    DetPrdIlKwangs=detPrdIlKwangDTO,
+                    IdTipoReporte = model.IdTipoReporte,
+                    IdArticulo = model.IdArticulo,
+                    IdTipoFabricacion = model.IdTipoFabricacion,
+                    Cliente = model.Cliente,
+                    NumeroPedido= model.NumeroPedido,
+                    VelocidadMaquina= model.VelocidadMaquina,
+                    FabricanteBobinaA= model.FabricanteBobinaA,
+                    FabricanteBobinaB= model.FabricanteBobinaB,
+                    CodigoBobinaA = model.CodigoBobinaA,
+                    CalibreMmA = model.CalibreMmA,
+                    AnchoMmA= model.AnchoMmA,
+                    PesoInicialKgA= model.PesoInicialKgA,
+                    PesoFinalKgA= model.PesoFinalKgA,
+                    MetrosInicialA=model.MetrosInicialA,
+                    MetrosFinalA=model.MetrosFinalA,
+                    EspesorInicialCmA=model.EspesorInicialCmA,
+                    EspesorFinalCmA=model.EspesorFinalCmA,
+                    ConsumoBobinaKgA=model.PesoInicialKgA-model.PesoFinalKgA,
+                    CodigoBobinaB=model.CodigoBobinaB,
+                    CalibreMmB= model.CalibreMmB,
+                    AnchoMmB=model.AnchoMmB,
+                    PesoInicialKgB=model.PesoInicialKgB,
+                    PesoFinalKgB=model.PesoFinalKgB,
+                    MetrosInicialB= model.MetrosInicialB,
+                    MetrosFinalB= model.MetrosFinalB,
+                    EspesorInicialCmB= model.EspesorInicialCmB,
+                    EspesorFinalCmB= model.EspesorFinalCmB,
+                    ConsumoBobinaKgB= model.PesoInicialKgB - model.PesoFinalKgB,
+                    IdUsuarioCreacion=model.IdUsuarioCreacion,
+                    FechaCreacion= DateTime.Now,
+                    AprobadoGerencia=false,
+                    AprobadoSupervisor=false,
+                    TiempoParo= model.TiempoParo,
+                    MetroInicialIsocianato= model.MetrosInicialIsocianato,
+                    MetroInicialPoliol= model.MetrosInicialPoliol
+                };
+
+                await _prdIlKwangService.CreateAsync(dto);
+                return Json(new { success = true, message = "Producción guardada!" });
+            }
+            catch (Exception ex)
             {
-                IdMaquina = model.IdMaquina,
-                IdUsuarios = model.IdUsuarios,
-                Fecha = model.Fecha,
-                HoraInicio = model.HoraInicio,
-                HoraFin = model.HoraFin,
-                IdAnchoBobinaA = model.IdAnchoBobinaA,
-                IdAnchoBobinaB = model.IdAnchoBobinaB,
-                IdColorBobinaA = model.IdColorBobinaA,
-                IdColorBobinaB = model.IdColorBobinaB,
-                IdUbicacionBobinaA = model.IdUbicacionBobinaA,
-                IdUbicacionBobinaB = model.IdUbicacionBobinaB,
-                PesoInicialA = model.PesoInicialA,
-                CantidadUtilizadaA = model.CantidadUtilizadaA,
-                PesoFinalA = model.PesoFinalA,
-                VelocidadSuperiorA = model.VelocidadSuperiorA,
-                VelocidadInferiorA = model.VelocidadInferiorA,
-                LoteA = model.LoteA,
-                VencimientoA = model.VencimientoA,
-                PesoInicialB = model.PesoInicialB,
-                CantidadUtilizadaB = model.CantidadUtilizadaB,
-                PesoFinalB = model.PesoFinalB,
-                VelocidadSuperiorB = model.VelocidadSuperiorB,
-                VelocidadInferiorB = model.VelocidadInferiorB,
-                LoteB = model.LoteB,
-                VencimientoB = model.VencimientoB,
-                Observaciones = model.Observaciones,
-                CantidadArranques = model.CantidadArranques,
-                DetPrdIlKwangs=detPrdIlKwangDTO,
-                IdTipoReporte = model.IdTipoReporte,
-                IdArticulo = model.IdArticulo,
-                IdTipoFabricacion = model.IdTipoFabricacion,
-                Cliente = model.Cliente,
-                NumeroPedido= model.NumeroPedido,
-                VelocidadMaquina= model.VelocidadMaquina,
-                FabricanteBobinaA= model.FabricanteBobinaA,
-                FabricanteBobinaB= model.FabricanteBobinaB,
-                CodigoBobinaA = model.CodigoBobinaA,
-                CalibreMmA = model.CalibreMmA,
-                AnchoMmA= model.AnchoMmA,
-                PesoInicialKgA= model.PesoInicialKgA,
-                PesoFinalKgA= model.PesoFinalKgA,
-                MetrosInicialA=model.MetrosInicialA,
-                MetrosFinalA=model.MetrosFinalA,
-                EspesorInicialCmA=model.EspesorInicialCmA,
-                EspesorFinalCmA=model.EspesorFinalCmA,
-                ConsumoBobinaKgA=model.PesoInicialKgA-model.PesoFinalKgA,
-                CodigoBobinaB=model.CodigoBobinaB,
-                CalibreMmB= model.CalibreMmB,
-                AnchoMmB=model.AnchoMmB,
-                PesoInicialKgB=model.PesoInicialKgB,
-                PesoFinalKgB=model.PesoFinalKgB,
-                MetrosInicialB= model.MetrosInicialB,
-                MetrosFinalB= model.MetrosFinalB,
-                EspesorInicialCmB= model.EspesorInicialCmB,
-                EspesorFinalCmB= model.EspesorFinalCmB,
-                ConsumoBobinaKgB= model.PesoInicialKgB - model.PesoFinalKgB,
-                IdUsuarioCreacion=model.IdUsuarioCreacion,
-                FechaCreacion= DateTime.Now,
-                AprobadoGerencia=false,
-                AprobadoSupervisor=false,
-                TiempoParo= model.TiempoParo,
-                MetroInicialIsocianato= model.MetrosInicialIsocianato,
-                MetroInicialPoliol= model.MetrosInicialPoliol
-            };
-
-            await _prdIlKwangService.CreateAsync(dto);
-            return Json(new { success = true, message = "Producción guardada!" });
+                // Log the error (you can add proper logging here)
+                return Json(new { success = false, message = "Error al guardar la producción: " + ex.Message });
+            }
         }
 
         // GET: PrdIlKwangController/Edit/5

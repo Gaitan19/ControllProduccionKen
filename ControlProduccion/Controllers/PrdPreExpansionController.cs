@@ -103,50 +103,58 @@ namespace ControlProduccion.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Create([FromBody] PrdPreExpansionViewModel model)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            var userId = _userManager.GetUserId(User);
-            model.IdUsuarioCreacion = userId;
-
-            var detallePrd = model.DetPrdPreExpansions?.Select(x => new DetPrdpreExpansionDTO
+            try
             {
-                Hora = x.Hora,
-                NoBatch = x.NoBatch,
-                DensidadEsperada = x.DensidadEsperada,
-                PesoBatchGr = x.PesoBatchGr,
-                Densidad = x.Densidad,
-                KgPorBatch = x.KgPorBatch,
-                PresionPsi = x.PresionPsi,
-                TiempoBatchSeg = x.TiempoBatchSeg,
-                TemperaturaC = x.TemperaturaC,
-                Silo = x.Silo,
-                Paso = x.Paso,
-                IdUsuarioCreacion = userId
-            }).ToList();
+                if (!ModelState.IsValid)
+                    return BadRequest(ModelState);
 
-            var dto = new PrdpreExpansionDto
+                var userId = _userManager.GetUserId(User);
+                model.IdUsuarioCreacion = userId;
+
+                var detallePrd = model.DetPrdPreExpansions?.Select(x => new DetPrdpreExpansionDTO
+                {
+                    Hora = x.Hora,
+                    NoBatch = x.NoBatch,
+                    DensidadEsperada = x.DensidadEsperada,
+                    PesoBatchGr = x.PesoBatchGr,
+                    Densidad = x.Densidad,
+                    KgPorBatch = x.KgPorBatch,
+                    PresionPsi = x.PresionPsi,
+                    TiempoBatchSeg = x.TiempoBatchSeg,
+                    TemperaturaC = x.TemperaturaC,
+                    Silo = x.Silo,
+                    Paso = x.Paso,
+                    IdUsuarioCreacion = userId
+                }).ToList();
+
+                var dto = new PrdpreExpansionDto
+                {
+                    IdUsuarios = model.IdUsuarios,
+                    IdMaquina = model.IdMaquina,
+                    Fecha = model.Fecha,
+                    HoraInicio = model.HoraInicio,
+                    HoraFin = model.HoraFin,
+                    PresionCaldera = model.PresionCaldera,
+                    Lote = model.Lote,
+                    FechaProduccion = model.FechaProduccion,
+                    CodigoSaco = model.CodigoSaco,
+                    IdTipoFabricacion = model.IdTipoFabricacion,
+                    NumeroPedido = model.NumeroPedido,
+                    Observaciones = model.Observaciones,
+                    TiempoParo = model.TiempoParo,
+                    IdTipoReporte = model.IdTipoReporte,
+                    IdUsuarioCreacion = model.IdUsuarioCreacion!,
+                    DetPrdpreExpansions = detallePrd
+                };
+
+                await _prdPreExpansionService.CreateAsync(dto);
+                return Json(new { success = true, message = "Producción guardada!" });
+            }
+            catch (Exception ex)
             {
-                IdUsuarios = model.IdUsuarios,
-                IdMaquina = model.IdMaquina,
-                Fecha = model.Fecha,
-                HoraInicio = model.HoraInicio,
-                HoraFin = model.HoraFin,
-                PresionCaldera = model.PresionCaldera,
-                Lote = model.Lote,
-                FechaProduccion = model.FechaProduccion,
-                CodigoSaco = model.CodigoSaco,
-                IdTipoFabricacion = model.IdTipoFabricacion,
-                NumeroPedido = model.NumeroPedido,
-                Observaciones = model.Observaciones,
-                TiempoParo = model.TiempoParo,
-                IdTipoReporte = model.IdTipoReporte,
-                IdUsuarioCreacion = model.IdUsuarioCreacion!,
-                DetPrdpreExpansions = detallePrd
-            };
-
-            await _prdPreExpansionService.CreateAsync(dto);
-            return Json(new { success = true, message = "Producción guardada!" });
+                // Log the error (you can add proper logging here)
+                return Json(new { success = false, message = "Error al guardar la producción: " + ex.Message });
+            }
         }
 
         // GET: PrdPreExpansionController/Edit/5

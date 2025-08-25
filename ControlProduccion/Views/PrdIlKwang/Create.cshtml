@@ -880,16 +880,29 @@
                 data: JSON.stringify(viewModel),
                 contentType: 'application/json; charset=utf-8',
                 success: function (response) {
-                            // ══════════════ LIMPIAR BORRADOR (MEJORADO) ══════════════
-                            localStorage.removeItem(DRAFT_KEY);
-                            // ——— NUEVO: desactivar el aviso de "Leave site?" al salir ———
-                            window.removeEventListener('beforeunload', beforeUnloadHandler);
-                            // ════════════════════════════════════════════
-                    alert('Produccion Guardada!');
-                    window.location.href = '@Url.Action("Index", "Home")';
+                    if (response.success) {
+                        // ══════════════ LIMPIAR BORRADOR (MEJORADO) ══════════════
+                        localStorage.removeItem(DRAFT_KEY);
+                        // ——— NUEVO: desactivar el aviso de "Leave site?" al salir ———
+                        window.removeEventListener('beforeunload', beforeUnloadHandler);
+                        // ════════════════════════════════════════════
+                        alert(response.message);
+                        window.location.href = '@Url.Action("Index", "Home")';
+                    } else {
+                        alert(response.message || 'Error al guardar la producción');
+                    }
                 },
                 error: function (xhr, status, error) {
-                    alert('Error , Contacte a soporte!');
+                    try {
+                        var response = JSON.parse(xhr.responseText);
+                        if (response && response.message) {
+                            alert(response.message);
+                        } else {
+                            alert('Error , Contacte a soporte!');
+                        }
+                    } catch (e) {
+                        alert('Error , Contacte a soporte!');
+                    }
                 }
             });
 
