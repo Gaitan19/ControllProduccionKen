@@ -402,6 +402,8 @@ namespace ControlProduccion.Controllers
                     Comentario = model.Comentario,
                     HoraInicio = model.HoraInicio,
                     HoraFin = model.HoraFin,
+                    Cantidad = model.Cantidad,
+                    UnidadMedida = model.UnidadMedida,
                     IdUsuarioActualizacion = userId
                 };
 
