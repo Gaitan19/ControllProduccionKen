@@ -49,6 +49,7 @@ namespace ControlProduccion.Controllers
                 Id = modelDto.Id,
                 IdUsuarios = modelDto.IdUsuarios,
                 Fecha = modelDto.Fecha,
+                TiempoParo = modelDto.TiempoParo,
                 AprobadoSupervisor = modelDto.AprobadoSupervisor,
                 AprobadoGerencia = modelDto.AprobadoGerencia,
                 DetPrdOtros = modelDto.DetPrdOtros?.Select(x => new DetPrdOtroViewModel
@@ -66,7 +67,9 @@ namespace ControlProduccion.Controllers
                     Merma = x.Merma,
                     Comentario = x.Comentario,
                     HoraInicio = x.HoraInicio,
-                    HoraFin = x.HoraFin
+                    HoraFin = x.HoraFin,
+                    Cantidad = x.Cantidad,
+                    UnidadMedida = x.UnidadMedida
                 }).ToList(),
                 Operarios = operarios.Select(o => new SelectListItem { Value = o.Id, Text = o.UserName }),
                 TiposFabricacion=dtoCat.CatTipoFabricacion.Select(tf => new SelectListItem { Value = tf.Id.ToString(), Text = tf.Descripcion })
@@ -108,6 +111,8 @@ namespace ControlProduccion.Controllers
                 Comentario = x.Comentario,
                 HoraInicio = x.HoraInicio,
                 HoraFin = x.HoraFin,
+                Cantidad = x.Cantidad,
+                UnidadMedida = x.UnidadMedida,
                 IdUsuarioCreacion = userId
             }).ToList();
 
@@ -116,6 +121,7 @@ namespace ControlProduccion.Controllers
             {
                 IdUsuarios = model.IdUsuarios,
                 Fecha = model.Fecha,
+                TiempoParo = model.TiempoParo,
                 IdUsuarioCreacion = model.IdUsuarioCreacion!,
                 DetPrdOtros = detallePrd
               
@@ -145,6 +151,7 @@ namespace ControlProduccion.Controllers
                 Id = modelDto.Id,
                 IdUsuarios = modelDto.IdUsuarios,
                 Fecha = modelDto.Fecha,
+                TiempoParo = modelDto.TiempoParo,
                 AprobadoSupervisor = modelDto.AprobadoSupervisor,
                 AprobadoGerencia = modelDto.AprobadoGerencia,
                 DetPrdOtros = modelDto.DetPrdOtros?.Select(x => new DetPrdOtroViewModel
@@ -162,7 +169,9 @@ namespace ControlProduccion.Controllers
                     Merma = x.Merma,
                     Comentario = x.Comentario,
                     HoraInicio = x.HoraInicio,
-                    HoraFin = x.HoraFin
+                    HoraFin = x.HoraFin,
+                    Cantidad = x.Cantidad,
+                    UnidadMedida = x.UnidadMedida
                 }).ToList(),
                 Operarios = operarios.Select(o => new SelectListItem { Value = o.Id, Text = o.UserName }),
                 TiposFabricacion=dtoCat.CatTipoFabricacion.Select(tf => new SelectListItem { Value = tf.Id.ToString(), Text = tf.Descripcion })
@@ -193,6 +202,7 @@ namespace ControlProduccion.Controllers
                     Id = modelDto.Id,
                     IdUsuarios = modelDto.IdUsuarios,
                     Fecha = modelDto.Fecha,
+                    TiempoParo = modelDto.TiempoParo,
                     AprobadoSupervisor = modelDto.AprobadoSupervisor,
                     AprobadoGerencia = modelDto.AprobadoGerencia,
                     DetPrdOtros = modelDto.DetPrdOtros?.Select(x => new DetPrdOtroViewModel
@@ -210,7 +220,9 @@ namespace ControlProduccion.Controllers
                         Merma = x.Merma,
                         Comentario = x.Comentario,
                         HoraInicio = x.HoraInicio,
-                        HoraFin = x.HoraFin
+                        HoraFin = x.HoraFin,
+                        Cantidad = x.Cantidad,
+                        UnidadMedida = x.UnidadMedida
                     }).ToList(),
                     Operarios = operarios.Select(o => new SelectListItem { Value = o.Id, Text = o.UserName }),
                     TiposFabricacion = dtoCat.CatTipoFabricacion.Select(tf => new SelectListItem { Value = tf.Id.ToString(), Text = tf.Descripcion })
@@ -231,6 +243,7 @@ namespace ControlProduccion.Controllers
                     Id = model.Id,
                     IdUsuarios = model.IdUsuarios,
                     Fecha = model.Fecha,
+                    TiempoParo = model.TiempoParo,
                     IdUsuarioActualizacion = userId,
                     FechaActualizacion = DateTime.Now
                 };
@@ -265,6 +278,7 @@ namespace ControlProduccion.Controllers
                     Id = modelDto.Id,
                     IdUsuarios = modelDto.IdUsuarios,
                     Fecha = modelDto.Fecha,
+                    TiempoParo = modelDto.TiempoParo,
                     AprobadoSupervisor = modelDto.AprobadoSupervisor,
                     AprobadoGerencia = modelDto.AprobadoGerencia,
                     DetPrdOtros = modelDto.DetPrdOtros?.Select(x => new DetPrdOtroViewModel
@@ -282,7 +296,9 @@ namespace ControlProduccion.Controllers
                         Merma = x.Merma,
                         Comentario = x.Comentario,
                         HoraInicio = x.HoraInicio,
-                        HoraFin = x.HoraFin
+                        HoraFin = x.HoraFin,
+                        Cantidad = x.Cantidad,
+                        UnidadMedida = x.UnidadMedida
                     }).ToList(),
                     Operarios = operarios.Select(o => new SelectListItem { Value = o.Id, Text = o.UserName }),
                     TiposFabricacion = dtoCat.CatTipoFabricacion.Select(tf => new SelectListItem { Value = tf.Id.ToString(), Text = tf.Descripcion })
