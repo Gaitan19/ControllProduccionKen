@@ -36,6 +36,10 @@ namespace ControlProduccion.ViewModel
         [Display(Name = "Tipo de Fabricacion")]
         public IEnumerable<SelectListItem>? TiposFabricacion { get; set; }
 
+        [Display(Name = "Tiempo de paro (horas)")]
+        [Range(0, double.MaxValue, ErrorMessage = "El tiempo de paro debe ser mayor o igual a 0")]
+        public decimal? TiempoParo { get; set; }
+
         // Detalles
         public List<DetPrdOtroViewModel>? DetPrdOtros { get; set; }
     }
@@ -85,6 +89,15 @@ namespace ControlProduccion.ViewModel
         [Display(Name = "Hora de Fin")]
         [DataType(DataType.Time)]
         public TimeSpan HoraFin { get; set; }
+
+        [Required(ErrorMessage = "El campo Cantidad es obligatorio")]
+        [Display(Name = "Cantidad")]
+        [Range(0, double.MaxValue, ErrorMessage = "La cantidad debe ser mayor o igual a 0")]
+        public decimal Cantidad { get; set; }
+
+        [Required(ErrorMessage = "El campo Unidad de Medida es obligatorio")]
+        [Display(Name = "Unidad de Medida")]
+        public string UnidadMedida { get; set; } = string.Empty;
 
         // Auditoría
         public string IdUsuarioCreacion { get; set; } = string.Empty;
