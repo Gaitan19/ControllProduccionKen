@@ -51,6 +51,12 @@ builder.Services
     .AddControllersWithViews();
 #endif
 
+// Configure anti-forgery tokens to work with AJAX requests
+builder.Services.AddAntiforgery(options =>
+{
+    options.HeaderName = "RequestVerificationToken";
+});
+
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
