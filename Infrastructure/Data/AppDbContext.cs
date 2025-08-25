@@ -401,7 +401,7 @@ public partial class AppDbContext : DbContext
             entity.Property(e => e.IdAprobadoSupervisor).HasMaxLength(450);
             entity.Property(e => e.IdUsuarioActualizacion).HasMaxLength(450);
             entity.Property(e => e.IdUsuarioCreacion).HasMaxLength(450);
-            entity.Property(e => e.PesoAlambre).HasColumnType("decimal(18, 1)");
+            entity.Property(e => e.PesoAlambre).HasColumnType("decimal(18, 2)");
 
             entity.HasOne(d => d.IdCerchaNavigation).WithMany(p => p.DetAlambrePrdCerchaCovintecs)
                 .HasForeignKey(d => d.IdCercha)
@@ -421,7 +421,7 @@ public partial class AppDbContext : DbContext
             entity.Property(e => e.IdAprobadoSupervisor).HasMaxLength(450);
             entity.Property(e => e.IdUsuarioActualizacion).HasMaxLength(450);
             entity.Property(e => e.IdUsuarioCreacion).HasMaxLength(450);
-            entity.Property(e => e.PesoAlambre).HasColumnType("decimal(18, 1)");
+            entity.Property(e => e.PesoAlambre).HasColumnType("decimal(18, 2)");
 
             entity.HasOne(d => d.IdMallaNavigation).WithMany(p => p.DetAlambrePrdMallaCovintecs)
                 .HasForeignKey(d => d.IdMalla)
@@ -441,7 +441,7 @@ public partial class AppDbContext : DbContext
             entity.Property(e => e.IdAprobadoSupervisor).HasMaxLength(450);
             entity.Property(e => e.IdUsuarioActualizacion).HasMaxLength(450);
             entity.Property(e => e.IdUsuarioCreacion).HasMaxLength(450);
-            entity.Property(e => e.PesoAlambre).HasColumnType("decimal(18, 1)");
+            entity.Property(e => e.PesoAlambre).HasColumnType("decimal(18, 2)");
 
             entity.HasOne(d => d.IdPanelNavigation).WithMany(p => p.DetAlambrePrdPanelesCovintecs)
                 .HasForeignKey(d => d.IdPanel)
@@ -463,9 +463,9 @@ public partial class AppDbContext : DbContext
 
             entity.HasIndex(e => e.PrdAccesoriosId, "IX_DetPrdAcc_PrdAccesoriosId");
 
-            entity.Property(e => e.CantidadBobinaKg).HasColumnType("decimal(10, 1)");
-            entity.Property(e => e.CantidadCalibreKg).HasColumnType("decimal(10, 1)");
-            entity.Property(e => e.CantidadPchKg).HasColumnType("decimal(10, 1)");
+            entity.Property(e => e.CantidadBobinaKg).HasColumnType("decimal(10, 2)");
+            entity.Property(e => e.CantidadCalibreKg).HasColumnType("decimal(10, 2)");
+            entity.Property(e => e.CantidadPchKg).HasColumnType("decimal(10, 2)");
             entity.Property(e => e.FechaActualizacion).HasColumnType("datetime");
             entity.Property(e => e.FechaCreacion).HasColumnType("datetime");
             entity.Property(e => e.IdTipoMallaPch).HasColumnName("IdTipoMallaPCH");
@@ -512,7 +512,7 @@ public partial class AppDbContext : DbContext
             entity.Property(e => e.FechaCreacion).HasColumnType("datetime");
             entity.Property(e => e.IdUsuarioActualizacion).HasMaxLength(450);
             entity.Property(e => e.IdUsuarioCreacion).HasMaxLength(450);
-            entity.Property(e => e.ProduccionDia).HasColumnType("decimal(10, 1)");
+            entity.Property(e => e.ProduccionDia).HasColumnType("decimal(10, 2)");
 
             entity.HasOne(d => d.IdCatBloqueNavigation).WithMany(p => p.DetPrdBloques)
                 .HasForeignKey(d => d.IdCatBloque)
@@ -562,8 +562,8 @@ public partial class AppDbContext : DbContext
         {
             entity.ToTable("DetPrdCorteP", "cp");
 
-            entity.Property(e => e.CantidadPiezasConformes).HasColumnType("decimal(10, 1)");
-            entity.Property(e => e.CantidadPiezasNoConformes).HasColumnType("decimal(10, 1)");
+            entity.Property(e => e.CantidadPiezasConformes).HasColumnType("decimal(10, 2)");
+            entity.Property(e => e.CantidadPiezasNoConformes).HasColumnType("decimal(10, 2)");
             entity.Property(e => e.FechaActualizacion).HasColumnType("datetime");
             entity.Property(e => e.FechaCreacion).HasColumnType("datetime");
             entity.Property(e => e.IdUsuarioActualizacion).HasMaxLength(450);
@@ -597,8 +597,8 @@ public partial class AppDbContext : DbContext
             entity.ToTable("DetPrdCorteT", "cp");
 
             entity.Property(e => e.Id).ValueGeneratedOnAdd();
-            entity.Property(e => e.CantidadPiezasConformes).HasColumnType("decimal(10, 1)");
-            entity.Property(e => e.CantidadPiezasNoConformes).HasColumnType("decimal(10, 1)");
+            entity.Property(e => e.CantidadPiezasConformes).HasColumnType("decimal(10, 2)");
+            entity.Property(e => e.CantidadPiezasNoConformes).HasColumnType("decimal(10, 2)");
             entity.Property(e => e.FechaActualizacion).HasColumnType("datetime");
             entity.Property(e => e.FechaCreacion).HasColumnType("datetime");
             entity.Property(e => e.IdUsuarioActualizacion).HasMaxLength(450);
@@ -692,8 +692,8 @@ public partial class AppDbContext : DbContext
         {
             entity.ToTable("DetPrdNevera", "cp");
 
-            entity.Property(e => e.CantidadConforme).HasColumnType("decimal(10, 1)");
-            entity.Property(e => e.CantidadNoConforme).HasColumnType("decimal(10, 1)");
+            entity.Property(e => e.CantidadConforme).HasColumnType("decimal(10, 2)");
+            entity.Property(e => e.CantidadNoConforme).HasColumnType("decimal(10, 2)");
             entity.Property(e => e.FechaActualizacion).HasColumnType("datetime");
             entity.Property(e => e.FechaCreacion).HasColumnType("datetime");
             entity.Property(e => e.IdUsuarioActualizacion).HasMaxLength(450);
@@ -751,9 +751,9 @@ public partial class AppDbContext : DbContext
             entity.Property(e => e.IdUsuarioActualizacion).HasMaxLength(450);
             entity.Property(e => e.IdUsuarioCreacion).HasMaxLength(450);
             entity.Property(e => e.Longitud).HasColumnType("decimal(18, 2)");
-            entity.Property(e => e.MermaAlambreKg).HasColumnType("decimal(18, 1)");
-            entity.Property(e => e.Mts2PorPanel).HasColumnType("decimal(10, 1)");
-            entity.Property(e => e.PesoAlambreKg).HasColumnType("decimal(18, 1)");
+            entity.Property(e => e.MermaAlambreKg).HasColumnType("decimal(18, 2)");
+            entity.Property(e => e.Mts2PorPanel).HasColumnType("decimal(10, 2)");
+            entity.Property(e => e.PesoAlambreKg).HasColumnType("decimal(18, 2)");
 
             entity.HasOne(d => d.IdArticuloNavigation).WithMany(p => p.DetPrdPaneladoraPches)
                 .HasForeignKey(d => d.IdArticulo)
@@ -815,8 +815,8 @@ public partial class AppDbContext : DbContext
             entity.Property(e => e.IdUsuarioActualizacion).HasMaxLength(450);
             entity.Property(e => e.IdUsuarioCreacion).HasMaxLength(450);
             entity.Property(e => e.Longitud).HasColumnType("decimal(18, 2)");
-            entity.Property(e => e.MermaHilosTransversalesKg).HasColumnType("decimal(18, 1)");
-            entity.Property(e => e.PesoAlambreKgA).HasColumnType("decimal(18, 1)");
+            entity.Property(e => e.MermaHilosTransversalesKg).HasColumnType("decimal(18, 2)");
+            entity.Property(e => e.PesoAlambreKgA).HasColumnType("decimal(18, 2)");
             entity.Property(e => e.Produccion).HasColumnType("decimal(18, 2)");
 
             entity.HasOne(d => d.IdMaquinaNavigation).WithMany(p => p.DetPrdPchMaquinaAs)
@@ -845,8 +845,8 @@ public partial class AppDbContext : DbContext
             entity.Property(e => e.IdUsuarioActualizacion).HasMaxLength(450);
             entity.Property(e => e.IdUsuarioCreacion).HasMaxLength(450);
             entity.Property(e => e.Longitud).HasColumnType("decimal(18, 2)");
-            entity.Property(e => e.MermaHilosLongitudinalesKg).HasColumnType("decimal(18, 1)");
-            entity.Property(e => e.PesoAlambreKgB).HasColumnType("decimal(18, 1)");
+            entity.Property(e => e.MermaHilosLongitudinalesKg).HasColumnType("decimal(18, 2)");
+            entity.Property(e => e.PesoAlambreKgB).HasColumnType("decimal(18, 2)");
             entity.Property(e => e.Produccion).HasColumnType("decimal(18, 2)");
 
             entity.HasOne(d => d.IdMaquinaNavigation).WithMany(p => p.DetPrdPchMaquinaBs)
@@ -874,7 +874,7 @@ public partial class AppDbContext : DbContext
             entity.Property(e => e.IdUsuarioActualizacion).HasMaxLength(450);
             entity.Property(e => e.IdUsuarioCreacion).HasMaxLength(450);
             entity.Property(e => e.Longitud).HasColumnType("decimal(18, 2)");
-            entity.Property(e => e.MermaMallasKg).HasColumnType("decimal(18, 1)");
+            entity.Property(e => e.MermaMallasKg).HasColumnType("decimal(18, 2)");
             entity.Property(e => e.Produccion).HasColumnType("decimal(18, 2)");
 
             entity.HasOne(d => d.IdMaquinaNavigation).WithMany(p => p.DetPrdPchMaquinaCs)
@@ -907,7 +907,7 @@ public partial class AppDbContext : DbContext
             entity.Property(e => e.FechaCreacion).HasColumnType("datetime");
             entity.Property(e => e.IdUsuarioActualizacion).HasMaxLength(450);
             entity.Property(e => e.IdUsuarioCreacion).HasMaxLength(450);
-            entity.Property(e => e.PesoBatchGr).HasColumnType("decimal(10, 1)");
+            entity.Property(e => e.PesoBatchGr).HasColumnType("decimal(10, 2)");
             entity.Property(e => e.PresionPsi).HasColumnName("PresionPSI");
 
             entity.HasOne(d => d.PrdpreExpansion).WithMany(p => p.DetPrdpreExpansions)
@@ -990,12 +990,12 @@ public partial class AppDbContext : DbContext
             entity.Property(e => e.IdAprobadoSupervisor).HasMaxLength(450);
             entity.Property(e => e.IdUsuarioActualizacion).HasMaxLength(450);
             entity.Property(e => e.IdUsuarioCreacion).HasMaxLength(450);
-            entity.Property(e => e.MermaBobinasKg).HasColumnType("decimal(10, 1)");
-            entity.Property(e => e.MermaLitewallKg).HasColumnType("decimal(10, 1)");
-            entity.Property(e => e.MermaMallaCovintecKg).HasColumnType("decimal(10, 1)");
-            entity.Property(e => e.MermaMallaPchKg).HasColumnType("decimal(10, 1)");
+            entity.Property(e => e.MermaBobinasKg).HasColumnType("decimal(10, 2)");
+            entity.Property(e => e.MermaLitewallKg).HasColumnType("decimal(10, 2)");
+            entity.Property(e => e.MermaMallaCovintecKg).HasColumnType("decimal(10, 2)");
+            entity.Property(e => e.MermaMallaPchKg).HasColumnType("decimal(10, 2)");
             entity.Property(e => e.Observaciones).HasMaxLength(4000);
-            entity.Property(e => e.TiempoParo).HasColumnType("decimal(18, 1)");
+            entity.Property(e => e.TiempoParo).HasColumnType("decimal(18, 2)");
 
             entity.HasOne(d => d.IdMaquinaNavigation).WithMany(p => p.PrdAccesorios)
                 .HasForeignKey(d => d.IdMaquina)
@@ -1014,7 +1014,7 @@ public partial class AppDbContext : DbContext
             entity.Property(e => e.IdAprobadoSupervisor).HasMaxLength(450);
             entity.Property(e => e.IdUsuarioActualizacion).HasMaxLength(450);
             entity.Property(e => e.IdUsuarioCreacion).HasMaxLength(450);
-            entity.Property(e => e.TiempoParo).HasColumnType("decimal(18, 1)");
+            entity.Property(e => e.TiempoParo).HasColumnType("decimal(18, 2)");
         });
 
         modelBuilder.Entity<PrdCerchaCovintec>(entity =>
@@ -1029,9 +1029,9 @@ public partial class AppDbContext : DbContext
             entity.Property(e => e.IdTipoReporte).HasDefaultValueSql("((7))");
             entity.Property(e => e.IdUsuarioActualizacion).HasMaxLength(450);
             entity.Property(e => e.IdUsuarioCreacion).HasMaxLength(450);
-            entity.Property(e => e.MermaAlambre).HasColumnType("decimal(18, 1)");
+            entity.Property(e => e.MermaAlambre).HasColumnType("decimal(18, 2)");
             entity.Property(e => e.Observaciones).HasMaxLength(4000);
-            entity.Property(e => e.TiempoParo).HasColumnType("decimal(18, 1)");
+            entity.Property(e => e.TiempoParo).HasColumnType("decimal(18, 2)");
 
             entity.HasOne(d => d.IdMaquinaNavigation).WithMany(p => p.PrdCerchaCovintecs)
                 .HasForeignKey(d => d.IdMaquina)
@@ -1051,7 +1051,7 @@ public partial class AppDbContext : DbContext
             entity.Property(e => e.IdUsuarioActualizacion).HasMaxLength(450);
             entity.Property(e => e.IdUsuarioCreacion).HasMaxLength(450);
             entity.Property(e => e.Observaciones).HasMaxLength(4000);
-            entity.Property(e => e.TiempoParo).HasColumnType("decimal(18, 1)");
+            entity.Property(e => e.TiempoParo).HasColumnType("decimal(18, 2)");
 
             entity.HasOne(d => d.IdMaquinaNavigation).WithMany(p => p.PrdCortePs)
                 .HasForeignKey(d => d.IdMaquina)
@@ -1071,7 +1071,7 @@ public partial class AppDbContext : DbContext
             entity.Property(e => e.IdUsuarioActualizacion).HasMaxLength(450);
             entity.Property(e => e.IdUsuarioCreacion).HasMaxLength(450);
             entity.Property(e => e.Observaciones).HasMaxLength(4000);
-            entity.Property(e => e.TiempoParo).HasColumnType("decimal(18, 1)");
+            entity.Property(e => e.TiempoParo).HasColumnType("decimal(18, 2)");
 
             entity.HasOne(d => d.IdMaquinaNavigation).WithMany(p => p.PrdCorteTs)
                 .HasForeignKey(d => d.IdMaquina)
@@ -1119,12 +1119,12 @@ public partial class AppDbContext : DbContext
             entity.Property(e => e.PesoInicialB).HasColumnType("decimal(10, 2)");
             entity.Property(e => e.PorcentajeDefecto).HasColumnType("decimal(10, 2)");
             entity.Property(e => e.PorcentajeMerma).HasColumnType("decimal(10, 2)");
-            entity.Property(e => e.TiempoParo).HasColumnType("decimal(10, 1)");
+            entity.Property(e => e.TiempoParo).HasColumnType("decimal(18, 2)");
             entity.Property(e => e.TotalProduccion).HasColumnType("decimal(10, 2)");
-            entity.Property(e => e.VelocidadInferiorA).HasColumnType("decimal(10, 1)");
-            entity.Property(e => e.VelocidadInferiorB).HasColumnType("decimal(10, 1)");
-            entity.Property(e => e.VelocidadSuperiorA).HasColumnType("decimal(10, 1)");
-            entity.Property(e => e.VelocidadSuperiorB).HasColumnType("decimal(10, 1)");
+            entity.Property(e => e.VelocidadInferiorA).HasColumnType("decimal(10, 2)");
+            entity.Property(e => e.VelocidadInferiorB).HasColumnType("decimal(10, 2)");
+            entity.Property(e => e.VelocidadSuperiorA).HasColumnType("decimal(10, 2)");
+            entity.Property(e => e.VelocidadSuperiorB).HasColumnType("decimal(10, 2)");
             entity.Property(e => e.VencimientoA).HasColumnType("date");
             entity.Property(e => e.VencimientoB).HasColumnType("date");
 
@@ -1177,9 +1177,9 @@ public partial class AppDbContext : DbContext
             entity.Property(e => e.IdAprobadoSupervisor).HasMaxLength(450);
             entity.Property(e => e.IdUsuarioActualizacion).HasMaxLength(450);
             entity.Property(e => e.IdUsuarioCreacion).HasMaxLength(450);
-            entity.Property(e => e.MermaAlambre).HasColumnType("decimal(18, 1)");
+            entity.Property(e => e.MermaAlambre).HasColumnType("decimal(18, 2)");
             entity.Property(e => e.Observaciones).HasMaxLength(4000);
-            entity.Property(e => e.TiempoParo).HasColumnType("decimal(18, 1)");
+            entity.Property(e => e.TiempoParo).HasColumnType("decimal(18, 2)");
 
             entity.HasOne(d => d.IdMaquinaNavigation).WithMany(p => p.PrdMallaCovintecs)
                 .HasForeignKey(d => d.IdMaquina)
@@ -1206,7 +1206,7 @@ public partial class AppDbContext : DbContext
             entity.Property(e => e.IdUsuarioCreacion).HasMaxLength(450);
             entity.Property(e => e.Observaciones).HasMaxLength(4000);
             entity.Property(e => e.ProduccionDia).HasColumnType("decimal(18, 2)");
-            entity.Property(e => e.TiempoParo).HasColumnType("decimal(18, 1)");
+            entity.Property(e => e.TiempoParo).HasColumnType("decimal(18, 2)");
         });
 
         modelBuilder.Entity<PrdNevera>(entity =>
@@ -1221,7 +1221,7 @@ public partial class AppDbContext : DbContext
             entity.Property(e => e.IdUsuarioActualizacion).HasMaxLength(450);
             entity.Property(e => e.IdUsuarioCreacion).HasMaxLength(450);
             entity.Property(e => e.Observaciones).HasMaxLength(4000);
-            entity.Property(e => e.TiempoParo).HasColumnType("decimal(18, 1)");
+            entity.Property(e => e.TiempoParo).HasColumnType("decimal(18, 2)");
 
             entity.HasOne(d => d.IdMaquinaNavigation).WithMany(p => p.PrdNeveras)
                 .HasForeignKey(d => d.IdMaquina)
@@ -1242,7 +1242,7 @@ public partial class AppDbContext : DbContext
             entity.Property(e => e.IdAprobadoSupervisor).HasMaxLength(450);
             entity.Property(e => e.IdUsuarioActualizacion).HasMaxLength(450);
             entity.Property(e => e.IdUsuarioCreacion).HasMaxLength(450);
-            entity.Property(e => e.TiempoParo).HasColumnType("decimal(18, 1)");
+            entity.Property(e => e.TiempoParo).HasColumnType("decimal(18, 2)");
         });
 
         modelBuilder.Entity<PrdPaneladoraPch>(entity =>
@@ -1261,8 +1261,8 @@ public partial class AppDbContext : DbContext
             entity.Property(e => e.IdUsuarioActualizacion).HasMaxLength(450);
             entity.Property(e => e.IdUsuarioCreacion).HasMaxLength(450);
             entity.Property(e => e.Observaciones).HasMaxLength(4000);
-            entity.Property(e => e.ProduccionDia).HasColumnType("decimal(10, 1)");
-            entity.Property(e => e.TiempoParo).HasColumnType("decimal(10, 1)");
+            entity.Property(e => e.ProduccionDia).HasColumnType("decimal(10, 2)");
+            entity.Property(e => e.TiempoParo).HasColumnType("decimal(18, 2)");
 
             entity.HasOne(d => d.IdMaquinaNavigation).WithMany(p => p.PrdPaneladoraPches)
                 .HasForeignKey(d => d.IdMaquina)
@@ -1283,9 +1283,9 @@ public partial class AppDbContext : DbContext
             entity.Property(e => e.IdAprobadoSupervisor).HasMaxLength(450);
             entity.Property(e => e.IdUsuarioActualizacion).HasMaxLength(450);
             entity.Property(e => e.IdUsuarioCreacion).HasMaxLength(450);
-            entity.Property(e => e.MermaAlambre).HasColumnType("decimal(18, 1)");
+            entity.Property(e => e.MermaAlambre).HasColumnType("decimal(18, 2)");
             entity.Property(e => e.Observaciones).HasMaxLength(4000);
-            entity.Property(e => e.TiempoParo).HasColumnType("decimal(18, 1)");
+            entity.Property(e => e.TiempoParo).HasColumnType("decimal(18, 2)");
 
             entity.HasOne(d => d.IdMaquinaNavigation).WithMany(p => p.PrdPanelesCovintecs)
                 .HasForeignKey(d => d.IdMaquina)

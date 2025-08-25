@@ -28,7 +28,7 @@
                 </div>
                 <div class="form-group">
                     <label asp-for="TiempoParo"></label>
-                    <input asp-for="TiempoParo" class="form-control" type="number" step="0.1" min="0" />
+                    <input asp-for="TiempoParo" class="form-control" type="number" step="0.11" min="0" />
                 </div>
              
                 <div class="hr-line-dashed"></div>
@@ -131,7 +131,6 @@
                                     <label class="form-label">Cantidad No Conforme <span class="text-danger">*</span></label>
                                     <input type="number" min="0" id="CantidadNoConforme" name="CantidadNoConforme" class="form-control" />
                                 </div>
-
 
                                 <div class="form-group" style="display:none">
                                     <label class="form-label">Número de Alambre <span class="text-danger">*</span></label>
@@ -312,14 +311,13 @@
                 var numeroPedido = $(modalId + ' #NumeroPedido').val();
                 var cantidadProducida = $(modalId + ' #CantidadProducida').val();
                 var cantidadNoConforme = $(modalId + ' #CantidadNoConforme').val();
-                var mts2PorPanel = $(modalId + ' #Mts2PorPanel').val();
                 var numeroAlambre = $(modalId + ' #NumeroAlambre').val();
                 var pesoAlambreKg = $(modalId + ' #PesoAlambreKg').val();
                 var mermaAlambreKg = $(modalId + ' #MermaAlambreKg').val();
 
                 // Validaciones
                 if(!idArticulo || !longitud || !idTipoFabricacion || !cantidadProducida || 
-                   !cantidadNoConforme || !mts2PorPanel || !numeroAlambre || !pesoAlambreKg || !mermaAlambreKg){
+                   !cantidadNoConforme){
                     $(modalId + ' #spnbtnGuardarDetPrd').text('Complete todos los campos obligatorios.');
                     return;
                 }
@@ -330,13 +328,8 @@
                     return;
                 }
 
-                // Validar formato de cantidades
-                var cantidadRegex = /^\d+(\.\d{1,2})?$/;
-                if(!cantidadRegex.test(longitud) || !cantidadRegex.test(mts2PorPanel) ||
-                   !cantidadRegex.test(pesoAlambreKg) || !cantidadRegex.test(mermaAlambreKg)){
-                    $(modalId + ' #spnbtnGuardarDetPrd').text('Las cantidades deben ser números válidos con máximo 2 decimales.');
-                    return;
-                }
+                // Calcular Mts² por Panel (misma fórmula del servicio)
+                var mts2PorPanel = 1.2 * (parseFloat(longitud) * parseInt(cantidadProducida));
 
                 // Obtener textos para mostrar
                 var articuloText = $(modalId + ' #IdArticulo option:selected').text();
@@ -350,10 +343,10 @@
                               data-numeropedido="${numeroPedido || ''}"
                               data-cantidadproducida="${cantidadProducida}"
                               data-cantidadnoconforme="${cantidadNoConforme}"
-                              data-mts2porpanel="${mts2PorPanel}"
                               data-numeroalambre="${numeroAlambre}"
                               data-pesoalambrekg="${pesoAlambreKg}"
-                              data-mermaalambrekg="${mermaAlambreKg}">
+                              data-mermaalambrekg="${mermaAlambreKg}"
+                              data-mts2porpanel="${mts2PorPanel}">
                                <td>${no}</td>
                                <td>${articuloText}</td>
                                <td>${longitud}</td>
@@ -361,10 +354,11 @@
                                <td>${numeroPedido || ''}</td>
                                <td>${cantidadProducida}</td>
                                <td>${cantidadNoConforme}</td>
-                               <td>${mts2PorPanel}</td>
+                               <td>${mts2PorPanel.toFixed(2)}</td>
                                <td style="display:none">${numeroAlambre}</td>
                                <td style="display:none">${pesoAlambreKg}</td>
                                <td style="display:none">${mermaAlambreKg}</td>
+                              
                            </tr>`;
 
                 $('#tblDetalle > tbody').append(row);

@@ -13,8 +13,56 @@
             <form autocomplete="off">
                 @Html.AntiForgeryToken()
 
-                <!-- Campos de cabecera igual que tenías -->
-                ...
+                <div class="form-group">
+                    <label asp-for="IdUsuarios"></label>
+                    <select multiple asp-for="IdUsuarios" class="form-control select2" asp-items="Model.Operarios" disabled>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label asp-for="IdMaquina"></label>
+                    <select asp-for="IdMaquina" class="form-control select2" asp-items="Model.Maquinas" disabled>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Fecha"></label>
+                    <input asp-for="Fecha" class="form-control" readonly />
+                </div>
+                <div class="form-group">
+                    <label asp-for="TiempoParo"></label>
+                    <input asp-for="TiempoParo" class="form-control" readonly />
+                </div>
+
+                <!-- Campos de Merma -->
+                <div class="hr-line-dashed"></div>
+                <h4>Mermas</h4>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label asp-for="MermaMallaCovintecKg"></label>
+                            <input asp-for="MermaMallaCovintecKg" class="form-control" readonly />
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label asp-for="MermaMallaPchKg"></label>
+                            <input asp-for="MermaMallaPchKg" class="form-control" readonly />
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label asp-for="MermaBobinasKg"></label>
+                            <input asp-for="MermaBobinasKg" class="form-control" readonly />
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label asp-for="MermaLitewallKg"></label>
+                            <input asp-for="MermaLitewallKg" class="form-control" readonly />
+                        </div>
+                    </div>
+                </div>
 
                 <div class="hr-line-dashed"></div>
                 <div class="form-group row">
@@ -70,7 +118,24 @@
                     </div>
                 </div>
 
-                <!-- resto igual -->
+                <div class="form-group">
+                    <label asp-for="Observaciones"></label>
+                    <textarea asp-for="Observaciones" class="form-control" rows="3" readonly></textarea>
+                </div>
+
+                <div class="hr-line-dashed"></div>
+
+
+
+                <button type="button" class="btn btn-dark" onclick="location.href='@Url.Action("Index", "PrdAccesorios")'">Regresar</button>
+                @if (User.IsInRole("Supervisor") && Model.AprobadoSupervisor != true)
+                {
+                    <button id="btnValidarProd" type="button" class="btn btn-danger">Validar</button>
+                }
+                else
+                {
+                    <button type="button" class="btn btn-success">Validado</button>
+                }
             </form>
         </div>
     </div>
@@ -78,6 +143,45 @@
 
 @section Scripts {
     <script>
+
+        $(document).ready(function () {
+            // Inicializar select2 deshabilitado
+            $('.select2').select2({
+                width: '100%'
+            });
+
+            // Botón validar
+            $('#btnValidarProd').click(function () {
+                if (confirm('¿Está seguro que desea validar esta producción?')) {
+                    var token = $('input[name="__RequestVerificationToken"]').val();
+                    var id = @Model.Id;
+
+                    $.ajax({
+                        url: '@Url.Action("ValidarPrd", "PrdAccesorios")',
+                        type: 'POST',
+                        data: { id: id },
+                        headers: {
+                            'RequestVerificationToken': token
+                        },
+                        success: function (response) {
+                            if (response) {
+                                alert('Producción validada exitosamente');
+                                location.reload();
+                            } else {
+                                alert('No se pudo validar la producción');
+                            }
+                        },
+                        error: function () {
+                            alert('Error al validar la producción');
+                        }
+                    });
+                }
+            });
+
+        });
+
+
+
         function hydrateArticuloColumn() {
             var grupos = {};
 
