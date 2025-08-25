@@ -31,10 +31,7 @@ namespace Application.Services
             await _unitOfWork.BeginTransactionAsync();
             try
             {
-
                 var panelesCovintec = _unitOfWork.CatalogoPanelesCovintecRepository.GetAllAsync().Result;
-
-                await _unitOfWork.BeginTransactionAsync();
 
                 // 1. Crear y agregar la entidad maestro (cp.PrdPanelesCovintec)
                 var prdPanelesCovintec = new PrdPanelesCovintec

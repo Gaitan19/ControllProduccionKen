@@ -91,8 +91,6 @@ namespace Application.Services
             {
                 var catCercha = await _unitOfWork.CatalogoCerchaRepository.GetAllAsync();
 
-                await _unitOfWork.BeginTransactionAsync();
-
                 // 1. Crear y agregar la entidad maestro (cp.PrdCerchaCovintec)
                 var prdCerchaCovintec = new PrdCerchaCovintec
                 {
