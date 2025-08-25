@@ -169,6 +169,10 @@
                                 <td>@reporte.Fecha.ToString("yyyy-MM-dd")</td>
                             </tr>
                             <tr>
+                                <td>Tiempo Paro (horas)</td>
+                                <td>@(reporte.TiempoParo?.ToString("0.0") ?? "N/A")</td>
+                            </tr>
+                            <tr>
                                 <td>Validador</td>
                                 <td>@reporte.Supervisor</td>
                             </tr>
@@ -193,6 +197,8 @@
                                 <th>Comentario</th>
                                 <th>Hora Inicio</th>
                                 <th>Hora Fin</th>
+                                <th>Cantidad</th>
+                                <th>Unidad Medida</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -208,6 +214,8 @@
                                     <td>@detalle.Comentario</td>
                                     <td>@To12HourFormat(detalle.HoraInicio)</td>
                                     <td>@To12HourFormat(detalle.HoraFin)</td>
+                                    <td>@detalle.Cantidad</td>
+                                    <td>@detalle.UnidadMedida</td>
                                 </tr>
                             }
                         </tbody>

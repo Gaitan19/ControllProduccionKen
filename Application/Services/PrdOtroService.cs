@@ -43,7 +43,8 @@ namespace Application.Services
                     IdTipoReporte = 8, // Default tipo reporte for otro
                     IdUsuarios = string.Join(",", dto.IdUsuarios ?? new List<string>()),
                     AprobadoSupervisor = false,
-                    AprobadoGerencia = false
+                    AprobadoGerencia = false,
+                    TiempoParo = dto.TiempoParo
                 };
 
                 await _unitOfWork.PrdOtroRepository.AddAsync(prdOtro);
@@ -64,6 +65,8 @@ namespace Application.Services
                         Comentario = detalle.Comentario,
                         HoraInicio = detalle.HoraInicio,
                         HoraFin = detalle.HoraFin,
+                        Cantidad = detalle.Cantidad,
+                        UnidadMedida = detalle.UnidadMedida,
                         IdUsuarioCreacion = dto.IdUsuarioCreacion,
                         FechaCreacion = prdOtro.FechaCreacion
                     });
@@ -132,6 +135,7 @@ namespace Application.Services
                 IdUsuarioActualizacion = prd.IdUsuarioActualizacion,
                 FechaActualizacion = prd.FechaActualizacion,
                 IdTipoReporte = prd.IdTipoReporte,
+                TiempoParo = prd.TiempoParo,
                 AprobadoSupervisor = prd.AprobadoSupervisor,
                 AprobadoGerencia = prd.AprobadoGerencia,
                 IdAprobadoSupervisor = prd.IdAprobadoSupervisor,
@@ -149,6 +153,8 @@ namespace Application.Services
                     Comentario = entity.Comentario,
                     HoraInicio = entity.HoraInicio,
                     HoraFin = entity.HoraFin,
+                    Cantidad = entity.Cantidad,
+                    UnidadMedida = entity.UnidadMedida,
                     IdUsuarioCreacion = entity.IdUsuarioCreacion,
                     FechaCreacion = entity.FechaCreacion,
                     IdUsuarioActualizacion = entity.IdUsuarioActualizacion,
@@ -221,6 +227,7 @@ namespace Application.Services
             {
                 prd.Fecha = dto.Fecha;
                 prd.IdUsuarios = string.Join(",", dto.IdUsuarios ?? new List<string>());
+                prd.TiempoParo = dto.TiempoParo;
                 prd.IdUsuarioActualizacion = dto.IdUsuarioActualizacion;
                 prd.FechaActualizacion = DateTime.Now;
                 _unitOfWork.PrdOtroRepository.Update(prd);
@@ -242,6 +249,8 @@ namespace Application.Services
                 det.Comentario = dto.Comentario;
                 det.HoraInicio = dto.HoraInicio;
                 det.HoraFin = dto.HoraFin;
+                det.Cantidad = dto.Cantidad;
+                det.UnidadMedida = dto.UnidadMedida;
                 det.IdUsuarioActualizacion = dto.IdUsuarioActualizacion;
                 det.FechaActualizacion = DateTime.Now;
                 _unitOfWork.DetPrdOtroRepository.Update(det);

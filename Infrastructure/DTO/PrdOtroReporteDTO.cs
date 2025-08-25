@@ -24,6 +24,7 @@ namespace Infrastructure.DTO
         public string? IdAprobadoGerencia { get; set; }
         public string Supervisor { get; set; } = string.Empty; // Friendly name
         public string JefeProd { get; set; } = string.Empty; // Friendly name
+        public decimal? TiempoParo { get; set; }
 
         // Detalles
         public List<DetalleOtroDto> Detalles { get; set; } = new List<DetalleOtroDto>();
@@ -83,5 +84,15 @@ namespace Infrastructure.DTO
         /// Hora de fin de la actividad.
         /// </summary>
         public TimeSpan HoraFin { get; set; }
+
+        /// <summary>
+        /// Cantidad del producto.
+        /// </summary>
+        public decimal Cantidad { get; set; }
+
+        /// <summary>
+        /// Unidad de medida del producto.
+        /// </summary>
+        public string UnidadMedida { get; set; } = string.Empty;
     }
 }

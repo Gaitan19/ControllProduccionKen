@@ -22,6 +22,7 @@ namespace Application.DTOs
         public string? IdAprobadoGerencia { get; set; }
 
         public int? IdTipoReporte { get; set; }
+        public decimal? TiempoParo { get; set; }
 
         public List<DetPrdOtroDTO>? DetPrdOtros { get; set; }
     }
