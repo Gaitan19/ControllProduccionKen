@@ -132,7 +132,6 @@
                                     <input type="number" min="0" id="CantidadNoConforme" name="CantidadNoConforme" class="form-control" />
                                 </div>
 
-
                                 <div class="form-group" style="display:none">
                                     <label class="form-label">Número de Alambre <span class="text-danger">*</span></label>
                                     <input type="number" min="1" id="NumeroAlambre" name="NumeroAlambre" class="form-control" value="1" />
@@ -312,7 +311,6 @@
                 var numeroPedido = $(modalId + ' #NumeroPedido').val();
                 var cantidadProducida = $(modalId + ' #CantidadProducida').val();
                 var cantidadNoConforme = $(modalId + ' #CantidadNoConforme').val();
-
                 var numeroAlambre = $(modalId + ' #NumeroAlambre').val();
                 var pesoAlambreKg = $(modalId + ' #PesoAlambreKg').val();
                 var mermaAlambreKg = $(modalId + ' #MermaAlambreKg').val();
@@ -330,7 +328,8 @@
                     return;
                 }
 
-                
+                // Calcular Mts² por Panel (misma fórmula del servicio)
+                var mts2PorPanel = 1.2 * (parseFloat(longitud) * parseInt(cantidadProducida));
 
                 // Obtener textos para mostrar
                 var articuloText = $(modalId + ' #IdArticulo option:selected').text();
@@ -344,10 +343,10 @@
                               data-numeropedido="${numeroPedido || ''}"
                               data-cantidadproducida="${cantidadProducida}"
                               data-cantidadnoconforme="${cantidadNoConforme}"
-
                               data-numeroalambre="${numeroAlambre}"
                               data-pesoalambrekg="${pesoAlambreKg}"
-                              data-mermaalambrekg="${mermaAlambreKg}">
+                              data-mermaalambrekg="${mermaAlambreKg}"
+                              data-mts2porpanel="${mts2PorPanel}">
                                <td>${no}</td>
                                <td>${articuloText}</td>
                                <td>${longitud}</td>
@@ -355,10 +354,11 @@
                                <td>${numeroPedido || ''}</td>
                                <td>${cantidadProducida}</td>
                                <td>${cantidadNoConforme}</td>
-
+                               <td>${mts2PorPanel.toFixed(2)}</td>
                                <td style="display:none">${numeroAlambre}</td>
                                <td style="display:none">${pesoAlambreKg}</td>
                                <td style="display:none">${mermaAlambreKg}</td>
+                              
                            </tr>`;
 
                 $('#tblDetalle > tbody').append(row);
@@ -403,7 +403,7 @@
                         NumeroPedido: $row.data('numeropedido') ? parseInt($row.data('numeropedido')) : null,
                         CantidadProducida: parseInt($row.data('cantidadproducida')),
                         CantidadNoConforme: parseInt($row.data('cantidadnoconforme')),
-
+                        Mts2PorPanel: parseFloat($row.data('mts2porpanel')),
                         NumeroAlambre: parseInt($row.data('numeroalambre')),
                         PesoAlambreKg: parseFloat($row.data('pesoalambrekg')),
                         MermaAlambreKg: parseFloat($row.data('mermaalambrekg'))
