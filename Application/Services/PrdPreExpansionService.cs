@@ -85,7 +85,7 @@ namespace Application.Services
                     Fecha = prdPreExpansion.Fecha,
                     HoraInicio = prdPreExpansion.HoraInicio,
                     HoraFin = prdPreExpansion.HoraFin,
-                    TiempoParo = prdPreExpansion.TiempoParo.HasValue ? (int?)Convert.ToInt32(prdPreExpansion.TiempoParo.Value) : null,
+                    TiempoParo = prdPreExpansion.TiempoParo,
                     Observaciones = prdPreExpansion.Observaciones,
                     IdTipoReporte = prdPreExpansion.IdTipoReporte,
                     IdUsuarios = string.Join(",", prdPreExpansion.IdUsuarios ?? new List<string>()),
@@ -207,7 +207,7 @@ namespace Application.Services
                 Fecha = prd.Fecha,
                 HoraInicio = prd.HoraInicio,
                 HoraFin = prd.HoraFin,
-                TiempoParo = prd.TiempoParo.HasValue ? (decimal?)prd.TiempoParo.Value : null,
+                TiempoParo = prd.TiempoParo,
                 Observaciones = prd.Observaciones,
                 IdTipoReporte = prd.IdTipoReporte,
                 PresionCaldera = prd.PresionCaldera,
@@ -280,7 +280,7 @@ namespace Application.Services
                 entity.Fecha = prdPreExpansion.Fecha;
                 entity.HoraInicio = prdPreExpansion.HoraInicio;
                 entity.HoraFin = prdPreExpansion.HoraFin;
-                entity.TiempoParo = prdPreExpansion.TiempoParo.HasValue ? (int?)Convert.ToInt32(prdPreExpansion.TiempoParo.Value) : null;
+                entity.TiempoParo = prdPreExpansion.TiempoParo;
                 entity.Observaciones = prdPreExpansion.Observaciones;
                 entity.IdUsuarios = string.Join(",", prdPreExpansion.IdUsuarios ?? new List<string>());
                 entity.PresionCaldera = prdPreExpansion.PresionCaldera;
