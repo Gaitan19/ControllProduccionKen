@@ -62,7 +62,7 @@ namespace Application.Services
                         NumeroPedido = detalle.NumeroPedido,
                         Longitud = detalle.Longitud,
                         Cantidad = detalle.Cantidad,
-                        Produccion = (detalle.HilosTransversalesUn * detalle.Longitud) * FactorProd,
+                        Produccion = (detalle.HilosTransversalesUn * detalle.Longitud),
                         NumeroAlambreA = detalle.NumeroAlambreA,
                         PesoAlambreKgA = detalle.PesoAlambreKgA,
                         IdUsuarioCreacion = dto.IdUsuarioCreacion,
@@ -86,7 +86,7 @@ namespace Application.Services
                         NumeroPedido = detalle.NumeroPedido,
                         Longitud = detalle.Longitud,
                         Cantidad = detalle.Cantidad,
-                        Produccion = (detalle.HilosLongitudinalesUn * detalle.Longitud) * FactorProd,
+                        Produccion = (detalle.HilosLongitudinalesUn * detalle.Longitud),
                         NumeroAlambreB = detalle.NumeroAlambreB,
                         PesoAlambreKgB = detalle.PesoAlambreKgB,
                         IdUsuarioCreacion = dto.IdUsuarioCreacion,
@@ -286,7 +286,7 @@ namespace Application.Services
                 det.NumeroPedido = dto.NumeroPedido;
                 det.Longitud = dto.Longitud;
                 det.Cantidad = dto.Cantidad;
-                det.Produccion = (dto.HilosTransversalesUn * dto.Longitud) * FactorProd;
+                det.Produccion = (dto.HilosTransversalesUn * dto.Longitud);
                 det.NumeroAlambreA = dto.NumeroAlambreA;
                 det.PesoAlambreKgA = dto.PesoAlambreKgA;
                 det.IdUsuarioActualizacion = dto.IdUsuarioActualizacion;
@@ -318,7 +318,7 @@ namespace Application.Services
                 det.NumeroPedido = dto.NumeroPedido;
                 det.Longitud = dto.Longitud;
                 det.Cantidad = dto.Cantidad;
-                det.Produccion = (dto.HilosLongitudinalesUn * dto.Longitud) * FactorProd;
+                det.Produccion = (dto.HilosLongitudinalesUn * dto.Longitud);
                 det.NumeroAlambreB = dto.NumeroAlambreB;
                 det.PesoAlambreKgB = dto.PesoAlambreKgB;
                 det.IdUsuarioActualizacion = dto.IdUsuarioActualizacion;
