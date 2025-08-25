@@ -51,9 +51,9 @@
                                     <th>Cantidad Producida</th>
                                     <th>Cantidad No Conforme</th>
                                     <th>Mts² por Panel</th>
-                                    <th>N° Alambre</th>
-                                    <th>Peso Alambre (kg)</th>
-                                    <th>Merma Alambre (kg)</th>
+                                    <th style="display:none">N° Alambre</th>
+                                    <th style="display:none">Peso Alambre (kg)</th>
+                                    <th style="display:none">Merma Alambre (kg)</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -137,19 +137,19 @@
                                     <input type="number" step="0.01" min="0.1" id="Mts2PorPanel" name="Mts2PorPanel" class="form-control" />
                                 </div>
 
-                                <div class="form-group">
+                                <div class="form-group" style="display:none">
                                     <label class="form-label">Número de Alambre <span class="text-danger">*</span></label>
-                                    <input type="number" min="1" id="NumeroAlambre" name="NumeroAlambre" class="form-control" />
+                                    <input type="number" min="1" id="NumeroAlambre" name="NumeroAlambre" class="form-control" value="1" />
                                 </div>
 
-                                <div class="form-group">
+                                <div class="form-group" style="display:none">
                                     <label class="form-label">Peso Alambre (kg) <span class="text-danger">*</span></label>
-                                    <input type="number" step="0.1" min="0.1" id="PesoAlambreKg" name="PesoAlambreKg" class="form-control" />
+                                    <input type="number" step="0.1" min="0.1" id="PesoAlambreKg" name="PesoAlambreKg" class="form-control" value="0.1" />
                                 </div>
 
-                                <div class="form-group">
+                                <div class="form-group" style="display:none">
                                     <label class="form-label">Merma Alambre (kg) <span class="text-danger">*</span></label>
-                                    <input type="number" step="0.1" min="0" id="MermaAlambreKg" name="MermaAlambreKg" class="form-control" />
+                                    <input type="number" step="0.1" min="0" id="MermaAlambreKg" name="MermaAlambreKg" class="form-control" value="0" />
                                 </div>
                             </form>
                         </div>
@@ -366,9 +366,9 @@
                                <td>${cantidadProducida}</td>
                                <td>${cantidadNoConforme}</td>
                                <td>${mts2PorPanel}</td>
-                               <td>${numeroAlambre}</td>
-                               <td>${pesoAlambreKg}</td>
-                               <td>${mermaAlambreKg}</td>
+                               <td style="display:none">${numeroAlambre}</td>
+                               <td style="display:none">${pesoAlambreKg}</td>
+                               <td style="display:none">${mermaAlambreKg}</td>
                            </tr>`;
 
                 $('#tblDetalle > tbody').append(row);

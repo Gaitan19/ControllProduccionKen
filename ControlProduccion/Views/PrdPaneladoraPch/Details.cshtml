@@ -72,9 +72,9 @@
                                     <th>Mts² por Panel</th>
                                     <th>Tipo Fabricación</th>
                                     <th>N° Pedido</th>
-                                    <th>N° Alambre</th>
-                                    <th>Peso Alambre (kg)</th>
-                                    <th>Merma Alambre (kg)</th>
+                                    <th style="display:none">N° Alambre</th>
+                                    <th style="display:none">Peso Alambre (kg)</th>
+                                    <th style="display:none">Merma Alambre (kg)</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -91,9 +91,9 @@
                                             <td>@det.Mts2PorPanel?.ToString("N2")</td>
                                             <td>@det.TipoFabricacion</td>
                                             <td>@(det.NumeroPedido?.ToString() ?? "-")</td>
-                                            <td>@det.NumeroAlambre</td>
-                                            <td>@det.PesoAlambreKg.ToString("N2")</td>
-                                            <td>@det.MermaAlambreKg.ToString("N2")</td>
+                                            <td style="display:none">@det.NumeroAlambre</td>
+                                            <td style="display:none">@det.PesoAlambreKg.ToString("N2")</td>
+                                            <td style="display:none">@det.MermaAlambreKg.ToString("N2")</td>
                                         </tr>
                                     }
                                 }
