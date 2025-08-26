@@ -56,6 +56,10 @@ namespace ControlProduccion.ViewModel
         [Display(Name = "Tipo de Bloque")]
         public IEnumerable<SelectListItem>? CatalogoTipoBloque { get; set; }
 
+        [Display(Name = "Nota del Supervisor")]
+        [StringLength(1000, ErrorMessage = "La nota del supervisor no puede exceder 1000 caracteres")]
+        public string? NotaSupervisor { get; set; }
+
         // Detalles
         public List<DetPrdBloqueViewModel>? DetPrdBloques { get; set; }
 
