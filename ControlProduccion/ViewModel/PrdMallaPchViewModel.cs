@@ -34,6 +34,10 @@ namespace ControlProduccion.ViewModel
         [Range(0, double.MaxValue)]
         public decimal? ProduccionTotal { get; set; }
 
+        [Display(Name = "Nota del Supervisor")]
+        [StringLength(1000, ErrorMessage = "La nota del supervisor no puede exceder 1000 caracteres")]
+        public string? NotaSupervisor { get; set; }
+
         // Aprobaciones (nulas en VM; en DTO serán false si null)
         [Display(Name = "Aprobado por Supervisor")]
         public bool? AprobadoSupervisor { get; set; }

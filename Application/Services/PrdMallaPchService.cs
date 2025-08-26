@@ -188,6 +188,7 @@ namespace Application.Services
                 Observaciones = prd.Observaciones,
                 ProduccionDia = prd.ProduccionDia,
                 TiempoParo = prd.TiempoParo,
+                NotaSupervisor = prd.NotaSupervisor,
                 IdUsuarioCreacion = prd.IdUsuarioCreacion,
                 FechaCreacion = prd.FechaCreacion,
                 IdUsuarioActualizacion = prd.IdUsuarioActualizacion,
@@ -432,6 +433,23 @@ namespace Application.Services
 
             prdMallaPch.AprobadoGerencia = true;
             prdMallaPch.IdAprobadoGerencia = userId;
+            prdMallaPch.IdUsuarioActualizacion = userId;
+            prdMallaPch.FechaActualizacion = DateTime.Now;
+
+            _unitOfWork.PrdMallaPchRepository.Update(prdMallaPch);
+            await _unitOfWork.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<bool> UpdateNotaSupervisorAsync(int id, string notaSupervisor, string userId)
+        {
+            var prdMallaPch = await _unitOfWork.PrdMallaPchRepository.GetByIdAsync(id);
+            if (prdMallaPch == null)
+            {
+                return false;
+            }
+
+            prdMallaPch.NotaSupervisor = notaSupervisor;
             prdMallaPch.IdUsuarioActualizacion = userId;
             prdMallaPch.FechaActualizacion = DateTime.Now;
 
