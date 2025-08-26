@@ -34,6 +34,8 @@ namespace Application.DTOs
 
         public decimal? TiempoParo { get; set; }
 
+        public string? NotaSupervisor { get; set; }
+
         public List<DetPrdPchMaquinaADTO>? DetPrdPchMaquinaAs { get; set; }
 
         public List<DetPrdPchMaquinaBDTO>? DetPrdPchMaquinaBs { get; set; }

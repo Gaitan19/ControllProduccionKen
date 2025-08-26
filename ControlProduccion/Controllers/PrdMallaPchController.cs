@@ -289,6 +289,24 @@ namespace ControlProduccion.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Supervisor")]
+        public async Task<IActionResult> SaveNotaSupervisor(int id, string notaSupervisor)
+        {
+            var userId = _userManager.GetUserId(User);
+            var result = await _prdMallaPchService.UpdateNotaSupervisorAsync(id, notaSupervisor, userId);
+            
+            if (result)
+            {
+                return Json(new { success = true, message = "Nota guardada exitosamente" });
+            }
+            else
+            {
+                return Json(new { success = false, message = "Error al guardar la nota" });
+            }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         [Authorize(Roles = "JefeProduccion")]
         public async Task<IActionResult> AprobarPrd(int id)
         {
@@ -355,6 +373,7 @@ namespace ControlProduccion.Controllers
                 Fecha = modelDto.Fecha,
                 Observaciones = modelDto.Observaciones,
                 TiempoParo = modelDto.TiempoParo,
+                NotaSupervisor = modelDto.NotaSupervisor,
                 AprobadoSupervisor = modelDto.AprobadoSupervisor,
                 AprobadoGerencia = modelDto.AprobadoGerencia,
                 IdAprobadoSupervisor = modelDto.IdAprobadoSupervisor,

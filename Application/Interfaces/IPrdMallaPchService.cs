@@ -29,6 +29,7 @@ namespace Application.Interfaces
 
         Task<bool> ValidatePrdMallaPchByIdAsync(int id, string userId);
         Task<bool> AprovePrdMallaPchByIdAsync(int id, string userId);
+        Task<bool> UpdateNotaSupervisorAsync(int id, string notaSupervisor, string userId);
         Task<IEnumerable<PrdMallaPCHReporteDTO>> GetAllPrdMallaPCHWithDetailsAsync(DateTime start, DateTime end);
     }
 }
