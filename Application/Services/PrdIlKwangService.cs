@@ -314,6 +314,7 @@ namespace Application.Services
                 AprobadoGerencia = prd.AprobadoGerencia,
                 IdAprobadoSupervisor = prd.IdAprobadoSupervisor,
                 IdAprobadoGerencia = prd.IdAprobadoGerencia,
+                NotaSupervisor = prd.NotaSupervisor,
                 MetroInicialIsocianato = prd.MetroInicialIsocianato,
                 MetroInicialPoliol = prd.MetroInicialPoliol
             };
@@ -460,6 +461,7 @@ namespace Application.Services
             prd.LoteB = dto.LoteB;
             prd.VencimientoB = dto.VencimientoB;
             prd.Observaciones = dto.Observaciones;
+            prd.NotaSupervisor = dto.NotaSupervisor;
             prd.CantidadArranques = dto.CantidadArranques;
             prd.IdUsuarioActualizacion = dto.IdUsuarioActualizacion;
             prd.FechaActualizacion = DateTime.Now;
@@ -514,6 +516,23 @@ namespace Application.Services
 
             prdIlKwang.AprobadoSupervisor = true;
             prdIlKwang.IdAprobadoSupervisor = userId;
+            _unitOfWork.PrdIlKwangRepository.Update(prdIlKwang);
+            await _unitOfWork.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<bool> GuardarNotaSupervisorAsync(int id, string nota, string userId)
+        {
+            var prdIlKwang = await _unitOfWork.PrdIlKwangRepository.GetByIdAsync(id);
+            if (prdIlKwang == null)
+            {
+                return false;
+            }
+
+            prdIlKwang.NotaSupervisor = nota;
+            prdIlKwang.IdUsuarioActualizacion = userId;
+            prdIlKwang.FechaActualizacion = DateTime.Now;
+
             _unitOfWork.PrdIlKwangRepository.Update(prdIlKwang);
             await _unitOfWork.SaveChangesAsync();
             return true;
