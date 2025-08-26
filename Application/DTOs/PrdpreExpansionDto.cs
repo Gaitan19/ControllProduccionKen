@@ -37,6 +37,8 @@ namespace Application.DTOs
         public string? IdAprobadoSupervisor { get; set; }
         public string? IdAprobadoGerencia { get; set; }
 
+        public string? NotaSupervisor { get; set; }
+
         public List<DetPrdpreExpansionDTO>? DetPrdpreExpansions { get; set; }
     }
 }
