@@ -58,6 +58,7 @@ namespace ControlProduccion.Controllers
                 ConteoFinal = model.ConteoFinal,
                 AprobadoGerencia = model.AprobadoGerencia,
                 AprobadoSupervisor = model.AprobadoSupervisor,
+                NotaSupervisor = model.NotaSupervisor,
                 DetPrdCerchaCovintec = model.DetPrdCerchaCovintecs.Select(m => new DetPrdCerchaCovintecViewModel
                 {
                     Id = m.Id,
@@ -228,6 +229,7 @@ namespace ControlProduccion.Controllers
                 ConteoFinal = model.ConteoFinal,
                 AprobadoGerencia = model.AprobadoGerencia,
                 AprobadoSupervisor = model.AprobadoSupervisor,
+                NotaSupervisor = model.NotaSupervisor,
                 DetPrdCerchaCovintec = model.DetPrdCerchaCovintecs.Select(m => new DetPrdCerchaCovintecViewModel
                 {
                     Id = m.Id,

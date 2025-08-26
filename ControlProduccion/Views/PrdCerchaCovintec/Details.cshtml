@@ -356,11 +356,9 @@
                 url: '@Url.Action("SaveNotaSupervisor", "PrdCerchaCovintec")',
                 type: 'POST',
                 data: { 
+                    __RequestVerificationToken: token,
                     id: @Model.Id, 
                     notaSupervisor: notaSupervisor 
-                },
-                headers: {
-                    'RequestVerificationToken': token
                 },
                 success: function (response) {
                     if (response && response.success) {

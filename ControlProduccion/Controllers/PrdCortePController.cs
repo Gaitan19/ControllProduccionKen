@@ -266,6 +266,7 @@ namespace ControlProduccion.Controllers
                 AprobadoGerencia = modelDto.AprobadoGerencia,
                 IdAprobadoSupervisor = modelDto.IdAprobadoSupervisor,
                 IdAprobadoGerencia = modelDto.IdAprobadoGerencia,
+                NotaSupervisor = modelDto.NotaSupervisor,
                 subDetalleBloqueCodigo = subDetalleBloqueCodigoDict?.Select(b => new SelectListItem { Value = b.Key, Text = b.Value }),
                 IdMaquina = modelDto.IdMaquina,
                 Maquinas = dtoCat.CatMaquina?.Select(m => new SelectListItem { Value = m.Id.ToString(), Text = m.Nombre }),
