@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -26,6 +27,10 @@ namespace Application.DTOs
         public bool AprobadoGerencia { get; set; }
         public string? IdAprobadoSupervisor { get; set; }
         public string? IdAprobadoGerencia { get; set; }
+
+        [Display(Name = "Nota Supervisor")]
+        [StringLength(4000, ErrorMessage = "La nota del supervisor no puede exceder 4000 caracteres")]
+        public string? NotaSupervisor { get; set; }
 
         public List<DetPrdNeveraDTO>? DetPrdNeveras { get; set; }
     }

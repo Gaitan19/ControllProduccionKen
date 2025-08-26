@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace Application.DTOs
 {
@@ -33,6 +34,10 @@ namespace Application.DTOs
         public string? IdAprobadoGerencia { get; set; }
 
         public decimal? TiempoParo { get; set; }
+
+        [Display(Name = "Nota Supervisor")]
+        [StringLength(4000, ErrorMessage = "La nota del supervisor no puede exceder 4000 caracteres")]
+        public string? NotaSupervisor { get; set; }
 
         public List<DetPrdPchMaquinaADTO>? DetPrdPchMaquinaAs { get; set; }
 
