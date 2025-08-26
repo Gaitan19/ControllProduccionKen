@@ -152,7 +152,7 @@ namespace Application.DTOs
 
         public string? IdAprobadoGerencia { get; set; }
 
-
+        public string? NotaSupervisor { get; set; }
 
         public List<DetPrdIlKwangDTO>? DetPrdIlKwangs { get; set; }
     }

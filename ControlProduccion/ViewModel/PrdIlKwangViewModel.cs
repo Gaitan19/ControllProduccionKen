@@ -20,8 +20,8 @@ namespace ControlProduccion.ViewModel
 
         public IEnumerable<SelectListItem>? Operarios { get; set; }
 
-        [Required(ErrorMessage = "El campo Máquina es obligatorio")]
-        [Display(Name = "Máquina")]
+        [Required(ErrorMessage = "El campo Mï¿½quina es obligatorio")]
+        [Display(Name = "Mï¿½quina")]
         public int IdMaquina { get; set; }
 
         public IEnumerable<SelectListItem>? Maquinas { get; set; }
@@ -45,13 +45,13 @@ namespace ControlProduccion.ViewModel
         
         public decimal TiempoParo { get; set; }
 
-        [Required(ErrorMessage = "El campo Artículo es obligatorio")]
-        [Display(Name = "Artículo")]
+        [Required(ErrorMessage = "El campo Artï¿½culo es obligatorio")]
+        [Display(Name = "Artï¿½culo")]
         public List<string> IdArticulo { get; set; }
 
         public IEnumerable<SelectListItem>? CatalogoArticulos { get; set; }
         [Required(ErrorMessage = "El campo {0} es obligatorio")]
-        [Display(Name = "Tipo de Fabricación")]
+        [Display(Name = "Tipo de Fabricaciï¿½n")]
         public int IdTipoFabricacion { get; set; }
 
         public IEnumerable<SelectListItem>? TiposFabricacion { get; set; }
@@ -59,14 +59,14 @@ namespace ControlProduccion.ViewModel
         [Display(Name = "Cliente")]
         public string Cliente { get; set; }
 
-        [Display(Name = "Número de Pedido")]
+        [Display(Name = "Nï¿½mero de Pedido")]
         public int? NumeroPedido { get; set; }
 
-        [Display(Name = "Velocidad de Máquina")]
+        [Display(Name = "Velocidad de Mï¿½quina")]
         public int VelocidadMaquina { get; set; }
         [Required(ErrorMessage = "El campo {0} es obligatorio")]
         // Properties for Bobina A
-        [Display(Name = "Ubicación Bobina A")]
+        [Display(Name = "Ubicaciï¿½n Bobina A")]
         public int IdUbicacionBobinaA { get; set; }
         public IEnumerable<SelectListItem>? UbicacionesBobinaA { get; set; }
         [Required(ErrorMessage = "El campo {0} es obligatorio")]
@@ -77,7 +77,7 @@ namespace ControlProduccion.ViewModel
         [Display(Name = "Fabricante Bobina A")]
         public string FabricanteBobinaA { get; set; }
         [Required(ErrorMessage = "El campo {0} es obligatorio")]
-        [Display(Name = "Código Bobina A")]
+        [Display(Name = "Cï¿½digo Bobina A")]
         public string CodigoBobinaA { get; set; }
 
         [Display(Name = "Calibre (mm) A")]
@@ -109,7 +109,7 @@ namespace ControlProduccion.ViewModel
         public int EspesorFinalCmA { get; set; }
 
         // Properties for Bobina B
-        [Display(Name = "Ubicación Bobina B")]
+        [Display(Name = "Ubicaciï¿½n Bobina B")]
         [Required(ErrorMessage = "El campo {0} es obligatorio")]
         public int IdUbicacionBobinaB { get; set; }
         public IEnumerable<SelectListItem>? UbicacionesBobinaB { get; set; }
@@ -123,7 +123,7 @@ namespace ControlProduccion.ViewModel
         [Required(ErrorMessage = "El campo {0} es obligatorio")]
         public string FabricanteBobinaB { get; set; }
 
-        [Display(Name = "Código Bobina B")]
+        [Display(Name = "Cï¿½digo Bobina B")]
         [Required(ErrorMessage = "El campo {0} es obligatorio")]
         public string CodigoBobinaB { get; set; }
 
@@ -213,6 +213,11 @@ namespace ControlProduccion.ViewModel
         [Display(Name = "Metros Inicial Isocianato")]
         [Required(ErrorMessage = "El campo {0} es obligatorio")]
         public int MetrosInicialIsocianato { get; set; }
+        
+        [Display(Name = "Nota del Supervisor")]
+        [StringLength(1000, ErrorMessage = "La nota del supervisor no puede exceder 1000 caracteres")]
+        public string? NotaSupervisor { get; set; }
+        
         public string? IdUsuarioCreacion { get; set; } = string.Empty;
         public DateTime? FechaCreacion { get; set; } = DateTime.Now;
         public string? IdUsuarioActualizacion { get; set; }
@@ -228,7 +233,7 @@ namespace ControlProduccion.ViewModel
         public IEnumerable<SelectListItem>? CatStatus { get; set; }
         public IEnumerable<SelectListItem>? CatTipo { get; set; }
 
-        // Aquí va la validación cruzada:
+        // Aquï¿½ va la validaciï¿½n cruzada:
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
             // 1. Hora
@@ -237,7 +242,7 @@ namespace ControlProduccion.ViewModel
                     "La Hora de Fin no puede ser menor que la Hora de Inicio.",
                     new[] { nameof(HoraFin) });
 
-            // 2. Números: final > inicial dispara error
+            // 2. Nï¿½meros: final > inicial dispara error
             if (PesoFinalKgA > PesoInicialKgA)
                 yield return new ValidationResult(
                     "El Peso Final (Kg) A no puede ser mayor que el Peso Inicial (Kg) A.",

@@ -134,6 +134,7 @@ namespace ControlProduccion.Controllers
                 Observaciones = model.Observaciones,
                 MetrosInicialIsocianato = model.MetroInicialIsocianato ?? 0,
                 MetrosInicialPoliol= model.MetroInicialPoliol ?? 0,
+                NotaSupervisor = model.NotaSupervisor,
 
                 // Catalogos
                 Maquinas = dtCat.CatMaquina.Select(m => new SelectListItem { Value = m.Id.ToString(), Text = m.Nombre }),
@@ -425,6 +426,7 @@ namespace ControlProduccion.Controllers
                 FechaCreacion = model.FechaCreacion,
                 AprobadoGerencia = model.AprobadoGerencia,
                 AprobadoSupervisor = model.AprobadoSupervisor,
+                NotaSupervisor = model.NotaSupervisor,
                 DetPrdIlKwangs = model.DetPrdIlKwangs?.Select(x => new DetPrdIlKwangViewModel
                 {
                     Id = x.Id,
@@ -646,6 +648,24 @@ namespace ControlProduccion.Controllers
             var result = await _prdIlKwangService.AprovePrdIlKwangByIdAsync(id, userId);
 
             return Json(result);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Supervisor")]
+        public async Task<IActionResult> SaveNotaSupervisor(int id, string notaSupervisor)
+        {
+            var userId = _userManager.GetUserId(User);
+            var result = await _prdIlKwangService.UpdateNotaSupervisorAsync(id, notaSupervisor, userId);
+            
+            if (result)
+            {
+                return Json(new { success = true, message = "Nota guardada exitosamente" });
+            }
+            else
+            {
+                return Json(new { success = false, message = "Error al guardar la nota" });
+            }
         }
 
         [Authorize(Roles = "JefeProduccion")]

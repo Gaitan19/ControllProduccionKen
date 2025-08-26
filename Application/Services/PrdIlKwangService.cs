@@ -315,7 +315,8 @@ namespace Application.Services
                 IdAprobadoSupervisor = prd.IdAprobadoSupervisor,
                 IdAprobadoGerencia = prd.IdAprobadoGerencia,
                 MetroInicialIsocianato = prd.MetroInicialIsocianato,
-                MetroInicialPoliol = prd.MetroInicialPoliol
+                MetroInicialPoliol = prd.MetroInicialPoliol,
+                NotaSupervisor = prd.NotaSupervisor
             };
 
             // Mapeo manual de los detalles
@@ -522,6 +523,23 @@ namespace Application.Services
         public async Task<IEnumerable<PrdIlKwangReporteDTO>> GetAllPrdIlKwangWithDetailsAsync(DateTime start, DateTime end)
         {
             return await _unitOfWork.ReportesDapperRepository.GetAllPrdIlKwangWithDetailsAsync(start, end);
+        }
+
+        public async Task<bool> UpdateNotaSupervisorAsync(int id, string notaSupervisor, string userId)
+        {
+            var prd = await _unitOfWork.PrdIlKwangRepository.GetByIdAsync(id);
+            if (prd == null)
+            {
+                return false;
+            }
+
+            prd.NotaSupervisor = notaSupervisor;
+            prd.IdUsuarioActualizacion = userId;
+            prd.FechaActualizacion = DateTime.Now;
+
+            _unitOfWork.PrdIlKwangRepository.Update(prd);
+            await _unitOfWork.SaveChangesAsync();
+            return true;
         }
     }
 }
