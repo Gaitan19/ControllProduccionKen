@@ -166,6 +166,7 @@ namespace Application.Services
                 FechaCreacion = prd.FechaCreacion,
                 AprobadoSupervisor = prd.AprobadoSupervisor,
                 AprobadoGerencia = prd.AprobadoGerencia,
+                NotaSupervisor = prd.NotaSupervisor,
                 DetPrdMallasCovintecs = prd.DetPrdMallaCovintecs.Select(entity => new DetPrdMallaCovintecDTO
                 {
                     Id = entity.Id,
