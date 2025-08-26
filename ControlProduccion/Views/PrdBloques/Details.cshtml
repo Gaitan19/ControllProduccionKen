@@ -24,25 +24,7 @@
                     <input asp-for="TiempoParo" readonly="readonly" class="form-control" />
                 </div>
 
-                <div class="form-group">
-                    <label asp-for="NotaSupervisor"></label>
-                    @if (User.IsInRole("Supervisor"))
-                    {
-                        @if (Model.AprobadoSupervisor != true)
-                        {
-                            <textarea id="txtNotaSupervisor" asp-for="NotaSupervisor" class="form-control" rows="3" placeholder="Ingrese la nota del supervisor..."></textarea>
-                            <span asp-validation-for="NotaSupervisor" class="text-danger"></span>
-                        }
-                        else
-                        {
-                            <textarea asp-for="NotaSupervisor" class="form-control" rows="3" readonly></textarea>
-                        }
-                    }
-                    else
-                    {
-                        <textarea asp-for="NotaSupervisor" class="form-control" rows="3" readonly></textarea>
-                    }
-                </div>
+                
 
                 <div class="hr-line-dashed"></div>
                 <div class="form-group row">
@@ -121,10 +103,33 @@
                         </table>
                     </div>
                 </div>
+
+                <div class="form-group">
+                    <label asp-for="NotaSupervisor"></label>
+                    @if (User.IsInRole("Supervisor"))
+                    {
+                        @if (Model.AprobadoSupervisor != true)
+                        {
+                            <textarea id="txtNotaSupervisor" asp-for="NotaSupervisor" class="form-control" rows="3" placeholder="Ingrese la nota del supervisor..."></textarea>
+                            <span asp-validation-for="NotaSupervisor" class="text-danger"></span>
+                        }
+                        else
+                        {
+                            <textarea asp-for="NotaSupervisor" class="form-control" rows="3" readonly></textarea>
+                        }
+                    }
+                    else
+                    {
+                        <textarea asp-for="NotaSupervisor" class="form-control" rows="3" readonly></textarea>
+                    }
+                </div>
+
+                <div class="hr-line-dashed"></div>
+
                 <button type="button" class="btn btn-dark" onclick="location.href='@Url.Action("Index","PrdBloques")'">Regresar</button>
                 @if (User.IsInRole("Supervisor") && Model.AprobadoSupervisor != true)
                 {
-                    <button id="btnGuardarNota" type="button" class="btn btn-warning">Guardar Nota</button>
+                    <button id="btnGuardarNota" type="button" class="btn btn-primary">Guardar Nota</button>
                 }
                 @if (User.IsInRole("Supervisor") && Model.AprobadoSupervisor != true)
                 {
