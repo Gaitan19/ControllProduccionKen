@@ -37,6 +37,9 @@ namespace ControlProduccion.ViewModel
         [Display(Name = "Tiempo Paro (Horas)")]
         public decimal? TiempoParo { get; set; }
 
+        [Display(Name = "Nota Supervisor")]
+        public string? NotaSupervisor { get; set; }
+
         [Display(Name = "Articulo")]
         public IEnumerable<SelectListItem>? CatalogoMallas { get; set; }
 

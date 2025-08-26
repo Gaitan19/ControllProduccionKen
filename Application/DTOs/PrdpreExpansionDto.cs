@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,6 +11,9 @@ namespace Application.DTOs
     {
         public int Id { get; set; }
         public decimal? TiempoParo { get; set; }
+
+        [Display(Name = "Nota Supervisor")]
+        public string? NotaSupervisor { get; set; }
         public int? IdTipoReporte { get; set; }
         public List<string> IdUsuarios { get; set; } = new();
         public int IdMaquina { get; set; }

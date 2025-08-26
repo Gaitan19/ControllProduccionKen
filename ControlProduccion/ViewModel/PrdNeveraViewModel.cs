@@ -44,6 +44,9 @@ namespace ControlProduccion.ViewModel
         [Display(Name = "Tiempo Paro (Horas)")]
         public decimal? TiempoParo { get; set; }
 
+        [Display(Name = "Nota Supervisor")]
+        public string? NotaSupervisor { get; set; }
+
         // Auditoría
         public string IdUsuarioCreacion { get; set; } = string.Empty;
         public DateTime FechaCreacion { get; set; } = DateTime.Now;

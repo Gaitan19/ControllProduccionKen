@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -28,6 +29,9 @@ namespace Application.DTOs
         public decimal MermaAlambre { get; set; }
 
         public decimal? TiempoParo { get; set; }
+
+        [Display(Name = "Nota Supervisor")]
+        public string? NotaSupervisor { get; set; }
         public bool AprobadoSupervisor { get; set; }
         public bool AprobadoGerencia { get; set; }
         public string? IdAprobadoSupervisor { get; set; }

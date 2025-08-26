@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -23,6 +24,9 @@ namespace Application.DTOs
 
         public int? IdTipoReporte { get; set; }
         public decimal? TiempoParo { get; set; }
+
+        [Display(Name = "Nota Supervisor")]
+        public string? NotaSupervisor { get; set; }
 
         public List<DetPrdOtroDTO>? DetPrdOtros { get; set; }
     }

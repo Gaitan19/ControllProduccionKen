@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -23,6 +24,9 @@ namespace Application.DTOs
         public DateTime Fecha { get; set; }
 
         public decimal? TiempoParo { get; set; }
+
+        [Display(Name = "Nota Supervisor")]
+        public string? NotaSupervisor { get; set; }
 
         public List<string>? IdArticulo { get; set; } = null!;
 

@@ -61,6 +61,9 @@ namespace ControlProduccion.ViewModel
         [Range(0, double.MaxValue, ErrorMessage = "El tiempo de paro debe ser mayor o igual a 0")]
         public decimal? TiempoParo { get; set; }
 
+        [Display(Name = "Nota Supervisor")]
+        public string? NotaSupervisor { get; set; }
+
         // Detalles
         public List<DetPrdCortePViewModel>? DetPrdCorteP { get; set; }
 

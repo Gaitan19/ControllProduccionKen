@@ -29,6 +29,9 @@ namespace ControlProduccion.ViewModel
         [Range(0, double.MaxValue, ErrorMessage = "El tiempo de paro debe ser mayor o igual a 0")]
         public decimal? TiempoParo { get; set; }
 
+        [Display(Name = "Nota Supervisor")]
+        public string? NotaSupervisor { get; set; }
+
         //para la pantalla create no va este campo. para las demas si
         [Display(Name = "Producción del día (Mts)")]
         [Range(0, double.MaxValue)]

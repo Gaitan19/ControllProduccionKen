@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.Collections.Generic;
 
 namespace Application.DTOs
@@ -33,6 +34,9 @@ namespace Application.DTOs
         public string? IdAprobadoGerencia { get; set; }
 
         public decimal? TiempoParo { get; set; }
+
+        [Display(Name = "Nota Supervisor")]
+        public string? NotaSupervisor { get; set; }
 
         public List<DetPrdPchMaquinaADTO>? DetPrdPchMaquinaAs { get; set; }
 
