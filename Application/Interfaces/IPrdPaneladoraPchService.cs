@@ -19,6 +19,7 @@ namespace Application.Interfaces
         Task<CrearPrdPaneladoraPchDTO> GetCreateData();
         Task<bool> ValidatePrdPaneladoraPchByIdAsync(int id, string userId);
         Task<bool> AprovePrdPaneladoraPchByIdAsync(int id, string userId);
+        Task<bool> UpdateNotaSupervisorAsync(int id, string notaSupervisor, string userId);
         Task<IEnumerable<PrdPaneladoraPchReporteDTO>> GetAllPrdPaneladoraPchWithDetailsAsync(DateTime start, DateTime end);
     }
 }

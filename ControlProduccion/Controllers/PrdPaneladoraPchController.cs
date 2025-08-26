@@ -209,6 +209,24 @@ namespace ControlProduccion.Controllers
             return Json(result);
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Supervisor")]
+        public async Task<IActionResult> SaveNotaSupervisor(int id, string notaSupervisor)
+        {
+            var userId = _userManager.GetUserId(User);
+            var result = await _prdPaneladoraPchService.UpdateNotaSupervisorAsync(id, notaSupervisor, userId);
+            
+            if (result)
+            {
+                return Json(new { success = true, message = "Nota guardada exitosamente" });
+            }
+            else
+            {
+                return Json(new { success = false, message = "Error al guardar la nota" });
+            }
+        }
+
         public async Task<ActionResult> GetDataReport(DateTime start, DateTime end)
         {
             // Validate and ensure DateTime parameters are within valid SQL Server range
@@ -260,6 +278,7 @@ namespace ControlProduccion.Controllers
                 Observaciones = modelDto.Observaciones,
                 TiempoParo = modelDto.TiempoParo,
                 ProduccionDia = modelDto.ProduccionDia,
+                NotaSupervisor = modelDto.NotaSupervisor,
                 Operarios = operarios.Select(o => new SelectListItem { Value = o.Id, Text = o.UserName }),
                 Maquinas = dtoCat.CatMaquina?.Select(m => new SelectListItem { Value = m.Id.ToString(), Text = m.Nombre }),
                 TiposFabricacion = dtoCat.CatTipoFabricacion?.Select(t => new SelectListItem { Value = t.Id.ToString(), Text = t.Descripcion }),

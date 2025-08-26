@@ -155,6 +155,7 @@ namespace Application.Services
                 AprobadoGerencia = production.AprobadoGerencia,
                 IdAprobadoSupervisor = production.IdAprobadoSupervisor,
                 IdAprobadoGerencia = production.IdAprobadoGerencia,
+                NotaSupervisor = production.NotaSupervisor,
                 DetPrdPaneladoraPches = production.DetPrdPaneladoraPches?.Select(d => new DetPrdPaneladoraPchDTO
                 {
                     Id = d.Id,
@@ -300,6 +301,28 @@ namespace Application.Services
 
                 production.AprobadoGerencia = true;
                 production.IdAprobadoGerencia = userId;
+                production.IdUsuarioActualizacion = userId;
+                production.FechaActualizacion = DateTime.Now;
+
+                _unitOfWork.PrdPaneladoraPchRepository.Update(production);
+                await _unitOfWork.SaveChangesAsync();
+
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
+        public async Task<bool> UpdateNotaSupervisorAsync(int id, string notaSupervisor, string userId)
+        {
+            try
+            {
+                var production = await _unitOfWork.PrdPaneladoraPchRepository.GetByIdAsync(id);
+                if (production == null) return false;
+
+                production.NotaSupervisor = notaSupervisor;
                 production.IdUsuarioActualizacion = userId;
                 production.FechaActualizacion = DateTime.Now;
 
