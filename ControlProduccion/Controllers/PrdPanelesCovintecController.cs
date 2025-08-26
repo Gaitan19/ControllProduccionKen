@@ -92,6 +92,7 @@ namespace ControlProduccion.Controllers
                 FechaCreacion = model.FechaCreacion,
                 AprobadoGerencia=model.AprobadoGerencia,
                 AprobadoSupervisor = model.AprobadoSupervisor,
+                NotaSupervisor = model.NotaSupervisor,
                 DetAlambrePrdPanelesCovintec = model.DetAlambrePrdPanelesCovintecs.Select(x => new DetAlambrePrdPanelesCovintecViewModel
                 {
                     Id = x.Id,
@@ -386,6 +387,7 @@ namespace ControlProduccion.Controllers
                 FechaCreacion = model.FechaCreacion,
                 AprobadoGerencia = model.AprobadoGerencia,
                 AprobadoSupervisor = model.AprobadoSupervisor,
+                NotaSupervisor = model.NotaSupervisor,
                 DetAlambrePrdPanelesCovintec = model.DetAlambrePrdPanelesCovintecs.Select(x => new DetAlambrePrdPanelesCovintecViewModel
                 {
                     Id = x.Id,
@@ -514,6 +516,24 @@ namespace ControlProduccion.Controllers
             var result = await _prdPanelesCovintecService.AprovePrdPanelCovintecByIdAsync(id, userId);
 
             return Json(result);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Supervisor")]
+        public async Task<IActionResult> SaveNotaSupervisor(int id, string notaSupervisor)
+        {
+            var userId = _userManager.GetUserId(User);
+            var result = await _prdPanelesCovintecService.UpdateNotaSupervisorAsync(id, notaSupervisor, userId);
+            
+            if (result)
+            {
+                return Json(new { success = true, message = "Nota guardada exitosamente" });
+            }
+            else
+            {
+                return Json(new { success = false, message = "Error al guardar la nota" });
+            }
         }
     }
 }
