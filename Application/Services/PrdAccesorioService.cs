@@ -140,6 +140,7 @@ namespace Application.Services
                 MermaBobinasKg = entity.MermaBobinasKg,
                 MermaLitewallKg = entity.MermaLitewallKg,
                 TiempoParo = entity.TiempoParo,
+                NotaSupervisor = entity.NotaSupervisor,
                 AprobadoSupervisor = entity.AprobadoSupervisor,
                 AprobadoGerencia = entity.AprobadoGerencia,
                 IdAprobadoSupervisor = entity.IdAprobadoSupervisor,
@@ -236,12 +237,39 @@ namespace Application.Services
                 entity.MermaBobinasKg = dto.MermaBobinasKg;
                 entity.MermaLitewallKg = dto.MermaLitewallKg;
                 entity.TiempoParo = dto.TiempoParo;
+                entity.NotaSupervisor = dto.NotaSupervisor;
                 entity.IdUsuarioActualizacion = dto.IdUsuarioActualizacion;
                 entity.FechaActualizacion = DateTime.Now;
 
                 _unitOfWork.PrdAccesorioRepository.Update(entity);
                 await _unitOfWork.SaveChangesAsync();
 
+                await _unitOfWork.CommitAsync();
+            }
+            catch (Exception)
+            {
+                await _unitOfWork.RollbackAsync();
+                throw;
+            }
+        }
+
+        public async Task UpdateNotaSupervisorAsync(int id, string notaSupervisor, string userId)
+        {
+            await _unitOfWork.BeginTransactionAsync();
+            try
+            {
+                var entity = await _unitOfWork.PrdAccesorioRepository.GetByIdAsync(id);
+                if (entity == null)
+                {
+                    throw new ArgumentException("Entidad no encontrada");
+                }
+
+                entity.NotaSupervisor = notaSupervisor;
+                entity.IdUsuarioActualizacion = userId;
+                entity.FechaActualizacion = DateTime.Now;
+
+                _unitOfWork.PrdAccesorioRepository.Update(entity);
+                await _unitOfWork.SaveChangesAsync();
                 await _unitOfWork.CommitAsync();
             }
             catch (Exception)

@@ -31,6 +31,10 @@ namespace Application.DTOs
         [Range(0, double.MaxValue, ErrorMessage = "El tiempo de paro debe ser mayor o igual a 0")]
         public decimal? TiempoParo { get; set; }
 
+        [Display(Name = "Nota Supervisor")]
+        [StringLength(4000, ErrorMessage = "La nota del supervisor no puede exceder 4000 caracteres")]
+        public string? NotaSupervisor { get; set; }
+
         public List<DetPrdAccesorioDto>? DetPrdAccesorios { get; set; }
     }
 }

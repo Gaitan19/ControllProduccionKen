@@ -123,6 +123,14 @@
                     <textarea asp-for="Observaciones" class="form-control" rows="3" readonly></textarea>
                 </div>
 
+                @if (User.IsInRole("Supervisor"))
+                {
+                    <div class="form-group">
+                        <label asp-for="NotaSupervisor"></label>
+                        <textarea asp-for="NotaSupervisor" id="NotaSupervisor" class="form-control" rows="3" placeholder="Ingrese su nota como supervisor"></textarea>
+                    </div>
+                }
+
                 <div class="hr-line-dashed"></div>
 
 
@@ -135,6 +143,11 @@
                 else
                 {
                     <button type="button" class="btn btn-success">Validado</button>
+                }
+                
+                @if (User.IsInRole("Supervisor"))
+                {
+                    <button id="btnGuardarNota" type="button" class="btn btn-primary">Guardar Nota</button>
                 }
             </form>
         </div>
@@ -173,6 +186,35 @@
                         },
                         error: function () {
                             alert('Error al validar la producción');
+                        }
+                    });
+                }
+            });
+
+            // Guardar Nota Supervisor
+            $('#btnGuardarNota').click(function () {
+                var notaSupervisor = $('#NotaSupervisor').val();
+                var id = @Model.Id;
+
+                if (confirm('¿Está seguro de guardar la nota del supervisor?')) {
+                    $.ajax({
+                        url: '@Url.Action("GuardarNotaSupervisor", "PrdAccesorios")',
+                        type: 'POST',
+                        data: {
+                            id: id,
+                            notaSupervisor: notaSupervisor,
+                            __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val()
+                        },
+                        success: function (response) {
+                            if (response.success) {
+                                alert(response.message);
+                                location.reload();
+                            } else {
+                                alert('Error: ' + response.message);
+                            }
+                        },
+                        error: function () {
+                            alert('Error al guardar la nota del supervisor');
                         }
                     });
                 }
