@@ -56,6 +56,7 @@ namespace ControlProduccion.Controllers
                 TiempoParo = modelDto.TiempoParo,
                 AprobadoSupervisor = modelDto.AprobadoSupervisor,
                 AprobadoGerencia = modelDto.AprobadoGerencia,
+                NotaSupervisor = modelDto.NotaSupervisor,
                 DetPrdNeveras = modelDto.DetPrdNeveras?.Select(x => new DetPrdNeveraViewModel
                 {
                     Posicion=x.Posicion,
@@ -158,6 +159,7 @@ namespace ControlProduccion.Controllers
                 TiempoParo = modelDto.TiempoParo,
                 AprobadoSupervisor = modelDto.AprobadoSupervisor,
                 AprobadoGerencia = modelDto.AprobadoGerencia,
+                NotaSupervisor = modelDto.NotaSupervisor,
                 DetPrdNeveras = modelDto.DetPrdNeveras?.Select(x => new DetPrdNeveraViewModel
                 {
                     Id= x.Id,
@@ -395,6 +397,23 @@ namespace ControlProduccion.Controllers
             await _prdNeveraService.UpdateDetPrd(dto);
 
             return Json(new { success = true, message = "Actualizacion exitosa!" });
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Supervisor")]
+        public async Task<IActionResult> GuardarNota(int id, string nota)
+        {
+            var userId = _userManager.GetUserId(User);
+            var result = await _prdNeveraService.GuardarNotaSupervisorAsync(id, nota, userId);
+
+            if (result)
+            {
+                return Json(new { success = true, message = "Nota guardada exitosamente!" });
+            }
+            else
+            {
+                return Json(new { success = false, message = "Error al guardar la nota." });
+            }
         }
 
         public async Task<ActionResult> GetDataReport(DateTime start, DateTime end)

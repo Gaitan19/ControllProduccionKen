@@ -114,9 +114,23 @@
                     <span asp-validation-for="Observaciones" class="text-danger"></span>
                 </div>
 
+                @if (User.IsInRole("Supervisor"))
+                {
+                    <div class="form-group">
+                        <label asp-for="NotaSupervisor"></label>
+                        <textarea asp-for="NotaSupervisor" class="form-control" rows="3" placeholder="Escriba sus observaciones como supervisor..."></textarea>
+                        <span asp-validation-for="NotaSupervisor" class="text-danger"></span>
+                    </div>
+                }
+
 
                 @*    <button type="submit" class="btn btn-primary">Guardar</button> *@
                 <button type="button" class="btn btn-dark" onclick="location.href='@Url.Action("Index", "PrdNevera")'">Regresar</button>
+
+                @if (User.IsInRole("Supervisor"))
+                {
+                    <button type="button" class="btn btn-primary" onclick="guardarNota(@Model.Id)">Guardar Nota</button>
+                }
               
                 @if (User.IsInRole("Supervisor") && Model.AprobadoSupervisor != true )
                 {
@@ -280,6 +294,26 @@
                     }
                 });
             }
+        }
+
+        function guardarNota(id) {
+            var nota = $('[name="NotaSupervisor"]').val();
+            
+            $.ajax({
+                url: '@Url.Action("GuardarNota", "PrdNevera")',
+                type: 'POST',
+                data: { id: id, nota: nota },
+                success: function(response) {
+                    if (response.success) {
+                        alert(response.message);
+                    } else {
+                        alert("Error: " + response.message);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    alert("Error al procesar la solicitud: " + error);
+                }
+            });
         }
 
 

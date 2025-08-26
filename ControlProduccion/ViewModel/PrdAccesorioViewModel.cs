@@ -37,6 +37,10 @@ namespace ControlProduccion.ViewModel
         public bool? AprobadoGerencia { get; set; }
         public string? IdAprobadoGerencia { get; set; }
 
+        [Display(Name = "Nota Supervisor")]
+        [DataType(DataType.MultilineText)]
+        public string? NotaSupervisor { get; set; }
+
         // Catálogos para dropdowns
         [Display(Name = "Tipo de Artículo")]
         public IEnumerable<SelectListItem>? TiposArticulo { get; set; }

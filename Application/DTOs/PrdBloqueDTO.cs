@@ -32,6 +32,8 @@ namespace Application.DTOs
 
         public decimal? TiempoParo { get; set; }
 
+        public string? NotaSupervisor { get; set; }
+
         public List<DetPrdBloqueDTO>? DetPrdBloques { get; set; }
     }
 }

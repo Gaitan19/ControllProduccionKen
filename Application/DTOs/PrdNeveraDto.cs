@@ -26,6 +26,7 @@ namespace Application.DTOs
         public bool AprobadoGerencia { get; set; }
         public string? IdAprobadoSupervisor { get; set; }
         public string? IdAprobadoGerencia { get; set; }
+        public string? NotaSupervisor { get; set; }
 
         public List<DetPrdNeveraDTO>? DetPrdNeveras { get; set; }
     }

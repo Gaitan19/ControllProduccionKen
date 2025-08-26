@@ -146,6 +146,7 @@ namespace Application.Services
                 AprobadoGerencia = prd.AprobadoGerencia,
                 IdAprobadoSupervisor = prd.IdAprobadoSupervisor,
                 IdAprobadoGerencia = prd.IdAprobadoGerencia,
+                NotaSupervisor = prd.NotaSupervisor,
                 DetPrdNeveras = prd.DetPrdNeveras.Select(entity => new DetPrdNeveraDTO
                 {
                     Id = entity.Id,
@@ -227,6 +228,23 @@ namespace Application.Services
             return true;
         }
 
+        public async Task<bool> GuardarNotaSupervisorAsync(int id, string nota, string userId)
+        {
+            var prdNevera = await _unitOfWork.PrdNeveraRepository.GetByIdAsync(id);
+            if (prdNevera == null)
+            {
+                return false;
+            }
+
+            prdNevera.NotaSupervisor = nota;
+            prdNevera.IdUsuarioActualizacion = userId;
+            prdNevera.FechaActualizacion = DateTime.Now;
+
+            _unitOfWork.PrdNeveraRepository.Update(prdNevera);
+            await _unitOfWork.SaveChangesAsync();
+            return true;
+        }
+
         public async Task UpdateAsync(PrdNeveraDto dto)
         {
             var prd = await _unitOfWork.PrdNeveraRepository.GetByIdAsync(dto.Id);
@@ -238,6 +256,7 @@ namespace Application.Services
                 prd.HoraFin = dto.HoraFin;
                 prd.TiempoParo = dto.TiempoParo;
                 prd.Observaciones = dto.Observaciones;
+                prd.NotaSupervisor = dto.NotaSupervisor;
                 prd.IdUsuarios = string.Join(",", dto.IdUsuarios ?? new List<string>());
                 prd.IdUsuarioActualizacion = dto.IdUsuarioActualizacion;
                 prd.FechaActualizacion = DateTime.Now;
