@@ -147,6 +147,7 @@ namespace Application.Services
                 Observaciones = production.Observaciones,
                 ProduccionDia = production.ProduccionDia,
                 TiempoParo = production.TiempoParo,
+                NotaSupervisor = production.NotaSupervisor,
                 IdUsuarioCreacion = production.IdUsuarioCreacion,
                 FechaCreacion = production.FechaCreacion,
                 IdUsuarioActualizacion = production.IdUsuarioActualizacion,
@@ -187,10 +188,27 @@ namespace Application.Services
             existing.Fecha = dto.Fecha;
             existing.Observaciones = dto.Observaciones;
             existing.TiempoParo = dto.TiempoParo;
+            existing.NotaSupervisor = dto.NotaSupervisor;
             existing.IdUsuarioActualizacion = dto.IdUsuarioActualizacion;
             existing.FechaActualizacion = DateTime.Now;
 
             _unitOfWork.PrdPaneladoraPchRepository.Update(existing);
+            await _unitOfWork.SaveChangesAsync();
+        }
+
+        public async Task UpdateNotaSupervisorAsync(int id, string notaSupervisor, string userId)
+        {
+            var entity = await _unitOfWork.PrdPaneladoraPchRepository.GetByIdAsync(id);
+            if (entity == null)
+            {
+                throw new ArgumentException("Entidad no encontrada");
+            }
+
+            entity.NotaSupervisor = notaSupervisor;
+            entity.IdUsuarioActualizacion = userId;
+            entity.FechaActualizacion = DateTime.Now;
+
+            _unitOfWork.PrdPaneladoraPchRepository.Update(entity);
             await _unitOfWork.SaveChangesAsync();
         }
 

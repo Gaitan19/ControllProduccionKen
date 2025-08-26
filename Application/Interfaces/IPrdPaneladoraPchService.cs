@@ -15,6 +15,7 @@ namespace Application.Interfaces
         Task CreateAsync(PrdPaneladoraPchDTO dto);
         Task UpdateAsync(PrdPaneladoraPchDTO dto);
         Task UpdateDetPrd(DetPrdPaneladoraPchDTO dto);
+        Task UpdateNotaSupervisorAsync(int id, string notaSupervisor, string userId);
         Task DeleteDetPrd(DetPrdPaneladoraPchDTO dto);
         Task<CrearPrdPaneladoraPchDTO> GetCreateData();
         Task<bool> ValidatePrdPaneladoraPchByIdAsync(int id, string userId);
