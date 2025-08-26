@@ -19,6 +19,7 @@ namespace Application.Interfaces
         Task<CrearPrdOtroDto> GetCreateData();
         Task<bool> ValidatePrdOtroByIdAsync(int id, string userId);
         Task<bool> AprovePrdOtroByIdAsync(int id, string userId);
+        Task<bool> UpdateNotaSupervisorAsync(int id, string notaSupervisor, string userId);
         Task<IEnumerable<PrdOtroReporteDTO>> GetAllPrdOtroWithDetailsAsync(DateTime start, DateTime end);
     }
 }
