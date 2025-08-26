@@ -51,6 +51,7 @@ namespace ControlProduccion.ViewModel
         public string? IdAprobadoGerencia { get; set; }
         public bool? AprobadoSupervisor { get; set; }
         public bool? AprobadoGerencia { get; set; }
+        public string? NotaSupervisor { get; set; }
         public List<DetPrdMallaCovintecViewModel>? DetPrdMallaCovintec { get; set; }
         public List<DetAlambrePrdMallasCovintecViewModel>? DetAlambrePrdMallaCovintec { get; set; }
     }

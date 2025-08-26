@@ -97,6 +97,7 @@ namespace ControlProduccion.Controllers
                 FechaCreacion = modelDto.FechaCreacion,
                 AprobadoGerencia = modelDto.AprobadoGerencia,
                 AprobadoSupervisor = modelDto.AprobadoSupervisor,
+                NotaSupervisor = modelDto.NotaSupervisor,
 
                 Operarios = operarios.Select(u => new SelectListItem
                 {
@@ -258,6 +259,7 @@ namespace ControlProduccion.Controllers
                 FechaCreacion = modelDto.FechaCreacion,
                 AprobadoGerencia = modelDto.AprobadoGerencia,
                 AprobadoSupervisor = modelDto.AprobadoSupervisor,
+                NotaSupervisor = modelDto.NotaSupervisor,
 
                 Operarios = operarios.Select(u => new SelectListItem
                 {
@@ -413,6 +415,24 @@ namespace ControlProduccion.Controllers
             var result = await _prdMallasCovintecService.AprovePrdMallaCovintecByIdAsync(id, userId);
 
             return Json(result);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Supervisor")]
+        public async Task<IActionResult> SaveNotaSupervisor(int id, string notaSupervisor)
+        {
+            var userId = _userManager.GetUserId(User);
+            var result = await _prdMallasCovintecService.UpdateNotaSupervisorAsync(id, notaSupervisor, userId);
+            
+            if (result)
+            {
+                return Json(new { success = true, message = "Nota guardada exitosamente" });
+            }
+            else
+            {
+                return Json(new { success = false, message = "Error al guardar la nota" });
+            }
         }
     }
 }

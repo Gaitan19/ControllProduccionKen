@@ -33,6 +33,7 @@ namespace Application.DTOs
         public bool AprobadoGerencia { get; set; }
         public string? IdAprobadoSupervisor { get; set; }
         public string? IdAprobadoGerencia { get; set; }
+        public string? NotaSupervisor { get; set; }
         public List<DetAlambrePrdMallaCovintecDTO>? DetAlambrePrdMallasCovintecs { get; set; }
         public List<DetPrdMallaCovintecDTO>? DetPrdMallasCovintecs { get; set; }
     }
