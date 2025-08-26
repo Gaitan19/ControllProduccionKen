@@ -29,7 +29,7 @@ public partial class PrdIlKwang
 
     public int? NumeroPedido { get; set; }
 
-    public int VelocidadMaquina { get; set; }
+    public decimal VelocidadMaquina { get; set; }
 
     public int IdUbicacionBobinaA { get; set; }
 

@@ -1141,6 +1141,7 @@ public partial class AppDbContext : DbContext
             entity.Property(e => e.TotalProduccion).HasColumnType("decimal(10, 2)");
             entity.Property(e => e.VelocidadInferiorA).HasColumnType("decimal(10, 2)");
             entity.Property(e => e.VelocidadInferiorB).HasColumnType("decimal(10, 2)");
+            entity.Property(e => e.VelocidadMaquina).HasColumnType("decimal(10, 2)");
             entity.Property(e => e.VelocidadSuperiorA).HasColumnType("decimal(10, 2)");
             entity.Property(e => e.VelocidadSuperiorB).HasColumnType("decimal(10, 2)");
             entity.Property(e => e.VencimientoA).HasColumnType("date");
