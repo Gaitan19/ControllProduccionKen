@@ -19,6 +19,7 @@ namespace Application.Interfaces
         Task<bool> AproveDetPrdMallaCovintecByIdAsync(int id, string userId);
         Task<bool> AprovePrdMallaCovintecByIdAsync(int id, string userId);
         Task<bool> ValidatePrdMallaCovintecByIdAsync(int id, string userId);
+        Task<bool> UpdateNotaSupervisorAsync(int id, string notaSupervisor, string userId);
         Task<IEnumerable<PrdMallasCovintecReporteDTO>> GetAllMallasProduccionWithDetailsAsync(DateTime start, DateTime end);
     }
 }
