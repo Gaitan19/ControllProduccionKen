@@ -51,6 +51,10 @@ namespace ControlProduccion.ViewModel
         [DataType(DataType.MultilineText)]
         public string? Observaciones { get; set; }
 
+        [Display(Name = "Nota del Supervisor")]
+        [StringLength(1000, ErrorMessage = "La nota del supervisor no puede exceder 1000 caracteres")]
+        public string? NotaSupervisor { get; set; }
+
         // Campos de auditoría – se rellenan internamente
         public string IdUsuarioCreacion { get; set; } = string.Empty;
         public DateTime FechaCreacion { get; set; } = DateTime.Now;
