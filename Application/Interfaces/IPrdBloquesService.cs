@@ -14,6 +14,7 @@ namespace Application.Interfaces
         Task<PrdBloqueDTO> GetByIdAsync(int id);
         Task CreateAsync(PrdBloqueDTO dto);
         Task UpdateAsync(PrdBloqueDTO dto);
+        Task<bool> UpdateNotaSupervisorAsync(int id, string notaSupervisor, string userId);
         Task UpdateDetPrd(DetPrdBloqueDTO dto);
         Task DeleteDetPrd(DetPrdBloqueDTO dto);
         Task UpdateSubDetPrd(SubDetPrdBloqueDTO dto);

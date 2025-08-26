@@ -247,6 +247,24 @@ namespace ControlProduccion.Controllers
             return Json(result);
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Supervisor")]
+        public async Task<IActionResult> GuardarNotaSupervisor(int id, string notaSupervisor)
+        {
+            var userId = _userManager.GetUserId(User);
+            var result = await _prdBloquesService.UpdateNotaSupervisorAsync(id, notaSupervisor, userId);
+            
+            if (result)
+            {
+                return Json(new { success = true, message = "Nota guardada exitosamente!" });
+            }
+            else
+            {
+                return Json(new { success = false, message = "Error al guardar la nota." });
+            }
+        }
+
         public async Task<ActionResult> GetDataReport(DateTime start, DateTime end)
         {
             // Validate and ensure DateTime parameters are within valid SQL Server range
@@ -293,6 +311,7 @@ namespace ControlProduccion.Controllers
                 IdUsuarios = modelDto.IdUsuarios,
                 Fecha = modelDto.Fecha,
                 TiempoParo = modelDto.TiempoParo,
+                NotaSupervisor = modelDto.NotaSupervisor,
                 AprobadoSupervisor = modelDto.AprobadoSupervisor,
                 AprobadoGerencia = modelDto.AprobadoGerencia,
                 IdAprobadoSupervisor = modelDto.IdAprobadoSupervisor,

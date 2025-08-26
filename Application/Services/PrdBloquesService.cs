@@ -164,6 +164,7 @@ namespace Application.Services
                 IdUsuarios = userIds,
                 Fecha = prd.Fecha,
                 TiempoParo = prd.TiempoParo,
+                NotaSupervisor = prd.NotaSupervisor,
                 IdUsuarioCreacion = prd.IdUsuarioCreacion,
                 FechaCreacion = prd.FechaCreacion,
                 IdUsuarioActualizacion = prd.IdUsuarioActualizacion,
@@ -284,12 +285,30 @@ namespace Application.Services
             {
                 prd.Fecha = dto.Fecha;
                 prd.TiempoParo = dto.TiempoParo;
+                prd.NotaSupervisor = dto.NotaSupervisor;
                 prd.IdUsuarios = string.Join(",", dto.IdUsuarios ?? new List<string>());
                 prd.IdUsuarioActualizacion = dto.IdUsuarioActualizacion;
                 prd.FechaActualizacion = DateTime.Now;
                 _unitOfWork.PrdBloqueRepository.Update(prd);
                 await _unitOfWork.SaveChangesAsync();
             }
+        }
+
+        public async Task<bool> UpdateNotaSupervisorAsync(int id, string notaSupervisor, string userId)
+        {
+            var entity = await _unitOfWork.PrdBloqueRepository.GetByIdAsync(id);
+            if (entity == null)
+            {
+                return false;
+            }
+
+            entity.NotaSupervisor = notaSupervisor;
+            entity.IdUsuarioActualizacion = userId;
+            entity.FechaActualizacion = DateTime.Now;
+
+            _unitOfWork.PrdBloqueRepository.Update(entity);
+            await _unitOfWork.SaveChangesAsync();
+            return true;
         }
 
         public async Task UpdateDetPrd(DetPrdBloqueDTO dto)
