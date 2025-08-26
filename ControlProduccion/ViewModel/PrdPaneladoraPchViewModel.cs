@@ -40,6 +40,10 @@ namespace ControlProduccion.ViewModel
         [Range(0, double.MaxValue, ErrorMessage = "El tiempo de paro debe ser mayor o igual a 0")]
         public decimal? TiempoParo { get; set; }
 
+        [Display(Name = "Nota del Supervisor")]
+        [StringLength(1000, ErrorMessage = "La nota del supervisor no puede exceder 1000 caracteres")]
+        public string? NotaSupervisor { get; set; }
+
         // Aprobaciones
         [Display(Name = "Aprobado por Supervisor")]
         public bool? AprobadoSupervisor { get; set; }
