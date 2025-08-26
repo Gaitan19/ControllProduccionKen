@@ -63,7 +63,7 @@ namespace ControlProduccion.ViewModel
         public int? NumeroPedido { get; set; }
 
         [Display(Name = "Velocidad de Máquina")]
-        public int VelocidadMaquina { get; set; }
+        public decimal VelocidadMaquina { get; set; }
 
         [Required(ErrorMessage = "El campo {0} es obligatorio")]
         [Display(Name = "Ubicación Bobina A")]
