@@ -20,5 +20,6 @@ namespace Application.Interfaces
         Task<bool> ValidatePrdIlKwangByIdAsync(int id, string userId);
         Task<bool> AprovePrdIlKwangByIdAsync(int id, string userId);
         Task<IEnumerable<PrdIlKwangReporteDTO>> GetAllPrdIlKwangWithDetailsAsync(DateTime start, DateTime end);
+        Task<bool> UpdateNotaSupervisorAsync(int id, string notaSupervisor, string userId);
     }
 }
