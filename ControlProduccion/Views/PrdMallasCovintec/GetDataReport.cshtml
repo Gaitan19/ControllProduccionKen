@@ -33,7 +33,8 @@
     /* Encabezado del reporte */
     .report-header {
         border-collapse: collapse;
-        width: 100%;
+        width: auto; /* ancho se ajusta al contenido */
+        table-layout: auto; /* importante: no forzar ancho fijo */
         margin-bottom: 25px;
     }
 
@@ -41,14 +42,15 @@
             background-color: #f2f2f2;
             text-transform: uppercase;
             font-weight: bold;
-            padding: 10px;
+            padding: 10px 15px;
             text-align: left;
         }
 
         .report-header td,
         .report-header th {
             border: 1px solid #e1e1e1;
-            padding: 10px;
+            padding: 8px 15px; /* espaciado para que no quede pegado */
+            white-space: nowrap; /* evita saltos innecesarios */
         }
 
     .header-title {
@@ -119,11 +121,11 @@
 
     .ibox-title {
         display: flex;
-        align-items: center; /* Alinea verticalmente al centro (opcional) */
+        align-items: center; /* Alinea verticalmente al centro */
     }
-        /* Opcional: si quieres que cada div ocupe un ancho específico */
+
         .ibox-title .col-sm-3 {
-            flex: 0 0 auto; /* No se estira automáticamente */
+            flex: 0 0 auto;
             margin-right: 15px; /* Separación entre elementos */
         }
 </style>
@@ -159,8 +161,8 @@
                     <table class="report-header">
                         <thead>
                             <tr>
-                                <th style="width: 30%;">CAMPO</th>
-                                <th style="width: 70%;">VALOR</th>
+                                <th>CAMPO</th>
+                                <th>VALOR</th>
                             </tr>
                         </thead>
                         <tbody>

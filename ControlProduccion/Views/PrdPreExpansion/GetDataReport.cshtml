@@ -48,7 +48,8 @@
     /* Encabezado del reporte */
     .report-header {
         border-collapse: collapse;
-        width: 100%;
+        width: auto; /* ancho dinámico según contenido */
+        table-layout: auto; /* deja que el contenido defina ancho */
         margin-bottom: 25px;
     }
 
@@ -56,14 +57,15 @@
             background-color: #f2f2f2;
             text-transform: uppercase;
             font-weight: bold;
-            padding: 10px;
+            padding: 10px 15px;
             text-align: left;
         }
 
         .report-header td,
         .report-header th {
             border: 1px solid #e1e1e1;
-            padding: 10px;
+            padding: 8px 15px; /* padding más amplio */
+            white-space: nowrap; /* evita cortes de línea innecesarios */
         }
 
     .header-title {
@@ -134,14 +136,15 @@
 
     .ibox-title {
         display: flex;
-        align-items: center; /* Alinea verticalmente al centro (opcional) */
+        align-items: center;
     }
-        /* Opcional: si quieres que cada div ocupe un ancho específico */
+
         .ibox-title .col-sm-3 {
-            flex: 0 0 auto; /* No se estira automáticamente */
-            margin-right: 15px; /* Separación entre elementos */
+            flex: 0 0 auto;
+            margin-right: 15px;
         }
 </style>
+
 
 <div class="col-md-15 offset-md-1">
     @*     <h2 class="text-center"> Reporte Pre-Expansión</h2> *@
@@ -172,8 +175,8 @@
                     <table class="report-header">
                         <thead>
                             <tr>
-                                <th style="width: 30%;">CAMPO</th>
-                                <th style="width: 70%;">VALOR</th>
+                                <th>CAMPO</th>
+                                <th>VALOR</th>
                             </tr>
                         </thead>
                         <tbody>
