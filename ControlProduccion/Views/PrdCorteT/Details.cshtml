@@ -101,6 +101,11 @@
                     <span asp-validation-for="Observaciones" class="text-danger"></span>
                 </div>
 
+                <div class="form-group">
+                    <label asp-for="NotaSupervisor"></label>
+                    <textarea asp-for="NotaSupervisor" id="NotaSupervisor" class="form-control" rows="3" placeholder="Ingrese su nota como supervisor"></textarea>
+                </div>
+
                 <button type="button"
                         class="btn btn-dark"
                         onclick="location.href='@Url.Action("Index", "PrdCorteT")'">
@@ -118,6 +123,11 @@
                     <button type="button" class="btn btn-success" disabled>
                         <i class="fa fa-check"></i> Validado
                     </button>
+                }
+
+                @if (User.IsInRole("Supervisor"))
+                {
+                    <button id="btnGuardarNota" type="button" class="btn btn-primary">Guardar Nota</button>
                 }
 
                
@@ -171,6 +181,34 @@
             });
         });
 
+        // Guardar Nota Supervisor
+        $('#btnGuardarNota').click(function () {
+            var notaSupervisor = $('#NotaSupervisor').val();
+            var id = @Model.Id;
+
+            if (confirm('¿Está seguro de guardar la nota del supervisor?')) {
+                $.ajax({
+                    url: '@Url.Action("GuardarNotaSupervisor", "PrdCorteT")',
+                    type: 'POST',
+                    data: {
+                        id: id,
+                        notaSupervisor: notaSupervisor,
+                        __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val()
+                    },
+                    success: function (response) {
+                        if (response.success) {
+                            alert(response.message);
+                            location.reload();
+                        } else {
+                            alert('Error: ' + response.message);
+                        }
+                    },
+                    error: function () {
+                        alert('Error al guardar la nota del supervisor');
+                    }
+                });
+            }
+        });
 
 
     </script>

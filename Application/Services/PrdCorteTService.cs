@@ -288,6 +288,22 @@ namespace Application.Services
             return true;
         }
 
+        public async Task UpdateNotaSupervisorAsync(int id, string notaSupervisor, string userId)
+        {
+            var entity = await _unitOfWork.PrdCorteTRepository.GetByIdAsync(id);
+            if (entity == null)
+            {
+                throw new ArgumentException("Entidad no encontrada");
+            }
+
+            entity.NotaSupervisor = notaSupervisor;
+            entity.IdUsuarioActualizacion = userId;
+            entity.FechaActualizacion = DateTime.Now;
+
+            _unitOfWork.PrdCorteTRepository.Update(entity);
+            await _unitOfWork.SaveChangesAsync();
+        }
+
         public Task<IEnumerable<PrdCorteTReporteDTO>> GetAllPrdCorteTWithDetailsAsync(DateTime start, DateTime end)
         {
            return _unitOfWork.ReportesDapperRepository.GetAllPrdCorteTWithDetailsAsync(start, end);

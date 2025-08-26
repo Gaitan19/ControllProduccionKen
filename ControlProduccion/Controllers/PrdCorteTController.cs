@@ -209,6 +209,23 @@ namespace ControlProduccion.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Supervisor")]
+        public async Task<IActionResult> GuardarNotaSupervisor(int id, string notaSupervisor)
+        {
+            try
+            {
+                var userId = _userManager.GetUserId(User);
+                await _prdCorteTService.UpdateNotaSupervisorAsync(id, notaSupervisor, userId);
+                return Json(new { success = true, message = "Nota guardada exitosamente" });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         [Authorize(Roles = "JefeProduccion")]
         public async Task<IActionResult> AprobarPrd(int id)
         {
@@ -275,6 +292,7 @@ namespace ControlProduccion.Controllers
                 CatalogoDensidad = dtoCat.CatalogoDensidad?.Select(d => new SelectListItem { Value = d.Id.ToString(), Text = d.Descripcion }),
                 CatalogoTipoBloque = dtoCat.CatalogoTipoBloque?.Select(t => new SelectListItem { Value = t.Id.ToString(), Text = t.Descripcion }),
                 Observaciones = modelDto.Observaciones,
+                NotaSupervisor = modelDto.NotaSupervisor,
                 TiempoParo = modelDto.TiempoParo,
                 DetPrdCorteT = modelDto.DetPrdCorteTs?.Select(d => new DetPrdCorteTViewModel
                 {

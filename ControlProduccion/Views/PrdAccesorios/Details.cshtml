@@ -123,13 +123,10 @@
                     <textarea asp-for="Observaciones" class="form-control" rows="3" readonly></textarea>
                 </div>
 
-                @if (User.IsInRole("Supervisor"))
-                {
-                    <div class="form-group">
-                        <label asp-for="NotaSupervisor"></label>
-                        <textarea asp-for="NotaSupervisor" id="NotaSupervisor" class="form-control" rows="3" placeholder="Ingrese su nota como supervisor"></textarea>
-                    </div>
-                }
+                <div class="form-group">
+                    <label asp-for="NotaSupervisor"></label>
+                    <textarea asp-for="NotaSupervisor" id="NotaSupervisor" class="form-control" rows="3" placeholder="Ingrese su nota como supervisor"></textarea>
+                </div>
 
                 <div class="hr-line-dashed"></div>
 
