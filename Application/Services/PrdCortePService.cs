@@ -138,6 +138,7 @@ namespace Application.Services
                 AprobadoGerencia = prd.AprobadoGerencia,
                 IdAprobadoSupervisor = prd.IdAprobadoSupervisor,
                 IdAprobadoGerencia = prd.IdAprobadoGerencia,
+                NotaSupervisor = prd.NotaSupervisor,
                 DetPrdCortePs = prd.DetPrdCortePs?.Select(d => new DetPrdCortePDTO
                 {
                     Id = d.Id,
@@ -280,6 +281,23 @@ namespace Application.Services
 
             prd.AprobadoGerencia = true;
             prd.IdAprobadoGerencia = userId;
+            prd.IdUsuarioActualizacion = userId;
+            prd.FechaActualizacion = DateTime.Now;
+
+            _unitOfWork.PrdCortePRepository.Update(prd);
+            await _unitOfWork.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<bool> UpdateNotaSupervisorAsync(int id, string notaSupervisor, string userId)
+        {
+            var prd = await _unitOfWork.PrdCortePRepository.GetByIdAsync(id);
+            if (prd == null)
+            {
+                return false;
+            }
+
+            prd.NotaSupervisor = notaSupervisor;
             prd.IdUsuarioActualizacion = userId;
             prd.FechaActualizacion = DateTime.Now;
 
