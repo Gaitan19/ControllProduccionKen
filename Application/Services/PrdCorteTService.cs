@@ -138,6 +138,7 @@ namespace Application.Services
                 AprobadoGerencia = prd.AprobadoGerencia,
                 IdAprobadoSupervisor = prd.IdAprobadoSupervisor,
                 IdAprobadoGerencia = prd.IdAprobadoGerencia,
+                NotaSupervisor = prd.NotaSupervisor,
                 DetPrdCorteTs = prd.DetPrdCorteTs?.Select(d => new DetPrdCorteTDTO
                 {
                     Id = d.Id,
@@ -291,6 +292,23 @@ namespace Application.Services
         public Task<IEnumerable<PrdCorteTReporteDTO>> GetAllPrdCorteTWithDetailsAsync(DateTime start, DateTime end)
         {
            return _unitOfWork.ReportesDapperRepository.GetAllPrdCorteTWithDetailsAsync(start, end);
+        }
+
+        public async Task<bool> UpdateNotaSupervisorAsync(int id, string notaSupervisor, string userId)
+        {
+            var prd = await _unitOfWork.PrdCorteTRepository.GetByIdAsync(id);
+            if (prd == null)
+            {
+                return false;
+            }
+
+            prd.NotaSupervisor = notaSupervisor;
+            prd.IdUsuarioActualizacion = userId;
+            prd.FechaActualizacion = DateTime.Now;
+
+            _unitOfWork.PrdCorteTRepository.Update(prd);
+            await _unitOfWork.SaveChangesAsync();
+            return true;
         }
     }
 }
