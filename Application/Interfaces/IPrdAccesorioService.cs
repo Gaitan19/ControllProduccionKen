@@ -19,6 +19,7 @@ namespace Application.Interfaces
         Task UpdateDetPrdAsync(DetPrdAccesorioDto dto);
         Task<bool> ValidatePrdAccesorioByIdAsync(int id, string userId);
         Task<bool> AprovePrdAccesorioByIdAsync(int id, string userId);
+        Task<bool> UpdateNotaSupervisorAsync(int id, string notaSupervisor, string userId);
         Task<IEnumerable<PrdAccesorioReporteDTO>> GetAllWithDetailsAsync(DateTime start, DateTime end);
         Task<IEnumerable<CatalogoAccesorio>> GetCatalogoAccesoriosByTipoAsync(int idTipo);
     }

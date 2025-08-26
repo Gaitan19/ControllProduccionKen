@@ -236,6 +236,24 @@ namespace ControlProduccion.Controllers
             return Json(result);
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Supervisor")]
+        public async Task<IActionResult> SaveNotaSupervisor(int id, string notaSupervisor)
+        {
+            var userId = _userManager.GetUserId(User);
+            var result = await _prdAccesorioService.UpdateNotaSupervisorAsync(id, notaSupervisor, userId);
+            
+            if (result)
+            {
+                return Json(new { success = true, message = "Nota guardada exitosamente" });
+            }
+            else
+            {
+                return Json(new { success = false, message = "Error al guardar la nota" });
+            }
+        }
+
         [Authorize(Roles = "JefeProduccion")]
         public async Task<ActionResult> GetDataReport(DateTime? start, DateTime? end)
         {
@@ -305,6 +323,7 @@ namespace ControlProduccion.Controllers
                 MermaBobinasKg = modelDto.MermaBobinasKg,
                 MermaLitewallKg = modelDto.MermaLitewallKg,
                 TiempoParo = modelDto.TiempoParo,
+                NotaSupervisor = modelDto.NotaSupervisor,
                 DetPrdAccesorios = modelDto.DetPrdAccesorios?.Select(d => {
                     var tipoArticulo = tiposArticuloDict?.GetValueOrDefault(d.IdTipoArticulo);
                     
