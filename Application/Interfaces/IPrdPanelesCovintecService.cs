@@ -24,6 +24,7 @@ namespace Application.Interfaces
         Task<bool> AproveDetPrdPanelesCovintecByIdAsync(int id, string userId);
         Task<bool> AprovePrdPanelCovintecByIdAsync(int id, string userId);
         Task<bool> ValidatePrdPanelCovintecByIdAsync(int id, string userId);
+        Task<bool> UpdateNotaSupervisorAsync(int id, string notaSupervisor, string userId);
         Task<IEnumerable<PrdPanelesCovintecReporteDTO>> GetAllPanelProduccionWithDetailsAsync(DateTime start, DateTime end);
     }
 }

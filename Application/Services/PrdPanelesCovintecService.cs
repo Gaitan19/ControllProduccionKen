@@ -200,6 +200,7 @@ namespace Application.Services
                     IdUsuarioCreacion = prd.IdUsuarioCreacion,
                     AprobadoSupervisor = prd.AprobadoSupervisor,
                     AprobadoGerencia = prd.AprobadoGerencia,
+                    NotaSupervisor = prd.NotaSupervisor,
                     DetAlambrePrdPanelesCovintecs =  prd.DetAlambrePrdPanelesCovintecs
                                                         .Select(entity => new DetAlambrePrdPanelesCovintecDTO
                                                         {
@@ -508,6 +509,23 @@ namespace Application.Services
             }
 
             return await Task.FromResult(prdPanelesCovintec.AprobadoSupervisor);
+        }
+
+        public async Task<bool> UpdateNotaSupervisorAsync(int id, string notaSupervisor, string userId)
+        {
+            var prd = await _unitOfWork.PrdPanelesCovintecRepository.GetByIdAsync(id);
+            if (prd == null)
+            {
+                return false;
+            }
+
+            prd.NotaSupervisor = notaSupervisor;
+            prd.IdUsuarioActualizacion = userId;
+            prd.FechaActualizacion = DateTime.Now;
+
+            _unitOfWork.PrdPanelesCovintecRepository.Update(prd);
+            await _unitOfWork.SaveChangesAsync();
+            return true;
         }
     }
   

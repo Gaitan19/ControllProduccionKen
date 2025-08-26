@@ -52,6 +52,11 @@ namespace ControlProduccion.ViewModel
         public string? IdAprobadoGerencia { get; set; }
         public bool? AprobadoSupervisor { get; set; }
         public bool? AprobadoGerencia { get; set; }
+        
+        [Display(Name = "Nota del Supervisor")]
+        [StringLength(1000, ErrorMessage = "La nota del supervisor no puede exceder 1000 caracteres")]
+        public string? NotaSupervisor { get; set; }
+        
         public List<DetPrdPanelesCovintecViewModel>? DetPrdPanelesCovintec { get; set; }
         public List<DetAlambrePrdPanelesCovintecViewModel>? DetAlambrePrdPanelesCovintec { get; set; }
     }
