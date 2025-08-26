@@ -164,6 +164,7 @@ namespace Application.Services
                 IdUsuarios = userIds,
                 Fecha = prd.Fecha,
                 TiempoParo = prd.TiempoParo,
+                NotaSupervisor = prd.NotaSupervisor,
                 IdUsuarioCreacion = prd.IdUsuarioCreacion,
                 FechaCreacion = prd.FechaCreacion,
                 IdUsuarioActualizacion = prd.IdUsuarioActualizacion,
@@ -371,6 +372,23 @@ namespace Application.Services
         public  Task<IEnumerable<PrdBloquesReporteDTO>> GetAllPrdBloqueWithDetailsAsync(DateTime start, DateTime end)
         {
              return _unitOfWork.ReportesDapperRepository.GetAllPrdBloqueWithDetailsAsync(start, end);
+        }
+
+        public async Task<bool> UpdateNotaSupervisorAsync(int id, string notaSupervisor, string userId)
+        {
+            var prd = await _unitOfWork.PrdBloqueRepository.GetByIdAsync(id);
+            if (prd == null)
+            {
+                return false;
+            }
+
+            prd.NotaSupervisor = notaSupervisor;
+            prd.IdUsuarioActualizacion = userId;
+            prd.FechaActualizacion = DateTime.Now;
+
+            _unitOfWork.PrdBloqueRepository.Update(prd);
+            await _unitOfWork.SaveChangesAsync();
+            return true;
         }
     }
 }
