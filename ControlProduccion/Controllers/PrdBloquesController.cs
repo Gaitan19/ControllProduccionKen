@@ -335,5 +335,23 @@ namespace ControlProduccion.Controllers
                 }).ToList()
             };
         }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Supervisor")]
+        public async Task<IActionResult> SaveNotaSupervisor(int id, string notaSupervisor)
+        {
+            var userId = _userManager.GetUserId(User);
+            var result = await _prdBloquesService.UpdateNotaSupervisorAsync(id, notaSupervisor, userId);
+            
+            if (result)
+            {
+                return Json(new { success = true, message = "Nota guardada exitosamente" });
+            }
+            else
+            {
+                return Json(new { success = false, message = "Error al guardar la nota" });
+            }
+        }
     }
 }

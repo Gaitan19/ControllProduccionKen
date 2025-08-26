@@ -21,6 +21,7 @@ namespace Application.Interfaces
         Task<CrearPrdBloqueDto> GetCreateData();
         Task<bool> ValidatePrdBloqueByIdAsync(int id, string userId);
         Task<bool> AprovePrdBloqueByIdAsync(int id, string userId);
+        Task<bool> UpdateNotaSupervisorAsync(int id, string notaSupervisor, string userId);
         Task<IEnumerable<PrdBloquesReporteDTO>> GetAllPrdBloqueWithDetailsAsync(DateTime start, DateTime end);
     }
 }

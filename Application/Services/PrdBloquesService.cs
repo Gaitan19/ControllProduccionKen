@@ -277,6 +277,23 @@ namespace Application.Services
             return true;
         }
 
+        public async Task<bool> UpdateNotaSupervisorAsync(int id, string notaSupervisor, string userId)
+        {
+            var prd = await _unitOfWork.PrdBloqueRepository.GetByIdAsync(id);
+            if (prd == null)
+            {
+                return false;
+            }
+
+            prd.NotaSupervisor = notaSupervisor;
+            prd.IdUsuarioActualizacion = userId;
+            prd.FechaActualizacion = DateTime.Now;
+
+            _unitOfWork.PrdBloqueRepository.Update(prd);
+            await _unitOfWork.SaveChangesAsync();
+            return true;
+        }
+
         public async Task UpdateAsync(PrdBloqueDTO dto)
         {
             var prd = await _unitOfWork.PrdBloqueRepository.GetByIdAsync(dto.Id);
