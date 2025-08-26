@@ -190,8 +190,14 @@
                     <textarea  asp-for="Observaciones" class="form-control"></textarea>
                     <span asp-validation-for="Observaciones" class="text-danger"></span>
                 </div>
-
                 
+                <div class="form-group">
+                    <label asp-for="NotaSupervisor"></label>
+                    <textarea asp-for="NotaSupervisor" class="form-control" rows="3" readonly></textarea>
+                    <span asp-validation-for="NotaSupervisor" class="text-danger"></span>
+                </div>
+
+                <div class="hr-line-dashed"></div>
 
                 <button type="button" class="btn btn-dark" onclick="location.href='@Url.Action("Index", "PrdCerchaCovintec")'">Regresar</button>
                 @if (Model.AprobadoGerencia != true)

@@ -58,6 +58,7 @@ namespace ControlProduccion.Controllers
                 ConteoFinal = model.ConteoFinal,
                 AprobadoGerencia = model.AprobadoGerencia,
                 AprobadoSupervisor = model.AprobadoSupervisor,
+                NotaSupervisor = model.NotaSupervisor,
                 DetPrdCerchaCovintec = model.DetPrdCerchaCovintecs.Select(m => new DetPrdCerchaCovintecViewModel
                 {
                     Id = m.Id,
@@ -228,6 +229,7 @@ namespace ControlProduccion.Controllers
                 ConteoFinal = model.ConteoFinal,
                 AprobadoGerencia = model.AprobadoGerencia,
                 AprobadoSupervisor = model.AprobadoSupervisor,
+                NotaSupervisor = model.NotaSupervisor,
                 DetPrdCerchaCovintec = model.DetPrdCerchaCovintecs.Select(m => new DetPrdCerchaCovintecViewModel
                 {
                     Id = m.Id,
@@ -448,6 +450,24 @@ namespace ControlProduccion.Controllers
             var result = await _prdCerchaCovintecService.AprovePrdCerchaCovintecByIdAsync(id, userId);
 
             return Json(result);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Supervisor")]
+        public async Task<IActionResult> SaveNotaSupervisor(int id, string notaSupervisor)
+        {
+            var userId = _userManager.GetUserId(User);
+            var result = await _prdCerchaCovintecService.UpdateNotaSupervisorAsync(id, notaSupervisor, userId);
+            
+            if (result)
+            {
+                return Json(new { success = true, message = "Nota guardada exitosamente" });
+            }
+            else
+            {
+                return Json(new { success = false, message = "Error al guardar la nota" });
+            }
         }
     }
 }
