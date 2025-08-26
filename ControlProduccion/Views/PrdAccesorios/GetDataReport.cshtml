@@ -34,23 +34,25 @@
     /* Encabezado del reporte */
     .report-header {
         border-collapse: collapse;
-        width: 100%;
+        width: auto;           /* ancho dinámico según contenido */
+        table-layout: auto;    /* deja que el contenido defina ancho */
         margin-bottom: 25px;
     }
 
-        .report-header thead th {
-            background-color: #f2f2f2;
-            text-transform: uppercase;
-            font-weight: bold;
-            padding: 10px;
-            text-align: left;
-        }
+    .report-header thead th {
+        background-color: #f2f2f2;
+        text-transform: uppercase;
+        font-weight: bold;
+        padding: 10px 15px;
+        text-align: left;
+    }
 
-        .report-header td,
-        .report-header th {
-            border: 1px solid #e1e1e1;
-            padding: 10px;
-        }
+    .report-header td,
+    .report-header th {
+        border: 1px solid #e1e1e1;
+        padding: 8px 15px;
+        white-space: nowrap;   /* evita que el texto se rompa en varias líneas */
+    }
 
     .header-title {
         font-weight: bold;
@@ -76,37 +78,37 @@
         margin-bottom: 20px;
     }
 
-        .details-table th {
-            background-color: #f2f2f2;
-            text-transform: uppercase;
-            font-weight: bold;
-            padding: 8px;
-            text-align: left;
-            border: 1px solid #e1e1e1;
-            font-size: 12px;
-        }
+    .details-table th {
+        background-color: #f2f2f2;
+        text-transform: uppercase;
+        font-weight: bold;
+        padding: 8px 12px;
+        text-align: left;
+        border: 1px solid #e1e1e1;
+        font-size: 12px;
+    }
 
-        .details-table td {
-            border: 1px solid #e1e1e1;
-            padding: 8px;
-            font-size: 11px;
-        }
+    .details-table td {
+        border: 1px solid #e1e1e1;
+        padding: 8px 12px;
+        font-size: 11px;
+    }
 
     /* Sección de firmas */
     .signatures {
         margin-top: 40px;
     }
 
-        .signatures table {
-            width: 100%;
-            border-collapse: collapse;
-        }
+    .signatures table {
+        width: 100%;
+        border-collapse: collapse;
+    }
 
-        .signatures td {
-            padding-top: 40px;
-            text-align: center;
-            vertical-align: bottom;
-        }
+    .signatures td {
+        padding-top: 40px;
+        text-align: center;
+        vertical-align: bottom;
+    }
 
     .signature-line {
         border-top: 1px solid #000;
@@ -122,13 +124,13 @@
 
     .ibox-title {
         display: flex;
-        align-items: center; /* Alinea verticalmente al centro (opcional) */
+        align-items: center;
     }
-        /* Opcional: si quieres que cada div ocupe un ancho específico */
-        .ibox-title .col-sm-3 {
-            flex: 0 0 auto; /* No se estira automáticamente */
-            margin-right: 15px; /* Separación entre elementos */
-        }
+
+    .ibox-title .col-sm-3 {
+        flex: 0 0 auto;
+        margin-right: 15px;
+    }
 
     /* Responsive para móviles */
     @@media (max-width: 768px) {
@@ -154,6 +156,7 @@
         }
     }
 </style>
+
 
 <div class="col-md-15 offset-md-1">
     <div class="ibox">
@@ -182,8 +185,8 @@
                     <table class="report-header">
                         <thead>
                             <tr>
-                                <th style="width: 30%;">CAMPO</th>
-                                <th style="width: 70%;">VALOR</th>
+                                <th>CAMPO</th>
+                                <th>VALOR</th>
                             </tr>
                         </thead>
                         <tbody>
