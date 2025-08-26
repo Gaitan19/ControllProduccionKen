@@ -21,6 +21,8 @@ namespace Application.Interfaces
         Task<bool> ValidatePrdNeveraByIdAsync(int id, string userId);
        
         Task<bool> AprovePrdNeveraByIdAsync(int id, string userId);
+
+        Task<bool> UpdateNotaSupervisorAsync(int id, string notaSupervisor, string userId);
        
       
         Task<IEnumerable<PrdNeveraReporteDTO>> GetAllPrdNeveraWithDetailsAsync(DateTime start, DateTime end);
