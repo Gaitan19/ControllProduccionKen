@@ -147,11 +147,31 @@
                     <span asp-validation-for="Observaciones" class="text-danger"></span>
                 </div>
 
+                <div class="form-group">
+                    <label asp-for="NotaSupervisor"></label>
+                    @if (User.IsInRole("Supervisor"))
+                    {
+                        @if (Model.AprobadoSupervisor != true)
+                        {
+                            <textarea id="txtNotaSupervisor" asp-for="NotaSupervisor" class="form-control" rows="3" placeholder="Ingrese la nota del supervisor..."></textarea>
+                            <span asp-validation-for="NotaSupervisor" class="text-danger"></span>
+                        }
+                        else
+                        {
+                            <textarea asp-for="NotaSupervisor" class="form-control" rows="3" readonly></textarea>
+                        }
+                    }
+                    else
+                    {
+                        <textarea asp-for="NotaSupervisor" class="form-control" rows="3" readonly></textarea>
+                    }
+                </div>
 
-                @*    <button type="submit" class="btn btn-primary">Guardar</button> *@
+                <div class="hr-line-dashed"></div>
                 <button type="button" class="btn btn-dark" onclick="location.href='@Url.Action("Index", "PrdMallasCovintec")'">Regresar</button>
                 @if (User.IsInRole("Supervisor") && Model.AprobadoSupervisor != true)
                 {
+                    <button type="button" id="btnGuardarNota" class="btn btn-info">Guardar Nota</button>
                     <button type="button" class="btn btn-danger" onclick="validar(@Model.Id)">Validar</button>
                 }
                 else
@@ -313,6 +333,36 @@
                 });
             }
         }
+
+        $(document).ready(function() {
+            $('#btnGuardarNota').click(function() {
+                var notaSupervisor = $('#txtNotaSupervisor').val();
+                var token = $('input[name="__RequestVerificationToken"]').val();
+                var id = @Model.Id;
+
+                $.ajax({
+                    url: '@Url.Action("SaveNotaSupervisor", "PrdMallasCovintec")',
+                    type: 'POST',
+                    data: {
+                        id: id,
+                        notaSupervisor: notaSupervisor
+                    },
+                    headers: {
+                        'RequestVerificationToken': token
+                    },
+                    success: function (response) {
+                        if (response && response.success) {
+                            alert('Nota guardada exitosamente');
+                        } else {
+                            alert(response.message || 'Error al guardar la nota');
+                        }
+                    },
+                    error: function () {
+                        alert('Error al guardar la nota');
+                    }
+                });
+            });
+        });
 
 
     </script>

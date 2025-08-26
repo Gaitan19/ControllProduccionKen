@@ -37,6 +37,10 @@ namespace ControlProduccion.ViewModel
         [Display(Name = "Tiempo Paro (Horas)")]
         public decimal? TiempoParo { get; set; }
 
+        [Display(Name = "Nota del Supervisor")]
+        [StringLength(1000, ErrorMessage = "La nota del supervisor no puede exceder 1000 caracteres")]
+        public string? NotaSupervisor { get; set; }
+
         [Display(Name = "Articulo")]
         public IEnumerable<SelectListItem>? CatalogoMallas { get; set; }
 

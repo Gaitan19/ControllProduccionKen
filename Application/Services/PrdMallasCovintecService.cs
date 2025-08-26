@@ -166,6 +166,7 @@ namespace Application.Services
                 FechaCreacion = prd.FechaCreacion,
                 AprobadoSupervisor = prd.AprobadoSupervisor,
                 AprobadoGerencia = prd.AprobadoGerencia,
+                NotaSupervisor = prd.NotaSupervisor,
                 DetPrdMallasCovintecs = prd.DetPrdMallaCovintecs.Select(entity => new DetPrdMallaCovintecDTO
                 {
                     Id = entity.Id,
@@ -411,6 +412,23 @@ namespace Application.Services
                 await _unitOfWork.SaveChangesAsync();
             }
             return await Task.FromResult(prd.AprobadoSupervisor);
+        }
+
+        public async Task<bool> UpdateNotaSupervisorAsync(int id, string notaSupervisor, string userId)
+        {
+            var prd = await _unitOfWork.PrdMallaCovintecRepository.GetByIdAsync(id);
+            if (prd == null)
+            {
+                return false;
+            }
+
+            prd.NotaSupervisor = notaSupervisor;
+            prd.IdUsuarioActualizacion = userId;
+            prd.FechaActualizacion = DateTime.Now;
+
+            _unitOfWork.PrdMallaCovintecRepository.Update(prd);
+            await _unitOfWork.SaveChangesAsync();
+            return true;
         }
     }
 }
