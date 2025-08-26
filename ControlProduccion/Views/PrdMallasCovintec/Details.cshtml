@@ -171,7 +171,7 @@
                 <button type="button" class="btn btn-dark" onclick="location.href='@Url.Action("Index", "PrdMallasCovintec")'">Regresar</button>
                 @if (User.IsInRole("Supervisor") && Model.AprobadoSupervisor != true)
                 {
-                    <button type="button" id="btnGuardarNota" class="btn btn-info">Guardar Nota</button>
+                    <button type="button" id="btnGuardarNota" class="btn btn-primary">Guardar Nota</button>
                     <button type="button" class="btn btn-danger" onclick="validar(@Model.Id)">Validar</button>
                 }
                 else
