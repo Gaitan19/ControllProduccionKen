@@ -32,7 +32,7 @@ namespace Application.DTOs
 
         public int? NumeroPedido { get; set; }
 
-        public int VelocidadMaquina { get; set; }
+        public decimal VelocidadMaquina { get; set; }
 
         public int IdUbicacionBobinaA { get; set; }
 

@@ -11,7 +11,7 @@
     [IdTipoFabricacion]      INT             NOT NULL,
     [Cliente]                NVARCHAR (500)  NOT NULL,
     [NumeroPedido]           INT             NULL,
-    [VelocidadMaquina]       INT             NOT NULL,
+    [VelocidadMaquina]       DECIMAL (10, 2) NOT NULL,
     [IdUbicacionBobinaA]     INT             NOT NULL,
     [IdAnchoBobinaA]         INT             NOT NULL,
     [FabricanteBobinaA]      NVARCHAR (200)  NOT NULL,
