@@ -146,6 +146,7 @@ namespace Application.Services
                 AprobadoGerencia = prd.AprobadoGerencia,
                 IdAprobadoSupervisor = prd.IdAprobadoSupervisor,
                 IdAprobadoGerencia = prd.IdAprobadoGerencia,
+                NotaSupervisor = prd.NotaSupervisor,
                 DetPrdNeveras = prd.DetPrdNeveras.Select(entity => new DetPrdNeveraDTO
                 {
                     Id = entity.Id,
@@ -223,6 +224,23 @@ namespace Application.Services
             prdNevera.FechaActualizacion = DateTime.Now;
 
             _unitOfWork.PrdNeveraRepository.Update(prdNevera);
+            await _unitOfWork.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<bool> UpdateNotaSupervisorAsync(int id, string notaSupervisor, string userId)
+        {
+            var prd = await _unitOfWork.PrdNeveraRepository.GetByIdAsync(id);
+            if (prd == null)
+            {
+                return false;
+            }
+
+            prd.NotaSupervisor = notaSupervisor;
+            prd.IdUsuarioActualizacion = userId;
+            prd.FechaActualizacion = DateTime.Now;
+
+            _unitOfWork.PrdNeveraRepository.Update(prd);
             await _unitOfWork.SaveChangesAsync();
             return true;
         }

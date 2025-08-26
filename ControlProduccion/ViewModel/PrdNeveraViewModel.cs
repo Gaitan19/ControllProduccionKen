@@ -57,6 +57,11 @@ namespace ControlProduccion.ViewModel
         [Display(Name = "Aprobado por Gerencia")]
         public bool? AprobadoGerencia { get; set; }
         public string? IdAprobadoGerencia { get; set; }
+
+        [Display(Name = "Nota del Supervisor")]
+        [StringLength(1000, ErrorMessage = "La nota del supervisor no puede exceder 1000 caracteres")]
+        public string? NotaSupervisor { get; set; }
+
         [Display(Name = "Articulo")]
         public IEnumerable<SelectListItem>? Articulos { get; set; }
         [Display(Name = "Tipo de Fabricacion")]
