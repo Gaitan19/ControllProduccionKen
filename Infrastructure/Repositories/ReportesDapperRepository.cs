@@ -830,6 +830,10 @@ WHERE  D.PrdOtroId IN (
 
         public async Task<IEnumerable<PrdPreExpansionReporteDTO>> GetAllPrdPreExpansionWithDetailsAsync(DateTime start, DateTime end)
         {
+            // Validate DateTime parameters to ensure they're within SQL Server range
+            start = ValidateSqlDateTime(start);
+            end = ValidateSqlDateTime(end);
+
             using (var connection = _context.Database.GetDbConnection())
             {
                 if (connection.State == ConnectionState.Closed)
