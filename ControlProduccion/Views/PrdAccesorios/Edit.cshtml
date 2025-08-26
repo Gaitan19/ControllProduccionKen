@@ -226,6 +226,12 @@
                     <span asp-validation-for="Observaciones" class="text-danger"></span>
                 </div>
 
+                <!-- NotaSupervisor field - always read-only in Edit view -->
+                <div class="form-group">
+                    <label asp-for="NotaSupervisor"></label>
+                    <textarea asp-for="NotaSupervisor" class="form-control" rows="3" readonly></textarea>
+                </div>
+
                 <button type="button" class="btn btn-dark" onclick="location.href='@Url.Action("Index", "PrdAccesorios")'">Regresar</button>
                 @if (Model.AprobadoGerencia != true)
                 {

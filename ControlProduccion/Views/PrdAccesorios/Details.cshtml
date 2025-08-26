@@ -123,6 +123,26 @@
                     <textarea asp-for="Observaciones" class="form-control" rows="3" readonly></textarea>
                 </div>
 
+                <!-- NotaSupervisor field for supervisors -->
+                @if (User.IsInRole("Supervisor"))
+                {
+                    <div class="form-group">
+                        <label asp-for="NotaSupervisor"></label>
+                        <textarea id="txtNotaSupervisor" asp-for="NotaSupervisor" class="form-control" rows="3" placeholder="Ingrese la nota del supervisor..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <button id="btnGuardarNota" type="button" class="btn btn-primary">Guardar Nota</button>
+                        <span id="spanMensajeNota" class="text-success" style="display:none;"></span>
+                    </div>
+                }
+                else
+                {
+                    <div class="form-group">
+                        <label asp-for="NotaSupervisor"></label>
+                        <textarea asp-for="NotaSupervisor" class="form-control" rows="3" readonly></textarea>
+                    </div>
+                }
+
                 <div class="hr-line-dashed"></div>
 
 
@@ -176,6 +196,35 @@
                         }
                     });
                 }
+            });
+
+            // Botón Guardar Nota
+            $('#btnGuardarNota').click(function () {
+                var notaSupervisor = $('#txtNotaSupervisor').val();
+                var token = $('input[name="__RequestVerificationToken"]').val();
+                var id = @Model.Id;
+
+                $.ajax({
+                    url: '@Url.Action("GuardarNotaSupervisor", "PrdAccesorios")',
+                    type: 'POST',
+                    data: { 
+                        id: id, 
+                        notaSupervisor: notaSupervisor 
+                    },
+                    headers: {
+                        'RequestVerificationToken': token
+                    },
+                    success: function (response) {
+                        if (response.success) {
+                            $('#spanMensajeNota').text(response.message).show().fadeOut(3000);
+                        } else {
+                            alert(response.message || 'Error al guardar la nota');
+                        }
+                    },
+                    error: function () {
+                        alert('Error al guardar la nota');
+                    }
+                });
             });
 
         });

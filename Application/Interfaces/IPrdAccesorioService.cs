@@ -16,6 +16,7 @@ namespace Application.Interfaces
         Task<CrearPrdAccesorioDto> GetCreateDataAsync();
         Task CreateAsync(PrdAccesorioDto dto);
         Task UpdateAsync(PrdAccesorioDto dto);
+        Task<bool> UpdateNotaSupervisorAsync(int id, string notaSupervisor, string userId);
         Task UpdateDetPrdAsync(DetPrdAccesorioDto dto);
         Task<bool> ValidatePrdAccesorioByIdAsync(int id, string userId);
         Task<bool> AprovePrdAccesorioByIdAsync(int id, string userId);
