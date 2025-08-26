@@ -35,6 +35,8 @@ public partial class PrdPaneladoraPch
 
     public string? IdAprobadoGerencia { get; set; }
 
+    public string? NotaSupervisor { get; set; }
+
     public virtual ICollection<DetPrdPaneladoraPch> DetPrdPaneladoraPches { get; set; } = new List<DetPrdPaneladoraPch>();
 
     public virtual Maquina IdMaquinaNavigation { get; set; } = null!;

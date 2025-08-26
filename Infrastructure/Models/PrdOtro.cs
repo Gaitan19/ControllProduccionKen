@@ -31,5 +31,7 @@ public partial class PrdOtro
 
     public decimal? TiempoParo { get; set; }
 
+    public string? NotaSupervisor { get; set; }
+
     public virtual ICollection<DetPrdOtro> DetPrdOtros { get; set; } = new List<DetPrdOtro>();
 }

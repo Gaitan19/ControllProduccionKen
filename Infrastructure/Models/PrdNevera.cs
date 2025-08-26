@@ -39,6 +39,8 @@ public partial class PrdNevera
 
     public string? IdAprobadoGerencia { get; set; }
 
+    public string? NotaSupervisor { get; set; }
+
     public virtual ICollection<DetPrdNevera> DetPrdNeveras { get; set; } = new List<DetPrdNevera>();
 
     public virtual Maquina IdMaquinaNavigation { get; set; } = null!;

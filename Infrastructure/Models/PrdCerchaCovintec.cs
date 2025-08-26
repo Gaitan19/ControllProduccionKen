@@ -41,6 +41,8 @@ public partial class PrdCerchaCovintec
 
     public string? IdAprobadoGerencia { get; set; }
 
+    public string? NotaSupervisor { get; set; }
+
     public virtual ICollection<DetAlambrePrdCerchaCovintec> DetAlambrePrdCerchaCovintecs { get; set; } = new List<DetAlambrePrdCerchaCovintec>();
 
     public virtual ICollection<DetPrdCerchaCovintec> DetPrdCerchaCovintecs { get; set; } = new List<DetPrdCerchaCovintec>();

@@ -51,5 +51,7 @@ public partial class PrdpreExpansion
 
     public string? IdAprobadoGerencia { get; set; }
 
+    public string? NotaSupervisor { get; set; }
+
     public virtual ICollection<DetPrdpreExpansion> DetPrdpreExpansions { get; set; } = new List<DetPrdpreExpansion>();
 }

@@ -151,6 +151,8 @@ public partial class PrdIlKwang
 
     public string? IdAprobadoGerencia { get; set; }
 
+    public string? NotaSupervisor { get; set; }
+
     public virtual AnchoBobina IdAnchoBobinaANavigation { get; set; } = null!;
 
     public virtual AnchoBobina IdAnchoBobinaBNavigation { get; set; } = null!;

@@ -994,6 +994,9 @@ public partial class AppDbContext : DbContext
             entity.Property(e => e.MermaLitewallKg).HasColumnType("decimal(10, 2)");
             entity.Property(e => e.MermaMallaCovintecKg).HasColumnType("decimal(10, 2)");
             entity.Property(e => e.MermaMallaPchKg).HasColumnType("decimal(10, 2)");
+            entity.Property(e => e.NotaSupervisor)
+                .HasMaxLength(1000)
+                .IsUnicode(false);
             entity.Property(e => e.Observaciones).HasMaxLength(4000);
             entity.Property(e => e.TiempoParo).HasColumnType("decimal(18, 2)");
 
@@ -1014,6 +1017,9 @@ public partial class AppDbContext : DbContext
             entity.Property(e => e.IdAprobadoSupervisor).HasMaxLength(450);
             entity.Property(e => e.IdUsuarioActualizacion).HasMaxLength(450);
             entity.Property(e => e.IdUsuarioCreacion).HasMaxLength(450);
+            entity.Property(e => e.NotaSupervisor)
+                .HasMaxLength(1000)
+                .IsUnicode(false);
             entity.Property(e => e.TiempoParo).HasColumnType("decimal(18, 2)");
         });
 
@@ -1030,6 +1036,9 @@ public partial class AppDbContext : DbContext
             entity.Property(e => e.IdUsuarioActualizacion).HasMaxLength(450);
             entity.Property(e => e.IdUsuarioCreacion).HasMaxLength(450);
             entity.Property(e => e.MermaAlambre).HasColumnType("decimal(18, 2)");
+            entity.Property(e => e.NotaSupervisor)
+                .HasMaxLength(1000)
+                .IsUnicode(false);
             entity.Property(e => e.Observaciones).HasMaxLength(4000);
             entity.Property(e => e.TiempoParo).HasColumnType("decimal(18, 2)");
 
@@ -1050,6 +1059,9 @@ public partial class AppDbContext : DbContext
             entity.Property(e => e.IdAprobadoSupervisor).HasMaxLength(450);
             entity.Property(e => e.IdUsuarioActualizacion).HasMaxLength(450);
             entity.Property(e => e.IdUsuarioCreacion).HasMaxLength(450);
+            entity.Property(e => e.NotaSupervisor)
+                .HasMaxLength(1000)
+                .IsUnicode(false);
             entity.Property(e => e.Observaciones).HasMaxLength(4000);
             entity.Property(e => e.TiempoParo).HasColumnType("decimal(18, 2)");
 
@@ -1070,6 +1082,9 @@ public partial class AppDbContext : DbContext
             entity.Property(e => e.IdAprobadoSupervisor).HasMaxLength(450);
             entity.Property(e => e.IdUsuarioActualizacion).HasMaxLength(450);
             entity.Property(e => e.IdUsuarioCreacion).HasMaxLength(450);
+            entity.Property(e => e.NotaSupervisor)
+                .HasMaxLength(1000)
+                .IsUnicode(false);
             entity.Property(e => e.Observaciones).HasMaxLength(4000);
             entity.Property(e => e.TiempoParo).HasColumnType("decimal(18, 2)");
 
@@ -1112,6 +1127,9 @@ public partial class AppDbContext : DbContext
             entity.Property(e => e.MermaM).HasColumnType("decimal(10, 2)");
             entity.Property(e => e.MetrosAdicionales).HasColumnType("decimal(10, 2)");
             entity.Property(e => e.MetrosConDefecto).HasColumnType("decimal(10, 2)");
+            entity.Property(e => e.NotaSupervisor)
+                .HasMaxLength(1000)
+                .IsUnicode(false);
             entity.Property(e => e.Observaciones).HasMaxLength(4000);
             entity.Property(e => e.PesoFinalA).HasColumnType("decimal(10, 2)");
             entity.Property(e => e.PesoFinalB).HasColumnType("decimal(10, 2)");
@@ -1178,6 +1196,9 @@ public partial class AppDbContext : DbContext
             entity.Property(e => e.IdUsuarioActualizacion).HasMaxLength(450);
             entity.Property(e => e.IdUsuarioCreacion).HasMaxLength(450);
             entity.Property(e => e.MermaAlambre).HasColumnType("decimal(18, 2)");
+            entity.Property(e => e.NotaSupervisor)
+                .HasMaxLength(1000)
+                .IsUnicode(false);
             entity.Property(e => e.Observaciones).HasMaxLength(4000);
             entity.Property(e => e.TiempoParo).HasColumnType("decimal(18, 2)");
 
@@ -1204,6 +1225,9 @@ public partial class AppDbContext : DbContext
             entity.Property(e => e.IdAprobadoSupervisor).HasMaxLength(450);
             entity.Property(e => e.IdUsuarioActualizacion).HasMaxLength(450);
             entity.Property(e => e.IdUsuarioCreacion).HasMaxLength(450);
+            entity.Property(e => e.NotaSupervisor)
+                .HasMaxLength(1000)
+                .IsUnicode(false);
             entity.Property(e => e.Observaciones).HasMaxLength(4000);
             entity.Property(e => e.ProduccionDia).HasColumnType("decimal(18, 2)");
             entity.Property(e => e.TiempoParo).HasColumnType("decimal(18, 2)");
@@ -1220,6 +1244,9 @@ public partial class AppDbContext : DbContext
             entity.Property(e => e.IdAprobadoSupervisor).HasMaxLength(450);
             entity.Property(e => e.IdUsuarioActualizacion).HasMaxLength(450);
             entity.Property(e => e.IdUsuarioCreacion).HasMaxLength(450);
+            entity.Property(e => e.NotaSupervisor)
+                .HasMaxLength(1000)
+                .IsUnicode(false);
             entity.Property(e => e.Observaciones).HasMaxLength(4000);
             entity.Property(e => e.TiempoParo).HasColumnType("decimal(18, 2)");
 
@@ -1242,6 +1269,9 @@ public partial class AppDbContext : DbContext
             entity.Property(e => e.IdAprobadoSupervisor).HasMaxLength(450);
             entity.Property(e => e.IdUsuarioActualizacion).HasMaxLength(450);
             entity.Property(e => e.IdUsuarioCreacion).HasMaxLength(450);
+            entity.Property(e => e.NotaSupervisor)
+                .HasMaxLength(1000)
+                .IsUnicode(false);
             entity.Property(e => e.TiempoParo).HasColumnType("decimal(18, 2)");
         });
 
@@ -1260,6 +1290,9 @@ public partial class AppDbContext : DbContext
             entity.Property(e => e.IdAprobadoSupervisor).HasMaxLength(450);
             entity.Property(e => e.IdUsuarioActualizacion).HasMaxLength(450);
             entity.Property(e => e.IdUsuarioCreacion).HasMaxLength(450);
+            entity.Property(e => e.NotaSupervisor)
+                .HasMaxLength(1000)
+                .IsUnicode(false);
             entity.Property(e => e.Observaciones).HasMaxLength(4000);
             entity.Property(e => e.ProduccionDia).HasColumnType("decimal(10, 2)");
             entity.Property(e => e.TiempoParo).HasColumnType("decimal(18, 2)");
@@ -1284,6 +1317,9 @@ public partial class AppDbContext : DbContext
             entity.Property(e => e.IdUsuarioActualizacion).HasMaxLength(450);
             entity.Property(e => e.IdUsuarioCreacion).HasMaxLength(450);
             entity.Property(e => e.MermaAlambre).HasColumnType("decimal(18, 2)");
+            entity.Property(e => e.NotaSupervisor)
+                .HasMaxLength(1000)
+                .IsUnicode(false);
             entity.Property(e => e.Observaciones).HasMaxLength(4000);
             entity.Property(e => e.TiempoParo).HasColumnType("decimal(18, 2)");
 
@@ -1311,6 +1347,9 @@ public partial class AppDbContext : DbContext
             entity.Property(e => e.IdUsuarioActualizacion).HasMaxLength(450);
             entity.Property(e => e.IdUsuarioCreacion).HasMaxLength(450);
             entity.Property(e => e.Lote).HasMaxLength(150);
+            entity.Property(e => e.NotaSupervisor)
+                .HasMaxLength(1000)
+                .IsUnicode(false);
             entity.Property(e => e.Observaciones).HasMaxLength(4000);
             entity.Property(e => e.PresionCaldera).HasMaxLength(150);
             entity.Property(e => e.TiempoParo).HasColumnType("decimal(18, 2)");

@@ -29,5 +29,7 @@ public partial class PrdBloque
 
     public decimal? TiempoParo { get; set; }
 
+    public string? NotaSupervisor { get; set; }
+
     public virtual ICollection<DetPrdBloque> DetPrdBloques { get; set; } = new List<DetPrdBloque>();
 }

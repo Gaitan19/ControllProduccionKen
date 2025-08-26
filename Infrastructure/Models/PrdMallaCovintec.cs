@@ -37,6 +37,8 @@ public partial class PrdMallaCovintec
 
     public string? IdAprobadoGerencia { get; set; }
 
+    public string? NotaSupervisor { get; set; }
+
     public virtual ICollection<DetAlambrePrdMallaCovintec> DetAlambrePrdMallaCovintecs { get; set; } = new List<DetAlambrePrdMallaCovintec>();
 
     public virtual ICollection<DetPrdMallaCovintec> DetPrdMallaCovintecs { get; set; } = new List<DetPrdMallaCovintec>();

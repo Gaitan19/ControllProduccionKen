@@ -37,6 +37,8 @@ public partial class PrdPanelesCovintec
 
     public string? IdAprobadoGerencia { get; set; }
 
+    public string? NotaSupervisor { get; set; }
+
     public virtual ICollection<DetAlambrePrdPanelesCovintec> DetAlambrePrdPanelesCovintecs { get; set; } = new List<DetAlambrePrdPanelesCovintec>();
 
     public virtual ICollection<DetPrdPanelesCovintec> DetPrdPanelesCovintecs { get; set; } = new List<DetPrdPanelesCovintec>();

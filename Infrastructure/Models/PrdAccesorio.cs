@@ -41,5 +41,7 @@ public partial class PrdAccesorio
 
     public decimal? TiempoParo { get; set; }
 
+    public string? NotaSupervisor { get; set; }
+
     public virtual Maquina IdMaquinaNavigation { get; set; } = null!;
 }

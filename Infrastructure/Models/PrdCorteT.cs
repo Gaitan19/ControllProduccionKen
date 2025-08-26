@@ -35,6 +35,8 @@ public partial class PrdCorteT
 
     public string? IdAprobadoGerencia { get; set; }
 
+    public string? NotaSupervisor { get; set; }
+
     public virtual ICollection<DetPrdCorteT> DetPrdCorteTs { get; set; } = new List<DetPrdCorteT>();
 
     public virtual Maquina IdMaquinaNavigation { get; set; } = null!;

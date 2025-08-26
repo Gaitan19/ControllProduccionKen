@@ -33,6 +33,8 @@ public partial class PrdMallaPch
 
     public decimal? TiempoParo { get; set; }
 
+    public string? NotaSupervisor { get; set; }
+
     public virtual ICollection<DetPrdPchMaquinaA> DetPrdPchMaquinaAs { get; set; } = new List<DetPrdPchMaquinaA>();
 
     public virtual ICollection<DetPrdPchMaquinaB> DetPrdPchMaquinaBs { get; set; } = new List<DetPrdPchMaquinaB>();
