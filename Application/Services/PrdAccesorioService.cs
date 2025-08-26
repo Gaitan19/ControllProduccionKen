@@ -140,6 +140,7 @@ namespace Application.Services
                 MermaBobinasKg = entity.MermaBobinasKg,
                 MermaLitewallKg = entity.MermaLitewallKg,
                 TiempoParo = entity.TiempoParo,
+                NotaSupervisor = entity.NotaSupervisor,
                 AprobadoSupervisor = entity.AprobadoSupervisor,
                 AprobadoGerencia = entity.AprobadoGerencia,
                 IdAprobadoSupervisor = entity.IdAprobadoSupervisor,
@@ -236,6 +237,7 @@ namespace Application.Services
                 entity.MermaBobinasKg = dto.MermaBobinasKg;
                 entity.MermaLitewallKg = dto.MermaLitewallKg;
                 entity.TiempoParo = dto.TiempoParo;
+                entity.NotaSupervisor = dto.NotaSupervisor;
                 entity.IdUsuarioActualizacion = dto.IdUsuarioActualizacion;
                 entity.FechaActualizacion = DateTime.Now;
 
@@ -346,6 +348,23 @@ namespace Application.Services
 
             prd.AprobadoGerencia = true;
             prd.IdAprobadoGerencia = userId;
+            prd.IdUsuarioActualizacion = userId;
+            prd.FechaActualizacion = DateTime.Now;
+
+            _unitOfWork.PrdAccesorioRepository.Update(prd);
+            await _unitOfWork.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<bool> UpdateNotaSupervisorAsync(int id, string notaSupervisor, string userId)
+        {
+            var prd = await _unitOfWork.PrdAccesorioRepository.GetByIdAsync(id);
+            if (prd == null)
+            {
+                return false;
+            }
+
+            prd.NotaSupervisor = notaSupervisor;
             prd.IdUsuarioActualizacion = userId;
             prd.FechaActualizacion = DateTime.Now;
 
