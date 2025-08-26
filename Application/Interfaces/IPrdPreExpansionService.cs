@@ -17,6 +17,7 @@ namespace Application.Interfaces
         Task<CrearPrdPreExpansionDto> GetCatalogosAsync();
         Task<bool> ApprobarSupervisorAsync(int id, string userId);
         Task<bool> AprobarGerenciaAsync(int id, string userId);
+        Task<bool> UpdateNotaSupervisorAsync(int id, string notaSupervisor, string userId);
         Task<IEnumerable<PrdPreExpansionReporteDTO>> GetAllPrdPreExpansionWithDetailsAsync(DateTime start, DateTime end);
     }
 }

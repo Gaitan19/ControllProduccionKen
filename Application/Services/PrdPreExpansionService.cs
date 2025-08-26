@@ -227,6 +227,7 @@ namespace Application.Services
                 AprobadoGerencia = prd.AprobadoGerencia,
                 IdAprobadoSupervisor = prd.IdAprobadoSupervisor,
                 IdAprobadoGerencia = prd.IdAprobadoGerencia,
+                NotaSupervisor = prd.NotaSupervisor,
                 DetPrdpreExpansions = prd.DetPrdpreExpansions.Select(det => new DetPrdpreExpansionDTO
                 {
                     Id = det.Id,
@@ -311,6 +312,23 @@ namespace Application.Services
                 _unitOfWork.DetPrdpreExpansionRepository.Update(det);
                 await _unitOfWork.SaveChangesAsync();
             }
+        }
+
+        public async Task<bool> UpdateNotaSupervisorAsync(int id, string notaSupervisor, string userId)
+        {
+            var prd = await _unitOfWork.PrdpreExpansionRepository.GetByIdAsync(id);
+            if (prd == null)
+            {
+                return false;
+            }
+
+            prd.NotaSupervisor = notaSupervisor;
+            prd.IdUsuarioActualizacion = userId;
+            prd.FechaActualizacion = DateTime.Now;
+
+            _unitOfWork.PrdpreExpansionRepository.Update(prd);
+            await _unitOfWork.SaveChangesAsync();
+            return true;
         }
 
        
