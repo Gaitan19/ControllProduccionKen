@@ -136,14 +136,7 @@
                                             <td>@(preDetalle.CodigoSaco ?? "")</td>
                                             <td>@(preDetalle.Lote ?? "")</td>
                                             <td>@(preDetalle.FechaProduccion?.ToString("yyyy-MM-dd") ?? "")</td>
-                                            @if (Model.AprobadoGerencia != true)
-                                            {
-                                                <td><a href="#" class="btn btn-sm btn-outline-primary addSub" data-index="@detalleIndex">Agregar Sub</a></td>
-                                            }
-                                            else
-                                            {
-                                                <td></td>
-                                            }
+                                            <td></td>
                                             <td style='display:none'>@preDetalle.MarcaTipo</td>
                                             <td style='display:none'>@(preDetalle.CodigoSaco ?? "")</td>
                                             <td style='display:none'>@(preDetalle.Lote ?? "")</td>
@@ -154,6 +147,7 @@
                                                 <table class='table table-sm table-bordered subTable'>
                                                     <thead>
                                                         <tr>
+                                                            <th style="display:none">Id</th>
                                                             <th>No. Batch</th>
                                                             <th>Hora</th>
                                                             <th>Dens. Esperada</th>
@@ -173,17 +167,26 @@
                                                             @foreach (var subDetalle in preDetalle.DetPrdPreExpansions)
                                                             {
                                                                 <tr>
-                                                                    <td>@subDetalle.NoBatch</td>
-                                                                    <td>@subDetalle.Hora.ToString(@"hh\:mm")</td>
-                                                                    <td>@subDetalle.DensidadEsperada</td>
-                                                                    <td>@subDetalle.PesoBatchGr</td>
-                                                                    <td>@subDetalle.Densidad</td>
-                                                                    <td>@subDetalle.KgPorBatch</td>
-                                                                    <td>@subDetalle.PresionPsi</td>
-                                                                    <td>@subDetalle.TiempoBatchSeg</td>
-                                                                    <td>@subDetalle.TemperaturaC</td>
-                                                                    <td>@subDetalle.Silo</td>
-                                                                    <td>@(subDetalle.Paso == 1 ? "Primer Paso" : "Segundo Paso")</td>
+                                                                    <td style="display:none">@subDetalle.Id</td>
+                                                                    @if (Model.AprobadoGerencia != true)
+                                                                    {
+                                                                        <td><a href="#" class="open-modal" data-field="id" data-value="@subDetalle.Id">@subDetalle.NoBatch</a></td>
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        <td>@subDetalle.NoBatch</td>
+                                                                    }
+                                                                    <td data-field="hora">@To12HourFormat(subDetalle.Hora)</td>
+                                                                    <td data-field="densidadEsperada">@subDetalle.DensidadEsperada</td>
+                                                                    <td data-field="pesoBatchGr">@subDetalle.PesoBatchGr</td>
+                                                                    <td data-field="densidad">@subDetalle.Densidad</td>
+                                                                    <td data-field="kgPorBatch">@subDetalle.KgPorBatch</td>
+                                                                    <td data-field="presionPsi">@subDetalle.PresionPsi</td>
+                                                                    <td data-field="tiempoBatchSeg">@subDetalle.TiempoBatchSeg</td>
+                                                                    <td data-field="temperaturaC">@subDetalle.TemperaturaC</td>
+                                                                    <td data-field="silo">@subDetalle.Silo</td>
+                                                                    <td data-field="paso">@(subDetalle.Paso == 1 ? "Primer Paso" : "Segundo Paso")</td>
+                                                                    <td style="display:none" data-field="noBatch">@subDetalle.NoBatch</td>
                                                                 </tr>
                                                             }
                                                         }
@@ -298,6 +301,15 @@
                                     <input type="number" id="Silo" name="Silo" class="form-control" min="0" />
                                     <span class="text-danger"></span>
                                 </div>
+
+                                <div class="mb-3">
+                                    <label for="Paso" class="form-label">Paso</label>
+                                    <select id="Paso" name="Paso" class="form-control">
+                                        <option value="1">Primer Paso</option>
+                                        <option value="2">Segundo Paso</option>
+                                    </select>
+                                    <span class="text-danger"></span>
+                                </div>
                             </form>
 
                             <button id="btnGuardarDetPrd" type="button" class="btn btn-primary">Actualizar</button>
@@ -356,7 +368,7 @@
             e.preventDefault();
             var $row = $(this).closest("tr");
 
-            var id = $row.find("td[data-field='id']").text().trim();
+            var id = $row.find("td:eq(0)").text().trim(); // Hidden ID
             var hora12h = $row.find("td[data-field='hora']").text().trim();
             var noBatch = $row.find("td[data-field='noBatch']").text().trim();
             var densidadEsperada = $row.find("td[data-field='densidadEsperada']").text().trim();
@@ -367,6 +379,8 @@
             var tiempoBatchSeg = $row.find("td[data-field='tiempoBatchSeg']").text().trim();
             var temperaturaC = $row.find("td[data-field='temperaturaC']").text().trim();
             var silo = $row.find("td[data-field='silo']").text().trim();
+            var pasoText = $row.find("td[data-field='paso']").text().trim();
+            var paso = pasoText === "Primer Paso" ? "1" : "2";
 
             // Clear any previous error messages
             $("#spnbtnGuardarDetPrd").text("");
@@ -391,6 +405,7 @@
             $("#TiempoBatchSeg").val(tiempoBatchSeg);
             $("#TemperaturaC").val(temperaturaC);
             $("#Silo").val(silo);
+            $("#Paso").val(paso);
 
             $("#modal-Detalle").modal("show");
         });
@@ -406,7 +421,7 @@
             if (!$("#Hora").val() || !$("#NoBatch").val() || !$("#DensidadEsperada").val() || 
                 !$("#PesoBatchGr").val() || !$("#Densidad").val() || !$("#KgPorBatch").val() || 
                 !$("#PresionPsi").val() || !$("#TiempoBatchSeg").val() || !$("#TemperaturaC").val() || 
-                !$("#Silo").val()) {
+                !$("#Silo").val() || !$("#Paso").val()) {
                 $("#spnbtnGuardarDetPrd").text("Por favor complete todos los campos obligatorios.");
                 return;
             }
