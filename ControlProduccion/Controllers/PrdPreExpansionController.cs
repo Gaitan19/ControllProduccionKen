@@ -487,6 +487,35 @@ namespace ControlProduccion.Controllers
             }
         }
 
+        [HttpPost]
+        [Authorize(Roles = "JefeProduccion")]
+        public async Task<ActionResult> EditPreDetPrd(PreDetPrdPreExpansionViewModel model)
+        {
+            try
+            {
+                var userId = _userManager.GetUserId(User);
+                var dto = new PreDetPrdpreExpansionDTO
+                {
+                    Id = (int)model.PreDetPrdPreExpansionId,
+                    PrdpreExpansionId = model.PrdpreExpansionId,
+                    MarcaTipo = model.MarcaTipo,
+                    CodigoSaco = model.CodigoSaco,
+                    Lote = model.Lote,
+                    FechaProduccion = model.FechaProduccion,
+                    IdUsuarioActualizacion = userId,
+                    FechaActualizacion = DateTime.Now
+                };
+
+                await _prdPreExpansionService.UpdatePreDetPrd(dto);
+
+                return Json(new { success = true, message = "Actualización exitosa!" });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "Error al actualizar: " + ex.Message });
+            }
+        }
+
         public async Task<ActionResult> GetDataReport(DateTime? start, DateTime? end)
         {
             // Validate and ensure DateTime parameters are within valid SQL Server range

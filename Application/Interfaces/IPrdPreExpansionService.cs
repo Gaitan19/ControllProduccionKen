@@ -13,6 +13,7 @@ namespace Application.Interfaces
         Task<int> CreateAsync(PrdpreExpansionDto prdPreExpansion);
         Task UpdateAsync(PrdpreExpansionDto prdPreExpansion);
         Task UpdateDetPrd(DetPrdpreExpansionDTO dto);
+        Task UpdatePreDetPrd(PreDetPrdpreExpansionDTO dto);
         Task DeleteAsync(int id);
         Task<CrearPrdPreExpansionDto> GetCatalogosAsync();
         Task<bool> ApprobarSupervisorAsync(int id, string userId);

@@ -354,6 +354,23 @@ namespace Application.Services
             }
         }
 
+        public async Task UpdatePreDetPrd(PreDetPrdpreExpansionDTO dto)
+        {
+            var preDet = await _unitOfWork.PreDetPrdpreExpansionRepository.GetByIdAsync(dto.Id);
+            if (preDet != null)
+            {
+                preDet.MarcaTipo = dto.MarcaTipo;
+                preDet.CodigoSaco = dto.CodigoSaco;
+                preDet.Lote = dto.Lote;
+                preDet.FechaProduccion = dto.FechaProduccion;
+                preDet.IdUsuarioActualizacion = dto.IdUsuarioActualizacion;
+                preDet.FechaActualizacion = DateTime.Now;
+
+                _unitOfWork.PreDetPrdpreExpansionRepository.Update(preDet);
+                await _unitOfWork.SaveChangesAsync();
+            }
+        }
+
         public async Task<bool> UpdateNotaSupervisorAsync(int id, string notaSupervisor, string userId)
         {
             var prd = await _unitOfWork.PrdpreExpansionRepository.GetByIdAsync(id);
@@ -371,22 +388,6 @@ namespace Application.Services
             return true;
         }
 
-        public async Task UpdatePreDetPrd(PreDetPrdpreExpansionDTO dto)
-        {
-            var preDet = await _unitOfWork.PreDetPrdpreExpansionRepository.GetByIdAsync(dto.Id);
-            if (preDet != null)
-            {
-                preDet.MarcaTipo = dto.MarcaTipo;
-                preDet.CodigoSaco = dto.CodigoSaco;
-                preDet.Lote = dto.Lote;
-                preDet.FechaProduccion = dto.FechaProduccion;
-                preDet.IdUsuarioActualizacion = dto.IdUsuarioActualizacion;
-                preDet.FechaActualizacion = DateTime.Now;
-
-                _unitOfWork.PreDetPrdpreExpansionRepository.Update(preDet);
-                await _unitOfWork.SaveChangesAsync();
-            }
-        }
 
        
 
