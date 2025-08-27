@@ -313,7 +313,7 @@
                             </form>
 
                             <button id="btnGuardarDetPrd" type="button" class="btn btn-primary">Actualizar</button>
-                            <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Cancelar</button>
+                            <button id="btnCancelarDetPrd" type="button" class="btn btn-dark">Cancelar</button>
                             <br />
                             <p id="spnbtnGuardarDetPrd" class="text-sm text-danger"></p>
                         </div>
@@ -359,7 +359,7 @@
                             </form>
 
                             <button id="btnGuardarPreDetPrd" type="button" class="btn btn-primary">Actualizar</button>
-                            <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Cancelar</button>
+                            <button id="btnCancelarPreDetPrd" type="button" class="btn btn-dark">Cancelar</button>
                             <br />
                             <p id="spnbtnGuardarPreDetPrd" class="text-sm text-danger"></p>
                         </div>
@@ -560,6 +560,18 @@
                     $("#spnbtnGuardarPreDetPrd").text("Ocurrió un error en la solicitud: " + error);
                 }
             });
+        });
+
+        // Handle sub-detail cancel
+        $("#btnCancelarDetPrd").click(function(e){
+            e.preventDefault();
+            $("#modal-Detalle").modal("hide");
+        });
+
+        // Handle detail cancel
+        $("#btnCancelarPreDetPrd").click(function(e){
+            e.preventDefault();
+            $("#modal-PreDetalle").modal("hide");
         });
 
         // Approval function

@@ -853,9 +853,9 @@ SELECT
     PE.HoraInicio,
     PE.HoraFin,
     PE.PresionCaldera,
-    PE.Lote,
-    PE.FechaProduccion,
-    PE.CodigoSaco,
+    CAST(NULL AS NVARCHAR(50))                        AS Lote,
+    CAST(NULL AS DATETIME)                            AS FechaProduccion,
+    CAST(NULL AS NVARCHAR(50))                        AS CodigoSaco,
     PE.IdTipoFabricacion,
     TF.Descripcion                                    AS TipoFabricacion,
     PE.NumeroPedido,
@@ -876,17 +876,18 @@ LEFT  JOIN cp.TipoFabricacion TF ON TF.Id = PE.IdTipoFabricacion
 WHERE CAST(PE.Fecha AS DATE) BETWEEN CAST(@start AS DATE) AND CAST(@end AS DATE)
   AND PE.AprobadoGerencia = 1;
 
--- 2) Detalles de pre-expansión
+-- 2) Detalles de pre-expansión (joining with PreDetPrdpreExpansion for hierarchical data)
 SELECT
     D.Id,
-    D.PrdpreExpansionId AS IdPreExpansion,
+    D.PreDetPrdpreExpansionId,
+    PD.PrdpreExpansionId AS IdPreExpansion,
     D.Hora,
     D.NoBatch,
     D.DensidadEsperada,
     D.PesoBatchGr,
     D.Densidad,
     D.KgPorBatch,
-    D.PresionPSI,
+    D.PresionPsi AS PresionPSI,
     D.TiempoBatchSeg,
     D.TemperaturaC,
     D.Silo,
@@ -896,7 +897,8 @@ SELECT
     D.IdUsuarioActualizacion,
     D.FechaActualizacion
 FROM cp.DetPrdpreExpansion D
-WHERE D.PrdpreExpansionId IN (
+INNER JOIN cp.PreDetPrdpreExpansion PD ON D.PreDetPrdpreExpansionId = PD.Id
+WHERE PD.PrdpreExpansionId IN (
     SELECT PE.Id
     FROM cp.PrdpreExpansion PE
     WHERE CAST(PE.Fecha AS DATE) BETWEEN CAST(@start AS DATE) AND CAST(@end AS DATE)
