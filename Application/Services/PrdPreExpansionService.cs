@@ -93,9 +93,6 @@ namespace Application.Services
                     IdTipoReporte = prdPreExpansion.IdTipoReporte,
                     IdUsuarios = string.Join(",", prdPreExpansion.IdUsuarios ?? new List<string>()),
                     PresionCaldera = prdPreExpansion.PresionCaldera,
-                    Lote = prdPreExpansion.Lote,
-                    FechaProduccion = prdPreExpansion.FechaProduccion,
-                    CodigoSaco = prdPreExpansion.CodigoSaco,
                     IdTipoFabricacion = prdPreExpansion.IdTipoFabricacion,
                     NumeroPedido = prdPreExpansion.NumeroPedido,
                     IdUsuarioCreacion = prdPreExpansion.IdUsuarioCreacion,
@@ -108,27 +105,47 @@ namespace Application.Services
                 await _unitOfWork.SaveChangesAsync();
                 var prdId = entity.Id;
 
-                if (prdPreExpansion.DetPrdpreExpansions != null && prdPreExpansion.DetPrdpreExpansions.Any())
+                if (prdPreExpansion.PreDetPrdpreExpansions != null && prdPreExpansion.PreDetPrdpreExpansions.Any())
                 {
-                    var detalles = prdPreExpansion.DetPrdpreExpansions.Select(det => new DetPrdpreExpansion
+                    foreach (var preDet in prdPreExpansion.PreDetPrdpreExpansions)
                     {
-                        PrdpreExpansionId = prdId,
-                        Hora = det.Hora,
-                        NoBatch = det.NoBatch,
-                        DensidadEsperada = det.DensidadEsperada,
-                        PesoBatchGr = det.PesoBatchGr,
-                        Densidad = det.Densidad,
-                        KgPorBatch = det.KgPorBatch,
-                        PresionPsi = det.PresionPsi,
-                        TiempoBatchSeg = det.TiempoBatchSeg,
-                        TemperaturaC = det.TemperaturaC,
-                        Silo = det.Silo,
-                        Paso = det.Paso,
-                        IdUsuarioCreacion = prdPreExpansion.IdUsuarioCreacion,
-                        FechaCreacion = entity.FechaCreacion
-                    });
+                        var preDetEntity = new PreDetPrdpreExpansion
+                        {
+                            PrdpreExpansionId = prdId,
+                            MarcaTipo = preDet.MarcaTipo,
+                            CodigoSaco = preDet.CodigoSaco,
+                            Lote = preDet.Lote,
+                            FechaProduccion = preDet.FechaProduccion,
+                            FechaCreacion = DateTime.Now
+                        };
 
-                    await _unitOfWork.DetPrdpreExpansionRepository.BulkInsertAsync(detalles);
+                        await _unitOfWork.PreDetPrdpreExpansionRepository.AddAsync(preDetEntity);
+                        await _unitOfWork.SaveChangesAsync();
+                        var preDetId = preDetEntity.Id;
+
+                        if (preDet.DetPrdpreExpansions != null && preDet.DetPrdpreExpansions.Any())
+                        {
+                            var detalles = preDet.DetPrdpreExpansions.Select(det => new DetPrdpreExpansion
+                            {
+                                PreDetPrdpreExpansionId = preDetId,
+                                Hora = det.Hora,
+                                NoBatch = det.NoBatch,
+                                DensidadEsperada = det.DensidadEsperada,
+                                PesoBatchGr = det.PesoBatchGr,
+                                Densidad = det.Densidad,
+                                KgPorBatch = det.KgPorBatch,
+                                PresionPsi = det.PresionPsi,
+                                TiempoBatchSeg = det.TiempoBatchSeg,
+                                TemperaturaC = det.TemperaturaC,
+                                Silo = det.Silo,
+                                Paso = det.Paso,
+                                IdUsuarioCreacion = prdPreExpansion.IdUsuarioCreacion,
+                                FechaCreacion = DateTime.Now
+                            });
+
+                            await _unitOfWork.DetPrdpreExpansionRepository.BulkInsertAsync(detalles);
+                        }
+                    }
                 }
 
                 await _unitOfWork.CommitAsync();
@@ -197,10 +214,58 @@ namespace Application.Services
         {
             var prd = await _unitOfWork.PrdpreExpansionRepository
                 .GetByIdIncludeAsync(x => x.Id == id,
-                    x => x.DetPrdpreExpansions);
+                    x => x.PreDetPrdpreExpansions);
             if (prd == null) return null!;
 
             var userIds = prd.IdUsuarios.Split(',', StringSplitOptions.RemoveEmptyEntries).ToList();
+
+            // Load the sub-details for each pre-detail
+            var preDetPrdpreExpansions = new List<PreDetPrdpreExpansionDTO>();
+            if (prd.PreDetPrdpreExpansions != null)
+            {
+                foreach (var preDet in prd.PreDetPrdpreExpansions)
+                {
+                    var preDetDto = new PreDetPrdpreExpansionDTO
+                    {
+                        Id = preDet.Id,
+                        PrdpreExpansionId = preDet.PrdpreExpansionId,
+                        MarcaTipo = preDet.MarcaTipo,
+                        CodigoSaco = preDet.CodigoSaco,
+                        Lote = preDet.Lote,
+                        FechaProduccion = preDet.FechaProduccion,
+                        FechaCreacion = preDet.FechaCreacion,
+                        IdUsuarioActualizacion = preDet.IdUsuarioActualizacion,
+                        FechaActualizacion = preDet.FechaActualizacion
+                    };
+
+                    // Load the details for this pre-detail
+                    var detPrdpreExpansions = await _unitOfWork.DetPrdpreExpansionRepository
+                        .FindAsync(x => x.PreDetPrdpreExpansionId == preDet.Id);
+
+                    preDetDto.DetPrdpreExpansions = detPrdpreExpansions.Select(det => new DetPrdpreExpansionDTO
+                    {
+                        Id = det.Id,
+                        PreDetPrdpreExpansionId = det.PreDetPrdpreExpansionId,
+                        Hora = det.Hora,
+                        NoBatch = det.NoBatch,
+                        DensidadEsperada = det.DensidadEsperada,
+                        PesoBatchGr = det.PesoBatchGr,
+                        Densidad = det.Densidad,
+                        KgPorBatch = det.KgPorBatch,
+                        PresionPsi = det.PresionPsi,
+                        TiempoBatchSeg = det.TiempoBatchSeg,
+                        TemperaturaC = det.TemperaturaC,
+                        Silo = det.Silo,
+                        Paso = det.Paso,
+                        IdUsuarioCreacion = det.IdUsuarioCreacion,
+                        FechaCreacion = det.FechaCreacion,
+                        IdUsuarioActualizacion = det.IdUsuarioActualizacion,
+                        FechaActualizacion = det.FechaActualizacion
+                    }).ToList();
+
+                    preDetPrdpreExpansions.Add(preDetDto);
+                }
+            }
 
             return new PrdpreExpansionDto
             {
@@ -214,9 +279,6 @@ namespace Application.Services
                 Observaciones = prd.Observaciones,
                 IdTipoReporte = prd.IdTipoReporte,
                 PresionCaldera = prd.PresionCaldera,
-                Lote = prd.Lote,
-                FechaProduccion = prd.FechaProduccion,
-                CodigoSaco = prd.CodigoSaco,
                 IdTipoFabricacion = prd.IdTipoFabricacion,
                 NumeroPedido = prd.NumeroPedido,
                 IdUsuarioCreacion = prd.IdUsuarioCreacion,
@@ -228,26 +290,7 @@ namespace Application.Services
                 IdAprobadoSupervisor = prd.IdAprobadoSupervisor,
                 IdAprobadoGerencia = prd.IdAprobadoGerencia,
                 NotaSupervisor = prd.NotaSupervisor,
-                DetPrdpreExpansions = prd.DetPrdpreExpansions.Select(det => new DetPrdpreExpansionDTO
-                {
-                    Id = det.Id,
-                    PrdpreExpansionId = det.PrdpreExpansionId,
-                    Hora = det.Hora,
-                    NoBatch = det.NoBatch,
-                    DensidadEsperada = det.DensidadEsperada,
-                    PesoBatchGr = det.PesoBatchGr,
-                    Densidad = det.Densidad,
-                    KgPorBatch = det.KgPorBatch,
-                    PresionPsi = det.PresionPsi,
-                    TiempoBatchSeg = det.TiempoBatchSeg,
-                    TemperaturaC = det.TemperaturaC,
-                    Silo = det.Silo,
-                    Paso = det.Paso,
-                    IdUsuarioCreacion = det.IdUsuarioCreacion,
-                    FechaCreacion = det.FechaCreacion,
-                    IdUsuarioActualizacion = det.IdUsuarioActualizacion,
-                    FechaActualizacion = det.FechaActualizacion
-                }).ToList()
+                PreDetPrdpreExpansions = preDetPrdpreExpansions
             };
         }
 
@@ -278,9 +321,6 @@ namespace Application.Services
                 entity.Observaciones = prdPreExpansion.Observaciones;
                 entity.IdUsuarios = string.Join(",", prdPreExpansion.IdUsuarios ?? new List<string>());
                 entity.PresionCaldera = prdPreExpansion.PresionCaldera;
-                entity.Lote = prdPreExpansion.Lote;
-                entity.FechaProduccion = prdPreExpansion.FechaProduccion;
-                entity.CodigoSaco = prdPreExpansion.CodigoSaco;
                 entity.IdTipoFabricacion = prdPreExpansion.IdTipoFabricacion;
                 entity.NumeroPedido = prdPreExpansion.NumeroPedido;
                 entity.IdUsuarioActualizacion = prdPreExpansion.IdUsuarioActualizacion;
@@ -329,6 +369,23 @@ namespace Application.Services
             _unitOfWork.PrdpreExpansionRepository.Update(prd);
             await _unitOfWork.SaveChangesAsync();
             return true;
+        }
+
+        public async Task UpdatePreDetPrd(PreDetPrdpreExpansionDTO dto)
+        {
+            var preDet = await _unitOfWork.PreDetPrdpreExpansionRepository.GetByIdAsync(dto.Id);
+            if (preDet != null)
+            {
+                preDet.MarcaTipo = dto.MarcaTipo;
+                preDet.CodigoSaco = dto.CodigoSaco;
+                preDet.Lote = dto.Lote;
+                preDet.FechaProduccion = dto.FechaProduccion;
+                preDet.IdUsuarioActualizacion = dto.IdUsuarioActualizacion;
+                preDet.FechaActualizacion = DateTime.Now;
+
+                _unitOfWork.PreDetPrdpreExpansionRepository.Update(preDet);
+                await _unitOfWork.SaveChangesAsync();
+            }
         }
 
        

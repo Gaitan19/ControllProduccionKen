@@ -65,6 +65,7 @@ namespace Infrastructure.UnitOfWork
         IGenericRepository<PrdCorteP> PrdCortePRepository { get; }
         IGenericRepository<DetPrdCorteP> DetPrdCortePRepository { get; }
         IGenericRepository<PrdpreExpansion> PrdpreExpansionRepository { get; }
+        IGenericRepository<PreDetPrdpreExpansion> PreDetPrdpreExpansionRepository { get; }
         IGenericRepository<DetPrdpreExpansion> DetPrdpreExpansionRepository { get; }
         IGenericRepository<CatPantografo> CatPantografoRepository { get; }
 

@@ -36,16 +36,6 @@ namespace ControlProduccion.ViewModel
         [Display(Name = "Presión Caldera")]
         public string? PresionCaldera { get; set; }
 
-        [Display(Name = "Lote")]
-        public string? Lote { get; set; }
-
-        [Display(Name = "Fecha Producción")]
-        [DataType(DataType.Date)]
-        public DateTime? FechaProduccion { get; set; }
-
-        [Display(Name = "Código de Saco")]
-        public string? CodigoSaco { get; set; }
-
         [Required(ErrorMessage = "El campo Tipo de Fabricación es obligatorio")]
         [Display(Name = "Tipo de Fabricación")]
         public int IdTipoFabricacion { get; set; }
@@ -85,15 +75,15 @@ namespace ControlProduccion.ViewModel
 
 
         // Detalles
-        public List<DetPrdPreExpansionViewModel>? DetPrdPreExpansions { get; set; }
+        public List<PreDetPrdPreExpansionViewModel>? PreDetPrdPreExpansions { get; set; }
     }
 
     public class DetPrdPreExpansionViewModel
     {
         public int Id { get; set; }
 
-        [Display(Name = "Pre-Expansión")]
-        public int PrdpreExpansionId { get; set; }
+        [Display(Name = "Pre-Detalle Pre-Expansión")]
+        public int PreDetPrdpreExpansionId { get; set; }
 
         // En la UI a veces hay conflictos con el Id de la tabla principal (viewmodel principal),
         // entonces se ocupa este en ese caso para asignar su Id internamente
