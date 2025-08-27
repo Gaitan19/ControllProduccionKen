@@ -132,9 +132,11 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @if (Model.DetPrdPreExpansions != null)
+                                @* TODO: Update view to support hierarchical structure PreDetPrdPreExpansions -> DetPrdPreExpansions *@
+                                @* Temporarily commented out until view structure is updated to support new hierarchy
+                                @if (Model.PreDetPrdPreExpansions != null)
                                 {
-                                    @foreach (var detalle in Model.DetPrdPreExpansions)
+                                    @foreach (var detalle in Model.PreDetPrdPreExpansions)
                                     {
                                         <tr>
                                             <td style="display:none" data-field="id">@detalle.Id</td>
@@ -168,6 +170,7 @@
                                         </tr>
                                     }
                                 }
+                                *@
                             </tbody>
                         </table>
                     </div>
