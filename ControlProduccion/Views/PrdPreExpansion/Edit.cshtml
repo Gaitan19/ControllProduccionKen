@@ -400,6 +400,8 @@
                     $("#divNumeroPedido").show();
                 } else {
                     $("#divNumeroPedido").hide();
+                    // Clear NumeroPedido when switching from Pedido to Almacén
+                    $("#NumeroPedido").val("");
                 }
             });
 
