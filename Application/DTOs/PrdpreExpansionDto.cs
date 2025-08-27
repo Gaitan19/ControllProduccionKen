@@ -19,9 +19,6 @@ namespace Application.DTOs
         public TimeSpan HoraFin { get; set; }
 
         public string? PresionCaldera { get; set; }
-        public string? Lote { get; set; }
-        public DateTime? FechaProduccion { get; set; }
-        public string? CodigoSaco { get; set; }
 
         public int IdTipoFabricacion { get; set; }
         public int? NumeroPedido { get; set; }
@@ -39,6 +36,6 @@ namespace Application.DTOs
 
         public string? NotaSupervisor { get; set; }
 
-        public List<DetPrdpreExpansionDTO>? DetPrdpreExpansions { get; set; }
+        public List<PreDetPrdpreExpansionDTO>? PreDetPrdpreExpansions { get; set; }
     }
 }

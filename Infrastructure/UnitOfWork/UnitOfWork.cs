@@ -85,6 +85,7 @@ namespace Infrastructure.UnitOfWork
         private IGenericRepository<PrdCorteP> _prdCortePRepository;
         private IGenericRepository<DetPrdCorteP> _detPrdCortePRepository;
         private IGenericRepository<PrdpreExpansion> _prdpreExpansionRepository;
+        private IGenericRepository<PreDetPrdpreExpansion> _preDetPrdpreExpansionRepository;
         private IGenericRepository<DetPrdpreExpansion> _detPrdpreExpansionRepository;
         private IGenericRepository<CatPantografo> _catPantografoRepository;
         private IGenericRepository<CatTipoMalla> _catTipoMallaRepository;
@@ -446,6 +447,14 @@ namespace Infrastructure.UnitOfWork
             get
             {
                 return _prdpreExpansionRepository ??= new GenericRepository<PrdpreExpansion>(_context);
+            }
+        }
+
+        public IGenericRepository<PreDetPrdpreExpansion> PreDetPrdpreExpansionRepository
+        {
+            get
+            {
+                return _preDetPrdpreExpansionRepository ??= new GenericRepository<PreDetPrdpreExpansion>(_context);
             }
         }
 

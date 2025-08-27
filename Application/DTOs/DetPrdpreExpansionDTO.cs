@@ -9,7 +9,7 @@ namespace Application.DTOs
     public class DetPrdpreExpansionDTO
     {
         public int Id { get; set; }
-        public int PrdpreExpansionId { get; set; }
+        public int PreDetPrdpreExpansionId { get; set; }
 
         public TimeSpan Hora { get; set; }
         public int NoBatch { get; set; }

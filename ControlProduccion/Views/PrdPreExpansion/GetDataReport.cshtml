@@ -96,14 +96,47 @@
             background-color: #f2f2f2;
             text-transform: uppercase;
             font-weight: bold;
-            padding: 10px;
+            padding: 10px 12px;
             text-align: left;
             border: 1px solid #e1e1e1;
         }
 
         .details-table td {
             border: 1px solid #e1e1e1;
-            padding: 10px;
+            padding: 10px 12px;
+        }
+
+    /* Subsección de Subdetalles */
+    .subsection-title {
+        font-weight: bold;
+        padding: 8px;
+        background-color: #fff2cc;
+        margin-top: 15px;
+        margin-bottom: 5px;
+        border-radius: 4px;
+        font-size: 14px;
+    }
+
+    .subdetails-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 15px;
+        font-size: 13px;
+    }
+
+        .subdetails-table th {
+            background-color: #f8f8f8;
+            text-transform: uppercase;
+            font-weight: bold;
+            padding: 8px 12px;
+            text-align: left;
+            border: 1px solid #e1e1e1;
+            font-size: 12px;
+        }
+
+        .subdetails-table td {
+            border: 1px solid #e1e1e1;
+            padding: 8px 12px;
         }
 
     /* Sección de firmas */
@@ -266,51 +299,75 @@
                     </table>
 
                     <!-- Detalles de Pre-Expansión -->
-                    <div class="section-title">Detalles de Pre-Expansión</div>
-
-                    @{
-                        var grupos = (reporte.Detalles ?? new List<DetallePreExpansionDto>())
-                        .OrderBy(d => d.Paso ?? int.MaxValue)
-                        .ThenBy(d => d.NoBatch)
-                        .GroupBy(d => d.Paso);
-                    }
-
-                    @foreach (var grupo in grupos)
+                    @foreach (var detalle in reporte.Detalles)
                     {
-                        <div class="section-title">@PasoTitulo(grupo.Key)</div>
+                        <div class="section-title">Detalle de Pre-Expansión - @detalle.MarcaTipo</div>
                         <table class="details-table">
                             <thead>
                                 <tr>
-                                    <th>No. Batch</th>
-                                    <th>Hora</th>
-                                    <th>Densidad Esperada</th>
-                                    <th>Peso Batch (gr)</th>
-                                    <th>Densidad</th>
-                                    <th>Kg por Batch</th>
-                                    <th>Presión PSI</th>
-                                    <th>Tiempo Batch (seg)</th>
-                                    <th>Temperatura °C</th>
-                                    <th>Silo</th>
+                                    <th>Marca/Tipo</th>
+                                    <th>Código Saco</th>
+                                    <th>Lote</th>
+                                    <th>Fecha Producción</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach (var detalle in grupo)
-                                {
-                                    <tr>
-                                        <td>@detalle.NoBatch</td>
-                                        <td>@To12HourFormat(detalle.Hora)</td>
-                                        <td>@(detalle.DensidadEsperada?.ToString("F2") ?? "-")</td>
-                                        <td>@(detalle.PesoBatchGr?.ToString("F2") ?? "-")</td>
-                                        <td>@(detalle.Densidad?.ToString("F2") ?? "-")</td>
-                                        <td>@(detalle.KgPorBatch?.ToString("F2") ?? "-")</td>
-                                        <td>@(detalle.PresionPSI?.ToString("F2") ?? "-")</td>
-                                        <td>@(detalle.TiempoBatchSeg?.ToString("F2") ?? "-")</td>
-                                        <td>@(detalle.TemperaturaC?.ToString("F2") ?? "-")</td>
-                                        <td>@(detalle.Silo?.ToString() ?? "-")</td>
-                                    </tr>
-                                }
+                                <tr>
+                                    <td>@detalle.MarcaTipo</td>
+                                    <td>@(detalle.CodigoSaco ?? "-")</td>
+                                    <td>@(detalle.Lote ?? "-")</td>
+                                    <td>@(detalle.FechaProduccion?.ToString("yyyy-MM-dd") ?? "-")</td>
+                                </tr>
                             </tbody>
                         </table>
+
+                        <!-- Sub-detalles de Pre-Expansión agrupados por Paso -->
+                        @if (detalle.SubDetalles != null && detalle.SubDetalles.Any())
+                        {
+                            var gruposPorPaso = detalle.SubDetalles
+                                .OrderBy(sd => sd.Paso ?? int.MaxValue)
+                                .ThenBy(sd => sd.NoBatch)
+                                .GroupBy(sd => sd.Paso);
+                            <div class="section-title">Subdetalle de Producción</div>
+
+                            @foreach (var grupo in gruposPorPaso)
+                            {
+                                <div class="subsection-title">@PasoTitulo(grupo.Key)</div>
+                                <table class="subdetails-table">
+                                    <thead>
+                                        <tr>
+                                            <th>No. Batch</th>
+                                            <th>Hora</th>
+                                            <th>Densidad Esperada</th>
+                                            <th>Peso Batch (gr)</th>
+                                            <th>Densidad</th>
+                                            <th>Kg por Batch</th>
+                                            <th>Presión PSI</th>
+                                            <th>Tiempo Batch (seg)</th>
+                                            <th>Temperatura °C</th>
+                                            <th>Silo</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var subdetalle in grupo)
+                                        {
+                                            <tr>
+                                                <td>@subdetalle.NoBatch</td>
+                                                <td>@To12HourFormat(subdetalle.Hora)</td>
+                                                <td>@(subdetalle.DensidadEsperada?.ToString("F2") ?? "-")</td>
+                                                <td>@(subdetalle.PesoBatchGr?.ToString("F2") ?? "-")</td>
+                                                <td>@(subdetalle.Densidad?.ToString("F2") ?? "-")</td>
+                                                <td>@(subdetalle.KgPorBatch?.ToString("F2") ?? "-")</td>
+                                                <td>@(subdetalle.PresionPSI?.ToString("F2") ?? "-")</td>
+                                                <td>@(subdetalle.TiempoBatchSeg?.ToString("F2") ?? "-")</td>
+                                                <td>@(subdetalle.TemperaturaC?.ToString("F2") ?? "-")</td>
+                                                <td>@(subdetalle.Silo?.ToString() ?? "-")</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            }
+                        }
                     }
 
                     @if (reporte == Model.Last())

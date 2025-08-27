@@ -254,6 +254,9 @@ namespace ControlProduccion.Controllers
                     HoraInicio = modelDto.HoraInicio,
                     HoraFin = modelDto.HoraFin,
                     PresionCaldera = modelDto.PresionCaldera,
+                    Lote = modelDto.Lote,
+                    FechaProduccion = modelDto.FechaProduccion,
+                    CodigoSaco = modelDto.CodigoSaco,
                     IdTipoFabricacion = modelDto.IdTipoFabricacion,
                     NumeroPedido = modelDto.NumeroPedido,
                     Observaciones = modelDto.Observaciones,
@@ -261,29 +264,20 @@ namespace ControlProduccion.Controllers
                     IdTipoReporte = modelDto.IdTipoReporte,
                     AprobadoSupervisor = modelDto.AprobadoSupervisor,
                     AprobadoGerencia = modelDto.AprobadoGerencia,
-                    PreDetPrdPreExpansions = modelDto.PreDetPrdpreExpansions?.Select(p => new PreDetPrdPreExpansionViewModel
+                    DetPrdPreExpansions = modelDto.DetPrdpreExpansions?.Select(x => new DetPrdPreExpansionViewModel
                     {
-                        Id = p.Id,
-                        PrdpreExpansionId = p.PrdpreExpansionId,
-                        MarcaTipo = p.MarcaTipo,
-                        CodigoSaco = p.CodigoSaco,
-                        Lote = p.Lote,
-                        FechaProduccion = p.FechaProduccion,
-                        DetPrdPreExpansions = p.DetPrdpreExpansions?.Select(x => new DetPrdPreExpansionViewModel
-                        {
-                            Id = x.Id,
-                            PreDetPrdpreExpansionId = x.PreDetPrdpreExpansionId,
-                            Hora = x.Hora,
-                            NoBatch = x.NoBatch,
-                            DensidadEsperada = x.DensidadEsperada,
-                            PesoBatchGr = x.PesoBatchGr,
-                            Densidad = x.Densidad,
-                            KgPorBatch = x.KgPorBatch,
-                            PresionPsi = x.PresionPsi,
-                            TiempoBatchSeg = x.TiempoBatchSeg,
-                            TemperaturaC = x.TemperaturaC,
-                            Silo = x.Silo
-                        }).ToList()
+                        Id = x.Id,
+                        PrdpreExpansionId = x.PrdpreExpansionId,
+                        Hora = x.Hora,
+                        NoBatch = x.NoBatch,
+                        DensidadEsperada = x.DensidadEsperada,
+                        PesoBatchGr = x.PesoBatchGr,
+                        Densidad = x.Densidad,
+                        KgPorBatch = x.KgPorBatch,
+                        PresionPsi = x.PresionPsi,
+                        TiempoBatchSeg = x.TiempoBatchSeg,
+                        TemperaturaC = x.TemperaturaC,
+                        Silo = x.Silo
                     }).ToList(),
                     Operarios = operarios.Select(o => new SelectListItem { Value = o.Id, Text = o.UserName }),
                     Maquinas = dtoCat.CatMaquina?.Select(m => new SelectListItem { Value = m.Id.ToString(), Text = m.Nombre }),
@@ -343,6 +337,9 @@ namespace ControlProduccion.Controllers
                     HoraInicio = modelDto.HoraInicio,
                     HoraFin = modelDto.HoraFin,
                     PresionCaldera = modelDto.PresionCaldera,
+                    Lote = modelDto.Lote,
+                    FechaProduccion = modelDto.FechaProduccion,
+                    CodigoSaco = modelDto.CodigoSaco,
                     IdTipoFabricacion = modelDto.IdTipoFabricacion,
                     NumeroPedido = modelDto.NumeroPedido,
                     Observaciones = modelDto.Observaciones,
@@ -350,29 +347,20 @@ namespace ControlProduccion.Controllers
                     IdTipoReporte = modelDto.IdTipoReporte,
                     AprobadoSupervisor = modelDto.AprobadoSupervisor,
                     AprobadoGerencia = modelDto.AprobadoGerencia,
-                    PreDetPrdPreExpansions = modelDto.PreDetPrdpreExpansions?.Select(p => new PreDetPrdPreExpansionViewModel
+                    DetPrdPreExpansions = modelDto.DetPrdpreExpansions?.Select(x => new DetPrdPreExpansionViewModel
                     {
-                        Id = p.Id,
-                        PrdpreExpansionId = p.PrdpreExpansionId,
-                        MarcaTipo = p.MarcaTipo,
-                        CodigoSaco = p.CodigoSaco,
-                        Lote = p.Lote,
-                        FechaProduccion = p.FechaProduccion,
-                        DetPrdPreExpansions = p.DetPrdpreExpansions?.Select(x => new DetPrdPreExpansionViewModel
-                        {
-                            Id = x.Id,
-                            PreDetPrdpreExpansionId = x.PreDetPrdpreExpansionId,
-                            Hora = x.Hora,
-                            NoBatch = x.NoBatch,
-                            DensidadEsperada = x.DensidadEsperada,
-                            PesoBatchGr = x.PesoBatchGr,
-                            Densidad = x.Densidad,
-                            KgPorBatch = x.KgPorBatch,
-                            PresionPsi = x.PresionPsi,
-                            TiempoBatchSeg = x.TiempoBatchSeg,
-                            TemperaturaC = x.TemperaturaC,
-                            Silo = x.Silo
-                        }).ToList()
+                        Id = x.Id,
+                        PrdpreExpansionId = x.PrdpreExpansionId,
+                        Hora = x.Hora,
+                        NoBatch = x.NoBatch,
+                        DensidadEsperada = x.DensidadEsperada,
+                        PesoBatchGr = x.PesoBatchGr,
+                        Densidad = x.Densidad,
+                        KgPorBatch = x.KgPorBatch,
+                        PresionPsi = x.PresionPsi,
+                        TiempoBatchSeg = x.TiempoBatchSeg,
+                        TemperaturaC = x.TemperaturaC,
+                        Silo = x.Silo
                     }).ToList(),
                     Operarios = operarios.Select(o => new SelectListItem { Value = o.Id, Text = o.UserName }),
                     Maquinas = dtoCat.CatMaquina?.Select(m => new SelectListItem { Value = m.Id.ToString(), Text = m.Nombre }),
@@ -478,35 +466,6 @@ namespace ControlProduccion.Controllers
                 };
 
                 await _prdPreExpansionService.UpdateDetPrd(dto);
-
-                return Json(new { success = true, message = "Actualización exitosa!" });
-            }
-            catch (Exception ex)
-            {
-                return Json(new { success = false, message = "Error al actualizar: " + ex.Message });
-            }
-        }
-
-        [HttpPost]
-        [Authorize(Roles = "JefeProduccion")]
-        public async Task<ActionResult> EditPreDetPrd(PreDetPrdPreExpansionViewModel model)
-        {
-            try
-            {
-                var userId = _userManager.GetUserId(User);
-                var dto = new PreDetPrdpreExpansionDTO
-                {
-                    Id = (int)model.PreDetPrdPreExpansionId,
-                    PrdpreExpansionId = model.PrdpreExpansionId,
-                    MarcaTipo = model.MarcaTipo,
-                    CodigoSaco = model.CodigoSaco,
-                    Lote = model.Lote,
-                    FechaProduccion = model.FechaProduccion,
-                    IdUsuarioActualizacion = userId,
-                    FechaActualizacion = DateTime.Now
-                };
-
-                await _prdPreExpansionService.UpdatePreDetPrd(dto);
 
                 return Json(new { success = true, message = "Actualización exitosa!" });
             }

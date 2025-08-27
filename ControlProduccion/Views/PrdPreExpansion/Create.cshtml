@@ -45,6 +45,8 @@
                     <input asp-for="PresionCaldera" class="form-control" />
                 </div>
 
+                @* TODO: These fields have moved to PreDetPrdpreExpansion level - implement hierarchical editing *@
+                @*
                 <div class="form-group">
                     <label asp-for="Lote"></label>
                     <input asp-for="Lote" class="form-control" />
@@ -59,6 +61,7 @@
                     <label asp-for="CodigoSaco"></label>
                     <input asp-for="CodigoSaco" class="form-control" />
                 </div>
+                *@
 
                 <div class="form-group">
                     <label asp-for="IdTipoFabricacion"></label>
@@ -86,38 +89,24 @@
 
                 <div class="hr-line-dashed"></div>
                 <div class="form-group row">
-                    <div class="col-sm-12 d-flex align-items-center">
-                        <a data-toggle="modal" href="#modal-Detalle" id="btnAgregarDetalle"
-                           class="btn btn-info btn-outline mr-2">
-                            <i class="fa fa-plus"></i> Agregar Detalle
-                        </a>
-
-                        <select id="Paso" name="Paso" class="form-control form-control-sm w-auto">
-                            <option value="1">Primer Paso</option>
-                            <option value="2">Segundo Paso</option>
-                        </select>
-                    </div>
-
-                    <div class="col-sm-12 mt-3" style="max-height:300px; overflow:scroll">
+                    <a data-toggle='modal' href='#modal-Detalle' id="btnAgregarDetalle" class="btn btn-info btn-outline">
+                        <i class="fa fa-plus"></i> Agregar Detalle
+                    </a>
+                    <div class="col-sm-12" style="max-height:300px;overflow:scroll">
                         <h4>Detalle Producción</h4>
-                        <table id="tblDetalle" class="table table-bordered table-striped">
+                        <table id="tblDetalle" class="table table-bordered">
                             <thead class="table-light">
                                 <tr>
-                                    <th>No. Batch</th>
-                                    <th>Hora</th>
-                                 
-                                    <th>Dens. Esperada</th>
-                                    <th>Peso Batch (g)</th>
-                                    <th>Densidad</th>
-                                    <th>Kg/Batch</th>
-                                    <th>Presión (psi)</th>
-                                    <th>Tiempo (seg)</th>
-                                    <th>Temp (°C)</th>
-                                    <th>Silo</th>
-                                    <th>Paso</th>
+                                    <th>Posición</th>
+                                    <th>Marca/Tipo</th>
+                                    <th>Código Saco</th>
+                                    <th>Lote</th>
+                                    <th>Fecha Producción</th>
+                                    <th></th>
                                 </tr>
                             </thead>
-                            <tbody></tbody>
+                            <tbody>
+                            </tbody>
                         </table>
                     </div>
                 </div>
@@ -137,86 +126,131 @@
                 </button>
             </form>
 
-            <!-- Modal Detalle -->
+            <!-- modal detalle -->
             <div id="modal-Detalle" class="modal fade" aria-hidden="true">
-                <div class="modal-dialog modal-lg">
+                <div class="modal-dialog">
                     <div class="modal-content">
-                        <div class="modal-header">
-                            <h4 class="modal-title">Nuevo Detalle de Producción</h4>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-
                         <div class="modal-body">
                             <form id="frmDetPrd">
-                                <input type="hidden" name="uid" value="<%=idx%>" />
-                                <div class="form-group">
-                                    <label class="form-label">No. Batch <span class="text-danger">*</span></label>
-                                    <input readonly type="number" id="NoBatch" name="NoBatch" class="form-control" min="0" step="1" />
+                                <h3>Nuevo Detalle</h3>
+                                <hr />
+                                <div class="mb-3">
+                                    <label class="form-label">Marca/Tipo <span class="text-danger">*</span></label>
+                                    <input type="text" id="MarcaTipo" class="form-control" maxlength="200" />
                                 </div>
-                        
-                                <div class="form-group">
-                                    <label class="form-label">Hora <span class="text-danger">*</span></label>
-                                    <input readonly type="time" id="Hora" name="Hora" class="form-control" />
+                                <div class="mb-3">
+                                    <label class="form-label">Código Saco</label>
+                                    <input type="text" id="CodigoSaco" class="form-control" maxlength="50" />
                                 </div>
-
-                           
-
-                                <div class="form-group">
-                                    <label class="form-label">Densidad Esperada <span class="text-danger">*</span></label>
-                                    <input type="number" id="DensidadEsperada" name="DensidadEsperada" class="form-control" min="0" step="1" />
+                                <div class="mb-3">
+                                    <label class="form-label">Lote</label>
+                                    <input type="text" id="Lote" class="form-control" maxlength="50" />
                                 </div>
-
-                                <div class="form-group">
-                                    <label class="form-label">Peso Batch (g) <span class="text-danger">*</span></label>
-                                    <input type="number" id="PesoBatchGr" name="PesoBatchGr" class="form-control" min="0" step="0.01" />
-                                </div>
-
-                                <div class="form-group">
-                                    <label class="form-label">Densidad <span class="text-danger">*</span></label>
-                                    <input type="number" id="Densidad" name="Densidad" class="form-control" min="0" step="0.01" />
-                                </div>
-
-                                <div class="form-group">
-                                    <label class="form-label">Kg por Batch <span class="text-danger">*</span></label>
-                                    <input type="number" id="KgPorBatch" name="KgPorBatch" class="form-control" min="0" step="1" />
-                                </div>
-
-                                <div class="form-group">
-                                    <label class="form-label">Presión (psi) <span class="text-danger">*</span></label>
-                                    <input type="number" id="PresionPsi" name="PresionPsi" class="form-control" min="0" step="1" />
-                                </div>
-
-                                <div class="form-group">
-                                    <label class="form-label">Tiempo Batch (seg) <span class="text-danger">*</span></label>
-                                    <input type="number" id="TiempoBatchSeg" name="TiempoBatchSeg" class="form-control" min="0" step="1" />
-                                </div>
-
-                                <div class="form-group">
-                                    <label class="form-label">Temperatura (°C) <span class="text-danger">*</span></label>
-                                    <input type="number" id="TemperaturaC" name="TemperaturaC" class="form-control" min="0" step="1" />
-                                </div>
-
-                                <div class="form-group">
-                                    <label class="form-label">Silo <span class="text-danger">*</span></label>
-                                    <input type="number" id="Silo" name="Silo" class="form-control"
-                                           min="1" step="1" inputmode="numeric" />
-                                   
+                                <div class="mb-3">
+                                    <label class="form-label">Fecha Producción</label>
+                                    <input type="date" id="FechaProduccion" class="form-control" />
                                 </div>
                             </form>
-                        </div>
-
-                        <div class="modal-footer">
                             <button id="btnGuardarDetPrd" type="button" class="btn btn-primary">Agregar</button>
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                            <div class="w-100">
-                                <p id="spnbtnGuardarDetPrd" class="text-sm text-danger mt-2"></p>
-                            </div>
+                            <button type="button" class="btn btn-dark" data-dismiss="modal">Cancelar</button>
+                            <p id="spnbtnGuardarDetPrd" class="text-sm text-danger"></p>
                         </div>
                     </div>
                 </div>
-            </div> <!-- /Modal -->
+            </div>
+            <!-- modal subdetalle -->
+            <div id="modal-SubDetalle" class="modal fade" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-body">
+                            <form id="frmSubDetPrd">
+                                <h3>Nuevo Sub Detalle</h3>
+                                <hr />
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="form-label">No. Batch <span class="text-danger">*</span></label>
+                                            <input readonly type="number" id="NoBatch" class="form-control" min="0" step="1" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="form-label">Hora <span class="text-danger">*</span></label>
+                                            <input readonly type="time" id="Hora" class="form-control" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="form-label">Densidad Esperada <span class="text-danger">*</span></label>
+                                            <input type="number" id="DensidadEsperada" class="form-control" min="0" step="1" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="form-label">Peso Batch (g) <span class="text-danger">*</span></label>
+                                            <input type="number" id="PesoBatchGr" class="form-control" min="0" step="0.01" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="form-label">Densidad <span class="text-danger">*</span></label>
+                                            <input type="number" id="Densidad" class="form-control" min="0" step="0.01" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="form-label">Kg por Batch <span class="text-danger">*</span></label>
+                                            <input type="number" id="KgPorBatch" class="form-control" min="0" step="1" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="form-label">Presión (psi) <span class="text-danger">*</span></label>
+                                            <input type="number" id="PresionPsi" class="form-control" min="0" step="1" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="form-label">Tiempo Batch (seg) <span class="text-danger">*</span></label>
+                                            <input type="number" id="TiempoBatchSeg" class="form-control" min="0" step="1" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="form-label">Temperatura (°C) <span class="text-danger">*</span></label>
+                                            <input type="number" id="TemperaturaC" class="form-control" min="0" step="1" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="form-label">Silo <span class="text-danger">*</span></label>
+                                            <input type="number" id="Silo" class="form-control" min="1" step="1" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Paso <span class="text-danger">*</span></label>
+                                    <select id="Paso" class="form-control">
+                                        <option value="1">Primer Paso</option>
+                                        <option value="2">Segundo Paso</option>
+                                    </select>
+                                </div>
+                            </form>
+                            <button id="btnGuardarSubDetPrd" type="button" class="btn btn-primary">Agregar</button>
+                            <button type="button" class="btn btn-dark" data-dismiss="modal">Cancelar</button>
+                            <p id="spnSubDet" class="text-sm text-danger"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -227,21 +261,15 @@
     }
     <script>
         $(document).ready(function () {
-
-
-
-
-            // ───────── AUTOSAVE / RESTORE / PREVENT EXIT ─────────
+            // ─────────── AUTOSAVE / RESTORE /PREVENT EXIT───────────
             const DRAFT_KEY = 'draft-prdPreExpansion';
-            var detalleNo = 1;
 
             function backupForm() {
                 const formArr = $('#frmProduccion').serializeArray();
                 const detalleHtml = $('#tblDetalle tbody').html();
-                localStorage.setItem(DRAFT_KEY, JSON.stringify({
-                    form: formArr,
-                    detalleHtml: detalleHtml
-                }));
+                localStorage.setItem(DRAFT_KEY,
+                    JSON.stringify({ form: formArr, detalleHtml: detalleHtml })
+                );
             }
 
             function restoreIfExists() {
@@ -251,12 +279,14 @@
                 if (confirm('Se encontró un borrador sin guardar. ¿Deseas restaurarlo?')) {
                     const draft = JSON.parse(draftStr);
 
-                    // Agrupar valores por nombre (maneja selects múltiples)
+                    // 1) Agrupar valores por nombre de campo
                     const formMap = draft.form.reduce((acc, { name, value }) => {
-                        (acc[name] = acc[name] || []).push(value);
+                        acc[name] = acc[name] || [];
+                        acc[name].push(value);
                         return acc;
                     }, {});
 
+                    // 2) Restaurar cada campo, usando array para selects múltiples
                     Object.entries(formMap).forEach(([name, values]) => {
                         const $el = $('[name="' + name + '"]');
                         const valToSet = $el.prop('multiple') ? values : values[0];
@@ -267,17 +297,29 @@
                         }
                     });
 
+                    // 3) Restaurar detalle HTML
                     $('#tblDetalle tbody').html(draft.detalleHtml);
 
-                    // Recalcular No. de detalle
-                    const nos = $('#tblDetalle tbody tr[data-no]').map(function () { return +$(this).data('no'); }).get();
-                    if (nos.length) detalleNo = Math.max.apply(null, nos) + 1;
+                    // 4) Corregir índices duplicados después de restaurar
+                    var newIndex = 0;
+                    $('#tblDetalle tbody tr[data-index]').each(function () {
+                        var $row = $(this);
+                        $row.attr('data-index', newIndex);
+                        $row.find('.addSub').attr('data-index', newIndex);
+                        $row.find('td:first').text(newIndex + 1);
+                        $row.next('tr[data-parent]').attr('data-parent', newIndex);
+                        newIndex++;
+                    });
 
-                    // Re-evaluar visibilidad de Número de Pedido
-                    toggleNumeroPedido();
+                    detalleIndex = newIndex;
                 }
             }
 
+            // Restaura al cargar y luego auto‑respalda cada 30s
+            restoreIfExists();
+            setInterval(backupForm, 30000);
+
+            // ───────── PREVENT UNLOAD ─────────
             function beforeUnloadHandler(e) {
                 const hasRows = $('#tblDetalle tbody tr').length > 0;
                 const isDirty = $('#frmProduccion').serialize() !== '';
@@ -286,45 +328,21 @@
                     e.returnValue = '';
                 }
             }
-
-            restoreIfExists();
-            setInterval(backupForm, 30000);
             window.addEventListener('beforeunload', beforeUnloadHandler);
 
             $('#btnRegresar').off('click').on('click', function () {
                 const url = $(this).data('url');
-                if (confirm('¿Deseas salir sin guardar? Se perderán los datos no guardados.')) {
+                if (confirm('¿Deseas salir sin guardar? Se perderán los datos .')) {
                     localStorage.removeItem(DRAFT_KEY);
                     window.removeEventListener('beforeunload', beforeUnloadHandler);
                     window.location.href = url;
                 }
             });
 
+            var detalleIndex = 0;
+            var currentDetalle = null;
 
-                  function convertirHora(hora24) {
-            if (!hora24) {
-                return null; // Retorna null si no hay hora
-            }
-
-            // La lógica de conversión que ya conoces
-            var parts   = hora24.split(':');
-            var h24     = parseInt(parts[0], 10);
-            var m       = parts[1];
-            var ampm    = h24 >= 12 ? 'PM' : 'AM';
-            var h12     = (h24 % 12) || 12;
-
-            var formattedHora12H = ('0' + h12).slice(-2) + ':' + m + ':00 ' + ampm;
-            var formattedHora24H = ('0' + h24).slice(-2) + ':' + m + ':00';
-
-            // Retornamos un objeto con ambos valores
-            return {
-                formato12h: formattedHora12H,
-                formato24h: formattedHora24H
-            };
-        }
-
-
-            // ───────── SELECT2 PRINCIPALES ─────────
+            // --- INICIALIZACIÓN SELECT2 EN LA PÁGINA PRINCIPAL ---
             $("#IdUsuarios").select2({
                 placeholder: "- Selecciona los operarios -",
                 allowClear: true,
@@ -343,9 +361,7 @@
                 width: '100%'
             });
 
-          
-
-            // Mostrar/ocultar Número de Pedido (asumiendo valor 2 = "Por Pedido")
+            // Mostrar/ocultar Número de Pedido
             function toggleNumeroPedido() {
                 var v = $('#IdTipoFabricacion').val();
                 if (v == '2') {
@@ -358,40 +374,134 @@
             $('#IdTipoFabricacion').on('change', toggleNumeroPedido);
             toggleNumeroPedido();
 
-            // ───────── MODAL DETALLE ─────────
+            // --- MANEJO DEL MODAL #1: Detalle ---
             $('#modal-Detalle').on('shown.bs.modal', function () {
-                var $modal = $(this);
-                var $modalBody = $modal.find('.modal-body');
-
-        
-
-                // Setear No. consecutivo
-                $modal.find('#No').val(detalleNo);
-                        // Hora actual (HH:mm)
-        var now = new Date();
-        var hh = String(now.getHours()).padStart(2, '0');
-        var mm = String(now.getMinutes()).padStart(2, '0');
-        $modal.find('#Hora').val(hh + ':' + mm);
-
-
-           // Nuevo: NoBatch por Paso seleccionado
-        var pasoActual = parseInt($('#Paso').val(), 10) || 1;
-        var nextBatch = getNextBatchForPaso(pasoActual);
-        $modal.find('#NoBatch').val(nextBatch).trigger('change');
-
-       
-                // Foco inicial
-                $modal.find('#Hora').trigger('focus');
+                $(this).find('#MarcaTipo').trigger('focus');
             });
 
-            // Guardar detalle
+            $('#modal-SubDetalle').on('shown.bs.modal', function () {
+                var $modal = $(this);
+                
+                // CORREGIDO: Verificar que currentDetalle esté definido antes de proceder
+                if (currentDetalle === null || currentDetalle === undefined) {
+                    console.warn('currentDetalle no está definido. Usando valores por defecto.');
+                    $modal.find('#NoBatch').val(1);
+                    $modal.find('#Silo').val(1);
+                } else {
+                    // Buscar específicamente la tabla correspondiente al currentDetalle
+                    var $specificSubTable = $("tr[data-parent='" + currentDetalle + "']").find('table.subTable tbody');
+                    
+                    // CORREGIDO: Verificar que se encontró la tabla antes de continuar
+                    if ($specificSubTable.length === 0) {
+                        console.warn('No se encontró la subtabla para currentDetalle:', currentDetalle);
+                        $modal.find('#NoBatch').val(1);
+                        $modal.find('#Silo').val(1);
+                    } else {
+                        // Fijar valores iniciales por defecto
+                        $modal.find('#NoBatch').val(1);
+                        $modal.find('#Silo').val(1);
+                    }
+                }
+                
+                // Fijar la hora actual en formato HH:mm
+                var now = new Date();
+                var hh = String(now.getHours()).padStart(2, '0');
+                var mm = String(now.getMinutes()).padStart(2, '0');
+                $modal.find('#Hora').val(hh + ':' + mm);
+                
+                // Recalcular NoBatch basado en el Paso seleccionado por defecto
+                setTimeout(function() {
+                    recalcularNoBatch();
+                }, 100);
+            });
+
+            // NUEVO: Función para recalcular NoBatch cuando cambia el Paso
+            function recalcularNoBatch() {
+                var $modal = $('#modal-SubDetalle');
+                var selectedPaso = $modal.find('#Paso').val();
+                
+                if (currentDetalle === null || currentDetalle === undefined) {
+                    $modal.find('#NoBatch').val(1);
+                    return;
+                }
+                
+                // Buscar específicamente la tabla correspondiente al currentDetalle
+                var $specificSubTable = $("tr[data-parent='" + currentDetalle + "']").find('table.subTable tbody');
+                
+                if ($specificSubTable.length === 0) {
+                    $modal.find('#NoBatch').val(1);
+                    return;
+                }
+                
+                // Contar cuántos registros hay con el mismo Paso en esa tabla específica
+                var countSamePaso = 0;
+                $specificSubTable.find('tr').each(function () {
+                    var existingPaso = $(this).find('td:eq(20)').text(); // Columna hidden con valor de Paso
+                    if (existingPaso === selectedPaso) {
+                        countSamePaso++;
+                    }
+                });
+                
+                // El siguiente NoBatch para este Paso será el count + 1
+                $modal.find('#NoBatch').val(countSamePaso + 1);
+            }
+
+            // Evento para recalcular NoBatch cuando cambia el Paso
+            $(document).on('change', '#modal-SubDetalle #Paso', function () {
+                recalcularNoBatch();
+            });
+
+            // Botón Guardar del primer modal (Detalle)
             $('#btnGuardarDetPrd').click(function () {
                 var modalId = '#modal-Detalle';
                 $(modalId + ' #spnbtnGuardarDetPrd').text('');
 
-            
+                var marcaTipo = $(modalId + ' #MarcaTipo').val();
+                var codigoSaco = $(modalId + ' #CodigoSaco').val();
+                var lote = $(modalId + ' #Lote').val();
+                var fechaProduccion = $(modalId + ' #FechaProduccion').val();
+
+                if (!marcaTipo) {
+                    $(modalId + ' #spnbtnGuardarDetPrd').text('La Marca/Tipo es obligatoria.');
+                    return;
+                }
+
+                var row = `<tr data-index="${detalleIndex}">
+                            <td>${detalleIndex + 1}</td>
+                            <td>${marcaTipo}</td>
+                            <td>${codigoSaco || ''}</td>
+                            <td>${lote || ''}</td>
+                            <td>${fechaProduccion || ''}</td>
+                            <td><a href="#" class="btn btn-sm btn-outline-primary addSub" data-index="${detalleIndex}">Agregar Sub</a></td>
+                           </tr>
+                           <tr data-parent="${detalleIndex}"><td colspan="6"><table class='table table-sm table-bordered subTable'>
+                             <thead><tr><th>No. Batch</th><th>Hora</th><th>Dens. Esperada</th><th>Peso Batch (g)</th><th>Densidad</th><th>Kg/Batch</th><th>Presión (psi)</th><th>Tiempo (seg)</th><th>Temp (°C)</th><th>Silo</th><th>Paso</th></tr></thead>
+                             <tbody></tbody></table></td></tr>`;
+
+                $('#tblDetalle > tbody').append(row);
+
+                detalleIndex++;
+                $(modalId + ' #frmDetPrd')[0].reset();
+                $(modalId).modal('hide');
+            });
+
+            // Abrir el modal de sub-detalle
+            $(document).on('click', '.addSub', function (e) {
+                e.preventDefault();
+
+                var $clickedButton = $(this);
+                currentDetalle = $clickedButton.data('index');
+                
+                $('#modal-SubDetalle').modal('show');
+            });
+
+            // Botón Guardar del segundo modal (Sub Detalle)
+            $('#btnGuardarSubDetPrd').click(function () {
+                var modalId = '#modal-SubDetalle';
+                $(modalId + ' #spnSubDet').text('');
+
+                var noBatch = $(modalId + ' #NoBatch').val();
                 var hora = $(modalId + ' #Hora').val();
-               var noBatch = parseInt($(modalId + ' #NoBatch').val(), 10);
                 var densEsp = $(modalId + ' #DensidadEsperada').val();
                 var pesoGr = $(modalId + ' #PesoBatchGr').val();
                 var dens = $(modalId + ' #Densidad').val();
@@ -400,117 +510,123 @@
                 var seg = $(modalId + ' #TiempoBatchSeg').val();
                 var tempC = $(modalId + ' #TemperaturaC').val();
                 var silo = $(modalId + ' #Silo').val();
-              var paso = $('#Paso').val();
-              var pasoTxt = $('#Paso option:selected').text();
-                // Validaciones mínimas
-                if (!hora || !noBatch === '' || densEsp === '' || pesoGr === '' || dens === '' ||
-                    kgBatch === '' || psi === '' || seg === '' || tempC === '' || !silo) {
-                    $(modalId + ' #spnbtnGuardarDetPrd').text('Complete todos los campos obligatorios.');
+                var paso = $(modalId + ' #Paso').val();
+                var pasoTxt = $(modalId + ' #Paso option:selected').text();
+
+                // Convertir "hora" (24h) a formato "hh:mm:00 AM/PM"
+                var rawHora = hora;
+                var parts = rawHora.split(':');
+                var h24 = parseInt(parts[0], 10), m = parts[1];
+                var ampm = h24 >= 12 ? 'PM' : 'AM';
+                var h12 = (h24 % 12) || 12;
+                var formattedHora = ('0' + h12).slice(-2) + ':' + m + ':00 ' + ampm;
+                var rawHora24 = ('0' + h24).slice(-2) + ':' + m + ':00';
+
+                if (!noBatch || !hora || !densEsp || !pesoGr || !dens || !kgBatch || !psi || !seg || !tempC || !silo || !paso) {
+                    $(modalId + ' #spnSubDet').text('Complete todos los campos obligatorios');
                     return;
                 }
 
-                // Números válidos
-                var decRegex = /^\d+(\.\d{1,2})?$/;
-                if (!decRegex.test(pesoGr) || !decRegex.test(dens)) {
-                    $(modalId + ' #spnbtnGuardarDetPrd').text('Peso y Densidad deben tener hasta 2 decimales.');
+                var row = `<tr>
+                            <td>${noBatch}</td>
+                            <td data-hora="${rawHora24}">${formattedHora}</td>
+                            <td>${densEsp}</td>
+                            <td>${pesoGr}</td>
+                            <td>${dens}</td>
+                            <td>${kgBatch}</td>
+                            <td>${psi}</td>
+                            <td>${seg}</td>
+                            <td>${tempC}</td>
+                            <td>${silo}</td>
+                            <td>${pasoTxt}</td>
+                            <td style='display:none'>${rawHora24}</td>
+                            <td style='display:none'>${densEsp}</td>
+                            <td style='display:none'>${pesoGr}</td>
+                            <td style='display:none'>${dens}</td>
+                            <td style='display:none'>${kgBatch}</td>
+                            <td style='display:none'>${psi}</td>
+                            <td style='display:none'>${seg}</td>
+                            <td style='display:none'>${tempC}</td>
+                            <td style='display:none'>${silo}</td>
+                            <td style='display:none'>${paso}</td>
+                       </tr>`;
+                       
+                // CORREGIDO: Buscar específicamente la tabla correspondiente al currentDetalle
+                var $targetSubTable = $("tr[data-parent='" + currentDetalle + "']").find('table.subTable tbody');
+                
+                // Verificar que se encontró la tabla correcta
+                if ($targetSubTable.length === 0) {
+                    $(modalId + ' #spnSubDet').text('Error: No se pudo encontrar la tabla destino');
                     return;
                 }
+                
+                // Agregar la fila SOLO a la tabla específica
+                $targetSubTable.append(row);
 
-                        var horaSf = $(modalId + ' #Hora').val();
-
-                       var rawHora = horaSf;            // p.ej. "13:44"
-        var parts   = rawHora.split(':');
-        var h24     = parseInt(parts[0],10), m = parts[1];
-        var ampm    = h24 >= 12 ? 'PM' : 'AM';
-        var h12     = (h24 % 12) || 12;
-        var formattedHora = ('0' + h12).slice(-2) + ':' + m + ':00 ' + ampm;
-         var rawHora24 = ('0'+h24).slice(-2) + ':' + m + ':00'; //formato 24H para el backend
-
-                     var row = `
-                    <tr data-nobatch="${noBatch}"
-                        data-hora="${rawHora24}"
-                        data-densidadesperada="${parseInt(densEsp)}"
-                        data-pesobatchgr="${parseFloat(pesoGr)}"
-                        data-densidad="${parseFloat(dens)}"
-                        data-kgporbatch="${parseInt(kgBatch)}"
-                        data-presionpsi="${parseInt(psi)}"
-                        data-tiempobatchseg="${parseInt(seg)}"
-                        data-temperaturac="${parseInt(tempC)}"
-                        data-silo="${parseInt(silo)}"
-                        data-paso="${parseInt(paso)}">
-                        <td>${noBatch}</td>
-                        <td>${formattedHora}</td>
-                        <td>${densEsp}</td>
-                        <td>${pesoGr}</td>
-                        <td>${dens}</td>
-                        <td>${kgBatch}</td>
-                        <td>${psi}</td>
-                        <td>${seg}</td>
-                        <td>${tempC}</td>
-                        <td>${silo}</td>
-                       <td>${pasoTxt}</td>
-                    </tr>`;
-
-                $('#tblDetalle > tbody').append(row);
-                detalleNo++;
-                $(modalId + ' #frmDetPrd')[0].reset();
+                $(modalId + ' #frmSubDetPrd')[0].reset();
                 $(modalId).modal('hide');
             });
 
-            // Eliminar fila
-            // $(document).on('click', '.btn-delete-row', function () {
-            //     if (confirm('¿Está seguro de eliminar este registro?')) {
-            //         $(this).closest('tr').remove();
-            //     }
-            // });
-
-            // ───────── SUBMIT PRINCIPAL ─────────
             $('#frmProduccion').submit(function (e) {
                 e.preventDefault();
                 var token = $('input[name="__RequestVerificationToken"]').val();
-
-                        // --- INICIO DE LA MODIFICACIÓN ---
+                
+                // Convertir horas
+                function convertirHora(hora24) {
+                    if (!hora24) return null;
+                    var parts = hora24.split(':');
+                    var h24 = parseInt(parts[0], 10);
+                    var m = parts[1];
+                    return ('0' + h24).slice(-2) + ':' + m + ':00';
+                }
+                
                 var horaInicioVal = $('#HoraInicio').val();
                 var horaFinVal = $('#HoraFin').val();
-
-               var horasConvertidasInicio = convertirHora(horaInicioVal);
-                 var horasConvertidasFin = convertirHora(horaFinVal);
-
-                var vm = {
-                    IdUsuarios: $('#IdUsuarios').val(),
+                
+                var viewModel = { 
+                    IdUsuarios: $('#IdUsuarios').val(), 
                     IdMaquina: $('#IdMaquina').val() ? parseInt($('#IdMaquina').val()) : 0,
                     Fecha: $('#Fecha').val(),
-                    HoraInicio: horasConvertidasInicio.formato24h,
-                    HoraFin: horasConvertidasFin.formato24h,
+                    HoraInicio: convertirHora(horaInicioVal),
+                    HoraFin: convertirHora(horaFinVal),
                     PresionCaldera: $('#PresionCaldera').val(),
-                    Lote: $('#Lote').val(),
-                    FechaProduccion: $('#FechaProduccion').val(),
-                    CodigoSaco: $('#CodigoSaco').val(),
                     IdTipoFabricacion: $('#IdTipoFabricacion').val() ? parseInt($('#IdTipoFabricacion').val()) : 0,
                     NumeroPedido: $('#NumeroPedido').val() ? parseInt($('#NumeroPedido').val()) : null,
                     Observaciones: $('#Observaciones').val(),
                     TiempoParo: $('#TiempoParo').val() ? parseFloat($('#TiempoParo').val()) : null,
-                    DetPrdPreExpansions: []
+                    PreDetPrdPreExpansions: [] 
                 };
+                
+                $('#tblDetalle tbody tr[data-index]').each(function () {
+                    var idx = $(this).data('index');
+                    var det = { 
+                        MarcaTipo: $(this).find('td:eq(1)').text(),
+                        CodigoSaco: $(this).find('td:eq(2)').text() || null,
+                        Lote: $(this).find('td:eq(3)').text() || null,
+                        FechaProduccion: $(this).find('td:eq(4)').text() || null,
+                        DetPrdPreExpansions: [] 
+                    };
+                    
+                    $("tr[data-parent='" + idx + "'] table.subTable tbody tr").each(function () {
+                        var sd = {
+                            NoBatch: parseInt($(this).find('td:eq(0)').text()),
+                            Hora: $(this).find('td:eq(11)').text(),
+                            DensidadEsperada: parseInt($(this).find('td:eq(12)').text()),
+                            PesoBatchGr: parseFloat($(this).find('td:eq(13)').text()),
+                            Densidad: parseFloat($(this).find('td:eq(14)').text()),
+                            KgPorBatch: parseInt($(this).find('td:eq(15)').text()),
+                            PresionPsi: parseInt($(this).find('td:eq(16)').text()),
+                            TiempoBatchSeg: parseInt($(this).find('td:eq(17)').text()),
+                            TemperaturaC: parseInt($(this).find('td:eq(18)').text()),
+                            Silo: parseInt($(this).find('td:eq(19)').text()),
+                            Paso: parseInt($(this).find('td:eq(20)').text())
+                        };
+                        det.DetPrdPreExpansions.push(sd);
+                    });
+                    viewModel.PreDetPrdPreExpansions.push(det);
+                });
 
-                       $('#tblDetalle tbody tr[data-nobatch]').each(function () {
-          var $r = $(this);
-          vm.DetPrdPreExpansions.push({
-            Hora: String($r.data('hora')),
-            NoBatch: parseInt($r.data('nobatch')),
-            DensidadEsperada: parseInt($r.data('densidadesperada')),
-            PesoBatchGr: parseFloat($r.data('pesobatchgr')),
-            Densidad: parseFloat($r.data('densidad')),
-            KgPorBatch: parseInt($r.data('kgporbatch')),
-            PresionPsi: parseInt($r.data('presionpsi')),
-            TiempoBatchSeg: parseInt($r.data('tiempobatchseg')),
-            TemperaturaC: parseInt($r.data('temperaturac')),
-            Silo: parseInt($r.data('silo')),
-            Paso: parseInt($r.data('paso'))
-          });
-        });
-
-                if (vm.DetPrdPreExpansions.length === 0) {
+                if (viewModel.PreDetPrdPreExpansions.length === 0) {
                     alert('Debe agregar al menos un detalle de producción.');
                     return;
                 }
@@ -519,47 +635,20 @@
                     url: '/PrdPreExpansion/Create',
                     type: 'POST',
                     headers: { 'RequestVerificationToken': token },
-                    data: JSON.stringify(vm),
+                    data: JSON.stringify(viewModel),
                     contentType: 'application/json; charset=utf-8',
-                    success: function (response) {
-                        if (response.success) {
-                            localStorage.removeItem(DRAFT_KEY);
-                            window.removeEventListener('beforeunload', beforeUnloadHandler);
-                            alert(response.message);
-                            window.location.href = '@Url.Action("Index", "Home")';
-                        } else {
-                            alert(response.message || 'Error al guardar la producción');
-                        }
+                    success: function () {
+                        localStorage.removeItem(DRAFT_KEY);
+                        window.removeEventListener('beforeunload', beforeUnloadHandler);
+                        alert('Producción Guardada!');
+                        window.location.href = '@Url.Action("Index", "Home")';
                     },
-                    error: function (xhr) {
-                        try {
-                            var response = JSON.parse(xhr.responseText);
-                            if (response && response.message) {
-                                alert(response.message);
-                            } else {
-                                alert('Error al guardar la producción. Contacte a soporte.');
-                            }
-                        } catch (e) {
-                            console.error('Error:', xhr.responseText);
-                            alert('Error al guardar la producción. Contacte a soporte.');
-                        }
+                    error: function () {
+                        alert('Error , Contacte a soporte!');
                     }
                 });
             });
         });
-
-                // Helper: next NoBatch por Paso
-        function getNextBatchForPaso(pasoNum) {
-          var maxNb = 0;
-          $('#tblDetalle tbody tr').each(function () {
-            var rPaso = parseInt($(this).data('paso'), 10);
-            if (rPaso === pasoNum) {
-              var nb = parseInt($(this).data('nobatch'), 10);
-              if (!isNaN(nb) && nb > maxNb) maxNb = nb;
-            }
-          });
-          return maxNb + 1; // si no hay, arranca en 1
-        }
     </script>
 }
 

@@ -61,13 +61,18 @@
                         <input asp-for="PresionCaldera" class="form-control" />
                         <span asp-validation-for="PresionCaldera" class="text-danger"></span>
                     </div>
+                    @* TODO: These fields have moved to PreDetPrdpreExpansion level - implement hierarchical editing *@
+                    @*
                     <div class="col-md-6">
                         <label asp-for="Lote"></label>
                         <input asp-for="Lote" class="form-control" />
                         <span asp-validation-for="Lote" class="text-danger"></span>
                     </div>
+                    *@
                 </div>
                 
+                @* TODO: These fields have moved to PreDetPrdpreExpansion level - implement hierarchical editing *@
+                @*
                 <div class="form-group row">
                     <div class="col-md-6">
                         <label asp-for="FechaProduccion"></label>
@@ -80,6 +85,7 @@
                         <span asp-validation-for="CodigoSaco" class="text-danger"></span>
                     </div>
                 </div>
+                *@
                 
                 <div class="form-group">
                     <label asp-for="IdTipoFabricacion"></label>
@@ -110,56 +116,92 @@
                         <table id="tblProduccion" class="table table-bordered table-hover">
                             <thead class="table-light">
                                 <tr>
-                                    <th style="display:none" data-field="id">Id</th>
-                                    <th data-field="noBatch">No. Batch</th>
-                                    <th data-field="hora">Hora</th>
-                                  
-                                    <th data-field="densidadEsperada">Densidad Esperada</th>
-                                    <th data-field="pesoBatchGr">Peso Batch (g)</th>
-                                    <th data-field="densidad">Densidad</th>
-                                    <th data-field="kgPorBatch">Kg por Batch</th>
-                                    <th data-field="presionPsi">Presión (psi)</th>
-                                    <th data-field="tiempoBatchSeg">Tiempo Batch (seg)</th>
-                                    <th data-field="temperaturaC">Temperatura (°C)</th>
-                                    <th data-field="silo">Silo</th>
-                                    <th>Paso</th>
+                                    <th>Posición</th>
+                                    <th>Marca/Tipo</th>
+                                    <th>Código Saco</th>
+                                    <th>Lote</th>
+                                    <th>Fecha Producción</th>
+                                    <th></th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @if (Model.DetPrdPreExpansions != null)
+                                @if (Model.PreDetPrdPreExpansions != null)
                                 {
-                                    @foreach (var detalle in Model.DetPrdPreExpansions)
+                                    int detalleIndex = 0;
+                                    @foreach (var preDetalle in Model.PreDetPrdPreExpansions)
                                     {
-                                        <tr>
-                                            <td style="display:none" data-field="id">@detalle.Id</td>
+                                        <tr data-index="@detalleIndex">
+                                            <td style="display:none">@preDetalle.Id</td>
                                             @if (Model.AprobadoGerencia != true)
                                             {
-                                             
-                                                <td data-field="noBatch"><a href="#" class="open-modal">@detalle.NoBatch</a></td>
+                                                <td><a href="#" class="open-modal-detail">@(detalleIndex + 1)</a></td>
                                             }
                                             else
                                             {
-                                                <td data-field="noBatch">@detalle.NoBatch</td>
+                                                <td>@(detalleIndex + 1)</td>
                                             }
-                                         
-                                            <td data-field="hora">@To12HourFormat(detalle.Hora)</td>
-                                            <td data-field="densidadEsperada">@detalle.DensidadEsperada</td>
-                                            <td data-field="pesoBatchGr">@detalle.PesoBatchGr</td>
-                                            <td data-field="densidad">@detalle.Densidad</td>
-                                            <td data-field="kgPorBatch">@detalle.KgPorBatch</td>
-                                            <td data-field="presionPsi">@detalle.PresionPsi</td>
-                                            <td data-field="tiempoBatchSeg">@detalle.TiempoBatchSeg</td>
-                                            <td data-field="temperaturaC">@detalle.TemperaturaC</td>
-                                            <td data-field="silo">@detalle.Silo</td>
-                                            @if (detalle.Paso == 1)
-                                            {
-                                                <td>Primer Paso</td>
-                                            }
-                                            else
-                                            {
-                                                <td>Segundo Paso</td>
-                                            }
+                                            <td>@preDetalle.MarcaTipo</td>
+                                            <td>@(preDetalle.CodigoSaco ?? "")</td>
+                                            <td>@(preDetalle.Lote ?? "")</td>
+                                            <td>@(preDetalle.FechaProduccion?.ToString("yyyy-MM-dd") ?? "")</td>
+                                            <td style='display:none'>@preDetalle.MarcaTipo</td>
+                                            <td style='display:none'>@(preDetalle.CodigoSaco ?? "")</td>
+                                            <td style='display:none'>@(preDetalle.Lote ?? "")</td>
+                                            <td style='display:none'>@(preDetalle.FechaProduccion?.ToString("yyyy-MM-dd") ?? "")</td>
                                         </tr>
+                                        <tr data-parent="@detalleIndex">
+                                            <td colspan="6">
+                                                <table class='table table-sm table-bordered subTable'>
+                                                    <thead>
+                                                        <tr>
+                                                            <th style="display:none">Id</th>
+                                                            <th>No. Batch</th>
+                                                            <th>Hora</th>
+                                                            <th>Dens. Esperada</th>
+                                                            <th>Peso Batch (g)</th>
+                                                            <th>Densidad</th>
+                                                            <th>Kg/Batch</th>
+                                                            <th>Presión (psi)</th>
+                                                            <th>Tiempo (seg)</th>
+                                                            <th>Temp (°C)</th>
+                                                            <th>Silo</th>
+                                                            <th>Paso</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        @if (preDetalle.DetPrdPreExpansions != null)
+                                                        {
+                                                            @foreach (var subDetalle in preDetalle.DetPrdPreExpansions)
+                                                            {
+                                                                <tr>
+                                                                    <td style="display:none">@subDetalle.Id</td>
+                                                                    @if (Model.AprobadoGerencia != true)
+                                                                    {
+                                                                        <td><a href="#" class="open-modal" data-field="id" data-value="@subDetalle.Id">@subDetalle.NoBatch</a></td>
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        <td>@subDetalle.NoBatch</td>
+                                                                    }
+                                                                    <td data-field="hora">@To12HourFormat(subDetalle.Hora)</td>
+                                                                    <td data-field="densidadEsperada">@subDetalle.DensidadEsperada</td>
+                                                                    <td data-field="pesoBatchGr">@subDetalle.PesoBatchGr</td>
+                                                                    <td data-field="densidad">@subDetalle.Densidad</td>
+                                                                    <td data-field="kgPorBatch">@subDetalle.KgPorBatch</td>
+                                                                    <td data-field="presionPsi">@subDetalle.PresionPsi</td>
+                                                                    <td data-field="tiempoBatchSeg">@subDetalle.TiempoBatchSeg</td>
+                                                                    <td data-field="temperaturaC">@subDetalle.TemperaturaC</td>
+                                                                    <td data-field="silo">@subDetalle.Silo</td>
+                                                                    <td data-field="paso">@(subDetalle.Paso == 1 ? "Primer Paso" : "Segundo Paso")</td>
+                                                                    <td style="display:none" data-field="noBatch">@subDetalle.NoBatch</td>
+                                                                </tr>
+                                                            }
+                                                        }
+                                                    </tbody>
+                                                </table>
+                                            </td>
+                                        </tr>
+                                        detalleIndex++;
                                     }
                                 }
                             </tbody>
@@ -204,7 +246,7 @@
                                 <input type="hidden" id="DetPrdPreExpansionId" name="DetPrdPreExpansionId" />
                                 <input type="hidden" id="PrdpreExpansionId" name="PrdpreExpansionId" value="@Model.Id" />
 
-                                <h3>Editar Detalle</h3>
+                                <h3>Editar Sub Detalle</h3>
                                 <hr />
 
                                 <div class="mb-3">
@@ -266,12 +308,60 @@
                                     <input type="number" id="Silo" name="Silo" class="form-control" min="0" />
                                     <span class="text-danger"></span>
                                 </div>
+
+
                             </form>
 
                             <button id="btnGuardarDetPrd" type="button" class="btn btn-primary">Actualizar</button>
-                            <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Cancelar</button>
+                            <button id="btnCancelarDetPrd" type="button" class="btn btn-dark">Cancelar</button>
                             <br />
                             <p id="spnbtnGuardarDetPrd" class="text-sm text-danger"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            @* Modal para editar pre-detalle *@
+            <div id="modal-PreDetalle" class="modal fade" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-body">
+                            <form id="frmPreDetPrd">
+                                <input type="hidden" id="PreDetPrdPreExpansionId" name="PreDetPrdPreExpansionId" />
+                                <input type="hidden" id="PrdpreExpansionIdPreDet" name="PrdpreExpansionId" value="@Model.Id" />
+
+                                <h3>Editar Detalle</h3>
+                                <hr />
+
+                                <div class="mb-3">
+                                    <label for="MarcaTipo" class="form-label">Marca/Tipo *</label>
+                                    <input type="text" id="MarcaTipo" name="MarcaTipo" class="form-control" maxlength="200" required />
+                                    <span class="text-danger"></span>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="CodigoSaco" class="form-label">Código Saco</label>
+                                    <input type="text" id="CodigoSaco" name="CodigoSaco" class="form-control" maxlength="50" />
+                                    <span class="text-danger"></span>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="Lote" class="form-label">Lote</label>
+                                    <input type="text" id="Lote" name="Lote" class="form-control" maxlength="50" />
+                                    <span class="text-danger"></span>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="FechaProduccion" class="form-label">Fecha Producción</label>
+                                    <input type="date" id="FechaProduccion" name="FechaProduccion" class="form-control" />
+                                    <span class="text-danger"></span>
+                                </div>
+                            </form>
+
+                            <button id="btnGuardarPreDetPrd" type="button" class="btn btn-primary">Actualizar</button>
+                            <button id="btnCancelarPreDetPrd" type="button" class="btn btn-dark">Cancelar</button>
+                            <br />
+                            <p id="spnbtnGuardarPreDetPrd" class="text-sm text-danger"></p>
                         </div>
                     </div>
                 </div>
@@ -310,6 +400,8 @@
                     $("#divNumeroPedido").show();
                 } else {
                     $("#divNumeroPedido").hide();
+                    // Clear NumeroPedido when switching from Pedido to Almacén
+                    $("#NumeroPedido").val("");
                 }
             });
 
@@ -319,12 +411,12 @@
             }
         });
 
-        // Handle detail modal opening
+        // Handle sub-detail modal opening (for sub-table rows)
         $("#tblProduccion").on("click", ".open-modal", function(e){
             e.preventDefault();
             var $row = $(this).closest("tr");
 
-            var id = $row.find("td[data-field='id']").text().trim();
+            var id = $row.find("td:eq(0)").text().trim(); // Hidden ID
             var hora12h = $row.find("td[data-field='hora']").text().trim();
             var noBatch = $row.find("td[data-field='noBatch']").text().trim();
             var densidadEsperada = $row.find("td[data-field='densidadEsperada']").text().trim();
@@ -363,7 +455,31 @@
             $("#modal-Detalle").modal("show");
         });
 
-        // Handle detail save
+        // Handle detail modal opening (for main table rows)
+        $("#tblProduccion").on("click", ".open-modal-detail", function(e){
+            e.preventDefault();
+            var $row = $(this).closest("tr");
+
+            var id = $row.find("td:eq(0)").text().trim(); // Hidden ID  
+            var marcaTipo = $row.find("td:eq(2)").text().trim();
+            var codigoSaco = $row.find("td:eq(3)").text().trim();
+            var lote = $row.find("td:eq(4)").text().trim();
+            var fechaProduccion = $row.find("td:eq(5)").text().trim();
+
+            // Clear any previous error messages
+            $("#spnbtnGuardarPreDetPrd").text("");
+
+            // Populate modal
+            $("#PreDetPrdPreExpansionId").val(id);
+            $("#MarcaTipo").val(marcaTipo);
+            $("#CodigoSaco").val(codigoSaco);
+            $("#Lote").val(lote);
+            $("#FechaProduccion").val(fechaProduccion);
+
+            $("#modal-PreDetalle").modal("show");
+        });
+
+        // Handle sub-detail save
         $("#btnGuardarDetPrd").click(function(e){
             e.preventDefault();
 
@@ -405,6 +521,59 @@
                     $("#spnbtnGuardarDetPrd").text("Ocurrió un error en la solicitud: " + error);
                 }
             });
+        });
+
+        // Handle detail save
+        $("#btnGuardarPreDetPrd").click(function(e){
+            e.preventDefault();
+
+            // Clear previous error messages
+            $("#spnbtnGuardarPreDetPrd").text("");
+
+            // Basic validation
+            if (!$("#MarcaTipo").val().trim()) {
+                $("#spnbtnGuardarPreDetPrd").text("La Marca/Tipo es obligatoria.");
+                return;
+            }
+
+            // Get the token from the main form
+            var token = $("#frmProduccion").find("input[name='__RequestVerificationToken']").val();
+
+            var formData = $("#frmPreDetPrd").serialize();
+
+            $.ajax({
+                url: '@Url.Action("EditPreDetPrd", "PrdPreExpansion")',
+                type: 'POST',
+                data: formData,
+                headers: {
+                    "RequestVerificationToken": token
+                },
+                success: function(response) {
+                    if(response.success){
+                        alert(response.message);
+                        $("#modal-PreDetalle").modal("hide");
+                        location.reload();
+                    } else {
+                        $("#spnbtnGuardarPreDetPrd").text("Error: " + response.message);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error(xhr.responseText);
+                    $("#spnbtnGuardarPreDetPrd").text("Ocurrió un error en la solicitud: " + error);
+                }
+            });
+        });
+
+        // Handle sub-detail cancel
+        $("#btnCancelarDetPrd").click(function(e){
+            e.preventDefault();
+            $("#modal-Detalle").modal("hide");
+        });
+
+        // Handle detail cancel
+        $("#btnCancelarPreDetPrd").click(function(e){
+            e.preventDefault();
+            $("#modal-PreDetalle").modal("hide");
         });
 
         // Approval function

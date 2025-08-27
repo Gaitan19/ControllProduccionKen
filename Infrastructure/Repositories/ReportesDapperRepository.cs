@@ -853,9 +853,9 @@ SELECT
     PE.HoraInicio,
     PE.HoraFin,
     PE.PresionCaldera,
-    PE.Lote,
-    PE.FechaProduccion,
-    PE.CodigoSaco,
+    CAST(NULL AS NVARCHAR(50))                        AS Lote,
+    CAST(NULL AS DATETIME)                            AS FechaProduccion,
+    CAST(NULL AS NVARCHAR(50))                        AS CodigoSaco,
     PE.IdTipoFabricacion,
     TF.Descripcion                                    AS TipoFabricacion,
     PE.NumeroPedido,
@@ -876,17 +876,33 @@ LEFT  JOIN cp.TipoFabricacion TF ON TF.Id = PE.IdTipoFabricacion
 WHERE CAST(PE.Fecha AS DATE) BETWEEN CAST(@start AS DATE) AND CAST(@end AS DATE)
   AND PE.AprobadoGerencia = 1;
 
--- 2) Detalles de pre-expansión
+-- 2) Detalles de pre-expansión (PreDetPrdpreExpansion - nivel intermedio)
+SELECT
+    PD.Id,
+    PD.PrdpreExpansionId,
+    PD.MarcaTipo,
+    PD.CodigoSaco,
+    PD.Lote,
+    PD.FechaProduccion
+FROM cp.PreDetPrdpreExpansion PD
+WHERE PD.PrdpreExpansionId IN (
+    SELECT PE.Id
+    FROM cp.PrdpreExpansion PE
+    WHERE CAST(PE.Fecha AS DATE) BETWEEN CAST(@start AS DATE) AND CAST(@end AS DATE)
+      AND PE.AprobadoGerencia = 1
+);
+
+-- 3) Sub-detalles de pre-expansión (DetPrdpreExpansion - nivel sub-detalle)
 SELECT
     D.Id,
-    D.PrdpreExpansionId AS IdPreExpansion,
+    D.PreDetPrdpreExpansionId,
     D.Hora,
     D.NoBatch,
     D.DensidadEsperada,
     D.PesoBatchGr,
     D.Densidad,
     D.KgPorBatch,
-    D.PresionPSI,
+    D.PresionPsi AS PresionPSI,
     D.TiempoBatchSeg,
     D.TemperaturaC,
     D.Silo,
@@ -896,7 +912,8 @@ SELECT
     D.IdUsuarioActualizacion,
     D.FechaActualizacion
 FROM cp.DetPrdpreExpansion D
-WHERE D.PrdpreExpansionId IN (
+INNER JOIN cp.PreDetPrdpreExpansion PD ON D.PreDetPrdpreExpansionId = PD.Id
+WHERE PD.PrdpreExpansionId IN (
     SELECT PE.Id
     FROM cp.PrdpreExpansion PE
     WHERE CAST(PE.Fecha AS DATE) BETWEEN CAST(@start AS DATE) AND CAST(@end AS DATE)
@@ -908,9 +925,23 @@ WHERE D.PrdpreExpansionId IN (
                 {
                     var headers = (await multi.ReadAsync<PrdPreExpansionReporteDTO>()).ToList();
                     var detalles = (await multi.ReadAsync<DetallePreExpansionDto>()).ToList();
+                    var subdetalles = (await multi.ReadAsync<SubDetallePreExpansionDto>()).ToList();
 
+                    // Asociar subdetalles a cada detalle
+                    foreach (var det in detalles)
+                    {
+                        det.SubDetalles = subdetalles
+                            .Where(sd => sd.PreDetPrdpreExpansionId == det.Id)
+                            .ToList();
+                    }
+
+                    // Asociar detalles anidados a cada encabezado
                     foreach (var h in headers)
-                        h.Detalles = detalles.Where(d => d.IdPreExpansion == h.Id).ToList();
+                    {
+                        h.Detalles = detalles
+                            .Where(d => d.PrdpreExpansionId == h.Id)
+                            .ToList();
+                    }
 
                     return headers;
                 }
