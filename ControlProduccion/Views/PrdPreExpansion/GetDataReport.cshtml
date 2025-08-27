@@ -328,6 +328,7 @@
                                 .OrderBy(sd => sd.Paso ?? int.MaxValue)
                                 .ThenBy(sd => sd.NoBatch)
                                 .GroupBy(sd => sd.Paso);
+                            <div class="section-title">Subdetalle de Producción</div>
 
                             @foreach (var grupo in gruposPorPaso)
                             {
