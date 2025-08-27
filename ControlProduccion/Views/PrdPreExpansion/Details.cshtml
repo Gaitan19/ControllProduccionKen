@@ -99,56 +99,70 @@
                         <table id="tblProduccion" class="table table-bordered table-hover">
                             <thead class="table-light">
                                 <tr>
-                                    <th style="display:none;">Id</th>
-                                    <th>No. Batch</th>
-                                    <th>Hora</th>
-                                  
-                                    <th>Dens. Esperada</th>
-                                    <th>Peso Batch (g)</th>
-                                    <th>Densidad</th>
-                                    <th>Kg/Batch</th>
-                                    <th>Presión (psi)</th>
-                                    <th>Tiempo Batch (seg)</th>
-                                    <th>Temperatura (°C)</th>
-                                    <th>Silo</th>
-                                    <th>Paso</th>
+                                    <th>Posición</th>
+                                    <th>Marca/Tipo</th>
+                                    <th>Código Saco</th>
+                                    <th>Lote</th>
+                                    <th>Fecha Producción</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @{
-                                    @* TODO: Implement hierarchical display - need to iterate through PreDetPrdPreExpansions and their DetPrdPreExpansions *@
-                                    @* Temporarily commented out until hierarchical structure is implemented *@
-                                    @*
-                                    if (Model.DetPrdPreExpansions != null)
+                                @if (Model.PreDetPrdPreExpansions != null)
+                                {
+                                    int detalleIndex = 0;
+                                    @foreach (var preDetalle in Model.PreDetPrdPreExpansions)
                                     {
-                                        foreach (var detalle in Model.DetPrdPreExpansions)
-                                        {
-                                            <tr>
-                                                <td style="display:none;">@detalle.Id</td>
-                                                <td>@detalle.NoBatch</td>
-                                                <td>@To12HourFormat(detalle.Hora)</td>
-                                            
-                                                <td>@detalle.DensidadEsperada</td>
-                                                <td>@detalle.PesoBatchGr</td>
-                                                <td>@detalle.Densidad</td>
-                                                <td>@detalle.KgPorBatch</td>
-                                                <td>@detalle.PresionPsi</td>
-                                                <td>@detalle.TiempoBatchSeg</td>
-                                                <td>@detalle.TemperaturaC</td>
-                                                <td>@detalle.Silo</td>
-                                                @if (detalle.Paso==1)
-                                                    {
-                                                    <td>Primer Paso</td>
-                                                }
-                                                else
-                                                {
-                                                    <td>Segundo Paso</td>
-                                                }
-                                            </tr>
-                                          
-                                        }
+                                        <tr data-index="@detalleIndex">
+                                            <td>@(detalleIndex + 1)</td>
+                                            <td>@preDetalle.MarcaTipo</td>
+                                            <td>@(preDetalle.CodigoSaco ?? "")</td>
+                                            <td>@(preDetalle.Lote ?? "")</td>
+                                            <td>@(preDetalle.FechaProduccion?.ToString("yyyy-MM-dd") ?? "")</td>
+                                        </tr>
+                                        <tr data-parent="@detalleIndex">
+                                            <td colspan="5">
+                                                <table class='table table-sm table-bordered subTable'>
+                                                    <thead>
+                                                        <tr>
+                                                            <th>No. Batch</th>
+                                                            <th>Hora</th>
+                                                            <th>Dens. Esperada</th>
+                                                            <th>Peso Batch (g)</th>
+                                                            <th>Densidad</th>
+                                                            <th>Kg/Batch</th>
+                                                            <th>Presión (psi)</th>
+                                                            <th>Tiempo (seg)</th>
+                                                            <th>Temp (°C)</th>
+                                                            <th>Silo</th>
+                                                            <th>Paso</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        @if (preDetalle.DetPrdPreExpansions != null)
+                                                        {
+                                                            @foreach (var subDetalle in preDetalle.DetPrdPreExpansions)
+                                                            {
+                                                                <tr>
+                                                                    <td>@subDetalle.NoBatch</td>
+                                                                    <td>@To12HourFormat(subDetalle.Hora)</td>
+                                                                    <td>@subDetalle.DensidadEsperada</td>
+                                                                    <td>@subDetalle.PesoBatchGr</td>
+                                                                    <td>@subDetalle.Densidad</td>
+                                                                    <td>@subDetalle.KgPorBatch</td>
+                                                                    <td>@subDetalle.PresionPsi</td>
+                                                                    <td>@subDetalle.TiempoBatchSeg</td>
+                                                                    <td>@subDetalle.TemperaturaC</td>
+                                                                    <td>@subDetalle.Silo</td>
+                                                                    <td>@(subDetalle.Paso == 1 ? "Primer Paso" : "Segundo Paso")</td>
+                                                                </tr>
+                                                            }
+                                                        }
+                                                    </tbody>
+                                                </table>
+                                            </td>
+                                        </tr>
+                                        detalleIndex++;
                                     }
-                                    *@
                                 }
                             </tbody>
                         </table>
