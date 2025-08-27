@@ -118,6 +118,8 @@ public partial class AppDbContext : DbContext
 
     public virtual DbSet<PrdpreExpansion> PrdpreExpansions { get; set; }
 
+    public virtual DbSet<PreDetPrdpreExpansion> PreDetPrdpreExpansions { get; set; }
+
     public virtual DbSet<Reporte> Reportes { get; set; }
 
     public virtual DbSet<SubDetPrdBloque> SubDetPrdBloques { get; set; }
@@ -910,9 +912,10 @@ public partial class AppDbContext : DbContext
             entity.Property(e => e.PesoBatchGr).HasColumnType("decimal(10, 2)");
             entity.Property(e => e.PresionPsi).HasColumnName("PresionPSI");
 
-            entity.HasOne(d => d.PrdpreExpansion).WithMany(p => p.DetPrdpreExpansions)
-                .HasForeignKey(d => d.PrdpreExpansionId)
-                .HasConstraintName("FK_DetPrdpreExpansion_PrdpreExpansion");
+            entity.HasOne(d => d.PreDetPrdpreExpansion).WithMany(p => p.DetPrdpreExpansions)
+                .HasForeignKey(d => d.PreDetPrdpreExpansionId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_DetPrdpreExpansion_PreDet");
         });
 
         modelBuilder.Entity<ErrorLog>(entity =>
@@ -1338,22 +1341,39 @@ public partial class AppDbContext : DbContext
         {
             entity.ToTable("PrdpreExpansion", "cp");
 
-            entity.Property(e => e.CodigoSaco).HasMaxLength(150);
             entity.Property(e => e.Fecha).HasColumnType("date");
             entity.Property(e => e.FechaActualizacion).HasColumnType("datetime");
             entity.Property(e => e.FechaCreacion).HasColumnType("datetime");
-            entity.Property(e => e.FechaProduccion).HasColumnType("date");
             entity.Property(e => e.IdAprobadoGerencia).HasMaxLength(450);
             entity.Property(e => e.IdAprobadoSupervisor).HasMaxLength(450);
             entity.Property(e => e.IdUsuarioActualizacion).HasMaxLength(450);
             entity.Property(e => e.IdUsuarioCreacion).HasMaxLength(450);
-            entity.Property(e => e.Lote).HasMaxLength(150);
             entity.Property(e => e.NotaSupervisor)
                 .HasMaxLength(1000)
                 .IsUnicode(false);
             entity.Property(e => e.Observaciones).HasMaxLength(4000);
             entity.Property(e => e.PresionCaldera).HasMaxLength(150);
             entity.Property(e => e.TiempoParo).HasColumnType("decimal(18, 2)");
+        });
+
+        modelBuilder.Entity<PreDetPrdpreExpansion>(entity =>
+        {
+            entity.ToTable("PreDetPrdpreExpansion", "cp");
+
+            entity.Property(e => e.CodigoSaco).HasMaxLength(150);
+            entity.Property(e => e.FechaActualizacion).HasColumnType("datetime");
+            entity.Property(e => e.FechaCreacion)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.FechaProduccion).HasColumnType("date");
+            entity.Property(e => e.IdUsuarioActualizacion).HasMaxLength(450);
+            entity.Property(e => e.Lote).HasMaxLength(150);
+            entity.Property(e => e.MarcaTipo).HasMaxLength(150);
+
+            entity.HasOne(d => d.PrdpreExpansion).WithMany(p => p.PreDetPrdpreExpansions)
+                .HasForeignKey(d => d.PrdpreExpansionId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_PreDetPrdpreExpansion_PrdpreExpansion");
         });
 
         modelBuilder.Entity<Reporte>(entity =>

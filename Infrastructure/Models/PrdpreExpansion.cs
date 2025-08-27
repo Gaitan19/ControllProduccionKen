@@ -21,12 +21,6 @@ public partial class PrdpreExpansion
 
     public string? PresionCaldera { get; set; }
 
-    public string? Lote { get; set; }
-
-    public DateTime? FechaProduccion { get; set; }
-
-    public string? CodigoSaco { get; set; }
-
     public int IdTipoFabricacion { get; set; }
 
     public int? NumeroPedido { get; set; }
@@ -53,5 +47,5 @@ public partial class PrdpreExpansion
 
     public string? NotaSupervisor { get; set; }
 
-    public virtual ICollection<DetPrdpreExpansion> DetPrdpreExpansions { get; set; } = new List<DetPrdpreExpansion>();
+    public virtual ICollection<PreDetPrdpreExpansion> PreDetPrdpreExpansions { get; set; } = new List<PreDetPrdpreExpansion>();
 }

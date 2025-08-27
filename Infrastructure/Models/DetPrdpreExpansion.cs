@@ -7,8 +7,6 @@ public partial class DetPrdpreExpansion
 {
     public int Id { get; set; }
 
-    public int PrdpreExpansionId { get; set; }
-
     public TimeSpan Hora { get; set; }
 
     public int NoBatch { get; set; }
@@ -39,5 +37,7 @@ public partial class DetPrdpreExpansion
 
     public DateTime? FechaActualizacion { get; set; }
 
-    public virtual PrdpreExpansion PrdpreExpansion { get; set; } = null!;
+    public int PreDetPrdpreExpansionId { get; set; }
+
+    public virtual PreDetPrdpreExpansion PreDetPrdpreExpansion { get; set; } = null!;
 }
