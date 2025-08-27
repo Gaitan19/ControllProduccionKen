@@ -397,23 +397,9 @@
                         $modal.find('#NoBatch').val(1);
                         $modal.find('#Silo').val(1);
                     } else {
-                        // Calcular el siguiente "NoBatch" basado en cuántas filas ya hay EN ESA TABLA ESPECÍFICA
-                        var subCount = $specificSubTable.find('tr').length;
-                        $modal.find('#NoBatch').val(subCount + 1);
-
-                        // CORREGIDO: Calcular el siguiente Silo basado en ESA TABLA ESPECÍFICA
-                        var nextSilo = 1;
-                        if (subCount > 0) {
-                            var $lastRow = $specificSubTable.find('tr').last();
-                            // Verificar que la fila tenga suficientes columnas antes de acceder a td:eq
-                            if ($lastRow.find('td').length > 10) {
-                                var lastSilo = parseInt($lastRow.find('td:eq(9)').text(), 10);
-                                if (!isNaN(lastSilo)) {
-                                    nextSilo = lastSilo + 1;
-                                }
-                            }
-                        }
-                        $modal.find('#Silo').val(nextSilo);
+                        // Fijar valores iniciales por defecto
+                        $modal.find('#NoBatch').val(1);
+                        $modal.find('#Silo').val(1);
                     }
                 }
                 
@@ -422,6 +408,47 @@
                 var hh = String(now.getHours()).padStart(2, '0');
                 var mm = String(now.getMinutes()).padStart(2, '0');
                 $modal.find('#Hora').val(hh + ':' + mm);
+                
+                // Recalcular NoBatch basado en el Paso seleccionado por defecto
+                setTimeout(function() {
+                    recalcularNoBatch();
+                }, 100);
+            });
+
+            // NUEVO: Función para recalcular NoBatch cuando cambia el Paso
+            function recalcularNoBatch() {
+                var $modal = $('#modal-SubDetalle');
+                var selectedPaso = $modal.find('#Paso').val();
+                
+                if (currentDetalle === null || currentDetalle === undefined) {
+                    $modal.find('#NoBatch').val(1);
+                    return;
+                }
+                
+                // Buscar específicamente la tabla correspondiente al currentDetalle
+                var $specificSubTable = $("tr[data-parent='" + currentDetalle + "']").find('table.subTable tbody');
+                
+                if ($specificSubTable.length === 0) {
+                    $modal.find('#NoBatch').val(1);
+                    return;
+                }
+                
+                // Contar cuántos registros hay con el mismo Paso en esa tabla específica
+                var countSamePaso = 0;
+                $specificSubTable.find('tr').each(function () {
+                    var existingPaso = $(this).find('td:eq(20)').text(); // Columna hidden con valor de Paso
+                    if (existingPaso === selectedPaso) {
+                        countSamePaso++;
+                    }
+                });
+                
+                // El siguiente NoBatch para este Paso será el count + 1
+                $modal.find('#NoBatch').val(countSamePaso + 1);
+            }
+
+            // Evento para recalcular NoBatch cuando cambia el Paso
+            $(document).on('change', '#modal-SubDetalle #Paso', function () {
+                recalcularNoBatch();
             });
 
             // Botón Guardar del primer modal (Detalle)
