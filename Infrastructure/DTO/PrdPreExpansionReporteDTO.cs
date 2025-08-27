@@ -38,17 +38,47 @@ namespace Infrastructure.DTO
         public string Supervisor { get; set; } = string.Empty; // Friendly name
         public string JefeProd { get; set; } = string.Empty;   // Friendly name
 
-        // Detalles
+        // Detalles (PreDetPrdpreExpansion - nivel intermedio)
         public List<DetallePreExpansionDto> Detalles { get; set; } = new List<DetallePreExpansionDto>();
     }
 
     /// <summary>
-    /// DTO de detalle para cada registro en DetPrdpreExpansion.
+    /// DTO de detalle para cada registro en PreDetPrdpreExpansion (nivel intermedio).
     /// </summary>
     public class DetallePreExpansionDto
     {
+        /// <summary>Id del registro PreDetPrdpreExpansion.</summary>
+        public int Id { get; set; }
+
         /// <summary>Id de la cabecera (PrdpreExpansion).</summary>
-        public int IdPreExpansion { get; set; }
+        public int PrdpreExpansionId { get; set; }
+
+        /// <summary>Marca/Tipo del detalle.</summary>
+        public string MarcaTipo { get; set; } = string.Empty;
+
+        /// <summary>Código del saco.</summary>
+        public string? CodigoSaco { get; set; }
+
+        /// <summary>Lote del material.</summary>
+        public string? Lote { get; set; }
+
+        /// <summary>Fecha de producción.</summary>
+        public DateTime? FechaProduccion { get; set; }
+
+        // Sub-detalles (DetPrdpreExpansion - nivel sub-detalle)
+        public List<SubDetallePreExpansionDto> SubDetalles { get; set; } = new List<SubDetallePreExpansionDto>();
+    }
+
+    /// <summary>
+    /// DTO de sub-detalle para cada registro en DetPrdpreExpansion (nivel sub-detalle).
+    /// </summary>
+    public class SubDetallePreExpansionDto
+    {
+        /// <summary>Id del registro DetPrdpreExpansion.</summary>
+        public int Id { get; set; }
+
+        /// <summary>Id del detalle (PreDetPrdpreExpansion).</summary>
+        public int PreDetPrdpreExpansionId { get; set; }
 
         /// <summary>Hora del batch (TimeSpan).</summary>
         public TimeSpan Hora { get; set; }
@@ -79,6 +109,8 @@ namespace Infrastructure.DTO
 
         /// <summary>Identificador de silo.</summary>
         public int? Silo { get; set; }
+
+        /// <summary>Paso (1=Primer Paso, 2=Segundo Paso).</summary>
         public int? Paso { get; set; }
 
         /// <summary>Auditoría: usuario creación.</summary>
