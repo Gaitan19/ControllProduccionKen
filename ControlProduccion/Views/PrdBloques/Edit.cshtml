@@ -434,6 +434,13 @@
             
             // Clear previous error messages
             $("#spnSubDet").text("");
+
+                // Validar que Silo sea un número entero
+    var siloValue = $("#SiloSub").val();
+    if (siloValue && !/^\d+$/.test(siloValue)) {
+        $("#spnSubDet").text("El campo Silo debe ser un número entero.");
+        return;
+    }
             
             // Basic validation
             if (!$("#IdArticuloSub").val() || !$("#NoSub").val() || !$("#HoraSub").val() || 

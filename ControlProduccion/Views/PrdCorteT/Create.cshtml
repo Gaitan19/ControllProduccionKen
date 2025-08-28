@@ -420,6 +420,27 @@
             // Envío del formulario principal
             $('#frmProduccion').submit(function(e){
                 e.preventDefault();
+
+
+                    // ────────── VALIDACIÓN DE CAMPOS OBLIGATORIOS ──────────
+                    // Validar que se haya seleccionado al menos un operario
+                    var idUsuarios = $('#IdUsuarios').val();
+                    if (!idUsuarios || idUsuarios.length === 0) {
+                        alert('Debe seleccionar al menos un operario.');
+                        $('#IdUsuarios').select2('open');
+                        return;
+                    }
+    
+                    // Validar que se haya seleccionado una máquina
+                    var idMaquina = $('#IdMaquina').val();
+                    if (!idMaquina) {
+                        alert('Debe seleccionar una máquina.');
+                        $('#IdMaquina').select2('open');
+                        return;
+                    }
+                    // ──────────────────────────────────────────────────────
+
+
                 var token = $('input[name="__RequestVerificationToken"]').val();
                 
                 // Construir el viewModel

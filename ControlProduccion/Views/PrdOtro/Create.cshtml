@@ -421,7 +421,26 @@
 
 
                   $("#frmProduccion").submit(function (e) {
+
             e.preventDefault();
+
+            // VALIDACIONES ANTES DE ENVIAR
+            var usuarios = $('#IdUsuarios').val();
+            if (!usuarios || usuarios.length === 0) {
+                alert('Debe seleccionar al menos un operario.');
+                return; // ❌ Detener envío
+            }
+
+            // ────────── VALIDACIÓN DE DETALLES ──────────
+            // Validar que haya al menos un detalle de actividad
+            var detallesCount = $("#tblProduccion tbody tr").length;
+            if (detallesCount === 0) {
+                alert('Debe agregar al menos una actividad.');
+                $('#btnAgregarDetalle').focus(); // Opcional: enfocar el botón de agregar
+                return;
+            }
+            // ───────────────────────────────────────────
+           
 
             // Obtener el token antiforgery (asegúrate de que tu formulario incluya @Html.AntiForgeryToken())
             var token = $('input[name="__RequestVerificationToken"]').val();
