@@ -105,7 +105,7 @@
                                 </div>
                                 <div class="mb-3">
                                     <label class="form-label">Silo</label>
-                                    <input type="number" min="1" id="Silo" class="form-control" />
+                                    <input type="number" min="1" step="1" id="Silo" class="form-control"/>
                                 </div>
                                 <div class="mb-3">
                                     <label class="form-label">Densidad</label>
@@ -520,6 +520,12 @@
                 var numPed = $(modalId + ' #NumeroPedido').val();
                 var obs = $(modalId + ' #Observaciones').val();
 
+                // 🔴 VALIDACIÓN NUEVA: Silo debe ser entero positivo
+                if (!silo || !/^\d+$/.test(silo)) {
+                    $(modalId + ' #spnSubDet').text('El campo Silo debe ser un número entero.');
+                    return;
+                }
+
                 // Convertir "hora" (24h) a formato "hh:mm:00 AM/PM"
                 var rawHora = hora;
                 var parts = rawHora.split(':');
@@ -592,6 +598,21 @@
 
             $('#frmProduccion').submit(function (e) {
                 e.preventDefault();
+
+                // VALIDACIONES ANTES DE ENVIAR
+                var usuarios = $('#IdUsuarios').val();
+                if (!usuarios || usuarios.length === 0) {
+                    alert('Debe seleccionar al menos un operario.');
+                    return; // ❌ Detener envío
+                }
+
+                var totalDetalles = $('#tblDetalle tbody tr[data-index]').length;
+                if (totalDetalles === 0) {
+                    alert('Debe agregar al menos un detalle de producción.');
+                    return; // ❌ Detener envío
+                }
+
+
                 var token = $('input[name="__RequestVerificationToken"]').val();
                 var viewModel = { 
                     IdUsuarios: $('#IdUsuarios').val(), 

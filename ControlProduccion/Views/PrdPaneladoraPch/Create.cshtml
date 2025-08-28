@@ -379,6 +379,25 @@
             // Envío del formulario principal
             $('#frmProduccion').submit(function(e){
                 e.preventDefault();
+
+
+                // Validaciones
+                const usuariosSeleccionados = $('#IdUsuarios').val();
+                const maquinaSeleccionada = $('#IdMaquina').val();
+
+                if (!usuariosSeleccionados || usuariosSeleccionados.length === 0) {
+                    alert("Debe seleccionar al menos un operario.");
+                    return;
+                }
+
+                if (!maquinaSeleccionada || maquinaSeleccionada === "") {
+                    alert("Debe seleccionar una máquina.");
+                    return;
+                }
+
+
+
+
                 var token = $('input[name="__RequestVerificationToken"]').val();
                 
                 // Construir el viewModel
